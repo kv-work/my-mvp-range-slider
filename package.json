@@ -1,0 +1,25 @@
+{
+  "name": "the_4th_task",
+  "version": "1.0.0",
+  "description": "slider plugin",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kv-work/the_4th_task.git"
+  },
+  "keywords": [
+    "JavaScript",
+    "jQuery",
+    "Slider",
+    "Plugin"
+  ],
+  "author": "Komarov Vyacheslav",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kv-work/the_4th_task/issues"
+  },
+  "homepage": "https://github.com/kv-work/the_4th_task#readme"
+}
