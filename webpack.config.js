@@ -51,14 +51,27 @@ module.exports = (env = {}) => {
 
     mode,
 
-    entry: './src/index.js',
+    entry: './src/index.ts',
 
     output: {
       filename: 'index.js'
     },
 
+    resolve: {
+      extensions: [ '.ts', '.js' ]
+    },
+
+    // devtool: 'inline-source-map',
+
     module: {
+      //Loading TypeScript files
       rules: [
+        {
+          test: /\.ts$/,
+          use: 'ts-loader',
+          exclude: /node_modules/
+        },
+
         //Loading CSS
         {
           test: /\.css$/,
