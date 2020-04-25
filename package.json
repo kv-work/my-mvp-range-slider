@@ -28,6 +28,7 @@
   "homepage": "https://github.com/kv-work/the_4th_task#readme",
   "devDependencies": {
     "@types/jest": "^25.2.1",
+    "@types/jquery": "^3.3.35",
     "css-loader": "^3.5.2",
     "gh-pages": "^2.2.0",
     "html-webpack-plugin": "^4.2.0",
