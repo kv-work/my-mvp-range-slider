@@ -1,1 +1,0 @@
-import Presenter from '../presenter';
