@@ -70,6 +70,10 @@ export default class Model {
   public addObserver(observer: Object): void {
     this.observers.add(observer)
   }
+
+  public removeObserver(observer: Object): void {
+    this.observers.delete(observer)
+  }
 }
 
 export { OptionsModel };

@@ -8,6 +8,11 @@ describe('model', () => {
     startCount: 3,
     step: 2
   };
+
+  const observer = {
+    update: function() {}
+  };
+  
   let testModel: Model;
 
   beforeEach( () => {
@@ -84,9 +89,6 @@ describe('model', () => {
   })
 
   test('addObserver should added observer to this.observers', () => {
-    const observer = {
-      update: function() {}
-    };
     expect(testModel).toHaveProperty('observers');
     testModel.addObserver(observer);
 
@@ -97,4 +99,27 @@ describe('model', () => {
       }
     });
   })
+
+  test('removeObserver should removed observer', () => {
+    expect(testModel).toHaveProperty('observers');
+    const entries: Array<any> = Object.entries(testModel)
+
+    //Add observer
+    testModel.addObserver(observer);
+    entries.forEach( (entry: [String, any], index: number) => {
+      if (entry[0] === 'observers') {
+        expect(entry[1].has(observer)).toBeTruthy()
+      }
+    });
+
+    //Remove observer
+    testModel.removeObserver(observer);
+    entries.forEach( (entry: [String, any], index: number) => {
+      if (entry[0] === 'observers') {
+        expect(entry[1].has(observer)).toBeFalsy()
+      }
+    });
+  })
+
+
 })
