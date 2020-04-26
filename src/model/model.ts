@@ -10,6 +10,7 @@ export default class Model {
   private minCount: number
   private step: number
   private _count: number
+  private observers: Set<Object>
 
   constructor(options?: OptionsModel) {
     if (options) {
@@ -24,6 +25,7 @@ export default class Model {
       this._count = 0;
     }
 
+    this.observers = new  Set();
   }
 
   get count(): number {
@@ -63,7 +65,11 @@ export default class Model {
     } else {
       this._count = value;
     }  
-  } 
+  }
+
+  public addObserver(observer: Object): void {
+    this.observers.add(observer)
+  }
 }
 
 export { OptionsModel };

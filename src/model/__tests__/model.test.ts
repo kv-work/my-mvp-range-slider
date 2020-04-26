@@ -12,7 +12,11 @@ describe('model', () => {
 
   beforeEach( () => {
     testModel = new Model(testOptions);
-  } )
+  } );
+
+  afterEach( () => {
+    testModel = null;
+  } );
 
   test('create instanse of Model without options', () => {
     const optionlessModel: Model = new Model();
@@ -77,5 +81,20 @@ describe('model', () => {
     expect( () => {
       testModel.setCount(-15)
     } ).toThrowError(/^Value less then minimum value of slider$/);
+  })
+
+  test('addObserver should added observer to this.observers', () => {
+    const observer = {
+      update: function() {}
+    };
+    expect(testModel).toHaveProperty('observers');
+    testModel.addObserver(observer);
+
+    const entries: Array<any> = Object.entries(testModel)
+    entries.forEach( (entry: [String, any], index: number) => {
+      if (entry[0] === 'observers') {
+        expect(entry[1].has(observer)).toBeTruthy()
+      }
+    });
   })
 })
