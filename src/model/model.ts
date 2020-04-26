@@ -5,6 +5,10 @@ interface OptionsModel {
   step: number
 }
 
+interface Observer {
+  update: () => {}
+}
+
 export default class Model {
   private maxCount: number
   private minCount: number
@@ -39,8 +43,10 @@ export default class Model {
 
     if (newCount >= maxCount) {
       this._count = maxCount;
+      this.notify();
     } else {
       this._count = newCount;
+      this.notify();
     }
   }
 
@@ -51,8 +57,10 @@ export default class Model {
 
     if ( newCount <= minCount ) {
       this._count = minCount;
+      this.notify();
     } else {
       this._count = newCount;
+      this.notify();
     }    
   }
 
@@ -62,18 +70,25 @@ export default class Model {
       throw new RangeError('Value greater then maximum value of slider')
     } else if ( value < minCount ) {
       throw new RangeError('Value less then minimum value of slider')
-    } else {
+    } else if (this._count !== value) {
       this._count = value;
+      this.notify();
     }  
   }
 
-  public addObserver(observer: Object): void {
+  public addObserver(observer: Observer): void {
     this.observers.add(observer)
   }
 
-  public removeObserver(observer: Object): void {
+  public removeObserver(observer: Observer): void {
     this.observers.delete(observer)
+  }
+
+  private notify(): void {
+    this.observers.forEach( (observer: Observer): void => {
+      observer.update();
+    } )
   }
 }
 
-export { OptionsModel };
+export { OptionsModel, Observer };

@@ -1,4 +1,4 @@
-import { OptionsModel } from '../model';
+import { OptionsModel, Observer } from '../model';
 import Model from '../model';
 
 describe('model', () => {
@@ -9,14 +9,24 @@ describe('model', () => {
     step: 2
   };
 
-  const observer = {
-    update: function() {}
-  };
-  
-  let testModel: Model;
+  let testModel: Model,
+      updateFunc: () => {},
+      anotherUpdateFunc: () => {},
+      observer: Observer,
+      anotherObserver: Observer;
 
   beforeEach( () => {
     testModel = new Model(testOptions);
+    updateFunc = jest.fn();
+    anotherUpdateFunc = jest.fn();
+  
+    observer = {
+      update: updateFunc
+    };
+  
+    anotherObserver = {
+      update: anotherUpdateFunc
+    }
   } );
 
   afterEach( () => {
@@ -121,5 +131,35 @@ describe('model', () => {
     });
   })
 
+  test('if the count CHANGES, the model should notify observers', () => {
+    testModel.addObserver(observer);
+    testModel.addObserver(anotherObserver);
 
+    //incCount()
+    testModel.incCount()
+    expect(updateFunc).toHaveBeenCalledTimes(1);
+    testModel.incCount()
+    testModel.incCount()
+    expect(updateFunc).toHaveBeenCalledTimes(3);
+    expect(anotherUpdateFunc).toHaveBeenCalledTimes(3);
+
+    //decCount()
+    testModel.decCount()
+    expect(updateFunc).toHaveBeenCalledTimes(4);
+    expect(anotherUpdateFunc).toHaveBeenCalledTimes(4);
+
+    //setCount()
+    testModel.setCount(8)
+    expect(updateFunc).toHaveBeenCalledTimes(5);
+    expect(anotherUpdateFunc).toHaveBeenCalledTimes(5);
+  })
+
+  test('if the count does not changes, the model should not notify observers', () => {
+    testModel.addObserver(observer);
+    const currCount = testModel.count;
+
+    //setCount()
+    testModel.setCount(currCount);
+    expect(updateFunc).not.toHaveBeenCalled()
+  })
 })
