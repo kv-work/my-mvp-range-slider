@@ -154,7 +154,7 @@ describe('model', () => {
     expect(anotherUpdateFunc).toHaveBeenCalledTimes(5);
   })
 
-  test('if the count does not changes, the model should not notify observers', () => {
+  test('if the count does NOT CHANGES, the model should not notify observers', () => {
     testModel.addObserver(observer);
     const currCount = testModel.count;
 

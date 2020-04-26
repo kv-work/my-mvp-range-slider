@@ -42,11 +42,9 @@ export default class Model {
     const newCount = this._count + step;
 
     if (newCount >= maxCount) {
-      this._count = maxCount;
-      this.notify();
+      this.setCount(maxCount);
     } else {
-      this._count = newCount;
-      this.notify();
+      this.setCount(newCount);
     }
   }
 
@@ -56,11 +54,9 @@ export default class Model {
     const newCount = this._count - step;
 
     if ( newCount <= minCount ) {
-      this._count = minCount;
-      this.notify();
+      this.setCount(minCount);
     } else {
-      this._count = newCount;
-      this.notify();
+      this.setCount(newCount);
     }    
   }
 
