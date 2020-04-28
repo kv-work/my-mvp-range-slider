@@ -37,7 +37,7 @@ export default class ViewBar {
     this.observers.delete(observer)
   }
 
-  public notify(value: number): void {
+  private notify(value: number): void {
     this.observers.forEach( (observer: Observer): void => {
       observer.update(value);
     } )
