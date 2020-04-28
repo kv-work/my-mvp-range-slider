@@ -9,16 +9,15 @@ describe('ViewBar', () => {
   document.body.innerHTML = `<div id="container"></div>`;
   const testNode = document.getElementById('container');
   let testBar: ViewBar,
-      updateFunc: () => {},
-      anotherUpdateFunc: () => {},
       observer: Observer,
       anotherObserver: Observer,
       entries: Array<any>;
 
+  const updateFunc = jest.fn( x => x + 1),
+        anotherUpdateFunc = jest.fn( x => x + 2);
+
   beforeEach( () => {
     testBar = new ViewBar(testNode);
-    updateFunc = jest.fn();
-    anotherUpdateFunc = jest.fn();
     observer = {
       update: updateFunc
     };
@@ -82,7 +81,7 @@ describe('ViewBar', () => {
     testBar.addObserver(anotherObserver);
 
     $('.slider__bar').click();
-
+    
     expect(updateFunc).toHaveBeenCalled()
     expect(anotherUpdateFunc).toHaveBeenCalled()
   })

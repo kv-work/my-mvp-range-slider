@@ -24,7 +24,8 @@ export default class ViewBar {
   private attachEventListeners() {
     this.$bar.click( (event) => {
       //Здесь нужно высчитать какое значение было выбрано
-      this.notify(1);
+      const value: number = event.clientX - event.currentTarget.offsetLeft;
+      this.notify(value);
     } )
   }
 
