@@ -12,7 +12,7 @@ export default class ViewBar {
   constructor(container: HTMLElement) {
     this.$container = $(container);
     this.$bar = $('<div>', {
-      class: 'slider__bar'
+      class: 'slider__bar',
     });
     this.observers = new  Set();
   }
@@ -20,7 +20,8 @@ export default class ViewBar {
   private attachEventListeners() {
     this.$bar.click( (event) => {
       //Здесь нужно высчитать какое значение было выбрано
-      const value: number = event.clientX - event.currentTarget.offsetLeft;
+      const bar = event.currentTarget;
+      const value: number = Math.floor((event.clientX - bar.offsetLeft) / bar.offsetWidth * 100);
       this.notify(value);
     } )
   }

@@ -4,16 +4,19 @@ import { Observer } from '../view-bar';
 
 const $ = require('jquery');
 
-//delete .only in production
 describe('ViewBar', () => {
 
   document.body.innerHTML = `<div id="container"></div>`;
+
   const testNode = document.getElementById('container');
+
   let testBar: ViewBar,
       observer: Observer,
       anotherObserver: Observer,
       entries: Array<any>,
       keys: Set<string>,
+      elOffsetWidth: number,
+      elOffsetLeft: number,
       sliderVal: number;
 
   let updateFunc: jest.Mock,
@@ -31,6 +34,14 @@ describe('ViewBar', () => {
     anotherObserver = {
       update: anotherUpdateFunc
     };
+
+    elOffsetWidth = 200;
+    elOffsetLeft = 10;
+
+    Object.defineProperties(HTMLElement.prototype, {
+      'offsetLeft': { 'value': elOffsetLeft, 'configurable': true },
+      'offsetWidth': { 'value': elOffsetWidth, 'configurable': true }
+    })
 
     entries = Object.entries(testBar);
     keys = new Set(Object.keys(testBar));
@@ -93,16 +104,22 @@ describe('ViewBar', () => {
     testBar.addObserver(observer);
     testBar.addObserver(anotherObserver);
 
+    const eventClientX: number = 70;
+
     const clickEvent = $.Event('click', {
-      clientX: 70
+      clientX: eventClientX
     });
 
     $('.slider__bar').trigger(clickEvent);
+
+    const expectedResult: number = Math.floor( (70 - 10) / 200 * 100 );
+
+    console.log(expectedResult);
     console.log(updateFunc.mock.calls[0][0]);
     
     expect(updateFunc).toHaveBeenCalled();
-    expect(updateFunc.mock.calls[0][0]).toBe(70);
+    expect(updateFunc.mock.calls[0][0]).toBe(expectedResult);
     expect(anotherUpdateFunc).toHaveBeenCalled();
-    expect(anotherUpdateFunc.mock.calls[0][0]).toBe(70);
+    expect(anotherUpdateFunc.mock.calls[0][0]).toBe(expectedResult);
   })
 })
