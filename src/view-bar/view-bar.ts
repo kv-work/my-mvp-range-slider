@@ -14,11 +14,7 @@ export default class ViewBar {
     this.$bar = $('<div>', {
       class: 'slider__bar'
     });
-
-    this.$container.append(this.$bar)
     this.observers = new  Set();
-
-    this.attachEventListeners();
   }
 
   private attachEventListeners() {
@@ -27,6 +23,12 @@ export default class ViewBar {
       const value: number = event.clientX - event.currentTarget.offsetLeft;
       this.notify(value);
     } )
+  }
+
+  public render(value: number): void {
+    this.$container.append(this.$bar);
+    // Здесь нужно добавить отрисовку bar в соответсвии с передаваемым значением value
+    this.attachEventListeners();
   }
 
   public addObserver(observer: Observer): void {

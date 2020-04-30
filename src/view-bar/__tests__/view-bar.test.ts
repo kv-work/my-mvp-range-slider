@@ -4,20 +4,26 @@ import { Observer } from '../view-bar';
 
 const $ = require('jquery');
 
-describe('ViewBar', () => {
+//delete .only in production
+describe.only('ViewBar', () => {
 
   document.body.innerHTML = `<div id="container"></div>`;
   const testNode = document.getElementById('container');
   let testBar: ViewBar,
       observer: Observer,
       anotherObserver: Observer,
-      entries: Array<any>;
+      entries: Array<any>,
+      keys: Set<string>,
+      sliderVal: number;
 
-  const updateFunc = jest.fn( x => x + 1),
-        anotherUpdateFunc = jest.fn( x => x + 2);
+  let updateFunc: jest.Mock,
+        anotherUpdateFunc: jest.Mock;
 
   beforeEach( () => {
     testBar = new ViewBar(testNode);
+    sliderVal = 42;
+    updateFunc = jest.fn( x => x + 1);
+    anotherUpdateFunc = jest.fn( x => x + 2);
     observer = {
       update: updateFunc
     };
@@ -27,9 +33,10 @@ describe('ViewBar', () => {
     };
 
     entries = Object.entries(testBar);
+    keys = new Set(Object.keys(testBar));
   } )
 
-  test('constructor should return object', () => {
+  test('constructor should return object with some props', () => {
     expect(testNode).not.toBeUndefined()
 
     entries.forEach( (entry: [String, any]) => {
@@ -37,9 +44,14 @@ describe('ViewBar', () => {
         expect($(testNode)).toEqual(entry[1])
       }
     } )
+
+    expect(keys.has('$container')).toBeTruthy();
+    expect(keys.has('$bar')).toBeTruthy();
+    expect(keys.has('observers')).toBeTruthy();
   })
 
-  test('constructor should append div.slider__bar to container', () => {
+  test('render should append div.slider__bar to container', () => {
+    testBar.render(sliderVal);
     expect($('.slider__bar').length).not.toBe(0)
   })
 
@@ -48,7 +60,7 @@ describe('ViewBar', () => {
     testBar.addObserver(observer);
 
     entries = Object.entries(testBar)
-    entries.forEach( (entry: [String, any], index: number) => {
+    entries.forEach( (entry: [String, any]) => {
       if (entry[0] === 'observers') {
         expect(entry[1].has(observer)).toBeTruthy()
       }
@@ -77,6 +89,7 @@ describe('ViewBar', () => {
   })
 
   test('attachEventListeners added eventListener to bar, which calls notify func', () => {
+    testBar.render(sliderVal);
     testBar.addObserver(observer);
     testBar.addObserver(anotherObserver);
 
