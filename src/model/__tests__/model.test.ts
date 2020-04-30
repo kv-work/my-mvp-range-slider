@@ -10,14 +10,15 @@ describe('model', () => {
   };
 
   let testModel: Model,
-      updateFunc: () => {},
-      anotherUpdateFunc: () => {},
       observer: Observer,
       anotherObserver: Observer;
 
+  let updateFunc: jest.Mock,
+      anotherUpdateFunc: jest.Mock;
+
   beforeEach( () => {
     testModel = new Model(testOptions);
-    updateFunc = jest.fn();
+    updateFunc = jest.fn(),
     anotherUpdateFunc = jest.fn();
   
     observer = {
