@@ -5,7 +5,7 @@ import { Observer } from '../view-bar';
 const $ = require('jquery');
 
 //delete .only in production
-describe.only('ViewBar', () => {
+describe('ViewBar', () => {
 
   document.body.innerHTML = `<div id="container"></div>`;
   const testNode = document.getElementById('container');
@@ -93,9 +93,16 @@ describe.only('ViewBar', () => {
     testBar.addObserver(observer);
     testBar.addObserver(anotherObserver);
 
-    $('.slider__bar').click();
+    const clickEvent = $.Event('click', {
+      clientX: 70
+    });
+
+    $('.slider__bar').trigger(clickEvent);
+    console.log(updateFunc.mock.calls[0][0]);
     
-    expect(updateFunc).toHaveBeenCalled()
-    expect(anotherUpdateFunc).toHaveBeenCalled()
+    expect(updateFunc).toHaveBeenCalled();
+    expect(updateFunc.mock.calls[0][0]).toBe(70);
+    expect(anotherUpdateFunc).toHaveBeenCalled();
+    expect(anotherUpdateFunc.mock.calls[0][0]).toBe(70);
   })
 })
