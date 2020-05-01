@@ -61,9 +61,10 @@ describe('ViewBar', () => {
     expect(keys.has('observers')).toBeTruthy();
   })
 
-  test('render should append div.slider__bar to container', () => {
+  test('render should append div.slider__bar to container only once', () => {
     testBar.render(sliderVal);
-    expect($('.slider__bar').length).not.toBe(0)
+    expect(() => testBar.render(sliderVal)).toThrowError(/^View is already rendered!$/);
+    expect($('.slider__bar').length).toBe(1)
   })
 
   test('addObserver should added observer to this.observers', () => {
@@ -113,9 +114,6 @@ describe('ViewBar', () => {
     $('.slider__bar').trigger(clickEvent);
 
     const expectedResult: number = Math.floor( (70 - 10) / 200 * 100 );
-
-    console.log(expectedResult);
-    console.log(updateFunc.mock.calls[0][0]);
     
     expect(updateFunc).toHaveBeenCalled();
     expect(updateFunc.mock.calls[0][0]).toBe(expectedResult);

@@ -8,6 +8,7 @@ export default class ViewBar {
   private $container: JQuery
   private $bar: JQuery
   private observers: Set<Observer>
+  private isRendered: boolean
 
   constructor(container: HTMLElement) {
     this.$container = $(container);
@@ -15,6 +16,7 @@ export default class ViewBar {
       class: 'slider__bar',
     });
     this.observers = new  Set();
+    this.isRendered = false;
   }
 
   private attachEventListeners() {
@@ -27,9 +29,14 @@ export default class ViewBar {
   }
 
   public render(value: number): void {
-    this.$container.append(this.$bar);
-    // Здесь нужно добавить отрисовку bar в соответсвии с передаваемым значением value
-    this.attachEventListeners();
+    if (!this.isRendered) {
+      this.$container.append(this.$bar);
+      // Здесь нужно добавить отрисовку bar в соответсвии с передаваемым значением value
+      this.attachEventListeners();
+      this.isRendered = true;
+    } else {
+      throw Error('View is already rendered!')
+    }
   }
 
   public addObserver(observer: Observer): void {
