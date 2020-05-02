@@ -1,20 +1,30 @@
-interface Observer {
-  update: CallableFunction
+interface OptionsModel {
+  maxCount: number,
+  minCount: number,
+  startCount: number,
+  step: number
 }
 
-abstract class View {
-  private $container: JQuery
+interface Observer {
+  update(value?: number): void
+}
 
-  constructor(container: HTMLElement) {
-    this.$container = $(container)
-  }
+interface ViewData {
+  value: number,
+  step?: number,
+  interval?: [number, number]
+}
 
-  public render(value: number): void {}
-  public update(): void {}
-  public notify(value: number): void {}
+interface View {
+  render(value: number, step?: number, interval?: [number, number]): void,
+  update(value: number, step?: number, interval?: [number, number]): void,
+  addObserver(observer: Observer): void,
+  removeObserver(observer: Observer): void
 }
 
 export {
+  OptionsModel,
   Observer,
+  ViewData,
   View
 }

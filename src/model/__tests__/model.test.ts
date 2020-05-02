@@ -1,4 +1,4 @@
-import { OptionsModel, Observer } from '../model';
+import { OptionsModel, Observer } from '../../types';
 import Model from '../model';
 
 describe('model', () => {
