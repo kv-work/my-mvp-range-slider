@@ -1,8 +1,7 @@
-import Model from "../model/model";
-import { OptionsModel, Observer, ViewData, View } from '../types';
+import { OptionsModel, Observer, ViewData, View, Presenter, Model } from '../types';
 
 
-export default class Presenter {
+export default class SliderPresenter implements Presenter {
   private views: Set<View>
   private model: Model
   private viewObserver: Observer
@@ -21,7 +20,9 @@ export default class Presenter {
     }
   }
 
-  private getModelData(): void {}
+  private getModelData(model: Model): OptionsModel {
+    return 
+  }
 
   private sentModelObserver(model: Model, observer: Observer): void {}
 
@@ -30,6 +31,8 @@ export default class Presenter {
   private updateView(view: View, updateData: ViewData): void {}
 
   public renderView(view: View, renderData: ViewData): void {}
+
+  public unmountView(view: View): void {}
 
   public updateModel(model: Model, updateData: OptionsModel): void {}
 }
