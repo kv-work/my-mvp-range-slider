@@ -1,6 +1,6 @@
-import { OptionsModel, Observer } from '../types';
+import { OptionsModel, Observer, Model } from '../types';
 
-export default class Model {
+export default class SliderModel implements Model {
   private maxCount: number
   private minCount: number
   private step: number
@@ -76,4 +76,10 @@ export default class Model {
       observer.update();
     } )
   }
+
+  public getState(): OptionsModel {
+    return
+  }
+
+  public updateState(state: OptionsModel): void {}
 }
