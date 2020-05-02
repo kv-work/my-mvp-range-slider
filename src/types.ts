@@ -1,3 +1,13 @@
+interface Observer {
+  update(value?: number): void
+}
+
+interface Presenter {
+  renderView(view: View, renderData: ViewData): void,
+  unmountView(view: View): void,
+  updateModel(model: Model, updateData: OptionsModel): void
+}
+
 interface OptionsModel {
   maxCount: number,
   minCount: number,
@@ -5,25 +15,31 @@ interface OptionsModel {
   step: number
 }
 
-interface Observer {
-  update(value?: number): void
+interface Model {
+  getState(): OptionsModel,
+  updateState(state: OptionsModel): void,
+  setCount(value: number): void,
+  addObserver(observer: Observer): void,
+  removeObserver(observer: Observer): void
 }
 
 interface ViewData {
   value: number,
-  step?: number,
-  interval?: [number, number]
+  step: number,
+  interval: [number, number]
 }
 
 interface View {
-  render(value: number, step?: number, interval?: [number, number]): void,
-  update(value: number, step?: number, interval?: [number, number]): void,
+  render(viewData: ViewData): void,
+  update(viewData: ViewData): void,
+  unmount(): void,
   addObserver(observer: Observer): void,
   removeObserver(observer: Observer): void
 }
 
 export {
   OptionsModel,
+  Model,
   Observer,
   ViewData,
   View
