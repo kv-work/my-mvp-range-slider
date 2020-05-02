@@ -1,17 +1,16 @@
-import $ from 'jquery'
+import $ from 'jquery';
 
-interface Observer {
-  update: (value: number) => {}
-}
+import { Observer, View} from '../types';
 
-export default class ViewBar {
+export default class ViewBar implements View {
   private $container: JQuery
   private $bar: JQuery
   private observers: Set<Observer>
   private isRendered: boolean
 
   constructor(container: HTMLElement) {
-    this.$container = $(container);
+    this.$container = $(container)
+    
     this.$bar = $('<div>', {
       class: 'slider__bar',
     });
@@ -39,6 +38,8 @@ export default class ViewBar {
     }
   }
 
+  public update(value: number): void {}
+
   public addObserver(observer: Observer): void {
     this.observers.add(observer)
   }
@@ -53,5 +54,3 @@ export default class ViewBar {
     } )
   }
 }
-
-export { Observer };

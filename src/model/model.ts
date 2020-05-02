@@ -1,13 +1,4 @@
-interface OptionsModel {
-  maxCount: number,
-  minCount: number,
-  startCount: number,
-  step: number
-}
-
-interface Observer {
-  update: () => {}
-}
+import { OptionsModel, Observer } from '../types';
 
 export default class Model {
   private maxCount: number
@@ -86,5 +77,3 @@ export default class Model {
     } )
   }
 }
-
-export { OptionsModel, Observer };
