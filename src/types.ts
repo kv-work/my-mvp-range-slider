@@ -38,6 +38,7 @@ interface View {
 }
 
 export {
+  Presenter,
   OptionsModel,
   Model,
   Observer,
