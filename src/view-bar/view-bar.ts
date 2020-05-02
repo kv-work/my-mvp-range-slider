@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import { Observer, View} from '../types';
+import { Observer, View, ViewData } from '../types';
 
 export default class ViewBar implements View {
   private $container: JQuery
@@ -27,7 +27,7 @@ export default class ViewBar implements View {
     } )
   }
 
-  public render(value: number): void {
+  public render(viewData: ViewData): void {
     if (!this.isRendered) {
       this.$container.append(this.$bar);
       // Здесь нужно добавить отрисовку bar в соответсвии с передаваемым значением value
@@ -38,7 +38,9 @@ export default class ViewBar implements View {
     }
   }
 
-  public update(value: number): void {}
+  public update(viewData: ViewData): void {}
+
+  public unmount(): void {}
 
   public addObserver(observer: Observer): void {
     this.observers.add(observer)
