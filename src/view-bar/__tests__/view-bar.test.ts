@@ -1,5 +1,5 @@
 import ViewBar from '../view-bar';
-import { Observer } from '../view-bar';
+import { Observer, ViewData } from '../../types';
 
 
 const $ = require('jquery');
@@ -17,14 +17,18 @@ describe('ViewBar', () => {
       keys: Set<string>,
       elOffsetWidth: number,
       elOffsetLeft: number,
-      sliderVal: number;
+      viewData: ViewData;
 
   let updateFunc: jest.Mock,
         anotherUpdateFunc: jest.Mock;
 
   beforeEach( () => {
     testBar = new ViewBar(testNode);
-    sliderVal = 42;
+    viewData = {
+      value: 42,
+      step: 3,
+      interval: [0, 100]
+    };
     updateFunc = jest.fn( x => x + 1);
     anotherUpdateFunc = jest.fn( x => x + 2);
     observer = {
@@ -62,8 +66,8 @@ describe('ViewBar', () => {
   })
 
   test('render should append div.slider__bar to container only once', () => {
-    testBar.render(sliderVal);
-    expect(() => testBar.render(sliderVal)).toThrowError(/^View is already rendered!$/);
+    testBar.render(viewData);
+    expect(() => testBar.render(viewData)).toThrowError(/^View is already rendered!$/);
     expect($('.slider__bar').length).toBe(1)
   })
 
@@ -101,7 +105,7 @@ describe('ViewBar', () => {
   })
 
   test('attachEventListeners added eventListener to bar, which calls notify func', () => {
-    testBar.render(sliderVal);
+    testBar.render(viewData);
     testBar.addObserver(observer);
     testBar.addObserver(anotherObserver);
 
