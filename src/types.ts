@@ -9,16 +9,17 @@ interface Presenter {
 }
 
 interface OptionsModel {
-  maxCount: number,
-  minCount: number,
-  startCount: number,
+  maxValue: number,
+  minValue: number,
+  value: number,
   step: number
 }
 
+
 interface Model {
   getState(): OptionsModel,
-  updateState(state: OptionsModel): void,
-  setCount(value: number): void,
+  updateState(state: OptionsModel | {option: number}): void,
+  setValue(value: number): void,
   addObserver(observer: Observer): void,
   removeObserver(observer: Observer): void
 }
