@@ -1,15 +1,18 @@
-import { OptionsModel, Observer } from '../../types';
-import Model from '../model';
+import { OptionsModel, Observer, Model } from '../../types';
+import SliderModel from '../model';
 
-describe('model', () => {
+
+
+describe.only('model', () => {
+
   const testOptions: OptionsModel = {
-    maxCount: 10,
-    minCount: 0,
-    startCount: 3,
+    maxValue: 10,
+    minValue: 0,
+    value: 3,
     step: 2
   };
 
-  let testModel: Model,
+  let testModel: SliderModel,
       observer: Observer,
       anotherObserver: Observer;
 
@@ -17,7 +20,7 @@ describe('model', () => {
       anotherUpdateFunc: jest.Mock;
 
   beforeEach( () => {
-    testModel = new Model(testOptions);
+    testModel = new SliderModel(testOptions);
     updateFunc = jest.fn(),
     anotherUpdateFunc = jest.fn();
   
@@ -28,74 +31,48 @@ describe('model', () => {
     anotherObserver = {
       update: anotherUpdateFunc
     }
+
   } );
 
   afterEach( () => {
     testModel = null;
   } );
 
-  test('create instanse of Model without options', () => {
-    const optionlessModel: Model = new Model();
-
-    expect(optionlessModel).toBeInstanceOf(Model);
-    expect(optionlessModel.count).toBe(0);
-    expect(optionlessModel).toHaveProperty('maxCount', 10);
-    expect(optionlessModel).toHaveProperty('minCount', 0);
-    expect(optionlessModel).toHaveProperty('step', 1);
+  test('constructor should set instance properties', () => {
+    expect(testModel).toBeInstanceOf(SliderModel);
+    expect(testModel).toHaveProperty('maxValue', 10);
+    expect(testModel).toHaveProperty('minValue', 0);
+    expect(testModel).toHaveProperty('step', 2);
+    expect(testModel).toHaveProperty('value', 3);
   })
 
+  test('getState should returns model state object', () => {
+    expect(testModel.getState()).toBeInstanceOf(Object);
 
-  test('incCount should adds step to the count', () => {
-    testModel.incCount();
-    expect(testModel.count).toBe(5);
-
-    testModel.incCount();
-    testModel.incCount();
-    expect(testModel.count).toBe(9);
+    const state = testModel.getState();
+    expect(state).toHaveProperty('maxValue', 10);
+    expect(state).toHaveProperty('minValue', 0);
+    expect(state).toHaveProperty('value', 3);
+    expect(state).toHaveProperty('step', 2);
   })
 
-  test('If, when calling the incCount func, the count is greater than the maxCount, then the count should be equel maxCount', () => {
-    for (let i = 0; i < 5; i++) {
-      testModel.incCount();
-    }
+  test('setCount should set the value', () => {
+    testModel.setValue(7);
+    expect(testModel.getState().value).toBe(7);
 
-    expect(testModel.count).toBe(10)
-
-    testModel.incCount();
-    expect(testModel.count).toBe(10)
-  })
-
-  test('decCount should subtract step from the count', () => {
-    testModel.decCount();
-    expect(testModel.count).toBe(1);
-  })
-
-  test('If, when calling the decCount func, the count is less than the minCount, then the count should be equel minCount', () => {
-    testModel.decCount();
-    testModel.decCount();
-    expect(testModel.count).toBe(0);
-
-    testModel.decCount();
-    expect(testModel.count).toBe(0);
-  })
-
-  test('setCount should set the count', () => {
-    testModel.setCount(7);
-    expect(testModel.count).toBe(7);
-
-    testModel.setCount(2);
-    expect(testModel.count).toBe(2);
+    testModel.setValue(2);
+    expect(testModel.getState().value).toBe(2);
   })
 
   test('if the argument of the setCount func is greater than the maxCount, then the function call returns an error', () => {
     expect( () => {
-      testModel.setCount(15)
+      testModel.setValue(15)
     } ).toThrowError(/^Value greater then maximum value of slider$/);
   })
 
   test('if the argument of the setCount func is less than the minCount, then the function call returns an error', () => {
     expect( () => {
-      testModel.setCount(-15)
+      testModel.setValue(-15)
     } ).toThrowError(/^Value less then minimum value of slider$/);
   })
 
@@ -136,31 +113,19 @@ describe('model', () => {
     testModel.addObserver(observer);
     testModel.addObserver(anotherObserver);
 
-    //incCount()
-    testModel.incCount()
-    expect(updateFunc).toHaveBeenCalledTimes(1);
-    testModel.incCount()
-    testModel.incCount()
-    expect(updateFunc).toHaveBeenCalledTimes(3);
-    expect(anotherUpdateFunc).toHaveBeenCalledTimes(3);
+    for (let i = 1; i < 6; i++) {
+      testModel.setValue(i)
+    }
 
-    //decCount()
-    testModel.decCount()
-    expect(updateFunc).toHaveBeenCalledTimes(4);
-    expect(anotherUpdateFunc).toHaveBeenCalledTimes(4);
-
-    //setCount()
-    testModel.setCount(8)
     expect(updateFunc).toHaveBeenCalledTimes(5);
     expect(anotherUpdateFunc).toHaveBeenCalledTimes(5);
   })
 
   test('if the count does NOT CHANGES, the model should not notify observers', () => {
     testModel.addObserver(observer);
-    const currCount = testModel.count;
 
     //setCount()
-    testModel.setCount(currCount);
+    testModel.setValue(3);
     expect(updateFunc).not.toHaveBeenCalled()
   })
 })
