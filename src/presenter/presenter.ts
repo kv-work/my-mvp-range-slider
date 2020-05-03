@@ -18,15 +18,24 @@ export default class SliderPresenter implements Presenter {
     this.modelObserver = {
       update: () => {}
     }
+
+    this.sentModelObserver(this.model, this.modelObserver)
+    this.views.forEach( (view: View) => {
+      this.sentViewObserver(view, this.viewObserver)
+    } )
   }
 
   private getModelData(model: Model): OptionsModel {
     return 
   }
 
-  private sentModelObserver(model: Model, observer: Observer): void {}
+  private sentModelObserver(model: Model, observer: Observer): void {
+    model.addObserver(observer)
+  }
 
-  private sentViewObserver(view: View, observer: Observer): void {}
+  private sentViewObserver(view: View, observer: Observer): void {
+    view.addObserver(observer)
+  }
 
   private updateView(view: View, updateData: ViewData): void {}
 
