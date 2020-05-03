@@ -1,45 +1,12 @@
 import SliderPresenter from '../presenter';
 import { OptionsModel, Observer, ViewData, View, Model } from '../../types';
 
-
-
 //replace .only
 describe.only('Presenter', () => {
 
   document.body.innerHTML = `<div id="container"></div>`;
 
   const testNode = document.getElementById('container');
-
-  //Mock SliderModel class
-  const mockModel = jest.fn<Model, [OptionsModel]>( (state: OptionsModel) => ({
-    maxCount: state.maxCount,
-    minCount: state.minCount,
-    step: state.step,
-    count: state.startCount,
-
-    getState: jest.fn( (): OptionsModel => {
-      return
-    } ),
-    updateState: jest.fn( (state: OptionsModel) => {} ),
-    setCount: jest.fn( (value: number) => {} ),
-    addObserver: jest.fn( (observer: Observer) => {} ),
-    removeObserver: jest.fn( (observer: Observer) => {} )
-  }) )
-
-  const mockView = jest.fn<View, [HTMLElement]>( (): View => {
-    return {
-      render: jest.fn( (viewData: ViewData) => {} ),
-      update: jest.fn( (viewData: ViewData) => {} ),
-      unmount: jest.fn(),
-      addObserver: jest.fn( (observer: Observer) => {} ),
-      removeObserver: jest.fn( (observer: Observer) => {} )
-    }
-  } )
-
-  let testPresenter: SliderPresenter,
-      testModel: Model,
-      testView: View,
-      testSecondView: View;
 
   const testModelState: OptionsModel = {
     maxCount: 100,
@@ -48,14 +15,53 @@ describe.only('Presenter', () => {
     startCount: 25
   };
 
-  beforeEach( () => {
-
-
+  //Mock SliderModel class
+  const MockModel = jest.fn<Model, []>( () => {
+    return {
+      getState: jest.fn( (): OptionsModel => {
+        return testModelState
+      } ),
+      updateState: jest.fn(),
+      setCount: jest.fn(),
+      addObserver: jest.fn(),
+      removeObserver: jest.fn()
+    }
   } )
 
+  const MockView = jest.fn<View, []>( (): View => {
+    return {
+      render: jest.fn(),
+      update: jest.fn(),
+      unmount: jest.fn(),
+      addObserver: jest.fn(),
+      removeObserver: jest.fn()
+    }
+  } )
 
-  test('getModelData should return model state', () => {
+  let testPresenter: SliderPresenter,
+      testModel: Model,
+      testView: View,
+      testSecondView: View;
 
+  beforeEach( () => {
+    testModel = new MockModel()
+    testView = new MockView()
+    testSecondView = new MockView()
+
+    testPresenter = new SliderPresenter(testModel, testView, testSecondView)
+  } )
+
+  test('should have props: views, model, viewObserver, modelObserver', () => {
+    expect(testPresenter).toBeInstanceOf(SliderPresenter);
+
+    expect(MockView).toHaveBeenCalledTimes(2)
+    expect(testPresenter).toHaveProperty('views');
+
+    expect(MockModel).toHaveBeenCalledTimes(1)
+    expect(testPresenter).toHaveProperty('model', testModel);
+    
+    expect(testPresenter).toHaveProperty('viewObserver');
+    expect(testPresenter).toHaveProperty('modelObserver');
   })
 
   
