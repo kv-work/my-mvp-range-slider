@@ -68,9 +68,19 @@ describe.only('model', () => {
     expect(testModel).toHaveProperty('maxValue', 15)
   })
 
+  test('setMaxValue should NOT change this.maxValue, if  newValue less then this.minValue', () => {
+    testModel.setMaxValue(-10)
+    expect(testModel).toHaveProperty('maxValue', 10)
+  })
+
   test('setMinValue should change this.minValue', () => {
     testModel.setMinValue(5)
     expect(testModel).toHaveProperty('minValue', 5)
+  })
+
+  test('setMinValue should NOT change this.minValue, if  newValue greater then this.maxValue', () => {
+    testModel.setMinValue(1000)
+    expect(testModel).toHaveProperty('minValue', 0)
   })
 
   test('the set value should be a multiple of the step', () => {

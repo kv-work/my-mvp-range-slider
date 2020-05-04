@@ -42,11 +42,15 @@ export default class SliderModel implements Model {
   }
 
   public setMaxValue(newValue: number): void {
-    this.maxValue = newValue;
+    if (newValue > this.minValue) {
+      this.maxValue = newValue;
+    }    
   }
 
   public setMinValue(newValue: number): void {
-    this.minValue = newValue;
+    if (newValue < this.maxValue) {
+      this.minValue = newValue;
+    }
   }
 
   public addObserver(observer: Observer): void {
