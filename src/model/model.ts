@@ -8,24 +8,45 @@ export default class SliderModel implements Model {
   private observers: Set<Object>
 
   constructor(options: OptionsModel) {
-      this.maxValue = options.maxValue;
-      this.minValue = options.minValue;
-      this.step = options.step;
-      this.value = options.value;
-
+    this.maxValue = options.maxValue;
+    this.minValue = options.minValue;
+    this.step = options.step;
+    
     this.observers = new Set();
+
+    this.setValue(options.value);
   }
 
   public setValue(newValue: number): void {
-    const { maxValue, minValue } = this;
-    if ( newValue > maxValue ) {
-      throw new RangeError('Value greater then maximum value of slider')
-    } else if ( newValue < minValue ) {
-      throw new RangeError('Value less then minimum value of slider')
-    } else if (this.value !== newValue) {
-      this.value = newValue;
-      this.notify();
+    const { maxValue, minValue, step } = this;
+
+    if (!this.value) {
+      this.value = this.minValue;
+    }
+
+    const valueMultipleStep = (newValue % step / step > 0.5) ? (newValue - newValue % step + step) : (newValue - newValue % step);
+
+    if (this.value === valueMultipleStep) {
+      return
     }  
+    
+    if ( valueMultipleStep >= maxValue ) {
+      this.value = maxValue;
+    } else if ( valueMultipleStep <= minValue ) {
+      this.value = minValue;
+    } else {
+      this.value = valueMultipleStep;
+    }
+
+    this.notify();
+  }
+
+  public setMaxValue(newValue: number): void {
+    this.maxValue = newValue;
+  }
+
+  public setMinValue(newValue: number): void {
+    this.minValue = newValue;
   }
 
   public addObserver(observer: Observer): void {
@@ -37,9 +58,11 @@ export default class SliderModel implements Model {
   }
 
   private notify(): void {
-    this.observers.forEach( (observer: Observer): void => {
-      observer.update();
-    } )
+    if (this.observers.size !== 0) {
+      this.observers.forEach( (observer: Observer): void => {
+        observer.update();
+      } )
+    }
   }
 
   public getState(): OptionsModel {
@@ -51,5 +74,13 @@ export default class SliderModel implements Model {
     }
   }
 
-  public updateState(state: OptionsModel | {option: number}): void {}
+  public updateState(state: OptionsModel): void {
+    const {maxValue, minValue, step, value} = state;
+
+    this.maxValue = maxValue ? maxValue : this.maxValue;
+    this.minValue = minValue ? minValue : this.minValue;
+    this.step = step ? step : this.step;
+    
+    this.setValue(value);
+  }
 }

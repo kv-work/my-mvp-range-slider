@@ -43,7 +43,6 @@ describe.only('model', () => {
     expect(testModel).toHaveProperty('maxValue', 10);
     expect(testModel).toHaveProperty('minValue', 0);
     expect(testModel).toHaveProperty('step', 2);
-    expect(testModel).toHaveProperty('value', 3);
   })
 
   test('getState should returns model state object', () => {
@@ -52,28 +51,44 @@ describe.only('model', () => {
     const state = testModel.getState();
     expect(state).toHaveProperty('maxValue', 10);
     expect(state).toHaveProperty('minValue', 0);
-    expect(state).toHaveProperty('value', 3);
     expect(state).toHaveProperty('step', 2);
   })
 
-  test('setCount should set the value', () => {
-    testModel.setValue(7);
-    expect(testModel.getState().value).toBe(7);
-
+  test('setValue should set the value', () => {
     testModel.setValue(2);
     expect(testModel.getState().value).toBe(2);
+    testModel.setValue(4);
+    expect(testModel.getState().value).toBe(4);
+    testModel.setValue(6);
+    expect(testModel.getState().value).toBe(6);
   })
 
-  test('if the argument of the setCount func is greater than the maxCount, then the function call returns an error', () => {
-    expect( () => {
-      testModel.setValue(15)
-    } ).toThrowError(/^Value greater then maximum value of slider$/);
+  test('setMaxValue should change this.maxValue', () => {
+    testModel.setMaxValue(15)
+    expect(testModel).toHaveProperty('maxValue', 15)
   })
 
-  test('if the argument of the setCount func is less than the minCount, then the function call returns an error', () => {
-    expect( () => {
-      testModel.setValue(-15)
-    } ).toThrowError(/^Value less then minimum value of slider$/);
+  test('setMinValue should change this.minValue', () => {
+    testModel.setMinValue(5)
+    expect(testModel).toHaveProperty('minValue', 5)
+  })
+
+  test('the set value should be a multiple of the step', () => {
+    expect(testModel).toHaveProperty('value', 2);
+    testModel.setValue(7);
+    expect(testModel.getState().value).toBe(6);
+  })
+
+  test('if the argument of the setCount func is greater than the maxCount, then value should equal maxValue', () => {
+    const maxValue = testModel.getState().maxValue;
+    testModel.setValue(555);
+    expect(testModel.getState().value).toEqual(maxValue);
+  })
+
+  test('if the argument of the setCount func is less than the minCount, then value should equal minValue', () => {
+    const minValue = testModel.getState().minValue;
+    testModel.setValue(-15);
+    expect(testModel.getState().value).toEqual(minValue);
   })
 
   test('addObserver should added observer to this.observers', () => {
@@ -113,19 +128,47 @@ describe.only('model', () => {
     testModel.addObserver(observer);
     testModel.addObserver(anotherObserver);
 
-    for (let i = 1; i < 6; i++) {
-      testModel.setValue(i)
+    for (let i = 0; i < 11;) {
+      testModel.setValue(i);
+      i += testOptions.step;
     }
 
-    expect(updateFunc).toHaveBeenCalledTimes(5);
-    expect(anotherUpdateFunc).toHaveBeenCalledTimes(5);
+    expect(updateFunc).toHaveBeenCalledTimes(6);
+    expect(anotherUpdateFunc).toHaveBeenCalledTimes(6);
   })
 
   test('if the count does NOT CHANGES, the model should not notify observers', () => {
     testModel.addObserver(observer);
 
+    const currValue = testModel.getState().value;
+
     //setCount()
-    testModel.setValue(3);
-    expect(updateFunc).not.toHaveBeenCalled()
+    testModel.setValue(currValue);
+    expect(updateFunc).not.toHaveBeenCalled();
+  })
+
+  test('updateState should take OptionsModel object or object {prop: value} and update instance properties', () => {
+    const newModelState: OptionsModel = {
+      maxValue: 100,
+      minValue: 50,
+      step: 5,
+      value: 0
+    };
+    const newMaxValue: OptionsModel = {
+      maxValue: 200
+    };
+
+    testModel.updateState(newModelState);
+    expect(testModel).toHaveProperty('maxValue', 100);
+    expect(testModel).toHaveProperty('minValue', 50);
+    expect(testModel).toHaveProperty('step', 5);
+    //value should be equal minValue
+    expect(testModel).toHaveProperty('value', 50);
+
+    testModel.updateState(newMaxValue);
+    expect(testModel).toHaveProperty('maxValue', 200);
+
+    testModel.updateState({value: 199});
+    expect(testModel).toHaveProperty('value', 200)
   })
 })
