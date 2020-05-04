@@ -9,10 +9,10 @@ interface Presenter {
 }
 
 interface OptionsModel {
-  maxValue: number,
-  minValue: number,
-  value: number,
-  step: number
+  maxValue?: number,
+  minValue?: number,
+  value?: number,
+  step?: number
 }
 
 
