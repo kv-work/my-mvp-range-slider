@@ -4,6 +4,7 @@
   "description": "slider plugin",
   "main": "index.js",
   "scripts": {
+    "silent-test": "jest --silent --watch",
     "test": "jest",
     "start": "webpack-dev-server",
     "build:prod": "webpack --env.mode=production",
