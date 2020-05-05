@@ -107,6 +107,16 @@ describe.only('model', () => {
     expect(testModel.value).toBe(0);
   })
 
+  test('changing max or min liit should changed value', () => {
+    testModel.value = 9;
+    testModel.maxValue = 5;
+    expect(testModel.value).toBe(5);
+
+    testModel.value = 2;
+    testModel.minValue = 3;
+    expect(testModel.value).toBe(3);
+  })
+
   test('the set value should be a multiple of the step', () => {
     expect(testModel.value).toBe(2);
     testModel.value = 7;
@@ -192,16 +202,25 @@ describe.only('model', () => {
     };
 
     testModel.updateState(newModelState);
-    expect(testModel).toHaveProperty('maxValue', 100);
-    expect(testModel).toHaveProperty('minValue', 50);
-    expect(testModel).toHaveProperty('step', 5);
+    expect(testModel).toHaveProperty('_maxValue', 100);
+    expect(testModel).toHaveProperty('_minValue', 50);
+    expect(testModel).toHaveProperty('_step', 5);
     //value should be equal minValue
-    expect(testModel).toHaveProperty('value', 50);
+    expect(testModel).toHaveProperty('_value', 50);
 
     testModel.updateState(newMaxValue);
-    expect(testModel).toHaveProperty('maxValue', 200);
+    expect(testModel.maxValue).toBe(200);
 
     testModel.updateState({value: 199});
-    expect(testModel).toHaveProperty('value', 200)
+    expect(testModel.value).toBe(200);
+
+    testModel.updateState({minValue: 0});
+    expect(testModel.minValue).toBe(0);
+
+    //set wrong step
+    testModel.updateState({step: 0, value: -5, minValue: -10});
+    expect(testModel.value).toBe(-5);
+    expect(testModel.step).toBe(5);
+    expect(testModel.minValue).toBe(-10);
   })
 })

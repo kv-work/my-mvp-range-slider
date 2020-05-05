@@ -27,19 +27,17 @@ export default class SliderModel implements Model {
       this._value = this._minValue;
     }
 
-      const valueMultipleStep = (newValue % _step / _step > 0.5) ? (newValue - newValue % _step + _step) : (newValue - newValue % _step);
-
-      if (this._value === valueMultipleStep) {
-        return
-      }  
+    const valueMultipleStep = (newValue % _step / _step > 0.5) ? (newValue - newValue % _step + _step) : (newValue - newValue % _step);
       
-      if ( valueMultipleStep >= _maxValue ) {
-        this._value = _maxValue;
-      } else if ( valueMultipleStep <= _minValue ) {
-        this._value = _minValue;
-      } else {
-        this._value = valueMultipleStep;
-      }
+    if ( valueMultipleStep >= _maxValue ) {
+      this._value = _maxValue;
+    } else if ( valueMultipleStep <= _minValue ) {
+      this._value = _minValue;
+    } else if  (this._value === valueMultipleStep) {
+      return
+    } else {
+      this._value = valueMultipleStep;
+    }
 
     if (this.observers !== undefined) {
       this.notify();
@@ -53,6 +51,10 @@ export default class SliderModel implements Model {
   set maxValue(newValue: number) {
     if ( this._minValue === undefined || newValue > this._minValue ) {
       this._maxValue = newValue;
+
+      if ( this._value !== undefined) {
+        this.value = this._value;
+      }
     }    
   }
 
@@ -63,6 +65,10 @@ export default class SliderModel implements Model {
   set minValue(newValue: number) {
     if ( this._maxValue === undefined || newValue < this._maxValue) {
       this._minValue = newValue;
+
+      if ( this._value !== undefined) {
+        this.value = this._value;
+      }
     }
   }
 
@@ -108,10 +114,9 @@ export default class SliderModel implements Model {
   public updateState(state: OptionsModel): void {
     const {maxValue, minValue, step, value} = state;
 
-    this.maxValue = maxValue ? maxValue : this.maxValue;
-    this.minValue = minValue ? minValue : this.minValue;
-    this.step = step ? step : this.step;
-    
-    this.value = value;
+    this.maxValue = ( maxValue !== undefined ) ? maxValue : this._maxValue;
+    this.minValue = ( minValue !== undefined )  ? minValue : this._minValue;
+    this.step = ( step !== undefined )  ? step : this._step;
+    this.value = ( value !== undefined )  ? value :  this._value;
   }
 }
