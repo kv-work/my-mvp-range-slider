@@ -42,7 +42,7 @@ describe.only('model', () => {
     expect(testModel).toBeInstanceOf(SliderModel);
     expect(testModel.maxValue).toBe(10);
     expect(testModel.minValue).toBe(0);
-    expect(testModel).toHaveProperty('step', 2);
+    expect(testModel.step).toBe(2);
   })
 
   test('getState should returns model state object', () => {
@@ -73,14 +73,38 @@ describe.only('model', () => {
     expect(testModel.maxValue).toBe(10)
   })
 
-  test('setMinValue should change this.minValue', () => {
+  test('set minValue should change this.minValue', () => {
     testModel.minValue = 5;
     expect(testModel.minValue).toBe(5)
   })
 
-  test('setMinValue should NOT change this.minValue, if  newValue greater then this.maxValue', () => {
+  test('set minValue should NOT change this.minValue, if  newValue greater then this.maxValue', () => {
     testModel.minValue = 1000;
     expect(testModel.minValue).toBe(0)
+  })
+
+  test('set step should change this.step', () => {
+    testModel.step = 4;
+
+    expect(testModel).toHaveProperty('_step', 4)
+  })
+
+  test('step always should be greater then 0', () => {
+    testModel.step = -1;
+    expect(testModel).toHaveProperty('_step', 2);
+    expect(testModel.step).toBe(2);
+
+    testModel.step = 0;
+    expect(testModel).toHaveProperty('_step', 2);
+    expect(testModel.step).toBe(2);
+  })
+
+  test('changing step should changed value', () => {
+    testModel.step = 3;
+    expect(testModel.value).toBe(3);
+
+    testModel.step = 10;
+    expect(testModel.value).toBe(0);
   })
 
   test('the set value should be a multiple of the step', () => {

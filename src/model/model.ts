@@ -3,7 +3,7 @@ import { OptionsModel, Observer, Model } from '../types';
 export default class SliderModel implements Model {
   private _maxValue: number
   private _minValue: number
-  private step: number
+  private _step: number
   private _value: number
   private observers: Set<Object>
 
@@ -13,7 +13,6 @@ export default class SliderModel implements Model {
     this.step = options.step;
     
     this.observers = new Set();
-
     this.value = options.value;
   }
 
@@ -22,27 +21,29 @@ export default class SliderModel implements Model {
   }
 
   set value(newValue: number) {
-    const { _maxValue, _minValue, step } = this;
+    const { _maxValue, _minValue, _step } = this;
 
     if ( this._value === undefined ) {
       this._value = this._minValue;
     }
 
-    const valueMultipleStep = (newValue % step / step > 0.5) ? (newValue - newValue % step + step) : (newValue - newValue % step);
+      const valueMultipleStep = (newValue % _step / _step > 0.5) ? (newValue - newValue % _step + _step) : (newValue - newValue % _step);
 
-    if (this._value === valueMultipleStep) {
-      return
-    }  
-    
-    if ( valueMultipleStep >= _maxValue ) {
-      this._value = _maxValue;
-    } else if ( valueMultipleStep <= _minValue ) {
-      this._value = _minValue;
-    } else {
-      this._value = valueMultipleStep;
+      if (this._value === valueMultipleStep) {
+        return
+      }  
+      
+      if ( valueMultipleStep >= _maxValue ) {
+        this._value = _maxValue;
+      } else if ( valueMultipleStep <= _minValue ) {
+        this._value = _minValue;
+      } else {
+        this._value = valueMultipleStep;
+      }
+
+    if (this.observers !== undefined) {
+      this.notify();
     }
-
-    this.notify();
   }
 
   get maxValue(): number {
@@ -65,8 +66,18 @@ export default class SliderModel implements Model {
     }
   }
 
-  public setStep(newValue: number): void {
-    
+  get step(): number {
+    return this._step;
+  }
+
+  set step(newValue: number) {
+    if (newValue > 0) {
+      this._step = newValue;
+
+      if (this._value !== undefined ) {
+        this.value = this._value;
+      }      
+    }    
   }
 
   public addObserver(observer: Observer): void {
@@ -87,10 +98,10 @@ export default class SliderModel implements Model {
 
   public getState(): OptionsModel {
     return {
-      maxValue: this.maxValue,
-      minValue: this.minValue,
-      value: this.value,
-      step: this.step
+      maxValue: this._maxValue,
+      minValue: this._minValue,
+      value: this._value,
+      step: this._step
     }
   }
 
