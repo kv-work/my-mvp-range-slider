@@ -54,13 +54,13 @@ describe.only('model', () => {
     expect(state).toHaveProperty('step', 2);
   })
 
-  test('setValue should set the value', () => {
-    testModel.setValue(2);
-    expect(testModel.getState().value).toBe(2);
-    testModel.setValue(4);
-    expect(testModel.getState().value).toBe(4);
-    testModel.setValue(6);
-    expect(testModel.getState().value).toBe(6);
+  test('should set the value', () => {
+    testModel.value = 2;
+    expect(testModel.value).toBe(2);
+    testModel.value = 4;
+    expect(testModel.value).toBe(4);
+    testModel.value = 6;
+    expect(testModel.value).toBe(6);
   })
 
   test('setMaxValue should change this.maxValue', () => {
@@ -85,19 +85,19 @@ describe.only('model', () => {
 
   test('the set value should be a multiple of the step', () => {
     expect(testModel).toHaveProperty('value', 2);
-    testModel.setValue(7);
-    expect(testModel.getState().value).toBe(6);
+    testModel.value = 7;
+    expect(testModel.value).toBe(6);
   })
 
   test('if the argument of the setCount func is greater than the maxCount, then value should equal maxValue', () => {
     const maxValue = testModel.getState().maxValue;
-    testModel.setValue(555);
-    expect(testModel.getState().value).toEqual(maxValue);
+    testModel.value = 555;
+    expect(testModel.value).toEqual(maxValue);
   })
 
   test('if the argument of the setCount func is less than the minCount, then value should equal minValue', () => {
     const minValue = testModel.getState().minValue;
-    testModel.setValue(-15);
+    testModel.value = -15;
     expect(testModel.getState().value).toEqual(minValue);
   })
 
@@ -138,9 +138,8 @@ describe.only('model', () => {
     testModel.addObserver(observer);
     testModel.addObserver(anotherObserver);
 
-    for (let i = 0; i < 11;) {
-      testModel.setValue(i);
-      i += testOptions.step;
+    for (let i = 0; i < 11; i += testOptions.step) {
+      testModel.value = i;
     }
 
     expect(updateFunc).toHaveBeenCalledTimes(6);
@@ -153,7 +152,7 @@ describe.only('model', () => {
     const currValue = testModel.getState().value;
 
     //setCount()
-    testModel.setValue(currValue);
+    testModel.value = currValue;
     expect(updateFunc).not.toHaveBeenCalled();
   })
 

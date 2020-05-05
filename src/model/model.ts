@@ -4,7 +4,7 @@ export default class SliderModel implements Model {
   private maxValue: number
   private minValue: number
   private step: number
-  private value: number
+  private _value: number
   private observers: Set<Object>
 
   constructor(options: OptionsModel) {
@@ -14,28 +14,32 @@ export default class SliderModel implements Model {
     
     this.observers = new Set();
 
-    this.setValue(options.value);
+    this.value = options.value;
   }
 
-  public setValue(newValue: number): void {
+  get value(): number {
+    return this._value;
+  }
+
+  set value(newValue: number) {
     const { maxValue, minValue, step } = this;
 
     if (!this.value) {
-      this.value = this.minValue;
+      this._value = this.minValue;
     }
 
     const valueMultipleStep = (newValue % step / step > 0.5) ? (newValue - newValue % step + step) : (newValue - newValue % step);
 
-    if (this.value === valueMultipleStep) {
+    if (this._value === valueMultipleStep) {
       return
     }  
     
     if ( valueMultipleStep >= maxValue ) {
-      this.value = maxValue;
+      this._value = maxValue;
     } else if ( valueMultipleStep <= minValue ) {
-      this.value = minValue;
+      this._value = minValue;
     } else {
-      this.value = valueMultipleStep;
+      this._value = valueMultipleStep;
     }
 
     this.notify();
@@ -51,6 +55,10 @@ export default class SliderModel implements Model {
     if (newValue < this.maxValue) {
       this.minValue = newValue;
     }
+  }
+
+  public setStep(newValue: number): void {
+    
   }
 
   public addObserver(observer: Observer): void {
@@ -85,6 +93,6 @@ export default class SliderModel implements Model {
     this.minValue = minValue ? minValue : this.minValue;
     this.step = step ? step : this.step;
     
-    this.setValue(value);
+    this.value = value;
   }
 }

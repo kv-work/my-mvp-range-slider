@@ -17,9 +17,9 @@ interface OptionsModel {
 
 
 interface Model {
+  value: number,
   getState(): OptionsModel,
-  updateState(state: OptionsModel | {option: number}): void,
-  setValue(value: number): void,
+  updateState(state: OptionsModel): void,
   addObserver(observer: Observer): void,
   removeObserver(observer: Observer): void
 }
