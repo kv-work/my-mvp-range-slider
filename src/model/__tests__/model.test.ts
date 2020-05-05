@@ -41,7 +41,7 @@ describe.only('model', () => {
   test('constructor should set instance properties', () => {
     expect(testModel).toBeInstanceOf(SliderModel);
     expect(testModel.maxValue).toBe(10);
-    expect(testModel).toHaveProperty('minValue', 0);
+    expect(testModel.minValue).toBe(0);
     expect(testModel).toHaveProperty('step', 2);
   })
 
@@ -74,31 +74,31 @@ describe.only('model', () => {
   })
 
   test('setMinValue should change this.minValue', () => {
-    testModel.setMinValue(5);
-    expect(testModel).toHaveProperty('minValue', 5)
+    testModel.minValue = 5;
+    expect(testModel.minValue).toBe(5)
   })
 
   test('setMinValue should NOT change this.minValue, if  newValue greater then this.maxValue', () => {
-    testModel.setMinValue(1000)
-    expect(testModel).toHaveProperty('minValue', 0)
+    testModel.minValue = 1000;
+    expect(testModel.minValue).toBe(0)
   })
 
   test('the set value should be a multiple of the step', () => {
-    expect(testModel).toHaveProperty('value', 2);
+    expect(testModel.value).toBe(2);
     testModel.value = 7;
     expect(testModel.value).toBe(6);
   })
 
   test('if the argument of the setCount func is greater than the maxCount, then value should equal maxValue', () => {
-    const maxValue = testModel.getState().maxValue;
+    const maxValue = testModel.maxValue;
     testModel.value = 555;
     expect(testModel.value).toEqual(maxValue);
   })
 
   test('if the argument of the setCount func is less than the minCount, then value should equal minValue', () => {
-    const minValue = testModel.getState().minValue;
+    const minValue = testModel.minValue;
     testModel.value = -15;
-    expect(testModel.getState().value).toEqual(minValue);
+    expect(testModel.value).toEqual(minValue);
   })
 
   test('addObserver should added observer to this.observers', () => {
