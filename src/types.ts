@@ -18,6 +18,7 @@ interface OptionsModel {
 
 interface Model {
   value: number,
+  maxValue: number,
   getState(): OptionsModel,
   updateState(state: OptionsModel): void,
   addObserver(observer: Observer): void,

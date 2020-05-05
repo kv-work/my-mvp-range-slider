@@ -40,7 +40,7 @@ describe.only('model', () => {
 
   test('constructor should set instance properties', () => {
     expect(testModel).toBeInstanceOf(SliderModel);
-    expect(testModel).toHaveProperty('maxValue', 10);
+    expect(testModel.maxValue).toBe(10);
     expect(testModel).toHaveProperty('minValue', 0);
     expect(testModel).toHaveProperty('step', 2);
   })
@@ -63,18 +63,18 @@ describe.only('model', () => {
     expect(testModel.value).toBe(6);
   })
 
-  test('setMaxValue should change this.maxValue', () => {
-    testModel.setMaxValue(15)
-    expect(testModel).toHaveProperty('maxValue', 15)
+  test('set maxValue should change this._maxValue', () => {
+    testModel.maxValue = 15;
+    expect(testModel.maxValue).toBe(15)
   })
 
-  test('setMaxValue should NOT change this.maxValue, if  newValue less then this.minValue', () => {
-    testModel.setMaxValue(-10)
-    expect(testModel).toHaveProperty('maxValue', 10)
+  test('set maxValue should NOT change this._maxValue, if  newValue less then this.minValue', () => {
+    testModel.maxValue = -10;
+    expect(testModel.maxValue).toBe(10)
   })
 
   test('setMinValue should change this.minValue', () => {
-    testModel.setMinValue(5)
+    testModel.setMinValue(5);
     expect(testModel).toHaveProperty('minValue', 5)
   })
 

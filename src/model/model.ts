@@ -1,7 +1,7 @@
 import { OptionsModel, Observer, Model } from '../types';
 
 export default class SliderModel implements Model {
-  private maxValue: number
+  private _maxValue: number
   private minValue: number
   private step: number
   private _value: number
@@ -45,9 +45,13 @@ export default class SliderModel implements Model {
     this.notify();
   }
 
-  public setMaxValue(newValue: number): void {
-    if (newValue > this.minValue) {
-      this.maxValue = newValue;
+  get maxValue() {
+    return this._maxValue;
+  }
+
+  set maxValue(newValue: number) {
+    if ( this.minValue === undefined || newValue > this.minValue ) {
+      this._maxValue = newValue;
     }    
   }
 
