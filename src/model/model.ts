@@ -7,9 +7,11 @@ export default class SliderModel implements Model {
   private _value: number
   private observers: Set<Object>
   private isUpdated: boolean
+  private readyNotify: boolean
 
   constructor(options: OptionsModel) {
     this.isUpdated = true;
+    this.readyNotify = true;
     this.maxValue = options.maxValue;
     this.minValue = options.minValue;
     this.step = options.step;
@@ -108,7 +110,7 @@ export default class SliderModel implements Model {
   }
 
   private notify(): void {
-    if (this.observers.size !== 0) {
+    if (this.observers.size !== 0 && this.readyNotify) {
       this.observers.forEach( (observer: Observer): void => {
         observer.update();
       } )
@@ -128,9 +130,14 @@ export default class SliderModel implements Model {
   public updateState(state: OptionsModel): void {
     const {maxValue, minValue, step, value} = state;
 
+    this.readyNotify = false;
+
     this.maxValue = ( maxValue !== undefined ) ? maxValue : this._maxValue;
     this.minValue = ( minValue !== undefined )  ? minValue : this._minValue;
     this.step = ( step !== undefined )  ? step : this._step;
     this.value = ( value !== undefined )  ? value :  this._value;
+
+    this.readyNotify = true;
+    this.notify();
   }
 }

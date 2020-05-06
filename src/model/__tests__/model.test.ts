@@ -231,4 +231,18 @@ describe.only('model', () => {
     expect(testModel.step).toBe(5);
     expect(testModel.minValue).toBe(-10);
   })
+
+  test('after updating the model with the method updateState(), the notify() should be called only once', () => {
+    testModel.addObserver(observer);
+    testModel.addObserver(anotherObserver);
+    testModel.updateState({
+      maxValue: 100,
+      minValue: 0,
+      step: 25,
+      value: 40
+    })
+
+    expect(updateFunc).toHaveBeenCalledTimes(1);
+    expect(anotherUpdateFunc).toHaveBeenCalledTimes(1);
+  })
 })
