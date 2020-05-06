@@ -6,8 +6,10 @@ export default class SliderModel implements Model {
   private _step: number
   private _value: number
   private observers: Set<Object>
+  private isUpdated: boolean
 
   constructor(options: OptionsModel) {
+    this.isUpdated = true;
     this.maxValue = options.maxValue;
     this.minValue = options.minValue;
     this.step = options.step;
@@ -27,16 +29,21 @@ export default class SliderModel implements Model {
       this._value = this._minValue;
     }
 
+    if (this._value === newValue && this.isUpdated) {
+      return
+    }
+
     const valueMultipleStep = (newValue % _step / _step > 0.5) ? (newValue - newValue % _step + _step) : (newValue - newValue % _step);
       
     if ( valueMultipleStep >= _maxValue ) {
       this._value = _maxValue;
+      this.isUpdated = false;
     } else if ( valueMultipleStep <= _minValue ) {
       this._value = _minValue;
-    } else if  (this._value === valueMultipleStep) {
-      return
+      this.isUpdated = false;
     } else {
       this._value = valueMultipleStep;
+      this.isUpdated = false;
     }
 
     if (this.observers !== undefined) {
@@ -52,6 +59,8 @@ export default class SliderModel implements Model {
     if ( this._minValue === undefined || newValue > this._minValue ) {
       this._maxValue = newValue;
 
+      this.isUpdated = false;
+
       if ( this._value !== undefined) {
         this.value = this._value;
       }
@@ -66,6 +75,8 @@ export default class SliderModel implements Model {
     if ( this._maxValue === undefined || newValue < this._maxValue) {
       this._minValue = newValue;
 
+      this.isUpdated = false;
+
       if ( this._value !== undefined) {
         this.value = this._value;
       }
@@ -79,6 +90,8 @@ export default class SliderModel implements Model {
   set step(newValue: number) {
     if (newValue > 0) {
       this._step = newValue;
+
+      this.isUpdated = false;
 
       if (this._value !== undefined ) {
         this.value = this._value;
@@ -100,6 +113,7 @@ export default class SliderModel implements Model {
         observer.update();
       } )
     }
+    this.isUpdated = true;
   }
 
   public getState(): OptionsModel {

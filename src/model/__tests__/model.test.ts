@@ -168,13 +168,21 @@ describe.only('model', () => {
     });
   })
 
-  test('if the count CHANGES, the model should notify observers', () => {
+  test('if the state CHANGES, the model should notify observers', () => {
     testModel.addObserver(observer);
     testModel.addObserver(anotherObserver);
 
-    for (let i = 0; i < 11; i += testOptions.step) {
-      testModel.value = i;
-    }
+    testModel.value = 0;
+    testModel.value = 8;
+
+    testModel.maxValue = 20;
+    testModel.minValue = 5;
+    testModel.step = 5;
+
+    expect(updateFunc).toHaveBeenCalledTimes(5);
+    expect(anotherUpdateFunc).toHaveBeenCalledTimes(5);
+
+    testModel.step = 7
 
     expect(updateFunc).toHaveBeenCalledTimes(6);
     expect(anotherUpdateFunc).toHaveBeenCalledTimes(6);
