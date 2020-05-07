@@ -111,9 +111,15 @@ export default class SliderModel implements Model {
 
       this.isUpdated = false;
 
+      //update value
       if (this._value !== undefined ) {
         this.value = this._value;
-      }      
+      }
+
+      //update second value
+      if ( this._secondValue !== undefined) {
+        this.secondValue = this._secondValue;
+      }
     }    
   }
 
@@ -130,15 +136,18 @@ export default class SliderModel implements Model {
 
     const valueMultipleStep = (newValue % _step / _step > 0.5) ? (newValue - newValue % _step + _step) : (newValue - newValue % _step);
 
-    if (valueMultipleStep >= _maxValue) {
-      this._secondValue = _maxValue;
-      this.isUpdated = false;
-    } else if (valueMultipleStep <= _minValue) {
-      this._secondValue = _minValue;
-      this.isUpdated = false;
-    } else {
-      this._secondValue = valueMultipleStep;
-      this.isUpdated = false;
+    switch (true) {
+      case ( valueMultipleStep >= _maxValue ):
+        this._secondValue = _maxValue;
+        this.isUpdated = false;
+        break;
+      case ( valueMultipleStep <= _minValue ):
+        this._secondValue = _minValue;
+        this.isUpdated = false;
+        break;
+      default:
+        this._secondValue = valueMultipleStep;
+        this.isUpdated = false;
     }
 
     if (this.observers !== undefined) {

@@ -126,12 +126,19 @@ describe.only('model', () => {
     expect(testModel.step).toBe(2);
   })
 
-  test('changing step should changed value', () => {
+  test('changing step should changed value, secondValue', () => {
     testModel.step = 3;
     expect(testModel.value).toBe(3);
 
     testModel.step = 10;
     expect(testModel.value).toBe(0);
+
+    //with second value
+    modelWithSecoundValue.step = 3;
+    expect(modelWithSecoundValue.secondValue).toBe(9);
+
+    modelWithSecoundValue.step = 7;
+    expect(modelWithSecoundValue.secondValue).toBe(7);
   })
 
   test('changing max or min limit should changed value and secondValue, if necessary', () => {
