@@ -240,15 +240,35 @@ describe.only('model', () => {
 
     expect(updateFunc).toHaveBeenCalledTimes(6);
     expect(anotherUpdateFunc).toHaveBeenCalledTimes(6);
+
+    //with second value
+    modelWithSecoundValue.addObserver(observer);
+    modelWithSecoundValue.addObserver(anotherObserver);
+
+    modelWithSecoundValue.minValue = -100;                    //change #1
+    modelWithSecoundValue.maxValue = 100;                     //change #2
+    modelWithSecoundValue.value = -50;                        //change #3
+    modelWithSecoundValue.secondValue = 75;                   //change #4
+    expect(modelWithSecoundValue.secondValue).toBe(74);
+    modelWithSecoundValue.step = 5;                           //change #5
+    expect(modelWithSecoundValue.secondValue).toBe(75);
+
+    expect(updateFunc).toHaveBeenCalledTimes(11);
+    expect(anotherUpdateFunc).toHaveBeenCalledTimes(11);
   })
 
-  test('if the count does NOT CHANGES, the model should not notify observers', () => {
+  test('if the values does NOT CHANGES, the model should not notify observers', () => {
     testModel.addObserver(observer);
 
     const currValue = testModel.getState().value;
 
     //setCount()
     testModel.value = currValue;
+    expect(updateFunc).not.toHaveBeenCalled();
+
+    //with second value
+    modelWithSecoundValue.addObserver(observer);
+    modelWithSecoundValue.secondValue = 8;
     expect(updateFunc).not.toHaveBeenCalled();
   })
 
@@ -284,6 +304,13 @@ describe.only('model', () => {
     expect(testModel.value).toBe(-5);
     expect(testModel.step).toBe(5);
     expect(testModel.minValue).toBe(-10);
+
+    //add second value
+    expect(testModel.secondValue).toBeUndefined(); 
+    testModel.updateState({
+      secondValue: 50
+    });
+    expect(testModel.secondValue).toBe(50);
   })
 
   test('after updating the model with the method updateState(), the notify() should be called only once', () => {
@@ -298,5 +325,13 @@ describe.only('model', () => {
 
     expect(updateFunc).toHaveBeenCalledTimes(1);
     expect(anotherUpdateFunc).toHaveBeenCalledTimes(1);
+
+    //with second value
+    testModel.updateState({
+      secondValue: 55
+    })
+
+    expect(updateFunc).toHaveBeenCalledTimes(2);
+    expect(anotherUpdateFunc).toHaveBeenCalledTimes(2);
   })
 })
