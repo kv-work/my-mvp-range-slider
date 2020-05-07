@@ -1,0 +1,24 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+    "extends": "eslint:recommended",
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "rules": {
+      "fsd/hof-name-prefix": "error",
+      "fsd/no-heavy-constructor": "error",
+      "fsd/jq-cache-dom-elements": "error",
+      "fsd/jq-use-js-prefix-in-selector": "error",
+      "fsd/no-function-declaration-in-event-listener": "error",
+      "fsd/split-conditionals": "error"
+    },
+    "plugins": ["fsd"]
+}
