@@ -9,7 +9,9 @@
     "start": "webpack-dev-server",
     "build:prod": "webpack --env.mode=production",
     "build:dev": "webpack",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "eslint": "eslint --cache --ext .js,.jsx,.ts,.tsx src",
+    "eslint:dump": "eslint --print-config ./.eslintrc.json"
   },
   "repository": {
     "type": "git",
@@ -30,6 +32,8 @@
   "devDependencies": {
     "@types/jest": "^25.2.1",
     "@types/jquery": "^3.3.35",
+    "@typescript-eslint/eslint-plugin": "^2.31.0",
+    "@typescript-eslint/parser": "^2.31.0",
     "css-loader": "^3.5.2",
     "eslint": "^6.8.0",
     "eslint-plugin-fsd": "^1.0.1",

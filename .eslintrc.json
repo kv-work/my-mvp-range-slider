@@ -3,14 +3,17 @@
         "browser": true,
         "es6": true
     },
-    "extends": "eslint:recommended",
-    "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
-    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@typescript-eslint/recommended-requiring-type-checking",
+      "plugin:fsd/all"
+    ],
+    "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "ecmaVersion": 2018,
-        "sourceType": "module"
+      "project": "tsconfig.json",
+      "tsconfigRootDir": "."
     },
     "rules": {
       "fsd/hof-name-prefix": "error",
@@ -20,5 +23,8 @@
       "fsd/no-function-declaration-in-event-listener": "error",
       "fsd/split-conditionals": "error"
     },
-    "plugins": ["fsd"]
+    "plugins": [
+      "@typescript-eslint",
+      "fsd"
+    ]
 }
