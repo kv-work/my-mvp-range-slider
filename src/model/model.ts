@@ -7,7 +7,7 @@ export default class SliderModel implements Model {
   private _value: number
   private _secondValue: number
 
-  private observers: Set<Object>
+  private observers: Set<Observer>
   private isUpdated: boolean
   private isReadyNotify: boolean
 
@@ -141,7 +141,7 @@ export default class SliderModel implements Model {
       } }   
   }
 
-  get secondValue() {
+  get secondValue(): number {
     return this._secondValue
   }
 
@@ -177,16 +177,6 @@ export default class SliderModel implements Model {
 
   public removeObserver(observer: Observer): void {
     this.observers.delete(observer)
-  }
-
-  private notify(): void {
-    if (this.observers !== undefined && this.observers.size !== 0 && this.isReadyNotify) {
-      this.observers.forEach( (observer: Observer): void => {
-        observer.update();
-      } )
-
-      this.isUpdated = true;
-    }
   }
 
   public getState(): OptionsModel {
@@ -234,7 +224,21 @@ export default class SliderModel implements Model {
     this.notify();
   }
 
-  private _validate(value: any) {
+  private notify(): void {
+    if (this._checkObservers() ) {
+      this.observers.forEach( (observer: Observer): void => {
+        observer.update();
+      } )
+
+      this.isUpdated = true;
+    }
+  }
+
+  private _checkObservers(): boolean {
+    return (this.observers !== undefined && this.observers.size !== 0 && this.isReadyNotify)
+  }
+
+  private _validate(value: number): boolean {
     return !( value === null || isNaN(value) || !isFinite(value) )
   }
 }
