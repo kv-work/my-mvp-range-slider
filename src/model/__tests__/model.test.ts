@@ -185,7 +185,8 @@ describe.only('model', () => {
     expect(testModel.value).toEqual(minValue);
 
     //with second value
-    modelWithSecoundValue.secondValue = -1000;
+    modelWithSecoundValue.value = -1000;
+    modelWithSecoundValue.secondValue = -100;
     expect(modelWithSecoundValue.secondValue).toBe(minValue);
   })
 
@@ -374,5 +375,25 @@ describe.only('model', () => {
     expect(testModel).toHaveProperty('_secondValue', 20)
     testModel.secondValue = NaN;
     expect(testModel).toHaveProperty('_secondValue', 20)
+  })
+
+  test('value should less or equal then secondValue', () => {
+    modelWithSecoundValue.secondValue = 8;
+    modelWithSecoundValue.value = 8;
+    expect(modelWithSecoundValue.value).toBe(8);
+
+    modelWithSecoundValue.value = 10;
+    expect(modelWithSecoundValue.value).toBe(8);
+  })
+
+  test('secondValue should greater or equal then value', () => {
+    modelWithSecoundValue.secondValue = 8;
+    modelWithSecoundValue.value = 8;
+
+    modelWithSecoundValue.secondValue = 5;
+    expect(modelWithSecoundValue.secondValue).toBe(8);
+
+    modelWithSecoundValue.secondValue = 0;
+    expect(modelWithSecoundValue.secondValue).toBe(8);
   })
 })
