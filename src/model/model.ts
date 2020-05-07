@@ -66,8 +66,14 @@ export default class SliderModel implements Model {
 
       this.isUpdated = false;
 
+      //update value
       if ( this._value !== undefined) {
         this.value = this._value;
+      }
+
+      //update second value
+      if ( this._secondValue !== undefined) {
+        this.secondValue = this._secondValue;
       }
     }    
   }
@@ -84,6 +90,11 @@ export default class SliderModel implements Model {
 
       if ( this._value !== undefined) {
         this.value = this._value;
+      }
+
+      //update second value
+      if ( this._secondValue !== undefined) {
+        this.secondValue = this._secondValue;
       }
     }
   }
@@ -109,7 +120,14 @@ export default class SliderModel implements Model {
   }
 
   set secondValue(newValue: number) {
-    this._secondValue = newValue;
+    if (newValue >= this.maxValue) {
+      this._secondValue = this.maxValue;
+    } else if (newValue <= this.minValue) {
+      this._secondValue = this.minValue;
+    } else {
+      this._secondValue = newValue;
+    }
+    
   }
 
   public addObserver(observer: Observer): void {

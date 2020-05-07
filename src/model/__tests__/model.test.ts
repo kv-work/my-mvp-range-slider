@@ -43,6 +43,7 @@ describe.only('model', () => {
 
   afterEach( () => {
     testModel = null;
+    modelWithSecoundValue = null;
   } );
 
   test('constructor should set instance properties', () => {
@@ -133,7 +134,7 @@ describe.only('model', () => {
     expect(testModel.value).toBe(0);
   })
 
-  test('changing max or min liit should changed value', () => {
+  test('changing max or min limit should changed value and secondValue, if necessary', () => {
     testModel.value = 9;
     testModel.maxValue = 5;
     expect(testModel.value).toBe(5);
@@ -141,6 +142,14 @@ describe.only('model', () => {
     testModel.value = 2;
     testModel.minValue = 3;
     expect(testModel.value).toBe(3);
+
+    //with second value
+    modelWithSecoundValue.maxValue = 7;
+    expect(modelWithSecoundValue.secondValue).toBe(7);
+    modelWithSecoundValue.secondValue = 4; 
+    modelWithSecoundValue.minValue = 5;
+    expect(modelWithSecoundValue.secondValue).toBe(5);
+    expect(modelWithSecoundValue.value).toBe(5);
   })
 
   test('the set value should be a multiple of the step', () => {
