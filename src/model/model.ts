@@ -5,6 +5,8 @@ export default class SliderModel implements Model {
   private _minValue: number
   private _step: number
   private _value: number
+  private _secondValue: number
+
   private observers: Set<Object>
   private isUpdated: boolean
   private readyNotify: boolean
@@ -18,6 +20,7 @@ export default class SliderModel implements Model {
     
     this.observers = new Set();
     this.value = options.value;
+    this.secondValue = options.secondValue;
   }
 
   get value(): number {
@@ -101,6 +104,14 @@ export default class SliderModel implements Model {
     }    
   }
 
+  get secondValue() {
+    return this._secondValue
+  }
+
+  set secondValue(newValue: number) {
+    this._secondValue = newValue;
+  }
+
   public addObserver(observer: Observer): void {
     this.observers.add(observer)
   }
@@ -119,16 +130,23 @@ export default class SliderModel implements Model {
   }
 
   public getState(): OptionsModel {
-    return {
+    const state = {
       maxValue: this._maxValue,
       minValue: this._minValue,
       value: this._value,
+      secondValue: this._secondValue,
       step: this._step
     }
+
+    if ( this._secondValue !== undefined ) {
+      state['secondValue'] = this._secondValue;
+    }
+    
+    return state
   }
 
   public updateState(state: OptionsModel): void {
-    const {maxValue, minValue, step, value} = state;
+    const {maxValue, minValue, step, value, secondValue} = state;
 
     this.readyNotify = false;
 
@@ -136,6 +154,7 @@ export default class SliderModel implements Model {
     this.minValue = ( minValue !== undefined )  ? minValue : this._minValue;
     this.step = ( step !== undefined )  ? step : this._step;
     this.value = ( value !== undefined )  ? value :  this._value;
+    this.secondValue = ( secondValue !== undefined ) ? secondValue : this._secondValue;
 
     this.readyNotify = true;
     this.notify();

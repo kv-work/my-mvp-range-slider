@@ -11,8 +11,9 @@ interface Presenter {
 interface OptionsModel {
   maxValue?: number,
   minValue?: number,
+  step?: number,
   value?: number,
-  step?: number
+  secondValue?: number
 }
 
 
@@ -39,6 +40,10 @@ interface View {
   unmount(): void,
   addObserver(observer: Observer): void,
   removeObserver(observer: Observer): void
+}
+
+interface Stringable {
+  toString(): string;
 }
 
 export {

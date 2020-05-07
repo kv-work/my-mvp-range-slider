@@ -12,7 +12,13 @@ describe.only('model', () => {
     step: 2
   };
 
+  const optionsWithSecondValue: OptionsModel = {
+    secondValue: 8,
+    ...testOptions
+  }
+
   let testModel: SliderModel,
+      modelWithSecoundValue: SliderModel,
       observer: Observer,
       anotherObserver: Observer;
 
@@ -21,6 +27,7 @@ describe.only('model', () => {
 
   beforeEach( () => {
     testModel = new SliderModel(testOptions);
+    modelWithSecoundValue = new SliderModel(optionsWithSecondValue);
     updateFunc = jest.fn(),
     anotherUpdateFunc = jest.fn();
   
@@ -43,6 +50,11 @@ describe.only('model', () => {
     expect(testModel.maxValue).toBe(10);
     expect(testModel.minValue).toBe(0);
     expect(testModel.step).toBe(2);
+    expect(testModel.secondValue).toBeUndefined()
+
+    //With second value
+    expect(modelWithSecoundValue).toBeInstanceOf(SliderModel);
+    expect(modelWithSecoundValue.secondValue).toBe(8);
   })
 
   test('getState should returns model state object', () => {
@@ -52,6 +64,11 @@ describe.only('model', () => {
     expect(state).toHaveProperty('maxValue', 10);
     expect(state).toHaveProperty('minValue', 0);
     expect(state).toHaveProperty('step', 2);
+    expect(state.secondValue).toBeUndefined()
+
+    //With second value
+    const stateWithSecondValue = modelWithSecoundValue.getState();
+    expect(stateWithSecondValue).toHaveProperty('secondValue', 8);
   })
 
   test('should set the value', () => {
@@ -63,12 +80,21 @@ describe.only('model', () => {
     expect(testModel.value).toBe(6);
   })
 
+  test('should set the secondValue', () => {
+    modelWithSecoundValue.secondValue = 4;
+    expect(modelWithSecoundValue.secondValue).toBe(4);
+    modelWithSecoundValue.secondValue = 6;
+    expect(modelWithSecoundValue.secondValue).toBe(6);
+    modelWithSecoundValue.secondValue = 8;
+    expect(modelWithSecoundValue.secondValue).toBe(8);
+  })
+
   test('set maxValue should change this._maxValue', () => {
     testModel.maxValue = 15;
     expect(testModel.maxValue).toBe(15)
   })
 
-  test('set maxValue should NOT change this._maxValue, if  newValue less then this.minValue', () => {
+  test('set maxValue should NOT change this._maxValue, if newValue less then this.minValue', () => {
     testModel.maxValue = -10;
     expect(testModel.maxValue).toBe(10)
   })
@@ -78,7 +104,7 @@ describe.only('model', () => {
     expect(testModel.minValue).toBe(5)
   })
 
-  test('set minValue should NOT change this.minValue, if  newValue greater then this.maxValue', () => {
+  test('set minValue should NOT change this.minValue, if newValue greater then this.maxValue', () => {
     testModel.minValue = 1000;
     expect(testModel.minValue).toBe(0)
   })
