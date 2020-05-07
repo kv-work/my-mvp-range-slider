@@ -27,32 +27,38 @@ export default class SliderModel implements Model {
     this.isUpdated = true;    
   }
 
+  private validate(value: any) {
+    return !( value === null || isNaN(value) || !isFinite(value) )
+  }
+
   get value(): number {
     return this._value;
   }
 
   set value(newValue: number) {
-    const { _maxValue, _minValue, _step, _value: oldValue } = this;
+    if ( this.validate(newValue) ) {
+      const { _maxValue, _minValue, _step, _value: oldValue } = this;
 
-    if ( this._value === undefined ) {
-      this._value = this._minValue;
-    }
+      if ( this._value === undefined ) {
+        this._value = this._minValue;
+      }
 
-    const valueMultipleStep = (newValue % _step / _step > 0.5) ? (newValue - newValue % _step + _step) : (newValue - newValue % _step);
-      
-    if ( valueMultipleStep >= _maxValue ) {
-      this._value = _maxValue;
-      this.isUpdated = false;
-    } else if ( valueMultipleStep <= _minValue ) {
-      this._value = _minValue;
-      this.isUpdated = false;
-    } else {
-      this._value = valueMultipleStep;
-      this.isUpdated = false;
-    }
+      const valueMultipleStep = (newValue % _step / _step > 0.5) ? (newValue - newValue % _step + _step) : (newValue - newValue % _step);
+        
+      if ( valueMultipleStep >= _maxValue ) {
+        this._value = _maxValue;
+        this.isUpdated = false;
+      } else if ( valueMultipleStep <= _minValue ) {
+        this._value = _minValue;
+        this.isUpdated = false;
+      } else {
+        this._value = valueMultipleStep;
+        this.isUpdated = false;
+      }
 
-    if ( oldValue !== this._value ) {
-      this.notify();
+      if ( oldValue !== this._value ) {
+        this.notify();
+      }
     }
   }
 
@@ -61,24 +67,26 @@ export default class SliderModel implements Model {
   }
 
   set maxValue(newValue: number) {
-    if ( this._minValue === undefined || newValue > this._minValue ) {
-      this._maxValue = newValue;
+    if ( this.validate(newValue) ) {  
+      if ( this._minValue === undefined || newValue > this._minValue ) {
+        this._maxValue = newValue;
 
-      this.isUpdated = false;
+        this.isUpdated = false;
 
-      //update values
-      if (this._value !== undefined) {
-        this.value = this._value;
-      }
-      if (this._secondValue !== undefined) {
-        this.secondValue = this._secondValue;
-      }
+        //update values
+        if (this._value !== undefined) {
+          this.value = this._value;
+        }
+        if (this._secondValue !== undefined) {
+          this.secondValue = this._secondValue;
+        }
 
-      if ( !this.isUpdated ) {
-        this.notify()
-      }
+        if ( !this.isUpdated ) {
+          this.notify()
+        }
 
-    }    
+      }    
+    }
   }
 
   get minValue(): number {
@@ -86,21 +94,23 @@ export default class SliderModel implements Model {
   }
 
   set minValue(newValue: number) {
-    if ( this._maxValue === undefined || newValue < this._maxValue) {
-      this._minValue = newValue;
+    if ( this.validate(newValue) ) {
+      if ( this._maxValue === undefined || newValue < this._maxValue) {
+        this._minValue = newValue;
 
-      this.isUpdated = false;
+        this.isUpdated = false;
 
-      //update values
-      if (this._value !== undefined) {
-        this.value = this._value;
-      }
-      if (this._secondValue !== undefined) {
-        this.secondValue = this._secondValue;
-      }
+        //update values
+        if (this._value !== undefined) {
+          this.value = this._value;
+        }
+        if (this._secondValue !== undefined) {
+          this.secondValue = this._secondValue;
+        }
 
-      if ( !this.isUpdated ) {
-        this.notify()
+        if ( !this.isUpdated ) {
+          this.notify()
+        }
       }
     }
   }
@@ -110,23 +120,24 @@ export default class SliderModel implements Model {
   }
 
   set step(newValue: number) {
-    if (newValue > 0) {
-      this._step = newValue;
+    if ( this.validate(newValue) ) {     
+      if (newValue > 0) {
+        this._step = newValue;
 
-      this.isUpdated = false;
+        this.isUpdated = false;
 
-      //update values
-      if (this._value !== undefined) {
-        this.value = this._value;
-      }
-      if (this._secondValue !== undefined) {
-        this.secondValue = this._secondValue;
-      }
+        //update values
+        if (this._value !== undefined) {
+          this.value = this._value;
+        }
+        if (this._secondValue !== undefined) {
+          this.secondValue = this._secondValue;
+        }
 
-      if ( !this.isUpdated ) {
-        this.notify()
-      }
-    }    
+        if ( !this.isUpdated ) {
+          this.notify()
+        }
+      } }   
   }
 
   get secondValue() {
@@ -134,26 +145,28 @@ export default class SliderModel implements Model {
   }
 
   set secondValue(newValue: number) {
-    const { _maxValue, _minValue, _step, _secondValue: oldValue } = this;
+    if ( this.validate(newValue) ) {
+      const { _maxValue, _minValue, _step, _secondValue: oldValue } = this;
 
-    const valueMultipleStep = (newValue % _step / _step > 0.5) ? (newValue - newValue % _step + _step) : (newValue - newValue % _step);
+      const valueMultipleStep = (newValue % _step / _step > 0.5) ? (newValue - newValue % _step + _step) : (newValue - newValue % _step);
 
-    switch (true) {
-      case ( valueMultipleStep >= _maxValue ):
-        this._secondValue = _maxValue;
-        this.isUpdated = false;
-        break;
-      case ( valueMultipleStep <= _minValue ):
-        this._secondValue = _minValue;
-        this.isUpdated = false;
-        break;
-      default:
-        this._secondValue = valueMultipleStep;
-        this.isUpdated = false;
-    }
+      switch (true) {
+        case ( valueMultipleStep >= _maxValue ):
+          this._secondValue = _maxValue;
+          this.isUpdated = false;
+          break;
+        case ( valueMultipleStep <= _minValue ):
+          this._secondValue = _minValue;
+          this.isUpdated = false;
+          break;
+        default:
+          this._secondValue = valueMultipleStep;
+          this.isUpdated = false;
+      }
 
-    if ( oldValue !== this._secondValue ) {
-      this.notify();
+      if ( oldValue !== this._secondValue ) {
+        this.notify();
+      }
     }
   }
 

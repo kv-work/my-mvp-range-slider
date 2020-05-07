@@ -334,4 +334,45 @@ describe.only('model', () => {
     expect(updateFunc).toHaveBeenCalledTimes(2);
     expect(anotherUpdateFunc).toHaveBeenCalledTimes(2);
   })
+
+  test('set accsessors should validate arguments', () => {
+    testModel.value = undefined;
+    expect(testModel).toHaveProperty('_value', 2)
+    testModel.value = null;
+    expect(testModel).toHaveProperty('_value', 2)
+    testModel.value = Infinity;
+    expect(testModel).toHaveProperty('_value', 2)
+
+    testModel.maxValue = 25;
+    testModel.maxValue = undefined;
+    expect(testModel.maxValue).toBe(25);
+    testModel.maxValue = null;
+    expect(testModel.maxValue).toBe(25);
+    testModel.maxValue = -Infinity;
+    expect(testModel.maxValue).toBe(25);
+
+    testModel.minValue = 5;
+    testModel.minValue = undefined;
+    expect(testModel.minValue).toBe(5);
+    testModel.minValue = null;
+    expect(testModel.minValue).toBe(5);
+    testModel.minValue = 1000 / 0;
+    expect(testModel.minValue).toBe(5);
+
+    testModel.step = 1;
+    testModel.step = undefined;
+    expect(testModel.step).toBe(1);
+    testModel.step = null;
+    expect(testModel.step).toBe(1);
+    testModel.step = 42 + Infinity;
+    expect(testModel.step).toBe(1);
+    
+
+    testModel.secondValue = 20;
+    expect(testModel).toHaveProperty('_secondValue', 20)
+    testModel.secondValue = null;
+    expect(testModel).toHaveProperty('_secondValue', 20)
+    testModel.secondValue = NaN;
+    expect(testModel).toHaveProperty('_secondValue', 20)
+  })
 })
