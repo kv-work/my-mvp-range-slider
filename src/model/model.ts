@@ -9,7 +9,7 @@ export default class SliderModel implements Model {
 
   private observers: Set<Object>
   private isUpdated: boolean
-  private readyNotify: boolean
+  private isReadyNotify: boolean
 
   constructor(options: OptionsModel) {
 
@@ -23,20 +23,18 @@ export default class SliderModel implements Model {
       this.secondValue = options.secondValue;
     }
 
-    this.readyNotify = true;
+    this.isReadyNotify = true;
     this.isUpdated = true;    
   }
 
-  private validate(value: any) {
-    return !( value === null || isNaN(value) || !isFinite(value) )
-  }
+
 
   get value(): number {
     return this._value;
   }
 
   set value(newValue: number) {
-    if ( this.validate(newValue) ) {
+    if ( this._validate(newValue) ) {
       const { _maxValue, _minValue, _step, _value: oldValue } = this;
 
       if ( this._value === undefined ) {
@@ -70,7 +68,7 @@ export default class SliderModel implements Model {
   }
 
   set maxValue(newValue: number) {
-    if ( this.validate(newValue) ) {  
+    if ( this._validate(newValue) ) {  
       if ( this._minValue === undefined || newValue > this._minValue ) {
         this._maxValue = newValue;
 
@@ -97,7 +95,7 @@ export default class SliderModel implements Model {
   }
 
   set minValue(newValue: number) {
-    if ( this.validate(newValue) ) {
+    if ( this._validate(newValue) ) {
       if ( this._maxValue === undefined || newValue < this._maxValue) {
         this._minValue = newValue;
 
@@ -123,7 +121,7 @@ export default class SliderModel implements Model {
   }
 
   set step(newValue: number) {
-    if ( this.validate(newValue) ) {     
+    if ( this._validate(newValue) ) {     
       if (newValue > 0) {
         this._step = newValue;
 
@@ -148,8 +146,8 @@ export default class SliderModel implements Model {
   }
 
   set secondValue(newValue: number) {
-    if ( this.validate(newValue) ) {
-      const { _maxValue, _minValue, _step, _value, _secondValue: oldValue } = this;
+    if ( this._validate(newValue) ) {
+      const { _maxValue, _step, _value, _secondValue: oldValue } = this;
 
       const valueMultipleStep = (newValue % _step / _step > 0.5) ? (newValue - newValue % _step + _step) : (newValue - newValue % _step);
 
@@ -182,7 +180,7 @@ export default class SliderModel implements Model {
   }
 
   private notify(): void {
-    if (this.observers !== undefined && this.observers.size !== 0 && this.readyNotify) {
+    if (this.observers !== undefined && this.observers.size !== 0 && this.isReadyNotify) {
       this.observers.forEach( (observer: Observer): void => {
         observer.update();
       } )
@@ -210,7 +208,7 @@ export default class SliderModel implements Model {
   public updateState(state: OptionsModel): void {
     const {maxValue, minValue, step, value, secondValue} = state;
 
-    this.readyNotify = false;
+    this.isReadyNotify = false;
 
     if ( maxValue !== undefined ) {
       this.maxValue = maxValue;
@@ -232,7 +230,11 @@ export default class SliderModel implements Model {
       this.secondValue = secondValue;
     }
 
-    this.readyNotify = true;
+    this.isReadyNotify = true;
     this.notify();
+  }
+
+  private _validate(value: any) {
+    return !( value === null || isNaN(value) || !isFinite(value) )
   }
 }

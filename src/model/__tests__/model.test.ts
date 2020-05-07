@@ -18,7 +18,7 @@ describe.only('model', () => {
   }
 
   let testModel: SliderModel,
-      modelWithSecoundValue: SliderModel,
+      modelWithSecondValue: SliderModel,
       observer: Observer,
       anotherObserver: Observer;
 
@@ -27,7 +27,7 @@ describe.only('model', () => {
 
   beforeEach( () => {
     testModel = new SliderModel(testOptions);
-    modelWithSecoundValue = new SliderModel(optionsWithSecondValue);
+    modelWithSecondValue = new SliderModel(optionsWithSecondValue);
     updateFunc = jest.fn(),
     anotherUpdateFunc = jest.fn();
   
@@ -43,7 +43,7 @@ describe.only('model', () => {
 
   afterEach( () => {
     testModel = null;
-    modelWithSecoundValue = null;
+    modelWithSecondValue = null;
   } );
 
   test('constructor should set instance properties', () => {
@@ -54,8 +54,8 @@ describe.only('model', () => {
     expect(testModel.secondValue).toBeUndefined()
 
     //With second value
-    expect(modelWithSecoundValue).toBeInstanceOf(SliderModel);
-    expect(modelWithSecoundValue.secondValue).toBe(8);
+    expect(modelWithSecondValue).toBeInstanceOf(SliderModel);
+    expect(modelWithSecondValue.secondValue).toBe(8);
   })
 
   test('getState should returns model state object', () => {
@@ -68,7 +68,7 @@ describe.only('model', () => {
     expect(state.secondValue).toBeUndefined()
 
     //With second value
-    const stateWithSecondValue = modelWithSecoundValue.getState();
+    const stateWithSecondValue = modelWithSecondValue.getState();
     expect(stateWithSecondValue).toHaveProperty('secondValue', 8);
   })
 
@@ -82,12 +82,12 @@ describe.only('model', () => {
   })
 
   test('should set the secondValue', () => {
-    modelWithSecoundValue.secondValue = 4;
-    expect(modelWithSecoundValue.secondValue).toBe(4);
-    modelWithSecoundValue.secondValue = 6;
-    expect(modelWithSecoundValue.secondValue).toBe(6);
-    modelWithSecoundValue.secondValue = 8;
-    expect(modelWithSecoundValue.secondValue).toBe(8);
+    modelWithSecondValue.secondValue = 4;
+    expect(modelWithSecondValue.secondValue).toBe(4);
+    modelWithSecondValue.secondValue = 6;
+    expect(modelWithSecondValue.secondValue).toBe(6);
+    modelWithSecondValue.secondValue = 8;
+    expect(modelWithSecondValue.secondValue).toBe(8);
   })
 
   test('set maxValue should change this._maxValue', () => {
@@ -134,11 +134,11 @@ describe.only('model', () => {
     expect(testModel.value).toBe(0);
 
     //with second value
-    modelWithSecoundValue.step = 3;
-    expect(modelWithSecoundValue.secondValue).toBe(9);
+    modelWithSecondValue.step = 3;
+    expect(modelWithSecondValue.secondValue).toBe(9);
 
-    modelWithSecoundValue.step = 7;
-    expect(modelWithSecoundValue.secondValue).toBe(7);
+    modelWithSecondValue.step = 7;
+    expect(modelWithSecondValue.secondValue).toBe(7);
   })
 
   test('changing max or min limit should changed value and secondValue, if necessary', () => {
@@ -151,12 +151,12 @@ describe.only('model', () => {
     expect(testModel.value).toBe(3);
 
     //with second value
-    modelWithSecoundValue.maxValue = 7;
-    expect(modelWithSecoundValue.secondValue).toBe(7);
-    modelWithSecoundValue.secondValue = 4; 
-    modelWithSecoundValue.minValue = 5;
-    expect(modelWithSecoundValue.secondValue).toBe(5);
-    expect(modelWithSecoundValue.value).toBe(5);
+    modelWithSecondValue.maxValue = 7;
+    expect(modelWithSecondValue.secondValue).toBe(7);
+    modelWithSecondValue.secondValue = 4; 
+    modelWithSecondValue.minValue = 5;
+    expect(modelWithSecondValue.secondValue).toBe(5);
+    expect(modelWithSecondValue.value).toBe(5);
   })
 
   test('the set value, secondValue should be a multiple of the step', () => {
@@ -165,8 +165,8 @@ describe.only('model', () => {
     expect(testModel.value).toBe(6);
 
     //with second value
-    modelWithSecoundValue.secondValue = 7;
-    expect(modelWithSecoundValue.secondValue).toBe(6);
+    modelWithSecondValue.secondValue = 7;
+    expect(modelWithSecondValue.secondValue).toBe(6);
   })
 
   test('if the argument of the set value, secondValue accessor is greater than the maxCount, then value should equal maxValue', () => {
@@ -175,8 +175,8 @@ describe.only('model', () => {
     expect(testModel.value).toEqual(maxValue);
 
     //with second value
-    modelWithSecoundValue.secondValue = 1000;
-    expect(modelWithSecoundValue.secondValue).toBe(maxValue);
+    modelWithSecondValue.secondValue = 1000;
+    expect(modelWithSecondValue.secondValue).toBe(maxValue);
   })
 
   test('if the argument of the set value, secondValue accessor is less than the minCount, then value should equal minValue', () => {
@@ -185,9 +185,9 @@ describe.only('model', () => {
     expect(testModel.value).toEqual(minValue);
 
     //with second value
-    modelWithSecoundValue.value = -1000;
-    modelWithSecoundValue.secondValue = -100;
-    expect(modelWithSecoundValue.secondValue).toBe(minValue);
+    modelWithSecondValue.value = -1000;
+    modelWithSecondValue.secondValue = -100;
+    expect(modelWithSecondValue.secondValue).toBe(minValue);
   })
 
   test('addObserver should added observer to this.observers', () => {
@@ -243,16 +243,16 @@ describe.only('model', () => {
     expect(anotherUpdateFunc).toHaveBeenCalledTimes(6);
 
     //with second value
-    modelWithSecoundValue.addObserver(observer);
-    modelWithSecoundValue.addObserver(anotherObserver);
+    modelWithSecondValue.addObserver(observer);
+    modelWithSecondValue.addObserver(anotherObserver);
 
-    modelWithSecoundValue.minValue = -100;                    //change #1
-    modelWithSecoundValue.maxValue = 100;                     //change #2
-    modelWithSecoundValue.value = -50;                        //change #3
-    modelWithSecoundValue.secondValue = 75;                   //change #4
-    expect(modelWithSecoundValue.secondValue).toBe(74);
-    modelWithSecoundValue.step = 5;                           //change #5
-    expect(modelWithSecoundValue.secondValue).toBe(75);
+    modelWithSecondValue.minValue = -100;                    //change #1
+    modelWithSecondValue.maxValue = 100;                     //change #2
+    modelWithSecondValue.value = -50;                        //change #3
+    modelWithSecondValue.secondValue = 75;                   //change #4
+    expect(modelWithSecondValue.secondValue).toBe(74);
+    modelWithSecondValue.step = 5;                           //change #5
+    expect(modelWithSecondValue.secondValue).toBe(75);
 
     expect(updateFunc).toHaveBeenCalledTimes(11);
     expect(anotherUpdateFunc).toHaveBeenCalledTimes(11);
@@ -268,8 +268,8 @@ describe.only('model', () => {
     expect(updateFunc).not.toHaveBeenCalled();
 
     //with second value
-    modelWithSecoundValue.addObserver(observer);
-    modelWithSecoundValue.secondValue = 8;
+    modelWithSecondValue.addObserver(observer);
+    modelWithSecondValue.secondValue = 8;
     expect(updateFunc).not.toHaveBeenCalled();
   })
 
@@ -336,7 +336,7 @@ describe.only('model', () => {
     expect(anotherUpdateFunc).toHaveBeenCalledTimes(2);
   })
 
-  test('set accsessors should validate arguments', () => {
+  test('set accessors should validate arguments', () => {
     testModel.value = undefined;
     expect(testModel).toHaveProperty('_value', 2)
     testModel.value = null;
@@ -378,22 +378,22 @@ describe.only('model', () => {
   })
 
   test('value should less or equal then secondValue', () => {
-    modelWithSecoundValue.secondValue = 8;
-    modelWithSecoundValue.value = 8;
-    expect(modelWithSecoundValue.value).toBe(8);
+    modelWithSecondValue.secondValue = 8;
+    modelWithSecondValue.value = 8;
+    expect(modelWithSecondValue.value).toBe(8);
 
-    modelWithSecoundValue.value = 10;
-    expect(modelWithSecoundValue.value).toBe(8);
+    modelWithSecondValue.value = 10;
+    expect(modelWithSecondValue.value).toBe(8);
   })
 
   test('secondValue should greater or equal then value', () => {
-    modelWithSecoundValue.secondValue = 8;
-    modelWithSecoundValue.value = 8;
+    modelWithSecondValue.secondValue = 8;
+    modelWithSecondValue.value = 8;
 
-    modelWithSecoundValue.secondValue = 5;
-    expect(modelWithSecoundValue.secondValue).toBe(8);
+    modelWithSecondValue.secondValue = 5;
+    expect(modelWithSecondValue.secondValue).toBe(8);
 
-    modelWithSecoundValue.secondValue = 0;
-    expect(modelWithSecoundValue.secondValue).toBe(8);
+    modelWithSecondValue.secondValue = 0;
+    expect(modelWithSecondValue.secondValue).toBe(8);
   })
 })
