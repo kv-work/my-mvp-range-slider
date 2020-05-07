@@ -152,22 +152,34 @@ describe.only('model', () => {
     expect(modelWithSecoundValue.value).toBe(5);
   })
 
-  test('the set value should be a multiple of the step', () => {
+  test('the set value, secondValue should be a multiple of the step', () => {
     expect(testModel.value).toBe(2);
     testModel.value = 7;
     expect(testModel.value).toBe(6);
+
+    //with second value
+    modelWithSecoundValue.secondValue = 7;
+    expect(modelWithSecoundValue.secondValue).toBe(6);
   })
 
-  test('if the argument of the setCount func is greater than the maxCount, then value should equal maxValue', () => {
+  test('if the argument of the set value, secondValue accessor is greater than the maxCount, then value should equal maxValue', () => {
     const maxValue = testModel.maxValue;
     testModel.value = 555;
     expect(testModel.value).toEqual(maxValue);
+
+    //with second value
+    modelWithSecoundValue.secondValue = 1000;
+    expect(modelWithSecoundValue.secondValue).toBe(maxValue);
   })
 
-  test('if the argument of the setCount func is less than the minCount, then value should equal minValue', () => {
+  test('if the argument of the set value, secondValue accessor is less than the minCount, then value should equal minValue', () => {
     const minValue = testModel.minValue;
     testModel.value = -15;
     expect(testModel.value).toEqual(minValue);
+
+    //with second value
+    modelWithSecoundValue.secondValue = -1000;
+    expect(modelWithSecoundValue.secondValue).toBe(minValue);
   })
 
   test('addObserver should added observer to this.observers', () => {

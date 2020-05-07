@@ -20,7 +20,9 @@ export default class SliderModel implements Model {
     
     this.observers = new Set();
     this.value = options.value;
-    this.secondValue = options.secondValue;
+    if (options.secondValue !== undefined) {
+      this.secondValue = options.secondValue;
+    }    
   }
 
   get value(): number {
@@ -51,7 +53,7 @@ export default class SliderModel implements Model {
       this.isUpdated = false;
     }
 
-    if (this.observers !== undefined) {
+    if (this.observers !== undefined && this._secondValue === undefined) {
       this.notify();
     }
   }
@@ -120,14 +122,28 @@ export default class SliderModel implements Model {
   }
 
   set secondValue(newValue: number) {
-    if (newValue >= this.maxValue) {
-      this._secondValue = this.maxValue;
-    } else if (newValue <= this.minValue) {
-      this._secondValue = this.minValue;
-    } else {
-      this._secondValue = newValue;
+    const { _maxValue, _minValue, _step } = this;
+
+    if (this._secondValue === newValue && this.isUpdated) {
+      return
     }
-    
+
+    const valueMultipleStep = (newValue % _step / _step > 0.5) ? (newValue - newValue % _step + _step) : (newValue - newValue % _step);
+
+    if (valueMultipleStep >= _maxValue) {
+      this._secondValue = _maxValue;
+      this.isUpdated = false;
+    } else if (valueMultipleStep <= _minValue) {
+      this._secondValue = _minValue;
+      this.isUpdated = false;
+    } else {
+      this._secondValue = valueMultipleStep;
+      this.isUpdated = false;
+    }
+
+    if (this.observers !== undefined) {
+      this.notify();
+    }
   }
 
   public addObserver(observer: Observer): void {
