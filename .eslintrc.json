@@ -5,6 +5,7 @@
     },
     "extends": [
       "eslint:recommended",
+      "airbnb-typescript/base",
       "plugin:@typescript-eslint/eslint-recommended",
       "plugin:@typescript-eslint/recommended",
       "plugin:@typescript-eslint/recommended-requiring-type-checking",
@@ -16,6 +17,7 @@
       "tsconfigRootDir": "."
     },
     "rules": {
+      "no-underscore-dangle": "off",
       "fsd/hof-name-prefix": "error",
       "fsd/no-heavy-constructor": "error",
       "fsd/jq-cache-dom-elements": "error",
