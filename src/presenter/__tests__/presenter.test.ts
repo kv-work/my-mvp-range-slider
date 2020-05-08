@@ -2,8 +2,6 @@
 import SliderPresenter from '../presenter';
 import {
   OptionsModel,
-  Observer,
-  ViewData,
   View,
   Model,
 } from '../../types';
@@ -33,20 +31,16 @@ describe.only('Presenter', () => {
   const mockUnmount = jest.fn();
 
   // Mock SliderModel class
-  const MockModel = jest.fn<Model, []>(() => {
-    const model = {
-      value: 10,
-      maxValue: 100,
-      minValue: 0,
-      step: 5,
-      getState: mockGetState,
-      updateState: mockUpdateState,
-      addObserver: mockAddObserver,
-      removeObserver: mockRemoveObserver,
-    };
-
-    return model;
-  });
+  const MockModel = jest.fn<Model, []>(() => ({
+    maxValue: 100,
+    minValue: 0,
+    step: 5,
+    value: 25,
+    getState: mockGetState,
+    updateState: mockUpdateState,
+    addObserver: mockAddObserver,
+    removeObserver: mockRemoveObserver,
+  }));
 
   const MockView = jest.fn<View, []>((): View => ({
     render: mockRender,
@@ -59,43 +53,38 @@ describe.only('Presenter', () => {
   let testPresenter: SliderPresenter;
   let testModel: Model;
   let testView: View;
-  let testSecondView: View;
-  let entries: [string, any][];
 
   beforeEach(() => {
     testModel = new MockModel();
     testView = new MockView();
-    testSecondView = new MockView();
-    testPresenter = new SliderPresenter(testModel, testView, testSecondView);
-    entries = Object.entries(testPresenter);
+    testPresenter = new SliderPresenter({
+      model: testModel,
+      view: testView,
+      onStart: jest.fn(),
+      onChange: jest.fn(),
+      onFinish: jest.fn(),
+      onUpdate: jest.fn(),
+    });
   });
 
   afterEach(() => {
-    mockAddObserver.mockClear();
-    mockViewAddObserver.mockClear();
+    jest.clearAllMocks();
   });
 
-  test('should have props: views, model, viewObserver, modelObserver', () => {
+  test('should have props: view, model, viewObserver, modelObserver, settings', () => {
     expect(testPresenter).toBeInstanceOf(SliderPresenter);
-
-    expect(testPresenter).toHaveProperty('views');
-    entries.forEach((entry) => {
-      if (entry[0] === 'views') {
-        expect(entry[1].size).toBe(2);
-      }
-    });
-
+    expect(testPresenter).toHaveProperty('view', testView);
     expect(testPresenter).toHaveProperty('model', testModel);
-
     expect(testPresenter).toHaveProperty('viewObserver');
     expect(testPresenter).toHaveProperty('modelObserver');
+    expect(testPresenter).toHaveProperty('settings');
   });
 
   test('method sentModelObserver should calls model method addObserver', () => {
     expect(mockAddObserver).toHaveBeenCalledTimes(1);
   });
 
-  test('method sentModelObserver should calls view method addObserver', () => {
-    expect(mockViewAddObserver).toHaveBeenCalledTimes(2);
+  test('method sentViewObserver should calls view method addObserver', () => {
+    expect(mockViewAddObserver).toHaveBeenCalledTimes(1);
   });
 });
