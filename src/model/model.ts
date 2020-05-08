@@ -15,9 +15,9 @@ export default class SliderModel implements Model {
 
     this.maxValue = options.maxValue;
     this.minValue = options.minValue;
-    this.step = options.step;
+    this.step = options.step
     
-    this.observers = new Set();
+    this.observers = new Set()
     this.value = options.value;
     if (options.secondValue !== undefined) {
       this.secondValue = options.secondValue;

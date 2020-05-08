@@ -1,4 +1,5 @@
-import { OptionsModel, Observer, Model } from '../../types';
+/* eslint-disable fsd/no-function-declaration-in-event-listener */
+import { OptionsModel, Observer } from '../../types';
 import SliderModel from '../model';
 
 
@@ -194,31 +195,34 @@ describe.only('model', () => {
     expect(testModel).toHaveProperty('observers');
     testModel.addObserver(observer);
 
-    const entries: Array<any> = Object.entries(testModel)
-    entries.forEach( (entry: [String, any], index: number) => {
+    const entries = Object.entries(testModel)
+    entries.forEach( (entry) => {
       if (entry[0] === 'observers') {
-        expect(entry[1].has(observer)).toBeTruthy()
+        const observers: Set<Observer> = entry[1];
+        expect(observers.has(observer)).toBeTruthy()
       }
     });
   })
 
   test('removeObserver should removed observer', () => {
     expect(testModel).toHaveProperty('observers');
-    const entries: Array<any> = Object.entries(testModel)
+    const entries = Object.entries(testModel);
 
     //Add observer
     testModel.addObserver(observer);
-    entries.forEach( (entry: [String, any], index: number) => {
+    entries.forEach( (entry) => {
       if (entry[0] === 'observers') {
-        expect(entry[1].has(observer)).toBeTruthy()
+        const observers: Set<Observer> = entry[1];
+        expect(observers.has(observer)).toBeTruthy();
       }
     });
 
     //Remove observer
     testModel.removeObserver(observer);
-    entries.forEach( (entry: [String, any], index: number) => {
+    entries.forEach( (entry) => {
       if (entry[0] === 'observers') {
-        expect(entry[1].has(observer)).toBeFalsy()
+        const observers: Set<Observer> = entry[1];
+        expect(observers.has(observer)).toBeFalsy();
       }
     });
   })
