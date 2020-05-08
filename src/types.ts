@@ -5,7 +5,7 @@ interface Observer {
 interface Presenter {
   renderView(view: View, renderData: ViewData): void;
   unmountView(view: View): void;
-  updateModel(model: Model, updateData: OptionsModel): void;
+  updateModel(updateData: OptionsModel): void;
 }
 
 interface OptionsModel {
@@ -52,4 +52,5 @@ export {
   Observer,
   ViewData,
   View,
+  Presenter,
 };
