@@ -1,10 +1,53 @@
+interface ApplicationOption {
+  // model
+  maxValue: number;
+  minValue: number;
+  step: number;
+  value: number;
+  secondValue: number;
+
+  // view
+  orientation: 'horizontal' | 'vertical';
+  range: boolean;
+  dragInterval: boolean;
+  runner: boolean;
+  bar: boolean;
+  scale: boolean;
+  scaleStep: number;
+  displayScaleValue: boolean;
+  displayValue: boolean;
+  displayMin: boolean;
+  displayMax: boolean;
+  prefix: string;
+  postfix: string;
+
+  // presenter
+  dataValues: Stringable[];
+
+  // callbacks
+  onStart: CallableFunction;
+  onChange: CallableFunction;
+  onFinish: CallableFunction;
+  onUpdate: CallableFunction;
+}
+
 interface Observer {
   update(value?: number): void;
 }
 
+interface OptionsPresenter {
+  model: Model;
+  view: View;
+  dataValues?: Stringable[];
+  onStart: CallableFunction;
+  onChange: CallableFunction;
+  onFinish: CallableFunction;
+  onUpdate: CallableFunction;
+}
+
 interface Presenter {
-  renderView(view: View, renderData: ViewData): void;
-  unmountView(view: View): void;
+  updateView(renderData: ViewData): void;
+  unmountView(): void;
   updateModel(updateData: OptionsModel): void;
 }
 
@@ -15,7 +58,6 @@ interface OptionsModel {
   value?: number;
   secondValue?: number;
 }
-
 
 interface Model {
   value: number;
@@ -53,4 +95,5 @@ export {
   ViewData,
   View,
   Presenter,
+  OptionsPresenter,
 };
