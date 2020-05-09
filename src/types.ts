@@ -50,7 +50,7 @@ interface Presenter {
   getAllData(): ApplicationOption;
   getModelData(): OptionsModel;
   getViewData(): ViewData;
-  getPresenterData(): OptionsPresenter;
+  getPresenterData(): Stringable[];
 }
 
 interface OptionsModel {
@@ -69,12 +69,23 @@ interface Model {
 }
 
 interface ViewData {
-  values: number | number[];
-  step: number;
-  interval: [number, number];
+  orientation?: 'horizontal' | 'vertical';
+  range?: boolean;
+  dragInterval?: boolean;
+  runner?: boolean;
+  bar?: boolean;
+  scale?: boolean;
+  scaleStep?: number;
+  displayScaleValue?: boolean;
+  displayValue?: boolean;
+  displayMin?: boolean;
+  displayMax?: boolean;
+  prefix?: string;
+  postfix?: string;
 }
 
 interface View {
+  // render(dataValues: Stringable[]);
   update(viewData: ViewData): void;
   addObserver(observer: Observer): void;
   removeObserver(observer: Observer): void;

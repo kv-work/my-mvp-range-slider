@@ -4,6 +4,7 @@ import {
   OptionsModel,
   View,
   Model,
+  ViewData,
 } from '../../types';
 
 // replace .only
@@ -17,6 +18,16 @@ describe.only('Presenter', () => {
     value: 25,
   };
 
+  const testViewData: ViewData = {
+    orientation: 'horizontal',
+    range: false,
+    runner: false,
+    bar: true,
+    scale: false,
+    prefix: '',
+    postfix: '',
+  };
+
   // Mock funcs for test model
   const mockAddObserver = jest.fn();
   const mockRemoveObserver = jest.fn();
@@ -27,14 +38,10 @@ describe.only('Presenter', () => {
   const mockViewAddObserver = jest.fn();
   const mockViewRemoveObserver = jest.fn();
   const mockUpdate = jest.fn();
-  const mockGetViewData = jest.fn();
+  const mockGetViewData = jest.fn((): ViewData => testViewData);
 
   // Mock SliderModel class
   const MockModel = jest.fn<Model, []>(() => ({
-    maxValue: 100,
-    minValue: 0,
-    step: 5,
-    value: 25,
     getState: mockGetState,
     updateState: mockUpdateState,
     addObserver: mockAddObserver,
@@ -75,14 +82,45 @@ describe.only('Presenter', () => {
     expect(testPresenter).toHaveProperty('model', testModel);
     expect(testPresenter).toHaveProperty('viewObserver');
     expect(testPresenter).toHaveProperty('modelObserver');
-    expect(testPresenter).toHaveProperty('settings');
   });
 
-  test('method sentModelObserver should calls model method addObserver', () => {
+  test('subscribeToModel should calls model method addObserver', () => {
     expect(mockAddObserver).toHaveBeenCalledTimes(1);
   });
 
-  test('method sentViewObserver should calls view method addObserver', () => {
+  test('subscribeToModel should calls view method addObserver', () => {
     expect(mockViewAddObserver).toHaveBeenCalledTimes(1);
+  });
+
+  test('method getModelData should calls model method getState and returns model data: max/min values, step, values', () => {
+    testPresenter.getModelData();
+    expect(mockGetState).toBeCalledTimes(1);
+    expect(mockGetState).toHaveReturnedWith({
+      maxValue: 100,
+      minValue: 0,
+      step: 5,
+      value: 25,
+    });
+  });
+
+  test('getViewData should calls view method getData and returns view data: values, step, interval, orientation, runner, bar, scale, etc', () => {
+    testPresenter.getViewData();
+    expect(mockGetViewData).toBeCalledTimes(1);
+    expect(mockGetViewData).toHaveReturnedWith({
+      orientation: 'horizontal',
+      range: false,
+      runner: false,
+      bar: true,
+      scale: false,
+      prefix: '',
+      postfix: '',
+    });
+  });
+
+  test('getPresenterData should return presenter data: dataValues', () => {
+    const presenterDataValues = testPresenter.getPresenterData();
+    expect(presenterDataValues).toEqual([
+      0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100,
+    ]);
   });
 });
