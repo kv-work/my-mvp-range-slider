@@ -27,18 +27,13 @@ export default class SliderPresenter implements Presenter {
 
     if (options.dataValues !== undefined) {
       this.dataValues = options.dataValues;
+    } else {
+      this.dataValues = this.createDataValues();
     }
-
-    this.viewObserver = {
-      update: (value: number): void => {},
-    };
-
-    this.modelObserver = {
-      update: (): void => {},
-    };
 
     this.subscribeToModel();
     this.subscribeToView();
+    this.renderView();
   }
 
   public update(options: ApplicationOption): void {}
@@ -56,9 +51,6 @@ export default class SliderPresenter implements Presenter {
   }
 
   public getPresenterData(): Stringable[] {
-    if (this.dataValues === undefined) {
-      this.dataValues = this.createDataValues();
-    }
     return this.dataValues;
   }
 
@@ -83,11 +75,23 @@ export default class SliderPresenter implements Presenter {
   }
 
   private subscribeToModel(): void {
+    // need to implement the observer update func
+    this.modelObserver = {
+      update: (): void => {},
+    };
     this.model.addObserver(this.modelObserver);
   }
 
   private subscribeToView(): void {
+    // need to implement the observer update func
+    this.viewObserver = {
+      update: (value: number): void => {},
+    };
     this.view.addObserver(this.viewObserver);
+  }
+
+  private renderView(): void {
+    this.view.render(this.dataValues);
   }
 
   private updateView(renderData: ViewData): void {}

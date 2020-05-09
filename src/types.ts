@@ -85,7 +85,7 @@ interface ViewData {
 }
 
 interface View {
-  // render(dataValues: Stringable[]);
+  render(dataValues: Stringable[]): void;
   update(viewData: ViewData): void;
   addObserver(observer: Observer): void;
   removeObserver(observer: Observer): void;
