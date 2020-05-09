@@ -26,9 +26,8 @@ describe.only('Presenter', () => {
   // Mock funcs for test view
   const mockViewAddObserver = jest.fn();
   const mockViewRemoveObserver = jest.fn();
-  const mockRender = jest.fn();
   const mockUpdate = jest.fn();
-  const mockUnmount = jest.fn();
+  const mockGetViewData = jest.fn();
 
   // Mock SliderModel class
   const MockModel = jest.fn<Model, []>(() => ({
@@ -43,11 +42,10 @@ describe.only('Presenter', () => {
   }));
 
   const MockView = jest.fn<View, []>((): View => ({
-    render: mockRender,
     update: mockUpdate,
-    unmount: mockUnmount,
     addObserver: mockViewAddObserver,
     removeObserver: mockViewRemoveObserver,
+    getData: mockGetViewData,
   }));
 
   let testPresenter: SliderPresenter;

@@ -1,34 +1,34 @@
 interface ApplicationOption {
   // model
-  maxValue: number;
-  minValue: number;
-  step: number;
-  value: number;
-  secondValue: number;
+  maxValue?: number;
+  minValue?: number;
+  step?: number;
+  value?: number;
+  secondValue?: number;
 
   // view
-  orientation: 'horizontal' | 'vertical';
-  range: boolean;
-  dragInterval: boolean;
-  runner: boolean;
-  bar: boolean;
-  scale: boolean;
-  scaleStep: number;
-  displayScaleValue: boolean;
-  displayValue: boolean;
-  displayMin: boolean;
-  displayMax: boolean;
-  prefix: string;
-  postfix: string;
+  orientation?: 'horizontal' | 'vertical';
+  range?: boolean;
+  dragInterval?: boolean;
+  runner?: boolean;
+  bar?: boolean;
+  scale?: boolean;
+  scaleStep?: number;
+  displayScaleValue?: boolean;
+  displayValue?: boolean;
+  displayMin?: boolean;
+  displayMax?: boolean;
+  prefix?: string;
+  postfix?: string;
 
   // presenter
-  dataValues: Stringable[];
+  dataValues?: Stringable[];
 
   // callbacks
-  onStart: CallableFunction;
-  onChange: CallableFunction;
-  onFinish: CallableFunction;
-  onUpdate: CallableFunction;
+  onStart?: CallableFunction;
+  onChange?: CallableFunction;
+  onFinish?: CallableFunction;
+  onUpdate?: CallableFunction;
 }
 
 interface Observer {
@@ -46,9 +46,11 @@ interface OptionsPresenter {
 }
 
 interface Presenter {
-  updateView(renderData: ViewData): void;
-  unmountView(): void;
-  updateModel(updateData: OptionsModel): void;
+  update(options: ApplicationOption): void;
+  getAllData(): ApplicationOption;
+  getModelData(): OptionsModel;
+  getViewData(): ViewData;
+  getPresenterData(): OptionsPresenter;
 }
 
 interface OptionsModel {
@@ -60,10 +62,6 @@ interface OptionsModel {
 }
 
 interface Model {
-  value: number;
-  maxValue: number;
-  minValue: number;
-  step: number;
   getState(): OptionsModel;
   updateState(state: OptionsModel): void;
   addObserver(observer: Observer): void;
@@ -71,17 +69,16 @@ interface Model {
 }
 
 interface ViewData {
-  value: number;
+  values: number | number[];
   step: number;
   interval: [number, number];
 }
 
 interface View {
-  render(viewData: ViewData): void;
   update(viewData: ViewData): void;
-  unmount(): void;
   addObserver(observer: Observer): void;
   removeObserver(observer: Observer): void;
+  getData(): ViewData;
 }
 
 interface Stringable {
@@ -96,4 +93,6 @@ export {
   View,
   Presenter,
   OptionsPresenter,
+  ApplicationOption,
+  Stringable,
 };

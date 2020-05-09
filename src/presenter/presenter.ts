@@ -1,3 +1,7 @@
+/* eslint-disable no-useless-return */
+/* eslint-disable @typescript-eslint/semi */
+/* eslint-disable class-methods-use-this */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   OptionsModel,
   Observer,
@@ -6,14 +10,16 @@ import {
   Presenter,
   Model,
   OptionsPresenter,
+  ApplicationOption,
+  Stringable,
 } from '../types';
-
 
 export default class SliderPresenter implements Presenter {
   private view: View;
   private model: Model;
   private viewObserver: Observer;
   private modelObserver: Observer;
+  private dataValues: Stringable[] | undefined;
 
   constructor(options: OptionsPresenter) {
     this.model = options.model;
@@ -27,25 +33,37 @@ export default class SliderPresenter implements Presenter {
       update: (): void => {},
     };
 
-    this.sentModelObserver();
-    this.sentViewObserver();
+    this.subscribeToModel();
+    this.subscribeToView();
   }
 
-  private getModelData(): OptionsModel {
+  public update(options: ApplicationOption): void {}
+
+  public getAllData(): ApplicationOption {
+    return
+  }
+
+  public getModelData(): OptionsModel {
     return this.model.getState();
   }
 
-  private sentModelObserver(): void {
+  public getViewData(): ViewData {
+    return
+  }
+
+  public getPresenterData(): OptionsPresenter {
+    return
+  }
+
+  private subscribeToModel(): void {
     this.model.addObserver(this.modelObserver);
   }
 
-  private sentViewObserver(): void {
+  private subscribeToView(): void {
     this.view.addObserver(this.viewObserver);
   }
 
-  public updateView(renderData: ViewData): void {}
+  private updateView(renderData: ViewData): void {}
 
-  public unmountView(): void {}
-
-  public updateModel(updateData: OptionsModel): void {}
+  private updateModel(updateData: OptionsModel): void {}
 }
