@@ -5,10 +5,11 @@ import {
   View,
   Model,
   ViewData,
+  Observer,
 } from '../../types';
 
 // replace .only
-describe.only('Presenter', () => {
+describe('Presenter', () => {
   document.body.innerHTML = '<div id="container"></div>';
 
   const testModelState: OptionsModel = {
@@ -28,16 +29,27 @@ describe.only('Presenter', () => {
     postfix: '',
   };
 
+  const modelObservers = new Set<Observer>();
+  const viewObservers = new Set<Observer>();
+
   // Mock funcs for test model
-  const mockAddObserver = jest.fn();
-  const mockRemoveObserver = jest.fn();
+  const mockAddObserver = jest.fn((observer: Observer) => {
+    modelObservers.add(observer);
+  });
+  const mockRemoveObserver = jest.fn((observer: Observer) => {
+    modelObservers.delete(observer);
+  });
   const mockUpdateState = jest.fn();
   const mockGetState = jest.fn((): OptionsModel => testModelState);
 
   // Mock funcs for test view
   const mockRender = jest.fn();
-  const mockViewAddObserver = jest.fn();
-  const mockViewRemoveObserver = jest.fn();
+  const mockViewAddObserver = jest.fn((observer: Observer) => {
+    viewObservers.add(observer);
+  });
+  const mockViewRemoveObserver = jest.fn((observer: Observer) => {
+    viewObservers.delete(observer);
+  });
   const mockUpdate = jest.fn();
   const mockGetViewData = jest.fn((): ViewData => testViewData);
 
@@ -47,6 +59,11 @@ describe.only('Presenter', () => {
     updateState: mockUpdateState,
     addObserver: mockAddObserver,
     removeObserver: mockRemoveObserver,
+    notify: (): void => {
+      modelObservers.forEach((observer: Observer) => {
+        observer.update();
+      });
+    },
   }));
 
   const MockView = jest.fn<View, []>((): View => ({
@@ -76,6 +93,8 @@ describe.only('Presenter', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    modelObservers.clear();
+    viewObservers.clear();
   });
 
   describe('constructor', () => {
@@ -90,6 +109,7 @@ describe.only('Presenter', () => {
 
     test('should calls model method addObserver', () => {
       expect(mockAddObserver).toHaveBeenCalledTimes(1);
+      expect(modelObservers.size).toBe(1);
     });
 
     test('should calls view method addObserver', () => {
@@ -98,6 +118,7 @@ describe.only('Presenter', () => {
 
     test('should calls render method of view', () => {
       expect(mockRender).toBeCalledTimes(1);
+      expect(viewObservers.size).toBe(1);
     });
   });
 
