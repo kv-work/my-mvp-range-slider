@@ -39,7 +39,12 @@ export default class SliderPresenter implements Presenter {
   public update(options: ApplicationOption): void {}
 
   public getAllData(): ApplicationOption {
-    return
+    const data = {
+      ...this.getModelData(),
+      ...this.getViewData(),
+      dataValues: this.getPresenterData(),
+    }
+    return data
   }
 
   public getModelData(): OptionsModel {

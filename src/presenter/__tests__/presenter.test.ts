@@ -172,4 +172,26 @@ describe('Presenter', () => {
       ]);
     });
   });
+
+  describe('getAllData', () => {
+    test('should returns model data, view data and presenter data', () => {
+      const data = testPresenter.getAllData();
+      expect(data).toEqual({
+        maxValue: 100,
+        minValue: 0,
+        step: 5,
+        value: 25,
+        orientation: 'horizontal',
+        range: false,
+        runner: false,
+        bar: true,
+        scale: false,
+        prefix: '',
+        postfix: '',
+        dataValues: [
+          0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100,
+        ],
+      });
+    });
+  });
 });
