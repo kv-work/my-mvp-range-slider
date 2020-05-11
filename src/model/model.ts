@@ -67,7 +67,7 @@ class SliderModel implements Model {
   }
 
   set maxValue(newValue: number) {
-    if (SliderModel._validate(newValue)) {
+    if (SliderModel._validate(newValue) && newValue !== this.maxValue) {
       if (this._minValue === undefined || newValue > this._minValue) {
         this._maxValue = newValue;
 
@@ -92,7 +92,7 @@ class SliderModel implements Model {
   }
 
   set minValue(newValue: number) {
-    if (SliderModel._validate(newValue)) {
+    if (SliderModel._validate(newValue) && newValue !== this._minValue) {
       if (this._maxValue === undefined || newValue < this._maxValue) {
         this._minValue = newValue;
 
@@ -117,7 +117,7 @@ class SliderModel implements Model {
   }
 
   set step(newValue: number) {
-    if (SliderModel._validate(newValue)) {
+    if (SliderModel._validate(newValue) && newValue !== this._step) {
       if (newValue > 0) {
         this._step = newValue;
 
