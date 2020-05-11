@@ -9,6 +9,7 @@ class SliderModel implements Model {
   private observers: Set<Observer>;
   private isUpdated: boolean;
   private isReadyNotify: boolean;
+  public lockedValues: Set<string>;
 
   constructor(options: OptionsModel) {
     this.maxValue = options.maxValue;
@@ -20,6 +21,8 @@ class SliderModel implements Model {
     if (options.secondValue !== undefined) {
       this.secondValue = options.secondValue;
     }
+
+    this.lockedValues = new Set();
 
     this.isReadyNotify = true;
     this.isUpdated = true;
@@ -214,6 +217,34 @@ class SliderModel implements Model {
     this.isReadyNotify = true;
     this.notify();
   }
+
+  public lockState(props: string[] | 'all'): void {
+    if (props !== 'all') {
+      props.forEach((valueName) => {
+        switch (valueName) {
+          case 'minValue':
+            this.lockedValues.add('minValue');
+            break;
+          case 'maxValue':
+            this.lockedValues.add('maxValue');
+            break;
+          case 'step':
+            this.lockedValues.add('step');
+            break;
+          case 'value':
+            this.lockedValues.add('value');
+            break;
+          case 'secondValue':
+            this.lockedValues.add('secondValue');
+            break;
+          default:
+            break;
+        }
+      });
+    }
+  }
+
+  public unlockState(props: string[] | 'all'): void {}
 
   private notify(): void {
     if (this._checkObservers()) {

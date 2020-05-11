@@ -48,6 +48,8 @@ describe('Presenter', () => {
     mockModelNotify();
   });
   const mockGetState = jest.fn((): OptionsModel => testModelState);
+  const mockLockState = jest.fn();
+  const mockUnlockState = jest.fn();
 
   // Mock funcs for test view
   const mockRender = jest.fn();
@@ -66,11 +68,8 @@ describe('Presenter', () => {
     updateState: mockUpdateState,
     addObserver: mockAddObserver,
     removeObserver: mockRemoveObserver,
-    notify: (): void => {
-      modelObservers.forEach((observer: Observer) => {
-        observer.update();
-      });
-    },
+    lockState: mockLockState,
+    unlockState: mockUnlockState,
   }));
 
   const MockView = jest.fn<View, []>((): View => ({
@@ -204,7 +203,7 @@ describe('Presenter', () => {
 
   describe('model observer', () => {
     beforeEach(() => {
-      mockAddObserver.mockClear();
+      mockGetState.mockClear();
       testModel.updateState({ value: 25 });
     });
 

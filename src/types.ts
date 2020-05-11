@@ -66,6 +66,8 @@ interface Model {
   updateState(state: OptionsModel): void;
   addObserver(observer: Observer): void;
   removeObserver(observer: Observer): void;
+  lockState(props: string[] | 'all'): void;
+  unlockState(props: string[] | 'all'): void;
 }
 
 interface ViewData {

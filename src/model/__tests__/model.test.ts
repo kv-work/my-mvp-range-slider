@@ -2,7 +2,7 @@
 import { OptionsModel, Observer } from '../../types';
 import SliderModel from '../model';
 
-describe('model', () => {
+describe.only('model', () => {
   const testOptions: OptionsModel = {
     maxValue: 10,
     minValue: 0,
@@ -394,6 +394,12 @@ describe('model', () => {
     });
   });
 
+  // describe('lockedValues', () => {
+  //   test('should have only getter', () => {
+
+  //   });
+  // });
+
   describe('addObserver', () => {
     test('should added observer to this.observers', () => {
       expect(testModel).toHaveProperty('observers');
@@ -485,6 +491,12 @@ describe('model', () => {
 
       expect(updateFunc).toHaveBeenCalledTimes(2);
       expect(anotherUpdateFunc).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('lockState', () => {
+    test('should adds selected values into lockValues', () => {
+      testModel.lockState(['minValue', 'maxValue']);
     });
   });
 });
