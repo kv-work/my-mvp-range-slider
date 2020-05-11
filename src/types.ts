@@ -62,6 +62,7 @@ interface OptionsModel {
 }
 
 interface Model {
+  readonly lockedValues: Set<string>;
   getState(): OptionsModel;
   updateState(state: OptionsModel): void;
   addObserver(observer: Observer): void;

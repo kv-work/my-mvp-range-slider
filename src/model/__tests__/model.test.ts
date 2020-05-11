@@ -495,8 +495,24 @@ describe.only('model', () => {
   });
 
   describe('lockState', () => {
+    beforeEach(() => {
+      testModel.lockedValues.clear();
+    });
+
     test('should adds selected values into lockValues', () => {
       testModel.lockState(['minValue', 'maxValue']);
+      expect(testModel.lockedValues.has('minValue')).toBeTruthy();
+      expect(testModel.lockedValues.has('maxValue')).toBeTruthy();
+      expect(testModel.lockedValues.has('step')).toBeFalsy();
+    });
+
+    test('should adds all values into lockValues, if lockState argument is "all"', () => {
+      testModel.lockState('all');
+      expect(testModel.lockedValues.has('maxValue')).toBeTruthy();
+      expect(testModel.lockedValues.has('minValue')).toBeTruthy();
+      expect(testModel.lockedValues.has('value')).toBeTruthy();
+      expect(testModel.lockedValues.has('step')).toBeTruthy();
+      expect(testModel.lockedValues.has('secondValue')).toBeTruthy();
     });
   });
 });
