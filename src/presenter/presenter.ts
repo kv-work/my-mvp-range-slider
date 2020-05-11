@@ -82,7 +82,9 @@ export default class SliderPresenter implements Presenter {
   private subscribeToModel(): void {
     // need to implement the observer update func
     this.modelObserver = {
-      update: (): void => {},
+      update: (): void => {
+        const newModelData = this.getModelData();
+      },
     };
     this.model.addObserver(this.modelObserver);
   }
@@ -99,7 +101,9 @@ export default class SliderPresenter implements Presenter {
     this.view.render(this.dataValues);
   }
 
-  private updateView(renderData: ViewData): void {}
+  private updateView(viewData: ViewData): void {}
+
+  private updateViewValue(dataValues: Stringable[]): void {}
 
   private updateModel(updateData: OptionsModel): void {}
 }

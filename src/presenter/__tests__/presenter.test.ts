@@ -31,6 +31,11 @@ describe('Presenter', () => {
 
   const modelObservers = new Set<Observer>();
   const viewObservers = new Set<Observer>();
+  const mockModelNotify = jest.fn(() => {
+    modelObservers.forEach((observer: Observer) => {
+      observer.update();
+    });
+  });
 
   // Mock funcs for test model
   const mockAddObserver = jest.fn((observer: Observer) => {
@@ -39,7 +44,9 @@ describe('Presenter', () => {
   const mockRemoveObserver = jest.fn((observer: Observer) => {
     modelObservers.delete(observer);
   });
-  const mockUpdateState = jest.fn();
+  const mockUpdateState = jest.fn(() => {
+    mockModelNotify();
+  });
   const mockGetState = jest.fn((): OptionsModel => testModelState);
 
   // Mock funcs for test view
@@ -193,5 +200,20 @@ describe('Presenter', () => {
         ],
       });
     });
+  });
+
+  describe('model observer', () => {
+    beforeEach(() => {
+      mockAddObserver.mockClear();
+      testModel.updateState({ value: 25 });
+    });
+
+    test('should request updated model data', () => {
+      expect(mockModelNotify).toHaveBeenCalledTimes(1);
+      expect(mockGetState).toHaveBeenCalledTimes(1);
+    });
+
+    // need add tests
+    test('should calls updateView with new render data', () => {});
   });
 });
