@@ -439,12 +439,6 @@ describe.only('model', () => {
     });
   });
 
-  // describe('lockedValues', () => {
-  //   test('should have only getter', () => {
-
-  //   });
-  // });
-
   describe('addObserver', () => {
     test('should added observer to this.observers', () => {
       expect(testModel).toHaveProperty('observers');
@@ -554,6 +548,33 @@ describe.only('model', () => {
       expect(testModel.lockedValues.has('value')).toBeTruthy();
       expect(testModel.lockedValues.has('step')).toBeTruthy();
       expect(testModel.lockedValues.has('secondValue')).toBeTruthy();
+    });
+  });
+
+  describe('unlockState', () => {
+    test('should removes selected values in lockValues', () => {
+      testModel.lockState('all');
+      expect(testModel.lockedValues.has('minValue')).toBeTruthy();
+      expect(testModel.lockedValues.has('maxValue')).toBeTruthy();
+      expect(testModel.lockedValues.has('step')).toBeTruthy();
+      testModel.unlockState(['maxValue', 'step', 'value']);
+      expect(testModel.lockedValues.has('minValue')).toBeTruthy();
+      expect(testModel.lockedValues.has('maxValue')).toBeFalsy();
+      expect(testModel.lockedValues.has('step')).toBeFalsy();
+      expect(testModel.lockedValues.has('value')).toBeFalsy();
+      testModel.unlockState(['minValue', 'secondValue']);
+      expect(testModel.lockedValues.has('minValue')).toBeFalsy();
+      expect(testModel.lockedValues.has('secondValue')).toBeFalsy();
+    });
+
+    test('should removes all values in lockValues, if lockState argument is "all"', () => {
+      testModel.lockState('all');
+      testModel.unlockState('all');
+      expect(testModel.lockedValues.has('maxValue')).toBeFalsy();
+      expect(testModel.lockedValues.has('minValue')).toBeFalsy();
+      expect(testModel.lockedValues.has('value')).toBeFalsy();
+      expect(testModel.lockedValues.has('step')).toBeFalsy();
+      expect(testModel.lockedValues.has('secondValue')).toBeFalsy();
     });
   });
 });

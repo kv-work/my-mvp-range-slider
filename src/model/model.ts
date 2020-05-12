@@ -33,7 +33,7 @@ class SliderModel implements Model {
   }
 
   set value(newValue: number) {
-    if (SliderModel._validate(newValue) && !this._isLocked('value')) {
+    if (this._ableToChange('value', newValue)) {
       const {
         _maxValue,
         _minValue,
@@ -71,22 +71,20 @@ class SliderModel implements Model {
   }
 
   set maxValue(newValue: number) {
-    if (SliderModel._validate(newValue) && newValue !== this.maxValue && !this._isLocked('maxValue')) {
-      if (this._minValue === undefined || newValue > this._minValue) {
-        this._maxValue = newValue;
+    if (this._ableToChange('maxValue', newValue)) {
+      this._maxValue = newValue;
 
-        this.isUpdated = false;
+      this.isUpdated = false;
 
-        if (this._value !== undefined) {
-          this.value = this._value;
-        }
-        if (this._secondValue !== undefined) {
-          this.secondValue = this._secondValue;
-        }
+      if (this._value !== undefined) {
+        this.value = this._value;
+      }
+      if (this._secondValue !== undefined) {
+        this.secondValue = this._secondValue;
+      }
 
-        if (!this.isUpdated) {
-          this.notify();
-        }
+      if (!this.isUpdated) {
+        this.notify();
       }
     }
   }
@@ -96,22 +94,20 @@ class SliderModel implements Model {
   }
 
   set minValue(newValue: number) {
-    if (SliderModel._validate(newValue) && newValue !== this._minValue && !this._isLocked('minValue')) {
-      if (this._maxValue === undefined || newValue < this._maxValue) {
-        this._minValue = newValue;
+    if (this._ableToChange('minValue', newValue)) {
+      this._minValue = newValue;
 
-        this.isUpdated = false;
+      this.isUpdated = false;
 
-        if (this._value !== undefined) {
-          this.value = this._value;
-        }
-        if (this._secondValue !== undefined) {
-          this.secondValue = this._secondValue;
-        }
+      if (this._value !== undefined) {
+        this.value = this._value;
+      }
+      if (this._secondValue !== undefined) {
+        this.secondValue = this._secondValue;
+      }
 
-        if (!this.isUpdated) {
-          this.notify();
-        }
+      if (!this.isUpdated) {
+        this.notify();
       }
     }
   }
@@ -121,22 +117,20 @@ class SliderModel implements Model {
   }
 
   set step(newValue: number) {
-    if (SliderModel._validate(newValue) && newValue !== this._step && !this._isLocked('step')) {
-      if (newValue > 0) {
-        this._step = newValue;
+    if (this._ableToChange('step', newValue)) {
+      this._step = newValue;
 
-        this.isUpdated = false;
+      this.isUpdated = false;
 
-        if (this._value !== undefined) {
-          this.value = this._value;
-        }
-        if (this._secondValue !== undefined) {
-          this.secondValue = this._secondValue;
-        }
+      if (this._value !== undefined) {
+        this.value = this._value;
+      }
+      if (this._secondValue !== undefined) {
+        this.secondValue = this._secondValue;
+      }
 
-        if (!this.isUpdated) {
-          this.notify();
-        }
+      if (!this.isUpdated) {
+        this.notify();
       }
     }
   }
@@ -146,7 +140,7 @@ class SliderModel implements Model {
   }
 
   set secondValue(newValue: number) {
-    if (SliderModel._validate(newValue) && !this._isLocked('secondValue')) {
+    if (this._ableToChange('secondValue', newValue)) {
       const {
         _maxValue,
         _value,
@@ -251,7 +245,33 @@ class SliderModel implements Model {
     }
   }
 
-  public unlockState(props: string[] | 'all'): void {}
+  public unlockState(props: string[] | 'all'): void {
+    if (Array.isArray(props)) {
+      props.forEach((valueName) => {
+        switch (valueName) {
+          case 'minValue':
+            this.lockedValues.delete('minValue');
+            break;
+          case 'maxValue':
+            this.lockedValues.delete('maxValue');
+            break;
+          case 'step':
+            this.lockedValues.delete('step');
+            break;
+          case 'value':
+            this.lockedValues.delete('value');
+            break;
+          case 'secondValue':
+            this.lockedValues.delete('secondValue');
+            break;
+          default:
+            break;
+        }
+      });
+    } else if (props === 'all') {
+      this.lockedValues.clear();
+    }
+  }
 
   private notify(): void {
     if (this._checkObservers()) {
@@ -284,6 +304,38 @@ class SliderModel implements Model {
 
   private _isLocked(value: string): boolean {
     return (this.lockedValues !== undefined && this.lockedValues.has(value));
+  }
+
+  private _ableToChange(value: string, newValue: number): boolean {
+    const isValid: boolean = SliderModel._validate(newValue);
+    const isLocked: boolean = this._isLocked(value);
+    let isEqual: boolean;
+    let isUndefined: boolean;
+    let isGreaterThenMin: boolean;
+    let isLessThenMax: boolean;
+
+    switch (value) {
+      case 'value':
+        return (isValid && !isLocked);
+      case 'secondValue':
+        return (isValid && !isLocked);
+      case 'maxValue':
+        isEqual = (newValue === this._maxValue);
+        isUndefined = (this._maxValue === undefined);
+        isGreaterThenMin = (this._minValue === undefined || newValue > this._minValue);
+        return isUndefined || (isValid && !isLocked && !isEqual && isGreaterThenMin);
+      case 'minValue':
+        isEqual = (newValue === this._minValue);
+        isUndefined = (this._minValue === undefined);
+        isLessThenMax = (this._maxValue === undefined || newValue < this._maxValue);
+        return isUndefined || (isValid && !isLocked && !isEqual && isLessThenMax);
+      case 'step':
+        isEqual = (newValue === this._step);
+        isUndefined = (this._step === undefined);
+        return isUndefined || (isValid && !isLocked && !isEqual && (newValue > 0));
+      default:
+        return false;
+    }
   }
 
   static _validate(value: number): boolean {
