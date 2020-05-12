@@ -41,6 +41,7 @@ describe.only('model', () => {
     testModel.addObserver(anotherObserver);
     modelWithSecondValue.addObserver(observer);
     modelWithSecondValue.addObserver(anotherObserver);
+    testModel.lockedValues.clear();
   });
 
   afterEach(() => {
@@ -145,6 +146,14 @@ describe.only('model', () => {
       expect(updateFunc).not.toBeCalled();
       expect(anotherUpdateFunc).not.toBeCalled();
     });
+
+    test('should not change value if it is locked', () => {
+      expect(testModel.value).toBe(2);
+      testModel.lockState(['value']);
+
+      testModel.value = 6;
+      expect(testModel.value).toBe(2);
+    });
   });
 
   describe('_secondValue', () => {
@@ -221,6 +230,14 @@ describe.only('model', () => {
       expect(updateFunc).not.toBeCalled();
       expect(anotherUpdateFunc).not.toBeCalled();
     });
+
+    test('should not change secondValue if it is locked', () => {
+      expect(modelWithSecondValue.secondValue).toBe(8);
+      modelWithSecondValue.lockState(['secondValue']);
+
+      modelWithSecondValue.secondValue = 6;
+      expect(modelWithSecondValue.secondValue).toBe(8);
+    });
   });
 
   describe('_maxValue', () => {
@@ -274,6 +291,14 @@ describe.only('model', () => {
 
       expect(updateFunc).not.toBeCalled();
       expect(anotherUpdateFunc).not.toBeCalled();
+    });
+
+    test('should not change maxValue if it is locked', () => {
+      expect(testModel.maxValue).toBe(10);
+      testModel.lockState(['maxValue']);
+
+      testModel.maxValue = 100;
+      expect(testModel.maxValue).toBe(10);
     });
   });
 
@@ -329,6 +354,16 @@ describe.only('model', () => {
 
       expect(updateFunc).not.toBeCalled();
       expect(anotherUpdateFunc).not.toBeCalled();
+    });
+
+    test('should not change minValue if it is locked', () => {
+      expect(testModel.minValue).toBe(0);
+      testModel.lockState(['minValue']);
+
+      testModel.minValue = 5;
+      expect(testModel.minValue).toBe(0);
+      testModel.minValue = -5;
+      expect(testModel.minValue).toBe(0);
     });
   });
 
@@ -391,6 +426,16 @@ describe.only('model', () => {
 
       expect(updateFunc).not.toBeCalled();
       expect(anotherUpdateFunc).not.toBeCalled();
+    });
+
+    test('should not change step if it is locked', () => {
+      expect(testModel.step).toBe(2);
+      testModel.lockState(['step']);
+
+      testModel.step = 5;
+      expect(testModel.step).toBe(2);
+      testModel.step = -5;
+      expect(testModel.step).toBe(2);
     });
   });
 
@@ -495,10 +540,6 @@ describe.only('model', () => {
   });
 
   describe('lockState', () => {
-    beforeEach(() => {
-      testModel.lockedValues.clear();
-    });
-
     test('should adds selected values into lockValues', () => {
       testModel.lockState(['minValue', 'maxValue']);
       expect(testModel.lockedValues.has('minValue')).toBeTruthy();

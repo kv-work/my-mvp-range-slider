@@ -33,7 +33,7 @@ class SliderModel implements Model {
   }
 
   set value(newValue: number) {
-    if (SliderModel._validate(newValue)) {
+    if (SliderModel._validate(newValue) && !this._isLocked('value')) {
       const {
         _maxValue,
         _minValue,
@@ -43,6 +43,7 @@ class SliderModel implements Model {
       if (this._value === undefined) {
         this._value = this._minValue;
       }
+
       const valueMultipleStep = this._getMultipleStep(newValue);
 
       if (this._secondValue !== undefined && valueMultipleStep >= this._secondValue) {
@@ -70,7 +71,7 @@ class SliderModel implements Model {
   }
 
   set maxValue(newValue: number) {
-    if (SliderModel._validate(newValue) && newValue !== this.maxValue) {
+    if (SliderModel._validate(newValue) && newValue !== this.maxValue && !this._isLocked('maxValue')) {
       if (this._minValue === undefined || newValue > this._minValue) {
         this._maxValue = newValue;
 
@@ -95,7 +96,7 @@ class SliderModel implements Model {
   }
 
   set minValue(newValue: number) {
-    if (SliderModel._validate(newValue) && newValue !== this._minValue) {
+    if (SliderModel._validate(newValue) && newValue !== this._minValue && !this._isLocked('minValue')) {
       if (this._maxValue === undefined || newValue < this._maxValue) {
         this._minValue = newValue;
 
@@ -120,7 +121,7 @@ class SliderModel implements Model {
   }
 
   set step(newValue: number) {
-    if (SliderModel._validate(newValue) && newValue !== this._step) {
+    if (SliderModel._validate(newValue) && newValue !== this._step && !this._isLocked('step')) {
       if (newValue > 0) {
         this._step = newValue;
 
@@ -145,7 +146,7 @@ class SliderModel implements Model {
   }
 
   set secondValue(newValue: number) {
-    if (SliderModel._validate(newValue)) {
+    if (SliderModel._validate(newValue) && !this._isLocked('secondValue')) {
       const {
         _maxValue,
         _value,
@@ -279,6 +280,10 @@ class SliderModel implements Model {
     }
 
     return valueMultipleStep;
+  }
+
+  private _isLocked(value: string): boolean {
+    return (this.lockedValues !== undefined && this.lockedValues.has(value));
   }
 
   static _validate(value: number): boolean {
