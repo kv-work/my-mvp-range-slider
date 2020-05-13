@@ -92,11 +92,16 @@ interface ViewData {
 }
 
 interface View {
-  render(dataValues: Stringable[]): void;
+  render(renderData: RenderData): void;
   update(viewData: ViewData): void;
   addObserver(observer: Observer): void;
   removeObserver(observer: Observer): void;
   getData(): ViewData;
+}
+
+interface RenderData {
+  data: Stringable[];
+  value: number;
 }
 
 interface Stringable {
@@ -114,4 +119,5 @@ export {
   ApplicationOption,
   Stringable,
   PresenterData,
+  RenderData,
 };
