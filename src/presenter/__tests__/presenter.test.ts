@@ -13,7 +13,7 @@ import {
 describe('Presenter', () => {
   document.body.innerHTML = '<div id="container"></div>';
 
-  const testModelState: OptionsModel = {
+  let testModelState: OptionsModel = {
     maxValue: 100,
     minValue: 0,
     step: 5,
@@ -21,7 +21,7 @@ describe('Presenter', () => {
     secondValue: 70,
   };
 
-  const testViewData: ViewData = {
+  let testViewData: ViewData = {
     orientation: 'horizontal',
     range: true,
     dragInterval: true,
@@ -61,7 +61,11 @@ describe('Presenter', () => {
   const mockRemoveObserver = jest.fn((observer: Observer) => {
     modelObservers.delete(observer);
   });
-  const mockUpdateState = jest.fn(() => {
+  const mockUpdateState = jest.fn((options: OptionsModel) => {
+    testModelState = {
+      ...testModelState,
+      ...options,
+    };
     mockModelNotify();
   });
   const mockGetState = jest.fn((): OptionsModel => testModelState);
@@ -102,6 +106,28 @@ describe('Presenter', () => {
   let testView: View;
 
   beforeEach(() => {
+    testModelState = {
+      maxValue: 100,
+      minValue: 0,
+      step: 5,
+      value: 25,
+      secondValue: 70,
+    };
+    testViewData = {
+      orientation: 'horizontal',
+      range: true,
+      dragInterval: true,
+      runner: true,
+      bar: true,
+      scale: true,
+      scaleStep: 25,
+      displayScaleValue: true,
+      displayValue: true,
+      displayMin: true,
+      displayMax: true,
+      prefix: 'value',
+      postfix: '$',
+    };
     testModel = new MockModel();
     testView = new MockView();
     testPresenter = new SliderPresenter({
@@ -144,6 +170,20 @@ describe('Presenter', () => {
     test('should calls render method of view', () => {
       expect(mockRender).toBeCalledTimes(1);
       expect(viewObservers.size).toBe(1);
+    });
+
+    test('should create presenter with dataValues', () => {
+      testPresenter = new SliderPresenter({
+        model: testModel,
+        view: testView,
+        dataValues: testDataValues,
+        onStart: mockOnStart,
+        onChange: mockOnChange,
+        onFinish: mockOnFinish,
+        onUpdate: mockOnUpdate,
+      });
+
+      expect(testPresenter).toHaveProperty('dataValues', ['one', 'two', 'three', 'four']);
     });
   });
 
@@ -286,16 +326,49 @@ describe('Presenter', () => {
   describe('model observer', () => {
     beforeEach(() => {
       mockGetState.mockClear();
-      testModel.updateState({ value: 25 });
+      mockModelNotify.mockClear();
+      mockRender.mockClear();
     });
 
     test('should request updated model data', () => {
+      testModel.updateState({ value: 25 });
       expect(mockModelNotify).toHaveBeenCalledTimes(1);
       expect(mockGetState).toHaveBeenCalledTimes(1);
     });
 
-    // need add tests
-    test('should calls updateView with new render data', () => {});
+    test('should update renderData', () => {
+      testPresenter.update({
+        maxValue: 50,
+        minValue: 25,
+        step: 5,
+      });
+
+      expect(mockModelNotify).toHaveBeenCalledTimes(1);
+      expect(testPresenter).toHaveProperty('renderData', [25, 30, 35, 40, 45, 50]);
+
+      testPresenter.update({
+        maxValue: 10,
+        minValue: 0,
+        step: 7,
+      });
+
+      expect(mockModelNotify).toHaveBeenCalledTimes(2);
+      expect(testPresenter).toHaveProperty('renderData', [0, 7, 10]);
+    });
+
+    test('should calls render with new render data', () => {
+      testPresenter.update({
+        maxValue: 50,
+        minValue: 25,
+        step: 5,
+        value: 35,
+      });
+
+      expect(mockRender).toBeCalledWith({
+        data: [25, 30, 35, 40, 45, 50],
+        value: 35,
+      });
+    });
   });
 
   describe('update', () => {

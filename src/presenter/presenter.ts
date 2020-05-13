@@ -13,7 +13,7 @@ import {
   ApplicationOption,
   Stringable,
   PresenterData,
-  RenderData,
+  ViewRenderData,
 } from '../types';
 
 export default class SliderPresenter implements Presenter {
@@ -120,7 +120,7 @@ export default class SliderPresenter implements Presenter {
     }
   }
 
-  private createDataValues(): Stringable[] {
+  private createDataValues(data?: OptionsModel): Stringable[] {
     if (this.dataValues.length > 0) {
       return this.dataValues;
     }
@@ -129,26 +129,31 @@ export default class SliderPresenter implements Presenter {
       minValue: min,
       maxValue: max,
       step,
-    } = this.model.getState();
+    } = data || this.model.getState();
 
-    const dataValues: number[] = [];
+    const values: number[] = [];
 
     for (let i: number = min; i <= max; i += step) {
-      dataValues.push(i);
+      values.push(i);
     }
 
-    if (dataValues[-1] < max) {
-      dataValues.push(max);
+    if (values[values.length - 1] < max) {
+      values.push(max);
     }
 
-    return dataValues;
+    return values;
   }
 
   private subscribeToModel(): void {
     // need to implement the observer update func
     this.modelObserver = {
       update: (): void => {
-        const newModelData = this.getModelData();
+        const updatedModelState = this.getModelData();
+        this.renderData = this.createDataValues(updatedModelState);
+        this.renderView({
+          data: this.renderData,
+          value: updatedModelState.value,
+        })
       },
     };
     this.model.addObserver(this.modelObserver);
@@ -162,13 +167,17 @@ export default class SliderPresenter implements Presenter {
     this.view.addObserver(this.viewObserver);
   }
 
-  private renderView(): void {
-    const currentValue = this.getModelData().value;
-    const data: RenderData = {
-      data: this.renderData,
-      value: currentValue,
+  private renderView(data?: ViewRenderData): void {
+    if (data) {
+      this.view.render(data);
+    } else {
+      const currentValue = this.getModelData().value;
+      const viewRenderData: ViewRenderData = {
+        data: this.renderData,
+        value: currentValue,
+      }
+      this.view.render(viewRenderData);
     }
-    this.view.render(data);
   }
 
   private updateDataValues(values: Stringable[]): void {
@@ -193,6 +202,4 @@ export default class SliderPresenter implements Presenter {
 
     return isEmpty;
   }
-
-  private updateViewValue(dataValues: Stringable[]): void {}
 }
