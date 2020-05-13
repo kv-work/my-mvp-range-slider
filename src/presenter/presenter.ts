@@ -1,7 +1,3 @@
-/* eslint-disable no-useless-return */
-/* eslint-disable @typescript-eslint/semi */
-/* eslint-disable class-methods-use-this */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   OptionsModel,
   Observer,
@@ -47,7 +43,7 @@ export default class SliderPresenter implements Presenter {
       onChange: options.onChange,
       onFinish: options.onFinish,
       onUpdate: options.onUpdate,
-    }
+    };
 
     this.subscribeToModel();
     this.subscribeToView();
@@ -79,11 +75,11 @@ export default class SliderPresenter implements Presenter {
       postfix: options.postfix,
     };
 
-    if (!this.isEmpty(modelOptions)) {
+    if (!SliderPresenter.isEmpty(modelOptions)) {
       this.model.updateState(modelOptions);
     }
 
-    if (!this.isEmpty(viewOptions)) {
+    if (!SliderPresenter.isEmpty(viewOptions)) {
       this.view.update(viewOptions);
     }
 
@@ -101,8 +97,8 @@ export default class SliderPresenter implements Presenter {
       ...this.getModelData(),
       ...this.getViewData(),
       ...this.getPresenterData(),
-    }
-    return data
+    };
+    return data;
   }
 
   public getModelData(): OptionsModel {
@@ -110,14 +106,14 @@ export default class SliderPresenter implements Presenter {
   }
 
   public getViewData(): ViewData {
-    return this.view.getData()
+    return this.view.getData();
   }
 
   public getPresenterData(): PresenterData {
     return {
       dataValues: this.dataValues,
       renderData: this.renderData,
-    }
+    };
   }
 
   private createDataValues(data?: OptionsModel): Stringable[] {
@@ -152,7 +148,7 @@ export default class SliderPresenter implements Presenter {
         this.renderView({
           data: this.renderData,
           value: updatedModelState.value,
-        })
+        });
       },
     };
     this.model.addObserver(this.modelObserver);
@@ -163,12 +159,24 @@ export default class SliderPresenter implements Presenter {
       start: (): void => {
         this.callbacks.onStart();
       },
-      change: (newValue: number): void => {
-        this.model.updateState({ value: newValue })
+      change: (values: [number, number] | number): void => {
+        if (Array.isArray(values)) {
+          const [newValue, newSecondValue] = values;
+          this.model.updateState({ value: newValue, secondValue: newSecondValue });
+        } else {
+          this.model.updateState({ value: values });
+        }
+
         this.callbacks.onChange();
       },
-      finish: (newValue: number): void => {
-        this.model.updateState({ value: newValue })
+      finish: (values: [number, number] | number): void => {
+        if (Array.isArray(values)) {
+          const [newValue, newSecondValue] = values;
+          this.model.updateState({ value: newValue, secondValue: newSecondValue });
+        } else {
+          this.model.updateState({ value: values });
+        }
+
         this.callbacks.onFinish();
       },
     };
@@ -183,7 +191,7 @@ export default class SliderPresenter implements Presenter {
       const viewRenderData: ViewRenderData = {
         data: this.renderData,
         value: currentValue,
-      }
+      };
       this.view.render(viewRenderData);
     }
   }
@@ -194,11 +202,11 @@ export default class SliderPresenter implements Presenter {
       maxValue: values.length - 1,
       minValue: 0,
       step: 1,
-    })
-    this.model.lockState(['maxValue', 'minValue', 'step'])
+    });
+    this.model.lockState(['maxValue', 'minValue', 'step']);
   }
 
-  private isEmpty(object: {}): boolean {
+  static isEmpty(object: {}): boolean {
     const entries = Object.entries(object);
     let isEmpty = true;
 
@@ -206,7 +214,7 @@ export default class SliderPresenter implements Presenter {
       if (entry[1] !== undefined) {
         isEmpty = false;
       }
-    })
+    });
 
     return isEmpty;
   }

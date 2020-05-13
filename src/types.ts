@@ -34,8 +34,8 @@ interface ApplicationOption {
 interface Observer {
   update?(): void;
   start?(): void;
-  change?(value: number): void;
-  finish?(value: number): void;
+  change?(values: [number, number] | number): void;
+  finish?(values: [number, number] | number): void;
 }
 
 interface OptionsPresenter {
