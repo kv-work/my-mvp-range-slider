@@ -6,6 +6,7 @@ import {
   Model,
   ViewData,
   Observer,
+  Stringable,
 } from '../../types';
 
 // replace .only
@@ -36,6 +37,15 @@ describe('Presenter', () => {
     postfix: '$',
   };
 
+  const testDataValues: Stringable[] = ['one', 'two', 'three', 'four'];
+
+  // Mock callbacks
+  const mockOnStart = jest.fn();
+  const mockOnChange = jest.fn();
+  const mockOnFinish = jest.fn();
+  const mockOnUpdate = jest.fn();
+
+  // Mock observers
   const modelObservers = new Set<Observer>();
   const viewObservers = new Set<Observer>();
   const mockModelNotify = jest.fn(() => {
@@ -97,10 +107,10 @@ describe('Presenter', () => {
     testPresenter = new SliderPresenter({
       model: testModel,
       view: testView,
-      onStart: jest.fn(),
-      onChange: jest.fn(),
-      onFinish: jest.fn(),
-      onUpdate: jest.fn(),
+      onStart: mockOnStart,
+      onChange: mockOnChange,
+      onFinish: mockOnFinish,
+      onUpdate: mockOnUpdate,
     });
   });
 
@@ -119,6 +129,7 @@ describe('Presenter', () => {
       expect(testPresenter).toHaveProperty('modelObserver');
       expect(testPresenter).toHaveProperty('dataValues');
       expect(testPresenter).toHaveProperty('renderData');
+      expect(testPresenter).toHaveProperty('callbacks');
     });
 
     test('should calls model method addObserver', () => {
@@ -240,5 +251,88 @@ describe('Presenter', () => {
 
     // need add tests
     test('should calls updateView with new render data', () => {});
+  });
+
+  describe('update', () => {
+    beforeEach(() => {
+      mockOnUpdate.mockClear();
+    });
+
+    test('should calls updateState method of model, if it is necessary to update the model state', () => {
+      testPresenter.update({
+        maxValue: 90,
+        minValue: 10,
+        step: 10,
+        value: 30,
+        secondValue: 60,
+      });
+
+      expect(mockUpdateState).toBeCalledWith({
+        maxValue: 90,
+        minValue: 10,
+        step: 10,
+        value: 30,
+        secondValue: 60,
+      });
+
+      testPresenter.update({ value: 40 });
+
+      expect(mockUpdateState).toBeCalledWith({ value: 40 });
+    });
+
+    test('should calls update method of view, if it is necessary to update the view props', () => {
+      testPresenter.update({
+        orientation: 'vertical',
+        range: true,
+        dragInterval: false,
+        runner: false,
+        bar: true,
+        scale: true,
+        scaleStep: 25,
+        displayScaleValue: true,
+        displayValue: false,
+        displayMin: true,
+        displayMax: true,
+        prefix: '+',
+        postfix: ' p.',
+      });
+
+      expect(mockUpdate).toBeCalledWith({
+        orientation: 'vertical',
+        range: true,
+        dragInterval: false,
+        runner: false,
+        bar: true,
+        scale: true,
+        scaleStep: 25,
+        displayScaleValue: true,
+        displayValue: false,
+        displayMin: true,
+        displayMax: true,
+        prefix: '+',
+        postfix: ' p.',
+      });
+
+      testPresenter.update({ runner: true });
+
+      expect(mockUpdate).toBeCalledWith({ runner: true });
+    });
+
+    test('should updates dataValues and renderData', () => {
+      testPresenter.update({ dataValues: testDataValues });
+
+      expect(testPresenter).toHaveProperty('dataValues', ['one', 'two', 'three', 'four']);
+
+      expect(testPresenter).toHaveProperty('renderData', ['one', 'two', 'three', 'four']);
+    });
+
+    test('should calls onUpdate callback', () => {
+      testPresenter.update({
+        value: 50,
+        maxValue: 200,
+      });
+
+      expect(mockOnUpdate).toBeCalledTimes(1);
+    });
   });
 });

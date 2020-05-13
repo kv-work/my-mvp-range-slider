@@ -22,6 +22,12 @@ export default class SliderPresenter implements Presenter {
   private modelObserver: Observer;
   private dataValues: Stringable[];
   private renderData: Stringable[];
+  private callbacks: {
+    onStart: CallableFunction;
+    onChange: CallableFunction;
+    onFinish: CallableFunction;
+    onUpdate: CallableFunction;
+  };
 
   constructor(options: OptionsPresenter) {
     this.model = options.model;
@@ -35,13 +41,53 @@ export default class SliderPresenter implements Presenter {
 
     this.renderData = this.createDataValues();
 
+    this.callbacks = {
+      onStart: options.onStart,
+      onChange: options.onChange,
+      onFinish: options.onFinish,
+      onUpdate: options.onUpdate,
+    }
 
     this.subscribeToModel();
     this.subscribeToView();
     this.renderView();
   }
 
-  public update(options: ApplicationOption): void {}
+  public update(options: ApplicationOption): void {
+    const modelOptions: OptionsModel = {
+      maxValue: options.maxValue,
+      minValue: options.minValue,
+      step: options.step,
+      value: options.value,
+      secondValue: options.secondValue,
+    };
+
+    const viewOptions: ViewData = {
+      orientation: options.orientation,
+      range: options.range,
+      dragInterval: options.dragInterval,
+      runner: options.runner,
+      bar: options.bar,
+      scale: options.scale,
+      scaleStep: options.scaleStep,
+      displayScaleValue: options.displayScaleValue,
+      displayValue: options.displayValue,
+      displayMin: options.displayMin,
+      displayMax: options.displayMax,
+      prefix: options.prefix,
+      postfix: options.postfix,
+    };
+
+    this.model.updateState(modelOptions);
+    this.view.update(viewOptions);
+
+    if (options.dataValues !== undefined) {
+      this.dataValues = options.dataValues;
+      this.renderData = this.createDataValues();
+    }
+
+    this.callbacks.onUpdate();
+  }
 
   public getAllData(): ApplicationOption {
     const data = {
@@ -113,9 +159,5 @@ export default class SliderPresenter implements Presenter {
     this.view.render(this.renderData);
   }
 
-  private updateView(viewData: ViewData): void {}
-
   private updateViewValue(dataValues: Stringable[]): void {}
-
-  private updateModel(updateData: OptionsModel): void {}
 }
