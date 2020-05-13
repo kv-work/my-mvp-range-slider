@@ -32,7 +32,10 @@ interface ApplicationOption {
 }
 
 interface Observer {
-  update(value?: number): void;
+  update?(): void;
+  start?(): void;
+  change?(value: number): void;
+  finish?(value: number): void;
 }
 
 interface OptionsPresenter {

@@ -9,33 +9,12 @@ import {
   Stringable,
 } from '../../types';
 
-// replace .only
 describe('Presenter', () => {
   document.body.innerHTML = '<div id="container"></div>';
 
-  let testModelState: OptionsModel = {
-    maxValue: 100,
-    minValue: 0,
-    step: 5,
-    value: 25,
-    secondValue: 70,
-  };
+  let testModelState: OptionsModel;
 
-  let testViewData: ViewData = {
-    orientation: 'horizontal',
-    range: true,
-    dragInterval: true,
-    runner: true,
-    bar: true,
-    scale: true,
-    scaleStep: 25,
-    displayScaleValue: true,
-    displayValue: true,
-    displayMin: true,
-    displayMax: true,
-    prefix: 'value',
-    postfix: '$',
-  };
+  let testViewData: ViewData;
 
   const testDataValues: Stringable[] = ['one', 'two', 'three', 'four'];
 
@@ -52,6 +31,21 @@ describe('Presenter', () => {
     modelObservers.forEach((observer: Observer) => {
       observer.update();
     });
+  });
+  const mockViewNotify = jest.fn((event: {type: string; value?: number}) => {
+    switch (event.type) {
+      case 'start':
+        viewObservers.forEach((observer: Observer) => observer.start());
+        break;
+      case 'change':
+        viewObservers.forEach((observer: Observer) => observer.change(event.value));
+        break;
+      case 'finish':
+        viewObservers.forEach((observer: Observer) => observer.finish(event.value));
+        break;
+      default:
+        break;
+    }
   });
 
   // Mock funcs for test model
@@ -368,6 +362,55 @@ describe('Presenter', () => {
         data: [25, 30, 35, 40, 45, 50],
         value: 35,
       });
+    });
+  });
+
+  describe('view observer', () => {
+    beforeEach(() => {
+      mockOnStart.mockClear();
+      mockOnChange.mockClear();
+      mockOnFinish.mockClear();
+    });
+
+    test('should call onStart callback at the beginning of value change (for example, mousedown event)', () => {
+      mockViewNotify({ type: 'start' });
+
+      expect(mockOnStart).toBeCalledTimes(1);
+      expect(mockOnUpdate).not.toBeCalled();
+    });
+
+    test('should update model state while changing the value', () => {
+      mockViewNotify({
+        type: 'change',
+        value: 40,
+      });
+
+      expect(mockUpdateState).toBeCalledWith({ value: 40 });
+      expect(mockOnUpdate).not.toBeCalled();
+    });
+
+    test('should call the onChange callback while changing the value (for example, the mousemove event before the mouseup event)', () => {
+      mockViewNotify({ type: 'change', value: 30 });
+
+      expect(mockOnChange).toBeCalledTimes(1);
+      expect(mockOnUpdate).not.toBeCalled();
+    });
+
+    test('should update model state after changing the value ', () => {
+      mockViewNotify({
+        type: 'finish',
+        value: 60,
+      });
+
+      expect(mockUpdateState).toBeCalledWith({ value: 60 });
+      expect(mockOnUpdate).not.toBeCalled();
+    });
+
+    test('should call the onFinish callback after changing the value (for example, the mouseup event)', () => {
+      mockViewNotify({ type: 'finish', value: 35 });
+
+      expect(mockOnFinish).toBeCalledTimes(1);
+      expect(mockOnUpdate).not.toBeCalled();
     });
   });
 

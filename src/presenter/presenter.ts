@@ -145,7 +145,6 @@ export default class SliderPresenter implements Presenter {
   }
 
   private subscribeToModel(): void {
-    // need to implement the observer update func
     this.modelObserver = {
       update: (): void => {
         const updatedModelState = this.getModelData();
@@ -160,9 +159,18 @@ export default class SliderPresenter implements Presenter {
   }
 
   private subscribeToView(): void {
-    // need to implement the observer update func
     this.viewObserver = {
-      update: (value: number): void => {},
+      start: (): void => {
+        this.callbacks.onStart();
+      },
+      change: (newValue: number): void => {
+        this.model.updateState({ value: newValue })
+        this.callbacks.onChange();
+      },
+      finish: (newValue: number): void => {
+        this.model.updateState({ value: newValue })
+        this.callbacks.onFinish();
+      },
     };
     this.view.addObserver(this.viewObserver);
   }
