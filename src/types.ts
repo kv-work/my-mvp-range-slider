@@ -50,7 +50,12 @@ interface Presenter {
   getAllData(): ApplicationOption;
   getModelData(): OptionsModel;
   getViewData(): ViewData;
-  getPresenterData(): Stringable[];
+  getPresenterData(): PresenterData;
+}
+
+interface PresenterData {
+  dataValues: Stringable[];
+  renderData: Stringable[];
 }
 
 interface OptionsModel {
@@ -62,7 +67,6 @@ interface OptionsModel {
 }
 
 interface Model {
-  readonly lockedValues: Set<string>;
   getState(): OptionsModel;
   updateState(state: OptionsModel): void;
   addObserver(observer: Observer): void;
@@ -109,4 +113,5 @@ export {
   OptionsPresenter,
   ApplicationOption,
   Stringable,
+  PresenterData,
 };

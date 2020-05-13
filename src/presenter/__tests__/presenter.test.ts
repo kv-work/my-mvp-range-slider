@@ -17,16 +17,23 @@ describe('Presenter', () => {
     minValue: 0,
     step: 5,
     value: 25,
+    secondValue: 70,
   };
 
   const testViewData: ViewData = {
     orientation: 'horizontal',
-    range: false,
-    runner: false,
+    range: true,
+    dragInterval: true,
+    runner: true,
     bar: true,
-    scale: false,
-    prefix: '',
-    postfix: '',
+    scale: true,
+    scaleStep: 25,
+    displayScaleValue: true,
+    displayValue: true,
+    displayMin: true,
+    displayMax: true,
+    prefix: 'value',
+    postfix: '$',
   };
 
   const modelObservers = new Set<Observer>();
@@ -104,13 +111,14 @@ describe('Presenter', () => {
   });
 
   describe('constructor', () => {
-    test('should have props: view, model, viewObserver, modelObserver, dataValues', () => {
+    test('should set props: view, model, viewObserver, modelObserver, dataValues, renderData', () => {
       expect(testPresenter).toBeInstanceOf(SliderPresenter);
       expect(testPresenter).toHaveProperty('view', testView);
       expect(testPresenter).toHaveProperty('model', testModel);
       expect(testPresenter).toHaveProperty('viewObserver');
       expect(testPresenter).toHaveProperty('modelObserver');
       expect(testPresenter).toHaveProperty('dataValues');
+      expect(testPresenter).toHaveProperty('renderData');
     });
 
     test('should calls model method addObserver', () => {
@@ -144,6 +152,7 @@ describe('Presenter', () => {
         minValue: 0,
         step: 5,
         value: 25,
+        secondValue: 70,
       });
     });
   });
@@ -160,22 +169,31 @@ describe('Presenter', () => {
     test('should returns view data', () => {
       expect(mockGetViewData).toHaveReturnedWith({
         orientation: 'horizontal',
-        range: false,
-        runner: false,
+        range: true,
+        dragInterval: true,
+        runner: true,
         bar: true,
-        scale: false,
-        prefix: '',
-        postfix: '',
+        scale: true,
+        scaleStep: 25,
+        displayScaleValue: true,
+        displayValue: true,
+        displayMin: true,
+        displayMax: true,
+        prefix: 'value',
+        postfix: '$',
       });
     });
   });
 
   describe('getPresenterData', () => {
-    test('should return presenter data: dataValues', () => {
+    test('should return presenter data: dataValues, renderData', () => {
       const presenterDataValues = testPresenter.getPresenterData();
-      expect(presenterDataValues).toEqual([
-        0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100,
-      ]);
+      expect(presenterDataValues).toEqual({
+        dataValues: [],
+        renderData: [
+          0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100,
+        ],
+      });
     });
   });
 
@@ -187,14 +205,22 @@ describe('Presenter', () => {
         minValue: 0,
         step: 5,
         value: 25,
+        secondValue: 70,
         orientation: 'horizontal',
-        range: false,
-        runner: false,
+        range: true,
+        dragInterval: true,
+        runner: true,
         bar: true,
-        scale: false,
-        prefix: '',
-        postfix: '',
-        dataValues: [
+        scale: true,
+        scaleStep: 25,
+        displayScaleValue: true,
+        displayValue: true,
+        displayMin: true,
+        displayMax: true,
+        prefix: 'value',
+        postfix: '$',
+        dataValues: [],
+        renderData: [
           0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100,
         ],
       });

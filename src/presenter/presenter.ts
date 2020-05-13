@@ -12,6 +12,7 @@ import {
   OptionsPresenter,
   ApplicationOption,
   Stringable,
+  PresenterData,
 } from '../types';
 
 export default class SliderPresenter implements Presenter {
@@ -19,7 +20,8 @@ export default class SliderPresenter implements Presenter {
   private model: Model;
   private viewObserver: Observer;
   private modelObserver: Observer;
-  private dataValues: Stringable[] | undefined;
+  private dataValues: Stringable[];
+  private renderData: Stringable[];
 
   constructor(options: OptionsPresenter) {
     this.model = options.model;
@@ -28,8 +30,11 @@ export default class SliderPresenter implements Presenter {
     if (options.dataValues !== undefined) {
       this.dataValues = options.dataValues;
     } else {
-      this.dataValues = this.createDataValues();
+      this.dataValues = [];
     }
+
+    this.renderData = this.createDataValues();
+
 
     this.subscribeToModel();
     this.subscribeToView();
@@ -42,7 +47,7 @@ export default class SliderPresenter implements Presenter {
     const data = {
       ...this.getModelData(),
       ...this.getViewData(),
-      dataValues: this.getPresenterData(),
+      ...this.getPresenterData(),
     }
     return data
   }
@@ -55,11 +60,18 @@ export default class SliderPresenter implements Presenter {
     return this.view.getData()
   }
 
-  public getPresenterData(): Stringable[] {
-    return this.dataValues;
+  public getPresenterData(): PresenterData {
+    return {
+      dataValues: this.dataValues,
+      renderData: this.renderData,
+    }
   }
 
-  private createDataValues(): number[] {
+  private createDataValues(): Stringable[] {
+    if (this.dataValues.length > 0) {
+      return this.dataValues;
+    }
+
     const {
       minValue: min,
       maxValue: max,
@@ -98,7 +110,7 @@ export default class SliderPresenter implements Presenter {
   }
 
   private renderView(): void {
-    this.view.render(this.dataValues);
+    this.view.render(this.renderData);
   }
 
   private updateView(viewData: ViewData): void {}
