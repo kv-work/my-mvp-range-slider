@@ -238,6 +238,51 @@ describe('Presenter', () => {
     });
   });
 
+  describe('dataValues', () => {
+    beforeEach(() => {
+      mockUpdateState.mockClear();
+      mockLockState.mockClear();
+      mockRender.mockClear();
+    });
+
+    test('should changes and locks model values, if dataValues.length > 0', () => {
+      // ['one', 'two', 'three', 'four']
+      testPresenter.update({ dataValues: testDataValues });
+
+      expect(mockUpdateState).toBeCalledWith({
+        maxValue: 3,
+        minValue: 0,
+        step: 1,
+      });
+
+      expect(mockLockState).toBeCalledWith(['maxValue', 'minValue', 'step']);
+
+      testPresenter.update({
+        dataValues: [14, 122, 78, 90, 50, 88],
+      });
+
+      expect(mockUpdateState).toBeCalledWith({
+        maxValue: 5,
+        minValue: 0,
+        step: 1,
+      });
+    });
+
+    test('should not changes and locks model values, if dataValues.length <= 0', () => {
+      testPresenter.update({ dataValues: [] });
+
+      expect(mockLockState).not.toBeCalled();
+      expect(mockUpdateState).not.toBeCalled();
+    });
+
+    test('should render view, after updating dataValues', () => {
+      // ['one', 'two', 'three', 'four']
+      testPresenter.update({ dataValues: testDataValues });
+
+      expect(mockRender).toBeCalled();
+    });
+  });
+
   describe('model observer', () => {
     beforeEach(() => {
       mockGetState.mockClear();
@@ -278,6 +323,7 @@ describe('Presenter', () => {
       testPresenter.update({ value: 40 });
 
       expect(mockUpdateState).toBeCalledWith({ value: 40 });
+      expect(mockUpdate).not.toHaveBeenCalled();
     });
 
     test('should calls update method of view, if it is necessary to update the view props', () => {
@@ -316,6 +362,8 @@ describe('Presenter', () => {
       testPresenter.update({ runner: true });
 
       expect(mockUpdate).toBeCalledWith({ runner: true });
+
+      expect(mockUpdateState).not.toBeCalled();
     });
 
     test('should updates dataValues and renderData', () => {

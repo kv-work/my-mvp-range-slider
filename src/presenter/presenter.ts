@@ -13,6 +13,7 @@ import {
   ApplicationOption,
   Stringable,
   PresenterData,
+  RenderData,
 } from '../types';
 
 export default class SliderPresenter implements Presenter {
@@ -33,8 +34,8 @@ export default class SliderPresenter implements Presenter {
     this.model = options.model;
     this.view = options.view;
 
-    if (options.dataValues !== undefined) {
-      this.dataValues = options.dataValues;
+    if (options.dataValues !== undefined && options.dataValues.length) {
+      this.updateDataValues(options.dataValues);
     } else {
       this.dataValues = [];
     }
@@ -78,12 +79,18 @@ export default class SliderPresenter implements Presenter {
       postfix: options.postfix,
     };
 
-    this.model.updateState(modelOptions);
-    this.view.update(viewOptions);
+    if (!this.isEmpty(modelOptions)) {
+      this.model.updateState(modelOptions);
+    }
 
-    if (options.dataValues !== undefined) {
-      this.dataValues = options.dataValues;
+    if (!this.isEmpty(viewOptions)) {
+      this.view.update(viewOptions);
+    }
+
+    if (options.dataValues !== undefined && options.dataValues.length) {
+      this.updateDataValues(options.dataValues);
       this.renderData = this.createDataValues();
+      this.renderView();
     }
 
     this.callbacks.onUpdate();
@@ -156,7 +163,35 @@ export default class SliderPresenter implements Presenter {
   }
 
   private renderView(): void {
-    this.view.render(this.renderData);
+    const currentValue = this.getModelData().value;
+    const data: RenderData = {
+      data: this.renderData,
+      value: currentValue,
+    }
+    this.view.render(data);
+  }
+
+  private updateDataValues(values: Stringable[]): void {
+    this.dataValues = values;
+    this.model.updateState({
+      maxValue: values.length - 1,
+      minValue: 0,
+      step: 1,
+    })
+    this.model.lockState(['maxValue', 'minValue', 'step'])
+  }
+
+  private isEmpty(object: {}): boolean {
+    const entries = Object.entries(object);
+    let isEmpty = true;
+
+    entries.forEach((entry) => {
+      if (entry[1] !== undefined) {
+        isEmpty = false;
+      }
+    })
+
+    return isEmpty;
   }
 
   private updateViewValue(dataValues: Stringable[]): void {}
