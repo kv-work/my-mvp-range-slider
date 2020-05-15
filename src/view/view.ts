@@ -2,6 +2,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/semi */
+import $ from 'jquery';
 import {
   View,
   ViewData,
