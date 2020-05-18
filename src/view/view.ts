@@ -13,11 +13,19 @@ import {
 class SliderView implements View {
   private $container: JQuery;
   private viewOptions: ViewData;
-  private $bar: JQuery;
+  private $bar?: JQuery;
+  private $runner?: JQuery;
+  private $scale?: JQuery;
+  private $secondRunner?: JQuery;
 
   constructor(container: HTMLElement, options: ViewData) {
     this.$container = $(container);
     this.viewOptions = options;
+
+    if (options.bar) this.$bar = this.createBar();
+    if (options.runner) this.$runner = this.createRunner();
+    if (options.scale) this.$scale = this.createScale();
+    if (options.range && options.scale) this.$secondRunner = this.createSecondRunner();
   }
 
   render(renderData: ViewRenderData): void {}
@@ -38,6 +46,30 @@ class SliderView implements View {
     });
 
     return $bar
+  }
+
+  private createRunner(): JQuery {
+    const $runner = $('<div>', {
+      class: 'js-slider__runner',
+    });
+
+    return $runner
+  }
+
+  private createScale(): JQuery {
+    const $scale = $('<div>', {
+      class: 'js-slider__scale',
+    });
+
+    return $scale
+  }
+
+  private createSecondRunner(): JQuery {
+    const $secondRunner = $('<div>', {
+      class: 'js-slider__second_runner',
+    });
+
+    return $secondRunner
   }
 }
 
