@@ -13,6 +13,7 @@ import {
 class SliderView implements View {
   private $container: JQuery;
   private viewOptions: ViewData;
+  private $bar: JQuery;
 
   constructor(container: HTMLElement, options: ViewData) {
     this.$container = $(container);
@@ -29,6 +30,14 @@ class SliderView implements View {
 
   getData(): ViewData {
     return
+  }
+
+  private createBar(): JQuery {
+    const $bar = $('<div>', {
+      class: 'js-slider__bar',
+    });
+
+    return $bar
   }
 }
 
