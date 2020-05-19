@@ -1,23 +1,26 @@
-import { OptionsModel, Observer, ViewData, Model, View} from '../types'
+/* eslint-disable @typescript-eslint/no-useless-constructor */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-empty-function */
+import {
+  OptionsModel,
+  Model,
+  View,
+  Presenter,
+  OptionsPresenter,
+  ViewData,
+  ApplicationOption,
+} from '../types';
 
 import SliderModel from '../model/model';
-// import Presenter from '../presenter/presenter';
-import ViewBar from '../view-bar/view-bar';
+import SliderPresenter from '../presenter/presenter';
+import SliderView from '../view/view';
 
 export default class App {
-  private options: OptionsModel
-  private $node: JQuery
-  private model: Model
-  // private presenter: Presenter
-  private view: View
+  private options: OptionsModel;
+  private $node: JQuery;
+  private model: Model;
+  private presenter: Presenter;
+  private view: View;
 
-  constructor(options: OptionsModel, node: HTMLElement) {
-    this.options = options;
-
-    // const presenterOptions: presenterOptions {}
-    this.$node = $(node);
-    this.model = new SliderModel(this.options);
-    this.view = new ViewBar(node);
-    // this.presenter = new Presenter(this.model, this.view, presenterOptions);
-  }
+  constructor(options: ApplicationOption, node: HTMLElement) {}
 }
