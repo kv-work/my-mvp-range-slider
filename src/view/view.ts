@@ -17,10 +17,12 @@ class SliderView implements View {
   private $runner?: JQuery;
   private $scale?: JQuery;
   private $secondRunner?: JQuery;
+  private observers: Set<Observer>;
 
   constructor(container: HTMLElement, options: ViewData) {
     this.$container = $(container);
     this.viewOptions = options;
+    this.observers = new Set();
 
     if (options.bar) this.$bar = this.createBar();
     if (options.runner) this.$runner = this.createRunner();
@@ -32,12 +34,16 @@ class SliderView implements View {
 
   update(viewData: ViewData): void {}
 
-  addObserver(observer: Observer): void {}
+  addObserver(observer: Observer): void {
+    this.observers.add(observer);
+  }
 
-  removeObserver(observer: Observer): void {}
+  removeObserver(observer: Observer): void {
+    this.observers.delete(observer);
+  }
 
   getData(): ViewData {
-    return
+    return this.viewOptions;
   }
 
   private createBar(): JQuery {
