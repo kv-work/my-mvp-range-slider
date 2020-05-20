@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import SliderView from '../view';
-import { ViewData, Observer } from '../../types';
+import { ViewData, Observer, ViewRenderData } from '../../types';
 
 // const $ = require('jquery');
 
@@ -23,6 +23,10 @@ describe('SliderView', () => {
     prefix: 'value',
     postfix: '$',
   };
+  const testRenderData: ViewRenderData = {
+    data: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50],
+    value: 4,
+  };
 
   const mockUpdate = jest.fn();
   const mockStart = jest.fn();
@@ -40,6 +44,10 @@ describe('SliderView', () => {
       change: mockChange,
       finish: mockFinish,
     };
+  });
+
+  afterEach(() => {
+    $(testNode).html('');
   });
 
   describe('constructor', () => {
@@ -85,6 +93,29 @@ describe('SliderView', () => {
   describe('getData', () => {
     test('should return view data', () => {
       expect(testView.getData()).toEqual(testOptions);
+    });
+  });
+
+  describe('render', () => {
+    test('should save render data to this.renderData', () => {
+      expect(testView).not.toHaveProperty('renderData');
+      testView.render(testRenderData);
+      expect(testView).toHaveProperty('renderData', testRenderData);
+    });
+
+    test('should create $view if this.$view is undefined', () => {
+      expect(testView).not.toHaveProperty('$view');
+      testView.render(testRenderData);
+      expect(testView).toHaveProperty('$view');
+    });
+
+    test('should append bar, scale, runner, secondRunner to container node only once', () => {
+      expect(testView).not.toHaveProperty('$view');
+      testView.render(testRenderData);
+      expect($('.js-slider__bar').length).toBe(1);
+      expect($('.js-slider__runner').length).toBe(1);
+      expect($('.js-slider__scale').length).toBe(1);
+      expect($('.js-slider__second_runner').length).toBe(1);
     });
   });
 
@@ -165,6 +196,10 @@ describe('SliderView', () => {
         prefix: 'value',
         postfix: '$',
       });
+    });
+
+    test('should re-render view with current renderData', () => {
+
     });
   });
 

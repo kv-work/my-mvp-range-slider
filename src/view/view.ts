@@ -13,6 +13,8 @@ import {
 class SliderView implements View {
   private $container: JQuery;
   private viewOptions: ViewData;
+  private renderData?: ViewRenderData;
+  private $view?: JQuery;
   private $bar?: JQuery;
   private $runner?: JQuery;
   private $scale?: JQuery;
@@ -30,7 +32,15 @@ class SliderView implements View {
     if (options.range && options.scale) this.$secondRunner = this.createSecondRunner();
   }
 
-  render(renderData: ViewRenderData): void {}
+  render(renderData: ViewRenderData): void {
+    this.renderData = renderData;
+
+    if (!this.$view) {
+      this.$view = this.createSliderContainer();
+
+      this.$container.append(this.$view);
+    }
+  }
 
   update(viewData: ViewData): void {
     const state = {
@@ -39,6 +49,10 @@ class SliderView implements View {
     };
 
     this.viewOptions = state;
+
+    if (this.renderData) {
+      this.render(this.renderData);
+    }
   }
 
   addObserver(observer: Observer): void {
@@ -84,6 +98,22 @@ class SliderView implements View {
 
     return $secondRunner
   }
+
+  private createSliderContainer(): JQuery {
+    const { viewOptions } = this;
+    const $view: JQuery = $('<div>', {
+      class: 'js-slider_container',
+    })
+
+    if (viewOptions.bar) $view.append(this.$bar);
+    if (viewOptions.runner) $view.append(this.$runner);
+    if (viewOptions.scale) $view.append(this.$scale);
+    if (this.$secondRunner) $view.append(this.$secondRunner);
+
+    return $view
+  }
+
+  private notify(action: {event: string; value: number}): void {}
 
   private validateData(data: ViewData): ViewData {
     const dataEntries = Object.entries(data);
