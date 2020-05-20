@@ -112,10 +112,16 @@ describe('SliderView', () => {
     test('should append bar, scale, runner, secondRunner to container node only once', () => {
       expect(testView).not.toHaveProperty('$view');
       testView.render(testRenderData);
-      expect($('.js-slider__bar').length).toBe(1);
-      expect($('.js-slider__runner').length).toBe(1);
-      expect($('.js-slider__scale').length).toBe(1);
-      expect($('.js-slider__second_runner').length).toBe(1);
+      expect($(testNode).find('.js-slider__bar').length).toBe(1);
+      expect($(testNode).find('.js-slider__runner').length).toBe(1);
+      expect($(testNode).find('.js-slider__scale').length).toBe(1);
+      expect($(testNode).find('.js-slider__second_runner').length).toBe(1);
+
+      testView.render({ value: 5 });
+      expect($(testNode).find('.js-slider__bar').length).toBe(1);
+      expect($(testNode).find('.js-slider__runner').length).toBe(1);
+      expect($(testNode).find('.js-slider__scale').length).toBe(1);
+      expect($(testNode).find('.js-slider__second_runner').length).toBe(1);
     });
   });
 
@@ -238,6 +244,21 @@ describe('SliderView', () => {
           expect(observers.has(testObserver)).toBeFalsy();
         }
       });
+    });
+  });
+
+  describe('createSliderContainer', () => {
+    test('should attache event handlers for bar, scale and runners', () => {
+      testView.render(testRenderData);
+      expect($(testNode).find('.js-slider__bar').length).toBe(1);
+      const $bar = $(testNode).find('.js-slider__bar');
+      const $view = $(testNode).find('.js-slider__container');
+      $bar.trigger('mousedown');
+      expect(mockStart).toBeCalledTimes(1);
+      $view.trigger('mousemove');
+      expect(mockChange).toBeCalledTimes(1);
+      $bar.trigger('mouseup');
+      expect(mockFinish).toBeCalledTimes(1);
     });
   });
 });

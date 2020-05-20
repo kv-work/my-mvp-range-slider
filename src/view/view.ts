@@ -102,10 +102,13 @@ class SliderView implements View {
   private createSliderContainer(): JQuery {
     const { viewOptions } = this;
     const $view: JQuery = $('<div>', {
-      class: 'js-slider_container',
+      class: 'js-slider__container',
     })
 
-    if (viewOptions.bar) $view.append(this.$bar);
+    if (viewOptions.bar) {
+      $view.append(this.$bar);
+      this.attachEventHandlers(this.$bar);
+    }
     if (viewOptions.runner) $view.append(this.$runner);
     if (viewOptions.scale) $view.append(this.$scale);
     if (this.$secondRunner) $view.append(this.$secondRunner);
@@ -113,7 +116,51 @@ class SliderView implements View {
     return $view
   }
 
-  private notify(action: {event: string; value: number}): void {}
+  private notify(action: {event: string; value: [number, number] | number}): void {
+    switch (action.event) {
+      case 'start':
+        this.observers.forEach((observer) => {
+          observer.start(action.value);
+        });
+        break;
+      case 'change':
+        this.observers.forEach((observer) => {
+          observer.change(action.value);
+        });
+        break;
+      case 'finish':
+        this.observers.forEach((observer) => {
+          observer.finish(action.value);
+        });
+        break;
+      default:
+        this.observers.forEach((observer) => {
+          observer.update();
+        });
+        break;
+    }
+  }
+
+  private attachEventHandlers($elem: JQuery): void {
+    const { dragNdropStart } = this;
+    $elem.on('mousedown', dragNdropStart);
+  }
+
+  private dragNdropStart(event: JQuery.MouseDownEvent): void {
+    let clickCoord: number;
+    let selectedVal: number;
+    const elemMetrics = event.currentTarget.getBoundingClientRect();
+    if (this.viewOptions.isHorizontal) {
+      clickCoord = event.clientX - elemMetrics.x;
+      selectedVal = (clickCoord / event.currentTarget.offsetWidth) * 100;
+    } else {
+      clickCoord = event.clientY - elemMetrics.y;
+      selectedVal = (clickCoord / event.currentTarget.offsetHeight) * 100;
+    }
+
+    const action: {event: string; value: [number, number] | number} = { event: 'start', value: selectedVal };
+    this.notify(action);
+  }
 
   private validateData(data: ViewData): ViewData {
     const dataEntries = Object.entries(data);

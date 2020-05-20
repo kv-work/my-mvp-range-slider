@@ -33,7 +33,7 @@ interface ApplicationOption {
 
 interface Observer {
   update?(): void;
-  start?(): void;
+  start?(values: [number, number] | number): void;
   change?(values: [number, number] | number): void;
   finish?(values: [number, number] | number): void;
 }
@@ -103,8 +103,8 @@ interface View {
 }
 
 interface ViewRenderData {
-  data: Stringable[];
-  value: number;
+  data?: Stringable[];
+  value?: number;
 }
 
 interface Stringable {
