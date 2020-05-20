@@ -32,7 +32,14 @@ class SliderView implements View {
 
   render(renderData: ViewRenderData): void {}
 
-  update(viewData: ViewData): void {}
+  update(viewData: ViewData): void {
+    const state = {
+      ...this.viewOptions,
+      ...this.validateData(viewData),
+    };
+
+    this.viewOptions = state;
+  }
 
   addObserver(observer: Observer): void {
     this.observers.add(observer);
@@ -76,6 +83,62 @@ class SliderView implements View {
     });
 
     return $secondRunner
+  }
+
+  private validateData(data: ViewData): ViewData {
+    const dataEntries = Object.entries(data);
+    const validData = dataEntries.map((entry): [string, unknown] => {
+      const key: string = entry[0]
+      switch (key) {
+        case 'orientation':
+          if (SliderView.isValidOrientation(entry[1])) {
+            return entry
+          }
+          break;
+        case 'range':
+        case 'dragInterval':
+        case 'runner':
+        case 'bar':
+        case 'scale':
+        case 'displayScaleValue':
+        case 'displayValue':
+        case 'displayMin':
+        case 'displayMax':
+          if (typeof entry[1] === 'boolean') {
+            return entry
+          }
+          break;
+        case 'scaleStep':
+          if (SliderView.isValidStep(entry[1])) {
+            return entry
+          }
+          break;
+        case 'prefix':
+        case 'postfix':
+          if (typeof entry[1] === 'string') {
+            return entry
+          }
+          break;
+        default:
+          return entry
+      }
+      return [key, this.viewOptions[key]]
+    })
+
+    const resultData: ViewData = validData.reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
+    return resultData;
+  }
+
+  static isValidOrientation(orientation: string): boolean {
+    return (orientation === 'horizontal') || (orientation === 'vertical')
+  }
+
+  static isValidStep(value: string | boolean | number): boolean {
+    if (typeof value === 'number') {
+      return Number.isFinite(value) && (value > 0);
+    }
+
+    return false;
   }
 }
 

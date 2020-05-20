@@ -88,6 +88,86 @@ describe('SliderView', () => {
     });
   });
 
+  describe('update', () => {
+    test('should update this.viewOptions', () => {
+      testView.update({ orientation: 'vertical' });
+      expect(testView.getData().orientation).toBe('vertical');
+
+      testView.update({
+        bar: false,
+        scale: false,
+      });
+
+      expect(testView.getData()).toEqual({
+        orientation: 'vertical',
+        range: true,
+        dragInterval: true,
+        runner: true,
+        bar: false,
+        scale: false,
+        scaleStep: 25,
+        displayScaleValue: true,
+        displayValue: true,
+        displayMin: true,
+        displayMax: true,
+        prefix: 'value',
+        postfix: '$',
+      });
+    });
+
+    test('should validate data', () => {
+      testView.update({
+        orientation: undefined,
+        range: undefined,
+        dragInterval: undefined,
+        runner: undefined,
+        bar: undefined,
+        scale: undefined,
+        scaleStep: -25,
+        displayScaleValue: undefined,
+        displayValue: undefined,
+        displayMin: undefined,
+        displayMax: undefined,
+        prefix: undefined,
+        postfix: undefined,
+      });
+
+      testView.update({
+        orientation: null,
+        range: null,
+        dragInterval: null,
+        runner: null,
+        bar: null,
+        scale: null,
+        scaleStep: 0,
+        displayScaleValue: null,
+        displayValue: null,
+        displayMin: null,
+        displayMax: null,
+        prefix: null,
+        postfix: null,
+      });
+
+      testView.update({ scaleStep: NaN });
+
+      expect(testView.getData()).toEqual({
+        orientation: 'horizontal',
+        range: true,
+        dragInterval: true,
+        runner: true,
+        bar: true,
+        scale: true,
+        scaleStep: 25,
+        displayScaleValue: true,
+        displayValue: true,
+        displayMin: true,
+        displayMax: true,
+        prefix: 'value',
+        postfix: '$',
+      });
+    });
+  });
+
   describe('addObserver', () => {
     test('should added observer to this.observers', () => {
       testView.addObserver(testObserver);
