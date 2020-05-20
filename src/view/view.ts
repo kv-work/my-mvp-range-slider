@@ -90,11 +90,7 @@ class SliderView implements View {
     const validData = dataEntries.map((entry): [string, unknown] => {
       const key: string = entry[0]
       switch (key) {
-        case 'orientation':
-          if (SliderView.isValidOrientation(entry[1])) {
-            return entry
-          }
-          break;
+        case 'isHorizontal':
         case 'range':
         case 'dragInterval':
         case 'runner':
@@ -129,15 +125,10 @@ class SliderView implements View {
     return resultData;
   }
 
-  static isValidOrientation(orientation: string): boolean {
-    return (orientation === 'horizontal') || (orientation === 'vertical')
-  }
-
   static isValidStep(value: string | boolean | number): boolean {
     if (typeof value === 'number') {
       return Number.isFinite(value) && (value > 0);
     }
-
     return false;
   }
 }

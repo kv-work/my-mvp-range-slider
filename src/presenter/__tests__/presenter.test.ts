@@ -108,7 +108,7 @@ describe('Presenter', () => {
       secondValue: 70,
     };
     testViewData = {
-      orientation: 'horizontal',
+      isHorizontal: true,
       range: true,
       dragInterval: true,
       runner: true,
@@ -213,7 +213,7 @@ describe('Presenter', () => {
 
     test('should returns view data', () => {
       expect(mockGetViewData).toHaveReturnedWith({
-        orientation: 'horizontal',
+        isHorizontal: true,
         range: true,
         dragInterval: true,
         runner: true,
@@ -251,7 +251,7 @@ describe('Presenter', () => {
         step: 5,
         value: 25,
         secondValue: 70,
-        orientation: 'horizontal',
+        isHorizontal: true,
         range: true,
         dragInterval: true,
         runner: true,
@@ -480,7 +480,7 @@ describe('Presenter', () => {
 
     test('should calls update method of view, if it is necessary to update the view props', () => {
       testPresenter.update({
-        orientation: 'vertical',
+        isHorizontal: false,
         range: true,
         dragInterval: false,
         runner: false,
@@ -496,7 +496,7 @@ describe('Presenter', () => {
       });
 
       expect(mockUpdate).toBeCalledWith({
-        orientation: 'vertical',
+        isHorizontal: false,
         range: true,
         dragInterval: false,
         runner: false,

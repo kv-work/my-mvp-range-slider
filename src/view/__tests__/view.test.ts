@@ -9,7 +9,7 @@ describe('SliderView', () => {
 
   const testNode = document.getElementById('container');
   const testOptions: ViewData = {
-    orientation: 'horizontal',
+    isHorizontal: true,
     range: true,
     dragInterval: true,
     runner: true,
@@ -90,8 +90,8 @@ describe('SliderView', () => {
 
   describe('update', () => {
     test('should update this.viewOptions', () => {
-      testView.update({ orientation: 'vertical' });
-      expect(testView.getData().orientation).toBe('vertical');
+      testView.update({ isHorizontal: false });
+      expect(testView.getData().isHorizontal).toBe(false);
 
       testView.update({
         bar: false,
@@ -99,7 +99,7 @@ describe('SliderView', () => {
       });
 
       expect(testView.getData()).toEqual({
-        orientation: 'vertical',
+        isHorizontal: false,
         range: true,
         dragInterval: true,
         runner: true,
@@ -117,7 +117,7 @@ describe('SliderView', () => {
 
     test('should validate data', () => {
       testView.update({
-        orientation: undefined,
+        isHorizontal: undefined,
         range: undefined,
         dragInterval: undefined,
         runner: undefined,
@@ -133,7 +133,7 @@ describe('SliderView', () => {
       });
 
       testView.update({
-        orientation: null,
+        isHorizontal: null,
         range: null,
         dragInterval: null,
         runner: null,
@@ -151,7 +151,7 @@ describe('SliderView', () => {
       testView.update({ scaleStep: NaN });
 
       expect(testView.getData()).toEqual({
-        orientation: 'horizontal',
+        isHorizontal: true,
         range: true,
         dragInterval: true,
         runner: true,

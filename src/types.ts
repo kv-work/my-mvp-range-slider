@@ -7,7 +7,7 @@ interface ApplicationOption {
   secondValue?: number;
 
   // view
-  orientation?: 'horizontal' | 'vertical';
+  isHorizontal?: boolean;
   range?: boolean;
   dragInterval?: boolean;
   runner?: boolean;
@@ -79,7 +79,7 @@ interface Model {
 }
 
 interface ViewData {
-  orientation?: 'horizontal' | 'vertical';
+  isHorizontal?: boolean;
   range?: boolean;
   dragInterval?: boolean;
   runner?: boolean;

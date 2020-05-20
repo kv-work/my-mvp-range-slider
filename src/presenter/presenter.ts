@@ -60,7 +60,7 @@ export default class SliderPresenter implements Presenter {
     };
 
     const viewOptions: ViewData = {
-      orientation: options.orientation,
+      isHorizontal: options.isHorizontal,
       range: options.range,
       dragInterval: options.dragInterval,
       runner: options.runner,
