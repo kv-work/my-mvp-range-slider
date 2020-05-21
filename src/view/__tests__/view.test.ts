@@ -253,7 +253,16 @@ describe('SliderView', () => {
       expect($(testNode).find('.js-slider__bar').length).toBe(1);
       const $bar = $(testNode).find('.js-slider__bar');
       const $view = $(testNode).find('.js-slider__container');
-      $bar.trigger('mousedown');
+
+      const $mouseDownEvent = $.Event('mousedown', {
+        clientX: 30,
+      });
+
+      // const mouseDownEvent = new Event('mousedown');
+
+      // $bar[0].dispatchEvent(mouseDownEvent);
+      $('.js-slider__bar').trigger($mouseDownEvent);
+
       expect(mockStart).toBeCalledTimes(1);
       $view.trigger('mousemove');
       expect(mockChange).toBeCalledTimes(1);

@@ -142,24 +142,55 @@ class SliderView implements View {
   }
 
   private attachEventHandlers($elem: JQuery): void {
-    const { dragNdropStart } = this;
-    $elem.on('mousedown', dragNdropStart);
+    $elem.on('mousedown', this.dragNdropStart.bind(this));
+    $elem.on('dragstart', false);
   }
 
   private dragNdropStart(event: JQuery.MouseDownEvent): void {
     let clickCoord: number;
     let selectedVal: number;
-    const elemMetrics = event.currentTarget.getBoundingClientRect();
+    const element: HTMLElement = event.currentTarget
+    const elemMetrics: {x: number; y: number} = element.getBoundingClientRect();
     if (this.viewOptions.isHorizontal) {
       clickCoord = event.clientX - elemMetrics.x;
-      selectedVal = (clickCoord / event.currentTarget.offsetWidth) * 100;
+      selectedVal = (clickCoord / element.offsetWidth) * 100;
     } else {
       clickCoord = event.clientY - elemMetrics.y;
-      selectedVal = (clickCoord / event.currentTarget.offsetHeight) * 100;
+      selectedVal = (clickCoord / element.offsetHeight) * 100;
     }
 
-    const action: {event: string; value: [number, number] | number} = { event: 'start', value: selectedVal };
-    this.notify(action);
+    const startAction: {event: string; value: [number, number] | number} = { event: 'start', value: selectedVal };
+    this.notify(startAction);
+
+    this.$container[0].addEventListener('mousemove', this.makeMouseMoveEventHandler(element))
+  }
+
+  private makeMouseMoveEventHandler(element: HTMLElement): EventHandlerNonNull {
+    let moveCoord: number;
+    let val: number;
+    const elemMetrics: {x: number; y: number} = element.getBoundingClientRect();
+
+    return (event: MouseEvent): void => {
+      if (this.viewOptions.isHorizontal) {
+        moveCoord = event.clientX - elemMetrics.x;
+        val = (moveCoord / element.offsetWidth) * 100;
+      } else {
+        moveCoord = event.clientY - elemMetrics.y;
+        val = (moveCoord / element.offsetHeight) * 100;
+      }
+
+      const changeAction: {event: string; value: [number, number] | number} = { event: 'change', value: val };
+      this.notify(changeAction);
+
+      document.onmouseup = (): void => {
+        this.$container[0].removeEventListener('mousemove', this.makeMouseMoveEventHandler(element));
+
+        const finishAction: {event: string; value: [number, number] | number} = { event: 'finish', value: val };
+        this.notify(finishAction);
+
+        document.onmouseup = null;
+      }
+    }
   }
 
   private validateData(data: ViewData): ViewData {
