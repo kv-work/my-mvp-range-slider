@@ -104,7 +104,7 @@ interface View {
 
 interface ViewRenderData {
   data?: Stringable[];
-  value?: number;
+  value?: number | [number, number];
 }
 
 interface Stringable {
