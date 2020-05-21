@@ -65,8 +65,13 @@ class SliderView implements View {
   }
 
   private createBar(): JQuery {
+    let classList = 'js-slider__bar';
+    if (this.viewOptions.isHorizontal) {
+      classList += ' slider__bar_horizontal';
+    }
+
     const $bar = $('<div>', {
-      class: 'js-slider__bar',
+      class: classList,
     });
 
     return $bar;
@@ -81,8 +86,13 @@ class SliderView implements View {
   }
 
   private createScale(): JQuery {
+    let classList = 'js-slider__scale';
+    if (this.viewOptions.isHorizontal) {
+      classList += ' slider__scale_horizontal';
+    }
+
     const $scale = $('<div>', {
-      class: 'js-slider__scale',
+      class: classList,
     });
 
     return $scale;
@@ -106,7 +116,10 @@ class SliderView implements View {
       $view.append(this.$bar);
       this.attachEventHandlers(this.$bar);
     }
-    if (viewOptions.runner) $view.append(this.$runner);
+    if (viewOptions.runner) {
+      $view.append(this.$runner);
+      this.attachEventHandlers(this.$runner);
+    }
     if (viewOptions.scale) $view.append(this.$scale);
     if (this.$secondRunner) $view.append(this.$secondRunner);
 

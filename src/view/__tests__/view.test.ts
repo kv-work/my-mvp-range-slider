@@ -260,8 +260,12 @@ describe('SliderView', () => {
   });
 
   describe('createSliderContainer', () => {
-    test('should attach event handlers for bar', () => {
+    beforeEach(() => {
       testView.addObserver(testObserver);
+      jest.clearAllMocks();
+    });
+
+    test('should attach event handlers for bar', () => {
       testView.render(testRenderData);
       expect($(testNode).find('.js-slider__bar').length).toBe(1);
 
@@ -277,6 +281,37 @@ describe('SliderView', () => {
       const mouseUpEvent = new Event('mouseup');
 
       $('.js-slider__bar').trigger($mouseDownEvent);
+      expect(mockStart).toBeCalledTimes(1);
+      expect(mockStart).toBeCalledWith(60);
+
+      $('#container')
+        .trigger($mouseMoveEvent)
+        .trigger($AnotherMouseMoveEvent);
+      expect(mockChange).toBeCalledTimes(2);
+      expect(mockChange.mock.calls[0][0]).toBe(70);
+      expect(mockChange.mock.calls[1][0]).toBe(90);
+
+      document.dispatchEvent(mouseUpEvent);
+      expect(mockFinish).toBeCalledTimes(1);
+      expect(mockFinish).toBeCalledWith(90);
+    });
+
+    test('should attach event handlers for runner', () => {
+      testView.render(testRenderData);
+      expect($(testNode).find('.js-slider__runner').length).toBe(1);
+
+      const $mouseDownEvent = $.Event('mousedown', {
+        clientX: 60,
+      });
+      const $mouseMoveEvent = $.Event('mousemove', {
+        clientX: 70,
+      });
+      const $AnotherMouseMoveEvent = $.Event('mousemove', {
+        clientX: 90,
+      });
+      const mouseUpEvent = new Event('mouseup');
+
+      $('.js-slider__runner').trigger($mouseDownEvent);
       expect(mockStart).toBeCalledTimes(1);
       expect(mockStart).toBeCalledWith(60);
 
