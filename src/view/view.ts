@@ -150,13 +150,13 @@ class SliderView implements View {
     let clickCoord: number;
     let selectedVal: number;
     const element: HTMLElement = event.currentTarget
-    const elemMetrics: {x: number; y: number} = element.getBoundingClientRect();
+    const elemMetrics: DOMRect = element.getBoundingClientRect();
     if (this.viewOptions.isHorizontal) {
       clickCoord = event.clientX - elemMetrics.x;
-      selectedVal = (clickCoord / element.offsetWidth) * 100;
+      selectedVal = (clickCoord / elemMetrics.width) * 100;
     } else {
       clickCoord = event.clientY - elemMetrics.y;
-      selectedVal = (clickCoord / element.offsetHeight) * 100;
+      selectedVal = (clickCoord / elemMetrics.height) * 100;
     }
 
     const startAction: {event: string; value: [number, number] | number} = { event: 'start', value: selectedVal };

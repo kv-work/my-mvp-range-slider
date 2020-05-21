@@ -28,6 +28,18 @@ describe('SliderView', () => {
     value: 4,
   };
 
+  HTMLElement.prototype.getBoundingClientRect = (): DOMRect => ({
+    x: 30,
+    y: 50,
+    height: 100,
+    width: 100,
+    bottom: 100,
+    left: 30,
+    right: 100,
+    top: 50,
+    toJSON: (): void => {},
+  });
+
   const mockUpdate = jest.fn();
   const mockStart = jest.fn();
   const mockChange = jest.fn();
@@ -255,7 +267,7 @@ describe('SliderView', () => {
       const $view = $(testNode).find('.js-slider__container');
 
       const $mouseDownEvent = $.Event('mousedown', {
-        clientX: 30,
+        clientX: 60,
       });
 
       // const mouseDownEvent = new Event('mousedown');
