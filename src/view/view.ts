@@ -162,28 +162,28 @@ class SliderView implements View {
     const startAction: {event: string; value: [number, number] | number} = { event: 'start', value: selectedVal };
     this.notify(startAction);
 
-    this.$container[0].addEventListener('mousemove', this.makeMouseMoveEventHandler(element))
+    this.$container.bind('mousemove', this.makeMouseMoveHandler(element))
   }
 
-  private makeMouseMoveEventHandler(element: HTMLElement): EventHandlerNonNull {
+  private makeMouseMoveHandler(el: HTMLElement): JQuery.EventHandler<HTMLElement, JQuery.Event> {
     let moveCoord: number;
     let val: number;
-    const elemMetrics: {x: number; y: number} = element.getBoundingClientRect();
+    const elemMetrics: {x: number; y: number} = el.getBoundingClientRect();
 
-    return (event: MouseEvent): void => {
+    return (event: JQuery.MouseMoveEvent): void => {
       if (this.viewOptions.isHorizontal) {
         moveCoord = event.clientX - elemMetrics.x;
-        val = (moveCoord / element.offsetWidth) * 100;
+        val = (moveCoord / el.offsetWidth) * 100;
       } else {
         moveCoord = event.clientY - elemMetrics.y;
-        val = (moveCoord / element.offsetHeight) * 100;
+        val = (moveCoord / el.offsetHeight) * 100;
       }
 
       const changeAction: {event: string; value: [number, number] | number} = { event: 'change', value: val };
       this.notify(changeAction);
 
       document.onmouseup = (): void => {
-        this.$container[0].removeEventListener('mousemove', this.makeMouseMoveEventHandler(element));
+        this.$container.unbind('mousemove', false);
 
         const finishAction: {event: string; value: [number, number] | number} = { event: 'finish', value: val };
         this.notify(finishAction);

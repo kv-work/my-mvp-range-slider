@@ -260,25 +260,31 @@ describe('SliderView', () => {
   });
 
   describe('createSliderContainer', () => {
-    test('should attache event handlers for bar, scale and runners', () => {
+    test('should attach event handlers for bar, scale and runners', () => {
+      testView.addObserver(testObserver);
       testView.render(testRenderData);
       expect($(testNode).find('.js-slider__bar').length).toBe(1);
-      const $bar = $(testNode).find('.js-slider__bar');
-      const $view = $(testNode).find('.js-slider__container');
 
       const $mouseDownEvent = $.Event('mousedown', {
         clientX: 60,
       });
+      const $mouseMoveEvent = $.Event('mousemove', {
+        clientX: 70,
+      });
+      const $AnotherMouseMoveEvent = $.Event('mousemove', {
+        clientX: 90,
+      });
+      const mouseUpEvent = new Event('mouseup');
 
-      // const mouseDownEvent = new Event('mousedown');
-
-      // $bar[0].dispatchEvent(mouseDownEvent);
       $('.js-slider__bar').trigger($mouseDownEvent);
-
       expect(mockStart).toBeCalledTimes(1);
-      $view.trigger('mousemove');
-      expect(mockChange).toBeCalledTimes(1);
-      $bar.trigger('mouseup');
+
+      $('#container')
+        .trigger($mouseMoveEvent)
+        .trigger($AnotherMouseMoveEvent);
+      expect(mockChange).toBeCalledTimes(2);
+
+      document.dispatchEvent(mouseUpEvent);
       expect(mockFinish).toBeCalledTimes(1);
     });
   });
