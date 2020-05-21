@@ -260,7 +260,7 @@ describe('SliderView', () => {
   });
 
   describe('createSliderContainer', () => {
-    test('should attach event handlers for bar, scale and runners', () => {
+    test('should attach event handlers for bar', () => {
       testView.addObserver(testObserver);
       testView.render(testRenderData);
       expect($(testNode).find('.js-slider__bar').length).toBe(1);
