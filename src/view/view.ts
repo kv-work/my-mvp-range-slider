@@ -1,7 +1,4 @@
-/* eslint-disable no-useless-return */
 /* eslint-disable class-methods-use-this */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/semi */
 import $ from 'jquery';
 import {
   View,
@@ -72,7 +69,7 @@ class SliderView implements View {
       class: 'js-slider__bar',
     });
 
-    return $bar
+    return $bar;
   }
 
   private createRunner(): JQuery {
@@ -80,7 +77,7 @@ class SliderView implements View {
       class: 'js-slider__runner',
     });
 
-    return $runner
+    return $runner;
   }
 
   private createScale(): JQuery {
@@ -88,7 +85,7 @@ class SliderView implements View {
       class: 'js-slider__scale',
     });
 
-    return $scale
+    return $scale;
   }
 
   private createSecondRunner(): JQuery {
@@ -96,14 +93,14 @@ class SliderView implements View {
       class: 'js-slider__second_runner',
     });
 
-    return $secondRunner
+    return $secondRunner;
   }
 
   private createSliderContainer(): JQuery {
     const { viewOptions } = this;
     const $view: JQuery = $('<div>', {
       class: 'js-slider__container',
-    })
+    });
 
     if (viewOptions.bar) {
       $view.append(this.$bar);
@@ -113,7 +110,7 @@ class SliderView implements View {
     if (viewOptions.scale) $view.append(this.$scale);
     if (this.$secondRunner) $view.append(this.$secondRunner);
 
-    return $view
+    return $view;
   }
 
   private notify(action: {event: string; value: [number, number] | number}): void {
@@ -149,7 +146,7 @@ class SliderView implements View {
   private dragNdropStart(event: JQuery.MouseDownEvent): void {
     let clickCoord: number;
     let selectedVal: number;
-    const element: HTMLElement = event.currentTarget
+    const element: HTMLElement = event.currentTarget;
     const elemMetrics: DOMRect = element.getBoundingClientRect();
     if (this.viewOptions.isHorizontal) {
       clickCoord = event.clientX - elemMetrics.x;
@@ -162,7 +159,7 @@ class SliderView implements View {
     const startAction: {event: string; value: [number, number] | number} = { event: 'start', value: selectedVal };
     this.notify(startAction);
 
-    this.$container.bind('mousemove', this.makeMouseMoveHandler(element))
+    this.$container.bind('mousemove', this.makeMouseMoveHandler(element));
   }
 
   private makeMouseMoveHandler(el: HTMLElement): JQuery.EventHandler<HTMLElement, JQuery.Event> {
@@ -189,14 +186,14 @@ class SliderView implements View {
         this.notify(finishAction);
 
         document.onmouseup = null;
-      }
-    }
+      };
+    };
   }
 
   private validateData(data: ViewData): ViewData {
     const dataEntries = Object.entries(data);
     const validData = dataEntries.map((entry): [string, unknown] => {
-      const key: string = entry[0]
+      const key: string = entry[0];
       switch (key) {
         case 'isHorizontal':
         case 'range':
@@ -209,25 +206,25 @@ class SliderView implements View {
         case 'displayMin':
         case 'displayMax':
           if (typeof entry[1] === 'boolean') {
-            return entry
+            return entry;
           }
           break;
         case 'scaleStep':
           if (SliderView.isValidStep(entry[1])) {
-            return entry
+            return entry;
           }
           break;
         case 'prefix':
         case 'postfix':
           if (typeof entry[1] === 'string') {
-            return entry
+            return entry;
           }
           break;
         default:
-          return entry
+          return entry;
       }
-      return [key, this.viewOptions[key]]
-    })
+      return [key, this.viewOptions[key]];
+    });
 
     const resultData: ViewData = validData.reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
     return resultData;
