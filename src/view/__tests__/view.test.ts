@@ -29,14 +29,14 @@ describe('SliderView', () => {
   };
 
   HTMLElement.prototype.getBoundingClientRect = (): DOMRect => ({
-    x: 30,
-    y: 50,
+    x: 0,
+    y: 0,
     height: 100,
     width: 100,
     bottom: 100,
-    left: 30,
+    left: 0,
     right: 100,
-    top: 50,
+    top: 0,
     toJSON: (): void => {},
   });
 
@@ -278,14 +278,18 @@ describe('SliderView', () => {
 
       $('.js-slider__bar').trigger($mouseDownEvent);
       expect(mockStart).toBeCalledTimes(1);
+      expect(mockStart).toBeCalledWith(60);
 
       $('#container')
         .trigger($mouseMoveEvent)
         .trigger($AnotherMouseMoveEvent);
       expect(mockChange).toBeCalledTimes(2);
+      expect(mockChange.mock.calls[0][0]).toBe(70);
+      expect(mockChange.mock.calls[1][0]).toBe(90);
 
       document.dispatchEvent(mouseUpEvent);
       expect(mockFinish).toBeCalledTimes(1);
+      expect(mockFinish).toBeCalledWith(90);
     });
   });
 });

@@ -146,7 +146,7 @@ class SliderView implements View {
   private dragStartHandler(event: JQuery.MouseDownEvent): void {
     let clickCoord: number;
     let selectedVal: number;
-    const element: HTMLElement = event.currentTarget;
+    const element: HTMLElement = this.$view[0];
     const elemMetrics: DOMRect = element.getBoundingClientRect();
     if (this.viewOptions.isHorizontal) {
       clickCoord = event.clientX - elemMetrics.x;
@@ -161,7 +161,6 @@ class SliderView implements View {
 
     const makeMouseMoveHandler = (): JQuery.EventHandler<HTMLElement, JQuery.Event> => {
       let moveCoord: number;
-      let val: number;
 
       return (e: JQuery.MouseMoveEvent): void => {
         if (this.viewOptions.isHorizontal) {
@@ -172,13 +171,13 @@ class SliderView implements View {
           selectedVal = (moveCoord / elemMetrics.height) * 100;
         }
 
-        const changeAction: {event: string; value: [number, number] | number} = { event: 'change', value: val };
+        const changeAction: {event: string; value: [number, number] | number} = { event: 'change', value: selectedVal };
         this.notify(changeAction);
 
         document.onmouseup = (): void => {
           this.$container.unbind('mousemove', false);
 
-          const finishAction: {event: string; value: [number, number] | number} = { event: 'finish', value: val };
+          const finishAction: {event: string; value: [number, number] | number} = { event: 'finish', value: selectedVal };
           this.notify(finishAction);
 
           document.onmouseup = null;
