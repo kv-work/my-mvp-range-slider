@@ -1,13 +1,7 @@
-/* eslint-disable @typescript-eslint/no-useless-constructor */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-empty-function */
 import {
-  OptionsModel,
   Model,
   View,
   Presenter,
-  OptionsPresenter,
-  ViewData,
   ApplicationOption,
 } from '../types';
 
@@ -16,11 +10,90 @@ import SliderPresenter from '../presenter/presenter';
 import SliderView from '../view/view';
 
 export default class App {
-  private options: OptionsModel;
-  private $node: JQuery;
+  private options: ApplicationOption;
+  private node: HTMLElement;
   private model: Model;
   private presenter: Presenter;
   private view: View;
 
-  constructor(options: ApplicationOption, node: HTMLElement) {}
+  constructor(options: ApplicationOption, node: HTMLElement) {
+    this.options = options;
+    this.node = node;
+
+    this.createModel();
+    this.createView();
+    this.createPresenter();
+  }
+
+  private createModel(): void {
+    const {
+      maxValue,
+      minValue,
+      step,
+      value,
+      secondValue,
+    } = this.options;
+
+    this.model = new SliderModel({
+      maxValue,
+      minValue,
+      step,
+      value,
+      secondValue,
+    });
+  }
+
+  private createPresenter(): void {
+    const {
+      dataValues,
+      onStart,
+      onChange,
+      onFinish,
+      onUpdate,
+    } = this.options;
+
+    this.presenter = new SliderPresenter({
+      model: this.model,
+      view: this.view,
+      dataValues,
+      onStart,
+      onChange,
+      onFinish,
+      onUpdate,
+    });
+  }
+
+  private createView(): void {
+    const {
+      isHorizontal,
+      range,
+      dragInterval,
+      runner,
+      bar,
+      scale,
+      scaleStep,
+      displayScaleValue,
+      displayValue,
+      displayMin,
+      displayMax,
+      prefix,
+      postfix,
+    } = this.options;
+
+    this.view = new SliderView(this.node, {
+      isHorizontal,
+      range,
+      dragInterval,
+      runner,
+      bar,
+      scale,
+      scaleStep,
+      displayScaleValue,
+      displayValue,
+      displayMin,
+      displayMax,
+      prefix,
+      postfix,
+    });
+  }
 }
