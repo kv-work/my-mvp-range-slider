@@ -187,10 +187,15 @@ export default class SliderPresenter implements Presenter {
     if (data) {
       this.view.render(data);
     } else {
+      let values: [number, number];
       const currentValue = this.getModelData().value;
+      if (this.getViewData().range) {
+        const { secondValue } = this.getModelData();
+        values = [currentValue, secondValue];
+      }
       const viewRenderData: ViewRenderData = {
         data: this.renderData,
-        value: currentValue,
+        value: values || currentValue,
       };
       this.view.render(viewRenderData);
     }

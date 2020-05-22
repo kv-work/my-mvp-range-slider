@@ -162,6 +162,10 @@ describe('Presenter', () => {
 
     test('should calls render method of view', () => {
       expect(mockRender).toBeCalledTimes(1);
+      expect(mockRender).toBeCalledWith({
+        data: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
+        value: [25, 70],
+      });
       expect(viewObservers.size).toBe(1);
     });
 
@@ -203,6 +207,7 @@ describe('Presenter', () => {
 
   describe('getViewData', () => {
     beforeEach(() => {
+      mockGetViewData.mockClear();
       testPresenter.getViewData();
     });
 
