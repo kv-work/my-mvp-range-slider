@@ -260,6 +260,7 @@ describe('SliderView', () => {
   });
 
   describe('createSliderContainer', () => {
+    const $container = $('#container');
     beforeEach(() => {
       testView.addObserver(testObserver);
       jest.clearAllMocks();
@@ -280,11 +281,16 @@ describe('SliderView', () => {
       });
       const mouseUpEvent = new Event('mouseup');
 
+      $container
+        .trigger($mouseMoveEvent)
+        .trigger($AnotherMouseMoveEvent);
+      expect(mockChange).toBeCalledTimes(0);
+
       $('.js-slider__bar').trigger($mouseDownEvent);
       expect(mockStart).toBeCalledTimes(1);
       expect(mockStart).toBeCalledWith(60);
 
-      $('#container')
+      $container
         .trigger($mouseMoveEvent)
         .trigger($AnotherMouseMoveEvent);
       expect(mockChange).toBeCalledTimes(2);
@@ -294,6 +300,13 @@ describe('SliderView', () => {
       document.dispatchEvent(mouseUpEvent);
       expect(mockFinish).toBeCalledTimes(1);
       expect(mockFinish).toBeCalledWith(90);
+
+      $container
+        .trigger($mouseMoveEvent)
+        .trigger($AnotherMouseMoveEvent)
+        .trigger($mouseMoveEvent)
+        .trigger($AnotherMouseMoveEvent);
+      expect(mockChange).toBeCalledTimes(2);
     });
 
     test('should attach event handlers for runner', () => {
@@ -311,11 +324,16 @@ describe('SliderView', () => {
       });
       const mouseUpEvent = new Event('mouseup');
 
+      $container
+        .trigger($mouseMoveEvent)
+        .trigger($AnotherMouseMoveEvent);
+      expect(mockChange).toBeCalledTimes(0);
+
       $('.js-slider__runner').trigger($mouseDownEvent);
       expect(mockStart).toBeCalledTimes(1);
       expect(mockStart).toBeCalledWith(60);
 
-      $('#container')
+      $container
         .trigger($mouseMoveEvent)
         .trigger($AnotherMouseMoveEvent);
       expect(mockChange).toBeCalledTimes(2);

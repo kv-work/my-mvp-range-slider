@@ -172,33 +172,38 @@ class SliderView implements View {
     const startAction: {event: string; value: [number, number] | number} = { event: 'start', value: selectedVal };
     this.notify(startAction);
 
-    const makeMouseMoveHandler = (): JQuery.EventHandler<HTMLElement, JQuery.Event> => {
-      let moveCoord: number;
+    const mouseMoveHandler = this.makeMouseMoveHandler(element);
+    this.$container.on('mousemove', mouseMoveHandler);
+  }
 
-      return (e: JQuery.MouseMoveEvent): void => {
-        if (this.viewOptions.isHorizontal) {
-          moveCoord = e.clientX - elemMetrics.x;
-          selectedVal = (moveCoord / elemMetrics.width) * 100;
-        } else {
-          moveCoord = e.clientY - elemMetrics.y;
-          selectedVal = (moveCoord / elemMetrics.height) * 100;
-        }
+  private makeMouseMoveHandler(elem: HTMLElement): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+    let moveCoord: number;
+    let selectedVal: number;
+    const elemMetrics: DOMRect = elem.getBoundingClientRect();
 
-        const changeAction: {event: string; value: [number, number] | number} = { event: 'change', value: selectedVal };
-        this.notify(changeAction);
+    const mouseMoveHandler = (e: JQuery.MouseMoveEvent): void => {
+      if (this.viewOptions.isHorizontal) {
+        moveCoord = e.clientX - elemMetrics.x;
+        selectedVal = (moveCoord / elemMetrics.width) * 100;
+      } else {
+        moveCoord = e.clientY - elemMetrics.y;
+        selectedVal = (moveCoord / elemMetrics.height) * 100;
+      }
 
-        document.onmouseup = (): void => {
-          this.$container.unbind('mousemove', false);
+      const changeAction: {event: string; value: [number, number] | number} = { event: 'change', value: selectedVal };
+      this.notify(changeAction);
 
-          const finishAction: {event: string; value: [number, number] | number} = { event: 'finish', value: selectedVal };
-          this.notify(finishAction);
+      document.onmouseup = (): void => {
+        this.$container.off('mousemove', mouseMoveHandler);
 
-          document.onmouseup = null;
-        };
+        const finishAction: {event: string; value: [number, number] | number} = { event: 'finish', value: selectedVal };
+        this.notify(finishAction);
+
+        document.onmouseup = null;
       };
     };
 
-    this.$container.bind('mousemove', makeMouseMoveHandler());
+    return mouseMoveHandler;
   }
 
   private validateData(data: ViewData): ViewData {
