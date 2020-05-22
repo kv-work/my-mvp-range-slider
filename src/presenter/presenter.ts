@@ -145,9 +145,13 @@ export default class SliderPresenter implements Presenter {
       update: (): void => {
         const updatedModelState = this.getModelData();
         this.renderData = this.createDataValues(updatedModelState);
+        let values: [number, number];
+        if (updatedModelState.secondValue !== undefined) {
+          values = [updatedModelState.value, updatedModelState.secondValue];
+        }
         this.renderView({
           data: this.renderData,
-          value: updatedModelState.value,
+          value: values || updatedModelState.value,
         });
       },
     };
