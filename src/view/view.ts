@@ -114,14 +114,14 @@ class SliderView implements View {
 
     if (viewOptions.bar) {
       $view.append(this.$bar);
-      this.attachEventHandlers(this.$bar);
     }
     if (viewOptions.runner) {
       $view.append(this.$runner);
-      this.attachEventHandlers(this.$runner);
     }
     if (viewOptions.scale) $view.append(this.$scale);
     if (this.$secondRunner) $view.append(this.$secondRunner);
+
+    this.attachEventHandlers();
 
     return $view;
   }
@@ -151,16 +151,21 @@ class SliderView implements View {
     }
   }
 
-  private attachEventHandlers($elem: JQuery): void {
-    $elem.on('mousedown', this.dragStartHandler.bind(this));
-    $elem.on('dragstart', false);
+  private attachEventHandlers(): void {
+    if (this.$bar) {
+      this.$bar.on('click', this.clickHandler.bind(this));
+    }
+    if (this.$runner) {
+      this.$runner.on('mousedown', this.dragStartHandler.bind(this));
+      this.$runner.on('dragstart', false);
+    }
   }
 
-  private dragStartHandler(event: JQuery.MouseDownEvent): void {
+  private clickHandler(event: JQuery.MouseDownEvent): void {
     let clickCoord: number;
     let selectedVal: number;
-    const element: HTMLElement = this.$view[0];
-    const elemMetrics: DOMRect = element.getBoundingClientRect();
+    const elem: HTMLElement = event.currentTarget;
+    const elemMetrics: DOMRect = elem.getBoundingClientRect();
     if (this.viewOptions.isHorizontal) {
       clickCoord = event.clientX - elemMetrics.x;
       selectedVal = (clickCoord / elemMetrics.width) * 100;
@@ -169,10 +174,35 @@ class SliderView implements View {
       selectedVal = (clickCoord / elemMetrics.height) * 100;
     }
 
+    const startAction: {event: string; value: [number, number] | number} = { event: 'start', value: this.renderData.value };
+    this.notify(startAction);
+
+    const changeAction: {event: string; value: [number, number] | number} = { event: 'change', value: selectedVal };
+    this.notify(changeAction);
+
+    const finishAction: {event: string; value: [number, number] | number} = { event: 'finish', value: selectedVal };
+    this.notify(finishAction);
+  }
+
+  private dragStartHandler(event: JQuery.MouseDownEvent): void {
+    let startCoord: number;
+    let selectedVal: number;
+    const view: HTMLElement = this.$view[0];
+    const runner: HTMLElement = event.currentTarget;
+    const viewMetrics: DOMRect = view.getBoundingClientRect();
+    const runnerMetrics: DOMRect = runner.getBoundingClientRect();
+    if (this.viewOptions.isHorizontal) {
+      startCoord = runnerMetrics.x + (runnerMetrics.width / 2) - viewMetrics.x;
+      selectedVal = (startCoord / viewMetrics.width) * 100;
+    } else {
+      startCoord = runnerMetrics.y + (runnerMetrics.height / 2) - viewMetrics.y;
+      selectedVal = (startCoord / viewMetrics.height) * 100;
+    }
+
     const startAction: {event: string; value: [number, number] | number} = { event: 'start', value: selectedVal };
     this.notify(startAction);
 
-    const mouseMoveHandler = this.makeMouseMoveHandler(element);
+    const mouseMoveHandler = this.makeMouseMoveHandler(view);
     this.$container.on('mousemove', mouseMoveHandler);
   }
 
