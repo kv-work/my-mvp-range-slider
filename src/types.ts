@@ -33,7 +33,7 @@ interface ApplicationOption {
 
 interface Observer {
   update?(): void;
-  start?(values: [number, number] | number): void;
+  start?(): void;
   change?(values: [number, number] | number): void;
   finish?(values: [number, number] | number): void;
 }

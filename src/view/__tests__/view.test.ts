@@ -2,8 +2,6 @@ import $ from 'jquery';
 import SliderView from '../view';
 import { ViewData, Observer, ViewRenderData } from '../../types';
 
-// const $ = require('jquery');
-
 describe('SliderView', () => {
   document.body.innerHTML = '<div id="container"></div>';
 

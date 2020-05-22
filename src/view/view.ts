@@ -126,11 +126,11 @@ class SliderView implements View {
     return $view;
   }
 
-  private notify(action: {event: string; value: [number, number] | number}): void {
+  private notify(action: {event: string; value?: [number, number] | number}): void {
     switch (action.event) {
       case 'start':
         this.observers.forEach((observer) => {
-          observer.start(action.value);
+          observer.start();
         });
         break;
       case 'change':
@@ -174,7 +174,7 @@ class SliderView implements View {
       selectedVal = (clickCoord / elemMetrics.height) * 100;
     }
 
-    const startAction: {event: string; value: [number, number] | number} = { event: 'start', value: this.renderData.value };
+    const startAction: {event: string; value?: [number, number] | number} = { event: 'start' };
     this.notify(startAction);
 
     const changeAction: {event: string; value: [number, number] | number} = { event: 'change', value: selectedVal };
@@ -184,32 +184,19 @@ class SliderView implements View {
     this.notify(finishAction);
   }
 
-  private dragStartHandler(event: JQuery.MouseDownEvent): void {
-    let startCoord: number;
-    let selectedVal: number;
-    const view: HTMLElement = this.$view[0];
-    const runner: HTMLElement = event.currentTarget;
-    const viewMetrics: DOMRect = view.getBoundingClientRect();
-    const runnerMetrics: DOMRect = runner.getBoundingClientRect();
-    if (this.viewOptions.isHorizontal) {
-      startCoord = runnerMetrics.x + (runnerMetrics.width / 2) - viewMetrics.x;
-      selectedVal = (startCoord / viewMetrics.width) * 100;
-    } else {
-      startCoord = runnerMetrics.y + (runnerMetrics.height / 2) - viewMetrics.y;
-      selectedVal = (startCoord / viewMetrics.height) * 100;
-    }
-
-    const startAction: {event: string; value: [number, number] | number} = { event: 'start', value: selectedVal };
+  private dragStartHandler(): void {
+    const startAction: {event: string; value?: [number, number] | number} = { event: 'start' };
     this.notify(startAction);
 
-    const mouseMoveHandler = this.makeMouseMoveHandler(view);
+    const mouseMoveHandler = this.makeMouseMoveHandler();
     this.$container.on('mousemove', mouseMoveHandler);
   }
 
-  private makeMouseMoveHandler(elem: HTMLElement): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+  private makeMouseMoveHandler(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
     let moveCoord: number;
     let selectedVal: number;
-    const elemMetrics: DOMRect = elem.getBoundingClientRect();
+    const view: HTMLElement = this.$view[0];
+    const elemMetrics: DOMRect = view.getBoundingClientRect();
 
     const mouseMoveHandler = (e: JQuery.MouseMoveEvent): void => {
       if (this.viewOptions.isHorizontal) {
