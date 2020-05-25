@@ -2,7 +2,8 @@ import $ from 'jquery';
 import './plugin/plugin';
 import { ApplicationOption } from './types';
 
-$('.js-test_default').myMVPSlider();
+// need added default options in App.ts
+// $('.js-test_default').myMVPSlider();
 
 const options: ApplicationOption = {
   maxValue: 100,

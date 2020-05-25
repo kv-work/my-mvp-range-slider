@@ -1,0 +1,21 @@
+.slider__container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.slider__bar {
+  background-color: #E5E5E5;
+  height: 0.5rem;
+  border-radius: 0.25rem;
+  flex-basis: 100%;
+}
+
+.slider__runner {
+  width: 1.5rem;
+  height: 1.5rem;
+  position: absolute;
+  border-radius: 50%;
+  background-color: #53B6A8;
+}

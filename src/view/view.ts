@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import $ from 'jquery';
+import './view.css';
 import {
   View,
   ViewData,
@@ -65,7 +66,7 @@ class SliderView implements View {
   }
 
   private createBar(): JQuery {
-    let classList = 'js-slider__bar';
+    let classList = 'js-slider__bar slider__bar';
     if (this.viewOptions.isHorizontal) {
       classList += ' slider__bar_horizontal';
     }
@@ -79,7 +80,7 @@ class SliderView implements View {
 
   private createRunner(): JQuery {
     const $runner = $('<div>', {
-      class: 'js-slider__runner',
+      class: 'js-slider__runner slider__runner',
     });
 
     return $runner;
@@ -109,7 +110,7 @@ class SliderView implements View {
   private createSliderContainer(): JQuery {
     const { viewOptions } = this;
     const $view: JQuery = $('<div>', {
-      class: 'js-slider__container',
+      class: 'js-slider__container slider__container',
     });
 
     if (viewOptions.bar) {

@@ -3,7 +3,12 @@
 import $ from 'jquery';
 import App from '../app/app';
 import { ApplicationOption } from '../types';
-import './plugin.d';
+// import './plugin.d';
+declare global {
+  interface JQuery {
+    myMVPSlider(options?: ApplicationOption): JQuery;
+  }
+}
 
 $.fn.myMVPSlider = function myMVPSlider(options: ApplicationOption): JQuery {
   const app = new App(options, this);
