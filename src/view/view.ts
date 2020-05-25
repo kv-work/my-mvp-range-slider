@@ -38,6 +38,8 @@ class SliderView implements View {
 
       this.$container.append(this.$view);
     }
+
+    if (this.viewOptions.bar) this.renderBar();
   }
 
   update(viewData: ViewData): void {
@@ -69,6 +71,8 @@ class SliderView implements View {
     let classList = 'js-slider__bar slider__bar';
     if (this.viewOptions.isHorizontal) {
       classList += ' slider__bar_horizontal';
+    } else {
+      classList += ' slider__bar_vertical';
     }
 
     const $bar = $('<div>', {
@@ -76,6 +80,27 @@ class SliderView implements View {
     });
 
     return $bar;
+  }
+
+  private renderBar(): void {
+    let direction: string;
+    const color = '#53B6A8';
+    if (this.viewOptions.isHorizontal) {
+      direction = 'to right';
+    } else {
+      direction = 'to bottom';
+    }
+
+    if (Array.isArray(this.renderData.value)) {
+      const [value, secondValue] = this.renderData.value;
+      this.$bar.css({
+        background: `linear-gradient(${direction}, #E5E5E5 ${value}%, ${color} ${value}%, ${color} ${secondValue}%, #E5E5E5 ${secondValue}%)`,
+      });
+    } else {
+      this.$bar.css({
+        background: `linear-gradient(${direction}, ${color} ${this.renderData.value}%, #E5E5E5 ${this.renderData.value}%)`,
+      });
+    }
   }
 
   private createRunner(): JQuery {

@@ -3,15 +3,28 @@
   width: 100%;
   display: flex;
   align-items: center;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 .slider__bar {
   background-color: #E5E5E5;
-  height: 0.5rem;
   border-radius: 0.25rem;
-  flex-basis: 100%;
+  
+  cursor: pointer;
 }
 
+.slider__bar_vertical {
+  width: 0.5rem;
+  height: 50rem;
+}
+
+.slider__bar_horizontal {
+  height: 0.5rem;
+  width: 100%;
+  flex-basis: 100%;
+}
+ 
 .slider__runner {
   width: 1.5rem;
   height: 1.5rem;
