@@ -17,6 +17,7 @@
 .slider__bar_vertical {
   width: 0.5rem;
   height: 50rem;
+  margin-left: 0.5rem;
 }
 
 .slider__bar_horizontal {
