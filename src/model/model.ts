@@ -5,7 +5,7 @@ class SliderModel implements Model {
   private _minValue: number;
   private _step: number;
   private _value: number;
-  private _secondValue: number;
+  private _secondValue?: number;
   private observers: Set<Observer>;
   private isUpdated: boolean;
   private isReadyNotify: boolean;
@@ -139,7 +139,7 @@ class SliderModel implements Model {
     return this._secondValue;
   }
 
-  set secondValue(newValue: number) {
+  set secondValue(newValue: number | undefined) {
     if (this._ableToChange('secondValue', newValue)) {
       const {
         _maxValue,
@@ -147,20 +147,25 @@ class SliderModel implements Model {
         _secondValue: oldValue,
       } = this;
 
-      const valueMultipleStep = this._getMultipleStep(newValue);
+      let valueMultipleStep: number;
+      if (newValue !== undefined) {
+        valueMultipleStep = this._getMultipleStep(newValue);
 
-      switch (true) {
-        case (valueMultipleStep >= _maxValue):
-          this._secondValue = _maxValue;
-          this.isUpdated = false;
-          break;
-        case (valueMultipleStep <= _value):
-          this._secondValue = _value;
-          this.isUpdated = false;
-          break;
-        default:
-          this._secondValue = valueMultipleStep;
-          this.isUpdated = false;
+        switch (true) {
+          case (valueMultipleStep >= _maxValue):
+            this._secondValue = _maxValue;
+            this.isUpdated = false;
+            break;
+          case (valueMultipleStep <= _value):
+            this._secondValue = _value;
+            this.isUpdated = false;
+            break;
+          default:
+            this._secondValue = valueMultipleStep;
+            this.isUpdated = false;
+        }
+      } else {
+        this._secondValue = undefined;
       }
 
       if (oldValue !== this._secondValue) {
@@ -299,7 +304,7 @@ class SliderModel implements Model {
       valueMultipleStep = (value - (value % step));
     }
 
-    return valueMultipleStep;
+    return this.fixValue(valueMultipleStep);
   }
 
   private _isLocked(value: string): boolean {
@@ -318,7 +323,7 @@ class SliderModel implements Model {
       case 'value':
         return (isValid && !isLocked);
       case 'secondValue':
-        return (isValid && !isLocked);
+        return (newValue === undefined) || (isValid && !isLocked);
       case 'maxValue':
         isEqual = (newValue === this._maxValue);
         isUndefined = (this._maxValue === undefined);
@@ -336,6 +341,19 @@ class SliderModel implements Model {
       default:
         return false;
     }
+  }
+
+  private fixValue(value: number): number {
+    if (!(this._step % 1)) {
+      return value;
+    }
+
+    let base: number = this._step.toString().split('.')[1].length;
+    if (base > 10) {
+      base = 10;
+    }
+    const result = +value.toFixed(base);
+    return result;
   }
 
   static _validate(value: number): boolean {

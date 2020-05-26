@@ -1,8 +1,7 @@
-/* eslint-disable fsd/no-function-declaration-in-event-listener */
 import { OptionsModel, Observer } from '../../types';
 import SliderModel from '../model';
 
-describe.only('model', () => {
+describe('model', () => {
   const testOptions: OptionsModel = {
     maxValue: 10,
     minValue: 0,
@@ -169,12 +168,26 @@ describe.only('model', () => {
     test('should not be null or Infinity', () => {
       testModel.maxValue = 25;
       testModel.step = 1;
+      expect(testModel.secondValue).not.toBeDefined();
       testModel.secondValue = 20;
       expect(testModel).toHaveProperty('_secondValue', 20);
       testModel.secondValue = null;
       expect(testModel).toHaveProperty('_secondValue', 20);
       testModel.secondValue = NaN;
       expect(testModel).toHaveProperty('_secondValue', 20);
+    });
+
+    test('can be undefined', () => {
+      testModel.maxValue = 25;
+      testModel.step = 1;
+      testModel.secondValue = 20;
+      expect(testModel).toHaveProperty('_secondValue', 20);
+      testModel.value = 24;
+      expect(testModel.value).toBe(20);
+      testModel.secondValue = undefined;
+      expect(testModel.secondValue).not.toBeDefined();
+      testModel.value = 24;
+      expect(testModel.value).toBe(24);
     });
 
     test('should be a multiple of the step', () => {
@@ -436,6 +449,28 @@ describe.only('model', () => {
       expect(testModel.step).toBe(2);
       testModel.step = -5;
       expect(testModel.step).toBe(2);
+    });
+
+    test('can be floating point number', () => {
+      testModel.updateState({
+        maxValue: 2,
+        minValue: 0,
+        value: 0.5,
+        step: 0.1,
+      });
+
+      testModel.secondValue = 1.95;
+
+      expect(testModel.getState().value).toBe(0.5);
+      testModel.value = 0.56;
+      expect(testModel.value).toBe(0.6);
+      expect(testModel.secondValue).toBe(1.9);
+
+      const newStep = 0.01 + 0.02;
+      testModel.step = newStep;
+
+      expect(testModel.value).toBe(0.6);
+      expect(testModel.secondValue).toBe(1.89);
     });
   });
 
