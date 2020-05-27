@@ -4,11 +4,14 @@
   "description": "slider plugin",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "silent-test": "jest --silent --watch",
+    "test": "jest --coverage",
     "start": "webpack-dev-server",
     "build:prod": "webpack --env.mode=production",
     "build:dev": "webpack",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "eslint": "eslint --cache --ext .js,.ts src",
+    "eslint:dump": "eslint --print-config ./.eslintrc.json"
   },
   "repository": {
     "type": "git",
@@ -29,9 +32,16 @@
   "devDependencies": {
     "@types/jest": "^25.2.1",
     "@types/jquery": "^3.3.35",
+    "@typescript-eslint/eslint-plugin": "^2.33.0",
+    "@typescript-eslint/parser": "^2.31.0",
     "css-loader": "^3.5.2",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-typescript": "^7.2.1",
+    "eslint-plugin-fsd": "^1.0.1",
+    "eslint-plugin-import": "^2.20.2",
     "gh-pages": "^2.2.0",
     "html-webpack-plugin": "^4.2.0",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^25.4.0",
     "mini-css-extract-plugin": "^0.9.0",
     "style-loader": "^1.1.4",

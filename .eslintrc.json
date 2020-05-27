@@ -1,0 +1,27 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "airbnb-typescript/base",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@typescript-eslint/recommended-requiring-type-checking",
+      "plugin:fsd/all"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "project": "tsconfig.json",
+      "tsconfigRootDir": "."
+    },
+    "rules": {
+      "no-underscore-dangle": "off",
+      "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }]
+    },
+    "plugins": [
+      "@typescript-eslint",
+      "fsd"
+    ]
+}
