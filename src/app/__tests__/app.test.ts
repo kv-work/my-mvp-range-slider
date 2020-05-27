@@ -59,12 +59,5 @@ describe('app', () => {
     test('should create view', () => {
       expect(testApp).toHaveProperty('view');
     });
-
-    test('should render view', () => {
-      expect($('.js-slider__container').length).toBe(1);
-      expect($('.js-slider__bar').length).toBe(1);
-      expect($('.js-slider__scale').length).toBe(1);
-      expect($('.js-slider__second_runner').length).toBe(1);
-    });
   });
 });
