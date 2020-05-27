@@ -165,6 +165,7 @@ describe('Presenter', () => {
       expect(mockRender).toBeCalledWith({
         data: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
         value: [25, 70],
+        percentage: [25, 70],
       });
       expect(viewObservers.size).toBe(1);
     });
@@ -331,7 +332,7 @@ describe('Presenter', () => {
     test('should request updated model data', () => {
       testModel.updateState({ value: 25 });
       expect(mockModelNotify).toHaveBeenCalledTimes(1);
-      expect(mockGetState).toHaveBeenCalledTimes(1);
+      expect(mockGetState).toHaveBeenCalled();
     });
 
     test('should update renderData', () => {
@@ -354,6 +355,22 @@ describe('Presenter', () => {
       expect(testPresenter).toHaveProperty('renderData', [0, 7, 10]);
     });
 
+    test('should convert units in the model to percent before calls render method of view', () => {
+      testPresenter.update({
+        maxValue: 10,
+        minValue: 0,
+        step: 2,
+        value: 2,
+        secondValue: 6,
+      });
+
+      expect(mockRender).toBeCalledWith({
+        data: [0, 2, 4, 6, 8, 10],
+        value: [2, 6],
+        percentage: [20, 60],
+      });
+    });
+
     test('should calls render with new render data', () => {
       testPresenter.update({
         maxValue: 50,
@@ -365,6 +382,7 @@ describe('Presenter', () => {
       expect(mockRender).toBeCalledWith({
         data: [25, 30, 35, 40, 45, 50],
         value: 35,
+        percentage: 40,
       });
     });
   });
@@ -451,6 +469,47 @@ describe('Presenter', () => {
 
       expect(mockUpdateState).toBeCalledWith({ value: 50, secondValue: 75 });
       expect(mockOnUpdate).not.toBeCalled();
+    });
+
+    test('should convert percentages to units in the model', () => {
+      testPresenter.update({
+        maxValue: 10,
+        minValue: 0,
+        step: 10,
+        value: 2,
+        secondValue: 6,
+      });
+      expect(mockUpdateState).toBeCalledWith({
+        maxValue: 10,
+        minValue: 0,
+        step: 10,
+        value: 2,
+        secondValue: 6,
+      });
+      mockUpdateState.mockClear();
+
+      mockViewNotify({ type: 'change', values: 30 });
+      expect(mockUpdateState).toBeCalledWith({ value: 3 });
+      mockUpdateState.mockClear();
+
+      mockViewNotify({ type: 'change', values: 40 });
+      expect(mockUpdateState).toBeCalledWith({ value: 4 });
+      mockUpdateState.mockClear();
+
+      mockViewNotify({ type: 'finish', values: 55 });
+      expect(mockUpdateState).toBeCalledWith({ value: 5.5 });
+
+      testPresenter.update({
+        maxValue: 15,
+        minValue: 5,
+        step: 0.5,
+        value: 7.5,
+        secondValue: 13.5,
+      });
+      mockUpdateState.mockClear();
+
+      mockViewNotify({ type: 'change', values: [40, 60] });
+      expect(mockUpdateState).toBeCalledWith({ value: 9, secondValue: 11 });
     });
   });
 

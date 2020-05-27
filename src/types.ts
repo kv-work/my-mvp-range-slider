@@ -105,6 +105,7 @@ interface View {
 interface ViewRenderData {
   data?: Stringable[];
   value?: number | [number, number];
+  percentage?: number | [number, number];
 }
 
 interface Stringable {

@@ -164,21 +164,23 @@ export default class SliderPresenter implements Presenter {
         this.callbacks.onStart();
       },
       change: (values: [number, number] | number): void => {
-        if (Array.isArray(values)) {
-          const [newValue, newSecondValue] = values;
+        const convertedValues = this.convertPercentToValue(values);
+        if (Array.isArray(convertedValues)) {
+          const [newValue, newSecondValue] = convertedValues;
           this.model.updateState({ value: newValue, secondValue: newSecondValue });
         } else {
-          this.model.updateState({ value: values });
+          this.model.updateState({ value: convertedValues });
         }
 
         this.callbacks.onChange();
       },
       finish: (values: [number, number] | number): void => {
-        if (Array.isArray(values)) {
-          const [newValue, newSecondValue] = values;
+        const convertedValues = this.convertPercentToValue(values);
+        if (Array.isArray(convertedValues)) {
+          const [newValue, newSecondValue] = convertedValues;
           this.model.updateState({ value: newValue, secondValue: newSecondValue });
         } else {
-          this.model.updateState({ value: values });
+          this.model.updateState({ value: convertedValues });
         }
 
         this.callbacks.onFinish();
@@ -188,8 +190,10 @@ export default class SliderPresenter implements Presenter {
   }
 
   private renderView(data?: ViewRenderData): void {
+    let percentage: [number, number] | number;
     if (data) {
-      this.view.render(data);
+      percentage = this.convertValueToPercent(data.value);
+      this.view.render({ ...data, percentage });
     } else {
       let values: [number, number];
       const currentValue = this.getModelData().value;
@@ -197,9 +201,12 @@ export default class SliderPresenter implements Presenter {
         const { secondValue } = this.getModelData();
         values = [currentValue, secondValue];
       }
+      const value = values || currentValue;
+      percentage = this.convertValueToPercent(value);
       const viewRenderData: ViewRenderData = {
         data: this.renderData,
-        value: values || currentValue,
+        value,
+        percentage,
       };
       this.view.render(viewRenderData);
     }
@@ -213,6 +220,42 @@ export default class SliderPresenter implements Presenter {
       step: 1,
     });
     this.model.lockState(['maxValue', 'minValue', 'step']);
+  }
+
+  private convertPercentToValue(percentage: [number, number] | number): [number, number] | number {
+    const { minValue, maxValue } = this.getModelData();
+    let value: number;
+    let secondValue: number;
+    let values: [number, number] | number;
+
+    if (Array.isArray(percentage)) {
+      const [firstPercent, secondPercent] = percentage;
+      value = ((maxValue - minValue) / 100) * firstPercent + minValue;
+      secondValue = ((maxValue - minValue) / 100) * secondPercent + minValue;
+      values = [value, secondValue];
+    } else {
+      values = ((maxValue - minValue) / 100) * percentage + minValue;
+    }
+
+    return values;
+  }
+
+  private convertValueToPercent(values: [number, number] | number): [number, number] | number {
+    const { minValue, maxValue } = this.getModelData();
+    let firstPercantage: number;
+    let secondPercantage: number;
+    let percentage: [number, number] | number;
+
+    if (Array.isArray(values)) {
+      const [firstValue, secondValue] = values;
+      firstPercantage = ((firstValue - minValue) * 100) / (maxValue - minValue);
+      secondPercantage = ((secondValue - minValue) * 100) / (maxValue - minValue);
+      percentage = [firstPercantage, secondPercantage];
+    } else {
+      percentage = ((values - minValue) * 100) / (maxValue - minValue);
+    }
+
+    return percentage;
   }
 
   static isEmpty(object: {}): boolean {
