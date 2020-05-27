@@ -377,12 +377,13 @@ describe('Presenter', () => {
         minValue: 25,
         step: 5,
         value: 35,
+        secondValue: 40,
       });
 
       expect(mockRender).toBeCalledWith({
         data: [25, 30, 35, 40, 45, 50],
-        value: 35,
-        percentage: 40,
+        value: [35, 40],
+        percentage: [40, 60],
       });
     });
   });
@@ -539,6 +540,11 @@ describe('Presenter', () => {
 
       expect(mockUpdateState).toBeCalledWith({ value: 40 });
       expect(mockUpdate).not.toHaveBeenCalled();
+    });
+
+    test('should set secondValue to undefined if argument {secondValue: undefined}', () => {
+      testPresenter.update({ secondValue: undefined });
+      expect(mockUpdateState).toBeCalledWith({ secondValue: undefined });
     });
 
     test('should calls update method of view, if it is necessary to update the view props', () => {

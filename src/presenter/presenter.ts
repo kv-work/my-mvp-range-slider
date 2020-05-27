@@ -56,8 +56,11 @@ export default class SliderPresenter implements Presenter {
       minValue: options.minValue,
       step: options.step,
       value: options.value,
-      secondValue: options.secondValue,
     };
+
+    if (Object.prototype.hasOwnProperty.call(options, 'secondValue')) {
+      modelOptions.secondValue = options.secondValue;
+    }
 
     const viewOptions: ViewData = {
       isHorizontal: options.isHorizontal,
@@ -75,7 +78,7 @@ export default class SliderPresenter implements Presenter {
       postfix: options.postfix,
     };
 
-    if (!SliderPresenter.isEmpty(modelOptions)) {
+    if (!SliderPresenter.isEmpty(modelOptions) || Object.prototype.hasOwnProperty.call(options, 'secondValue')) {
       this.model.updateState(modelOptions);
     }
 
@@ -145,14 +148,7 @@ export default class SliderPresenter implements Presenter {
       update: (): void => {
         const updatedModelState = this.getModelData();
         this.renderData = this.createDataValues(updatedModelState);
-        let values: [number, number];
-        if (updatedModelState.secondValue !== undefined) {
-          values = [updatedModelState.value, updatedModelState.secondValue];
-        }
-        this.renderView({
-          data: this.renderData,
-          value: values || updatedModelState.value,
-        });
+        this.renderView();
       },
     };
     this.model.addObserver(this.modelObserver);
