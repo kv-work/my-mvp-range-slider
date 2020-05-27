@@ -91,8 +91,8 @@ class SliderView implements View {
       direction = 'to bottom';
     }
 
-    if (Array.isArray(this.renderData.value)) {
-      const [value, secondValue] = this.renderData.value;
+    if (Array.isArray(this.renderData.percentage)) {
+      const [value, secondValue] = this.renderData.percentage;
       this.$bar.css({
         background: `linear-gradient(${direction}, #E5E5E5 ${value}%, ${color} ${value}%, ${color} ${secondValue}%, #E5E5E5 ${secondValue}%)`,
       });
