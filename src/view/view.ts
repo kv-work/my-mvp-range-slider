@@ -98,7 +98,7 @@ class SliderView implements View {
       });
     } else {
       this.$bar.css({
-        background: `linear-gradient(${direction}, ${color} ${this.renderData.value}%, #E5E5E5 ${this.renderData.value}%)`,
+        background: `linear-gradient(${direction}, ${color} ${this.renderData.percentage}%, #E5E5E5 ${this.renderData.percentage}%)`,
       });
     }
   }
