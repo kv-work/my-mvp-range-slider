@@ -73,7 +73,12 @@ describe('Presenter', () => {
   const mockViewRemoveObserver = jest.fn((observer: Observer) => {
     viewObservers.delete(observer);
   });
-  const mockUpdate = jest.fn();
+  const mockUpdate = jest.fn((options: ViewData) => {
+    testViewData = {
+      ...testViewData,
+      ...options,
+    };
+  });
   const mockGetViewData = jest.fn((): ViewData => testViewData);
 
   // Mock SliderModel class
@@ -516,7 +521,7 @@ describe('Presenter', () => {
 
   describe('update', () => {
     beforeEach(() => {
-      mockOnUpdate.mockClear();
+      jest.clearAllMocks();
     });
 
     test('should calls updateState method of model, if it is necessary to update the model state', () => {
@@ -585,6 +590,34 @@ describe('Presenter', () => {
       expect(mockUpdate).toBeCalledWith({ runner: true });
 
       expect(mockUpdateState).not.toBeCalled();
+    });
+
+    test('should calls update method of view and updateState method of model, then changed renderData and calls render method of view', () => {
+      testPresenter.update({
+        range: false,
+        maxValue: 25,
+        minValue: 12,
+        step: 3,
+        value: 18,
+      });
+
+      expect(mockUpdate).toBeCalledWith({ range: false });
+      expect(mockUpdateState).toBeCalledWith({
+        maxValue: 25,
+        minValue: 12,
+        step: 3,
+        value: 18,
+      });
+
+      expect(testPresenter.getViewData().range).toBeFalsy();
+
+      expect(testPresenter).toHaveProperty('renderData', [12, 15, 18, 21, 24, 25]);
+
+      expect(mockRender).toBeCalledWith({
+        data: [12, 15, 18, 21, 24, 25],
+        value: 18,
+        percentage: 46.15384615384615,
+      });
     });
 
     test('should updates dataValues and renderData', () => {

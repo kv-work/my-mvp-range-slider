@@ -78,12 +78,12 @@ export default class SliderPresenter implements Presenter {
       postfix: options.postfix,
     };
 
-    if (!SliderPresenter.isEmpty(modelOptions) || Object.prototype.hasOwnProperty.call(options, 'secondValue')) {
-      this.model.updateState(modelOptions);
-    }
-
     if (!SliderPresenter.isEmpty(viewOptions)) {
       this.view.update(viewOptions);
+    }
+
+    if (!SliderPresenter.isEmpty(modelOptions) || Object.prototype.hasOwnProperty.call(options, 'secondValue')) {
+      this.model.updateState(modelOptions);
     }
 
     if (options.dataValues !== undefined && options.dataValues.length) {
@@ -185,27 +185,21 @@ export default class SliderPresenter implements Presenter {
     this.view.addObserver(this.viewObserver);
   }
 
-  private renderView(data?: ViewRenderData): void {
-    let percentage: [number, number] | number;
-    if (data) {
-      percentage = this.convertValueToPercent(data.value);
-      this.view.render({ ...data, percentage });
-    } else {
-      let values: [number, number];
-      const currentValue = this.getModelData().value;
-      if (this.getViewData().range) {
-        const { secondValue } = this.getModelData();
-        values = [currentValue, secondValue];
-      }
-      const value = values || currentValue;
-      percentage = this.convertValueToPercent(value);
-      const viewRenderData: ViewRenderData = {
-        data: this.renderData,
-        value,
-        percentage,
-      };
-      this.view.render(viewRenderData);
+  private renderView(): void {
+    let values: [number, number];
+    const currentValue = this.getModelData().value;
+    if (this.getViewData().range) {
+      const { secondValue } = this.getModelData();
+      values = [currentValue, secondValue];
     }
+    const value = values || currentValue;
+    const percentage: [number, number] | number = this.convertValueToPercent(value);
+    const viewRenderData: ViewRenderData = {
+      data: this.renderData,
+      value,
+      percentage,
+    };
+    this.view.render(viewRenderData);
   }
 
   private updateDataValues(values: Stringable[]): void {
@@ -244,11 +238,11 @@ export default class SliderPresenter implements Presenter {
 
     if (Array.isArray(values)) {
       const [firstValue, secondValue] = values;
-      firstPercantage = ((firstValue - minValue) * 100) / (maxValue - minValue);
-      secondPercantage = ((secondValue - minValue) * 100) / (maxValue - minValue);
+      firstPercantage = ((firstValue - minValue) / (maxValue - minValue)) * 100;
+      secondPercantage = ((secondValue - minValue) / (maxValue - minValue)) * 100;
       percentage = [firstPercantage, secondPercantage];
     } else {
-      percentage = ((values - minValue) * 100) / (maxValue - minValue);
+      percentage = ((values - minValue) / (maxValue - minValue)) * 100;
     }
 
     return percentage;
