@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import '../plugin';
 
 describe('myMVPSlider', () => {
   document.body.innerHTML = '<div class="js-container"></div>';
@@ -10,9 +11,8 @@ describe('myMVPSlider', () => {
   });
 
   test('should render slider with default options', () => {
-    // expect($('.js-slider__bar').length).toBe(1);
-    // expect($('.js-slider__runner').length).toBe(1);
-    // expect($('.js-slider__scale').length).toBe(1);
+    expect($('.js-slider__bar').length).toBe(1);
+    expect($('.js-slider__runner').length).toBe(1);
   });
 
   test('should support call chains');
