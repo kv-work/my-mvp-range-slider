@@ -1,4 +1,3 @@
-import { OptionsModel, Observer } from '../../types';
 import SliderModel from '../model';
 
 describe('model', () => {

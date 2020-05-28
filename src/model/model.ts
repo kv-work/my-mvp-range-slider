@@ -1,5 +1,3 @@
-import { OptionsModel, Observer, Model } from '../types';
-
 class SliderModel implements Model {
   private _maxValue: number;
   private _minValue: number;
