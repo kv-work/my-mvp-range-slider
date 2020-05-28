@@ -1,11 +1,10 @@
 import $ from 'jquery';
 import '../plugin/plugin';
-import { ApplicationOption } from '../types';
 
 // need added default options in App.ts
 // $('.js-test_default').myMVPSlider();
 
-const options: ApplicationOption = {
+const options: App.Option = {
   maxValue: 100,
   minValue: 0,
   step: 10,
@@ -25,7 +24,7 @@ const options: ApplicationOption = {
   onUpdate: () => {},
 };
 
-const anotherOptions: ApplicationOption = {
+const anotherOptions: App.Option = {
   maxValue: 100,
   minValue: 0,
   step: 10,

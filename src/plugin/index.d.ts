@@ -3,11 +3,11 @@
 
 declare global {
   interface JQuery {
-    myMVPSlider(options?: ApplicationOption): JQuery;
+    myMVPSlider(options?: MyMVPSliderOptions): JQuery;
   }
 }
 
-export interface ApplicationOption {
+export interface MyMVPSliderOptions {
   // model
   maxValue?: number;
   minValue?: number;
@@ -40,6 +40,6 @@ export interface ApplicationOption {
   onUpdate?: CallableFunction;
 }
 
-export interface Stringable {
+interface Stringable {
   toString(): string;
 }

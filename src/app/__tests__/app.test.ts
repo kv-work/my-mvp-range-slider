@@ -8,7 +8,7 @@ describe('app', () => {
   const mockChange = jest.fn();
   const mockFinish = jest.fn();
   const mockUpdate = jest.fn();
-  const testOptions = {
+  const testOptions: App.Option = {
     maxValue: 100,
     minValue: 0,
     step: 5,

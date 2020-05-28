@@ -1,12 +1,11 @@
 import $ from 'jquery';
 import SliderView from '../view';
-import { ViewData, Observer, ViewRenderData } from '../../types';
 
 describe('SliderView', () => {
   document.body.innerHTML = '<div id="container"></div>';
 
   const testNode = document.getElementById('container');
-  const testOptions: ViewData = {
+  const testOptions: View.Options = {
     isHorizontal: true,
     range: true,
     dragInterval: true,
@@ -21,7 +20,7 @@ describe('SliderView', () => {
     prefix: 'value',
     postfix: '$',
   };
-  const testRenderData: ViewRenderData = {
+  const testRenderData: View.RenderData = {
     data: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50],
     value: 4,
   };
@@ -44,7 +43,7 @@ describe('SliderView', () => {
   const mockFinish = jest.fn();
 
   let testView: SliderView;
-  let testObserver: Observer;
+  let testObserver: View.Observer;
 
   beforeEach(() => {
     testView = new SliderView(testNode, testOptions);
@@ -72,7 +71,7 @@ describe('SliderView', () => {
       const entries = Object.entries(testView);
       entries.forEach((entry) => {
         if (entry[0] === 'observers') {
-          const observers: Set<Observer> = entry[1];
+          const observers: Set<View.Observer> = entry[1];
           expect(observers.size).toEqual(0);
         }
       });
@@ -226,7 +225,7 @@ describe('SliderView', () => {
       const entries = Object.entries(testView);
       entries.forEach((entry) => {
         if (entry[0] === 'observers') {
-          const observers: Set<Observer> = entry[1];
+          const observers: Set<View.Observer> = entry[1];
           expect(observers.has(testObserver)).toBeTruthy();
         }
       });
@@ -240,7 +239,7 @@ describe('SliderView', () => {
       let entries = Object.entries(testView);
       entries.forEach((entry) => {
         if (entry[0] === 'observers') {
-          const observers: Set<Observer> = entry[1];
+          const observers: Set<View.Observer> = entry[1];
           expect(observers.has(testObserver)).toBeTruthy();
         }
       });
@@ -250,7 +249,7 @@ describe('SliderView', () => {
       entries = Object.entries(testView);
       entries.forEach((entry) => {
         if (entry[0] === 'observers') {
-          const observers: Set<Observer> = entry[1];
+          const observers: Set<View.Observer> = entry[1];
           expect(observers.has(testObserver)).toBeFalsy();
         }
       });

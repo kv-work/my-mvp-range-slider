@@ -1,25 +1,19 @@
 /* eslint-disable class-methods-use-this */
 import $ from 'jquery';
 import './view.css';
-import {
-  View,
-  ViewData,
-  ViewRenderData,
-  Observer,
-} from '../types';
 
 class SliderView implements View {
   private $container: JQuery;
-  private viewOptions: ViewData;
-  private renderData?: ViewRenderData;
+  private viewOptions: View.Options;
+  private renderData?: View.RenderData;
   private $view?: JQuery;
   private $bar?: JQuery;
   private $runner?: JQuery;
   private $scale?: JQuery;
   private $secondRunner?: JQuery;
-  private observers: Set<Observer>;
+  private observers: Set<View.Observer>;
 
-  constructor(container: HTMLElement, options: ViewData) {
+  constructor(container: HTMLElement, options: View.Options) {
     this.$container = $(container);
     this.viewOptions = options;
     this.observers = new Set();
@@ -30,7 +24,7 @@ class SliderView implements View {
     if (options.range && options.scale) this.$secondRunner = this.createSecondRunner();
   }
 
-  render(renderData: ViewRenderData): void {
+  render(renderData: View.RenderData): void {
     this.renderData = renderData;
 
     if (!this.$view) {
@@ -42,7 +36,7 @@ class SliderView implements View {
     if (this.viewOptions.bar) this.renderBar();
   }
 
-  update(viewData: ViewData): void {
+  update(viewData: View.Options): void {
     const state = {
       ...this.viewOptions,
       ...this.validateData(viewData),
@@ -55,15 +49,15 @@ class SliderView implements View {
     }
   }
 
-  addObserver(observer: Observer): void {
+  addObserver(observer: View.Observer): void {
     this.observers.add(observer);
   }
 
-  removeObserver(observer: Observer): void {
+  removeObserver(observer: View.Observer): void {
     this.observers.delete(observer);
   }
 
-  getData(): ViewData {
+  getData(): View.Options {
     return this.viewOptions;
   }
 
@@ -249,7 +243,7 @@ class SliderView implements View {
     return mouseMoveHandler;
   }
 
-  private validateData(data: ViewData): ViewData {
+  private validateData(data: View.Options): View.Options {
     const dataEntries = Object.entries(data);
     const validData = dataEntries.map((entry): [string, unknown] => {
       const key: string = entry[0];
@@ -285,7 +279,7 @@ class SliderView implements View {
       return [key, this.viewOptions[key]];
     });
 
-    const resultData: ViewData = validData.reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
+    const resultData: View.Options = validData.reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
     return resultData;
   }
 

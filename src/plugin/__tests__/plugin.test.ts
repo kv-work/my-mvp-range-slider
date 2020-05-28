@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-describe('myMVPSlider', () =>{
+describe('myMVPSlider', () => {
   document.body.innerHTML = '<div class="js-container"></div>';
 
   const testNode = document.getElementsByClassName('js-container')[0];

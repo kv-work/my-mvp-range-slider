@@ -1,21 +1,13 @@
 import SliderPresenter from '../presenter';
-import {
-  OptionsModel,
-  View,
-  Model,
-  ViewData,
-  Observer,
-  Stringable,
-} from '../../types';
 
 describe('Presenter', () => {
   document.body.innerHTML = '<div id="container"></div>';
 
-  let testModelState: OptionsModel;
+  let testModelState: Model.Options;
 
-  let testViewData: ViewData;
+  let testViewData: View.Options;
 
-  const testDataValues: Stringable[] = ['one', 'two', 'three', 'four'];
+  const testDataValues: App.Stringable[] = ['one', 'two', 'three', 'four'];
 
   // Mock callbacks
   const mockOnStart = jest.fn();
@@ -24,23 +16,23 @@ describe('Presenter', () => {
   const mockOnUpdate = jest.fn();
 
   // Mock observers
-  const modelObservers = new Set<Observer>();
-  const viewObservers = new Set<Observer>();
+  const modelObservers = new Set<Model.Observer>();
+  const viewObservers = new Set<View.Observer>();
   const mockModelNotify = jest.fn(() => {
-    modelObservers.forEach((observer: Observer) => {
+    modelObservers.forEach((observer: Model.Observer) => {
       observer.update();
     });
   });
   const mockViewNotify = jest.fn((event: {type: string; values?: [number, number] | number}) => {
     switch (event.type) {
       case 'start':
-        viewObservers.forEach((observer: Observer) => observer.start());
+        viewObservers.forEach((observer: View.Observer) => observer.start());
         break;
       case 'change':
-        viewObservers.forEach((observer: Observer) => observer.change(event.values));
+        viewObservers.forEach((observer: View.Observer) => observer.change(event.values));
         break;
       case 'finish':
-        viewObservers.forEach((observer: Observer) => observer.finish(event.values));
+        viewObservers.forEach((observer: View.Observer) => observer.finish(event.values));
         break;
       default:
         break;
@@ -48,38 +40,38 @@ describe('Presenter', () => {
   });
 
   // Mock funcs for test model
-  const mockAddObserver = jest.fn((observer: Observer) => {
+  const mockAddObserver = jest.fn((observer: Model.Observer) => {
     modelObservers.add(observer);
   });
-  const mockRemoveObserver = jest.fn((observer: Observer) => {
+  const mockRemoveObserver = jest.fn((observer: Model.Observer) => {
     modelObservers.delete(observer);
   });
-  const mockUpdateState = jest.fn((options: OptionsModel) => {
+  const mockUpdateState = jest.fn((options: Model.Options) => {
     testModelState = {
       ...testModelState,
       ...options,
     };
     mockModelNotify();
   });
-  const mockGetState = jest.fn((): OptionsModel => testModelState);
+  const mockGetState = jest.fn((): Model.Options => testModelState);
   const mockLockState = jest.fn();
   const mockUnlockState = jest.fn();
 
   // Mock funcs for test view
   const mockRender = jest.fn();
-  const mockViewAddObserver = jest.fn((observer: Observer) => {
+  const mockViewAddObserver = jest.fn((observer: View.Observer) => {
     viewObservers.add(observer);
   });
-  const mockViewRemoveObserver = jest.fn((observer: Observer) => {
+  const mockViewRemoveObserver = jest.fn((observer: View.Observer) => {
     viewObservers.delete(observer);
   });
-  const mockUpdate = jest.fn((options: ViewData) => {
+  const mockUpdate = jest.fn((options: View.Options) => {
     testViewData = {
       ...testViewData,
       ...options,
     };
   });
-  const mockGetViewData = jest.fn((): ViewData => testViewData);
+  const mockGetViewData = jest.fn((): View.Options => testViewData);
 
   // Mock SliderModel class
   const MockModel = jest.fn<Model, []>(() => ({

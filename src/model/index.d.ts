@@ -1,6 +1,3 @@
-// Type definitions for SliderModel
-// Definitions by: Komarov Vyacheslav <github.com/kv-work/>
-
 declare interface Model {
   getState(): Model.Options;
   updateState(state: Model.Options): void;
@@ -21,8 +18,5 @@ declare namespace Model {
 
   interface Observer {
     update?(): void;
-    start?(): void;
-    change?(values: [number, number] | number): void;
-    finish?(values: [number, number] | number): void;
   }
 }

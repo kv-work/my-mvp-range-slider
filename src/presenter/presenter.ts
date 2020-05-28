@@ -1,24 +1,10 @@
-import {
-  OptionsModel,
-  Observer,
-  ViewData,
-  View,
-  Presenter,
-  Model,
-  OptionsPresenter,
-  ApplicationOption,
-  Stringable,
-  PresenterData,
-  ViewRenderData,
-} from '../types';
-
-export default class SliderPresenter implements Presenter {
+class SliderPresenter implements Presenter {
   private view: View;
   private model: Model;
-  private viewObserver: Observer;
-  private modelObserver: Observer;
-  private dataValues: Stringable[];
-  private renderData: Stringable[];
+  private viewObserver: View.Observer;
+  private modelObserver: Model.Observer;
+  private dataValues: App.Stringable[];
+  private renderData: App.Stringable[];
   private callbacks: {
     onStart: CallableFunction;
     onChange: CallableFunction;
@@ -26,7 +12,7 @@ export default class SliderPresenter implements Presenter {
     onUpdate: CallableFunction;
   };
 
-  constructor(options: OptionsPresenter) {
+  constructor(options: Presenter.Options) {
     this.model = options.model;
     this.view = options.view;
 
@@ -50,8 +36,8 @@ export default class SliderPresenter implements Presenter {
     this.renderView();
   }
 
-  public update(options: ApplicationOption): void {
-    const modelOptions: OptionsModel = {
+  public update(options: App.Option): void {
+    const modelOptions: Model.Options = {
       maxValue: options.maxValue,
       minValue: options.minValue,
       step: options.step,
@@ -62,7 +48,7 @@ export default class SliderPresenter implements Presenter {
       modelOptions.secondValue = options.secondValue;
     }
 
-    const viewOptions: ViewData = {
+    const viewOptions: View.Options = {
       isHorizontal: options.isHorizontal,
       range: options.range,
       dragInterval: options.dragInterval,
@@ -95,7 +81,7 @@ export default class SliderPresenter implements Presenter {
     this.callbacks.onUpdate();
   }
 
-  public getAllData(): ApplicationOption {
+  public getAllData(): App.Option {
     const data = {
       ...this.getModelData(),
       ...this.getViewData(),
@@ -104,22 +90,22 @@ export default class SliderPresenter implements Presenter {
     return data;
   }
 
-  public getModelData(): OptionsModel {
+  public getModelData(): Model.Options {
     return this.model.getState();
   }
 
-  public getViewData(): ViewData {
+  public getViewData(): View.Options {
     return this.view.getData();
   }
 
-  public getPresenterData(): PresenterData {
+  public getPresenterData(): Presenter.Data {
     return {
       dataValues: this.dataValues,
       renderData: this.renderData,
     };
   }
 
-  private createDataValues(data?: OptionsModel): Stringable[] {
+  private createDataValues(data?: Model.Options): App.Stringable[] {
     if (this.dataValues.length > 0) {
       return this.dataValues;
     }
@@ -194,7 +180,7 @@ export default class SliderPresenter implements Presenter {
     }
     const value = values || currentValue;
     const percentage: [number, number] | number = this.convertValueToPercent(value);
-    const viewRenderData: ViewRenderData = {
+    const viewRenderData: View.RenderData = {
       data: this.renderData,
       value,
       percentage,
@@ -202,7 +188,7 @@ export default class SliderPresenter implements Presenter {
     this.view.render(viewRenderData);
   }
 
-  private updateDataValues(values: Stringable[]): void {
+  private updateDataValues(values: App.Stringable[]): void {
     this.dataValues = values;
     this.model.updateState({
       maxValue: values.length - 1,
@@ -261,3 +247,5 @@ export default class SliderPresenter implements Presenter {
     return isEmpty;
   }
 }
+
+export default SliderPresenter;

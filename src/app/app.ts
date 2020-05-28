@@ -1,22 +1,15 @@
-import {
-  Model,
-  View,
-  Presenter,
-  ApplicationOption,
-} from '../types';
-
 import SliderModel from '../model/model';
 import SliderPresenter from '../presenter/presenter';
 import SliderView from '../view/view';
 
 export default class App {
-  private options: ApplicationOption;
+  private options: App.Option;
   private node: HTMLElement;
   private model: Model;
   private presenter: Presenter;
   private view: View;
 
-  constructor(options: ApplicationOption, node: HTMLElement) {
+  constructor(options: App.Option, node: HTMLElement) {
     this.options = options;
     this.node = node;
 
