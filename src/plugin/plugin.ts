@@ -4,12 +4,6 @@ import $ from 'jquery';
 import App from '../app/app';
 import { ApplicationOption } from '../types';
 
-declare global {
-  interface JQuery {
-    myMVPSlider(options?: ApplicationOption): JQuery;
-  }
-}
-
 $.fn.myMVPSlider = function myMVPSlider(options: ApplicationOption): JQuery {
   this.each(function addPlugin(): void {
     const app = new App(options, this);
