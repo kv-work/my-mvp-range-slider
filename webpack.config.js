@@ -27,7 +27,7 @@ module.exports = (env = {}) => {
     const plugins = [
       new HtmlWebpackPlugin({
         filename: 'index.html',
-        template: './src/index.html'
+        template: './src/demo/index.html'
       }),
 
       new webpack.ProvidePlugin({
@@ -51,7 +51,7 @@ module.exports = (env = {}) => {
 
     mode,
 
-    entry: './src/index.ts',
+    entry: './src/demo/index.ts',
 
     output: {
       filename: 'index.js'
