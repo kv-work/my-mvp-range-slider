@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable eol-last */
 import $ from 'jquery';
-import App from '../app/app';
+import SliderApp from '../app/app';
 
 $.fn.myMVPSlider = function myMVPSlider(options: App.Option): JQuery {
-
   const settings = $.extend({
     maxValue: 100,
     minValue: 0,
@@ -38,7 +37,10 @@ $.fn.myMVPSlider = function myMVPSlider(options: App.Option): JQuery {
   }, options);
 
   this.each(function addPlugin(): void {
-    const app = new App(settings, this);
+    const $this = $(this);
+    const app = new SliderApp(settings, this);
+
+    $this.data('myMVPSlider', app);
   });
 
   return this;
