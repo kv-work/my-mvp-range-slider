@@ -565,6 +565,33 @@ describe('model', () => {
       expect(updateFunc).toHaveBeenCalledTimes(2);
       expect(anotherUpdateFunc).toHaveBeenCalledTimes(2);
     });
+
+    test('should not notify, if state has not changed', () => {
+      testModel.addObserver(observer);
+      testModel.addObserver(anotherObserver);
+      expect(testModel.getState()).toEqual({
+        maxValue: 10,
+        minValue: 0,
+        step: 2,
+        value: 2,
+      });
+      testModel.updateState({
+        maxValue: 10,
+        minValue: 0,
+        step: 2,
+        value: 2,
+      });
+
+      testModel.updateState({
+        maxValue: -10,
+        minValue: 0,
+        step: 2,
+        value: 2,
+      });
+
+      expect(updateFunc).not.toHaveBeenCalled();
+      expect(anotherUpdateFunc).not.toHaveBeenCalled();
+    });
   });
 
   describe('lockState', () => {
