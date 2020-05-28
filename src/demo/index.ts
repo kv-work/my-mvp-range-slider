@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import './plugin/plugin';
-import { ApplicationOption } from './types';
+import '../plugin/plugin';
+import { ApplicationOption } from '../types';
 
 // need added default options in App.ts
 // $('.js-test_default').myMVPSlider();
