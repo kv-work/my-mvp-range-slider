@@ -1,3 +1,13 @@
+declare interface App {
+  update(options: App.Option): void;
+  getAllData(): App.Option;
+  getModelData(): Model.Options;
+  getViewData(): View.Options;
+  getPresenterData(): Presenter.Data;
+  reset(): void;
+  destroy(): void;
+}
+
 declare namespace App {
   interface Option {
     // model

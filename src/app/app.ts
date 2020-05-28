@@ -1,8 +1,12 @@
+/* eslint-disable no-useless-return */
+/* eslint-disable class-methods-use-this */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-extra-semi */
 import SliderModel from '../model/model';
 import SliderPresenter from '../presenter/presenter';
 import SliderView from '../view/view';
 
-export default class App {
+export default class SliderApp implements App {
   private options: App.Option;
   private node: HTMLElement;
   private model: Model;
@@ -17,6 +21,28 @@ export default class App {
     this.createView();
     this.createPresenter();
   }
+
+  public update(options: App.Option): void {};
+
+  public getAllData(): App.Option {
+    return;
+  }
+
+  public getModelData(): Model.Options {
+    return;
+  }
+
+  public getViewData(): View.Options {
+    return;
+  }
+
+  public getPresenterData(): Presenter.Data {
+    return;
+  }
+
+  public reset(): void {}
+
+  public destroy(): void {}
 
   private createModel(): void {
     const {
