@@ -1,13 +1,17 @@
 import $ from 'jquery';
 import '../plugin';
+import SliderApp from '../../app/app';
 
 describe('myMVPSlider', () => {
-  document.body.innerHTML = '<div class="js-container"></div>';
+  document.body.innerHTML = `
+    <div class="js-container"></div>
+    <div class="js-container"></div>
+  `;
 
-  const testNode = document.getElementsByClassName('js-container')[0];
+  const testNodes = document.getElementsByClassName('js-container');
 
   beforeEach(() => {
-    $(testNode).myMVPSlider();
+    $(testNodes[0]).myMVPSlider();
   });
 
   test('should render slider with default options', () => {
@@ -15,8 +19,16 @@ describe('myMVPSlider', () => {
     expect($('.js-slider__runner').length).toBe(1);
   });
 
-  test('should support call chains');
-  test('should define a namespace for working with the plugin');
-  test('should have some methods');
-  test('should save data in data attributes');
+  test('should support call chains', () => {
+    expect($(testNodes[1]).myMVPSlider().css({
+      position: 'absolute',
+      top: '50px',
+    })).toBeInstanceOf($);
+  });
+  test('should save instance of Slider in data attr "myMVPSlider"', () => {
+    const slider = $(testNodes[0]).data('myMVPSlider');
+    expect(slider).toBeInstanceOf(SliderApp);
+  });
+  // test('should have some methods');
+  // test('should save data in data attributes');
 });
