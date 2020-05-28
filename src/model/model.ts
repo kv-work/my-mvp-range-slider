@@ -4,12 +4,12 @@ class SliderModel implements Model {
   private _step: number;
   private _value: number;
   private _secondValue?: number;
-  private observers: Set<Observer>;
+  private observers: Set<Model.Observer>;
   private isUpdated: boolean;
   private isReadyNotify: boolean;
   public readonly lockedValues: Set<string>;
 
-  constructor(options: OptionsModel) {
+  constructor(options: Model.Options) {
     this.maxValue = options.maxValue;
     this.minValue = options.minValue;
     this.step = options.step;
@@ -172,15 +172,15 @@ class SliderModel implements Model {
     }
   }
 
-  public addObserver(observer: Observer): void {
+  public addObserver(observer: Model.Observer): void {
     this.observers.add(observer);
   }
 
-  public removeObserver(observer: Observer): void {
+  public removeObserver(observer: Model.Observer): void {
     this.observers.delete(observer);
   }
 
-  public getState(): OptionsModel {
+  public getState(): Model.Options {
     const state = {
       maxValue: this._maxValue,
       minValue: this._minValue,
@@ -196,7 +196,7 @@ class SliderModel implements Model {
     return state;
   }
 
-  public updateState(state: OptionsModel): void {
+  public updateState(state: Model.Options): void {
     const {
       maxValue,
       minValue,
@@ -278,7 +278,7 @@ class SliderModel implements Model {
 
   private notify(): void {
     if (this._checkObservers()) {
-      this.observers.forEach((observer: Observer): void => {
+      this.observers.forEach((observer: Model.Observer): void => {
         observer.update();
       });
 

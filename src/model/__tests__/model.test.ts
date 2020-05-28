@@ -1,22 +1,22 @@
 import SliderModel from '../model';
 
 describe('model', () => {
-  const testOptions: OptionsModel = {
+  const testOptions: Model.Options = {
     maxValue: 10,
     minValue: 0,
     value: 3,
     step: 2,
   };
 
-  const optionsWithSecondValue: OptionsModel = {
+  const optionsWithSecondValue: Model.Options = {
     secondValue: 8,
     ...testOptions,
   };
 
   let testModel: SliderModel;
   let modelWithSecondValue: SliderModel;
-  let observer: Observer;
-  let anotherObserver: Observer;
+  let observer: Model.Observer;
+  let anotherObserver: Model.Observer;
 
   let updateFunc: jest.Mock;
   let anotherUpdateFunc: jest.Mock;
@@ -480,7 +480,7 @@ describe('model', () => {
       const entries = Object.entries(testModel);
       entries.forEach((entry) => {
         if (entry[0] === 'observers') {
-          const observers: Set<Observer> = entry[1];
+          const observers: Set<Model.Observer> = entry[1];
           expect(observers.has(observer)).toBeTruthy();
         }
       });
@@ -495,7 +495,7 @@ describe('model', () => {
       testModel.removeObserver(observer);
       entries.forEach((entry) => {
         if (entry[0] === 'observers') {
-          const observers: Set<Observer> = entry[1];
+          const observers: Set<Model.Observer> = entry[1];
           expect(observers.has(observer)).toBeFalsy();
         }
       });
@@ -504,13 +504,13 @@ describe('model', () => {
 
   describe('updateState', () => {
     test('should update instance properties', () => {
-      const newModelState: OptionsModel = {
+      const newModelState: Model.Options = {
         maxValue: 100,
         minValue: 50,
         step: 5,
         value: 0,
       };
-      const newMaxValue: OptionsModel = {
+      const newMaxValue: Model.Options = {
         maxValue: 200,
       };
 
