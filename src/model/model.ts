@@ -53,7 +53,7 @@ class SliderModel implements Model {
       } else if (valueMultipleStep <= _minValue) {
         this._value = _minValue;
         this.isUpdated = false;
-      } else {
+      } else if (oldValue !== valueMultipleStep) {
         this._value = valueMultipleStep;
         this.isUpdated = false;
       }
@@ -158,9 +158,12 @@ class SliderModel implements Model {
             this._secondValue = _value;
             this.isUpdated = false;
             break;
-          default:
+          case (oldValue !== valueMultipleStep):
             this._secondValue = valueMultipleStep;
             this.isUpdated = false;
+            break;
+          default:
+            break;
         }
       } else {
         this._secondValue = undefined;
@@ -213,7 +216,7 @@ class SliderModel implements Model {
     this.secondValue = secondValue;
 
     this.isReadyNotify = true;
-    this.notify();
+    if (!this.isUpdated) this.notify();
   }
 
   public lockState(props: string[] | 'all'): void {
@@ -277,7 +280,7 @@ class SliderModel implements Model {
   }
 
   private notify(): void {
-    if (this._checkObservers()) {
+    if (this._checkObservers() && this.isReadyNotify) {
       this.observers.forEach((observer: Model.Observer): void => {
         observer.update();
       });
@@ -287,7 +290,7 @@ class SliderModel implements Model {
   }
 
   private _checkObservers(): boolean {
-    return (this.observers !== undefined && this.observers.size !== 0 && this.isReadyNotify);
+    return (this.observers !== undefined && this.observers.size !== 0);
   }
 
   private _getMultipleStep(value: number): number {

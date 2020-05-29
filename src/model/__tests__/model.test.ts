@@ -141,6 +141,8 @@ describe('model', () => {
       testModel.value = 3;
       testModel.value = 2.5;
 
+      testModel.updateState({ value: 2 });
+
       expect(updateFunc).not.toBeCalled();
       expect(anotherUpdateFunc).not.toBeCalled();
     });
@@ -239,6 +241,8 @@ describe('model', () => {
       modelWithSecondValue.secondValue = 8.7;
       expect(modelWithSecondValue.secondValue).toBe(8);
 
+      modelWithSecondValue.updateState({ secondValue: 8 });
+
       expect(updateFunc).not.toBeCalled();
       expect(anotherUpdateFunc).not.toBeCalled();
     });
@@ -300,6 +304,7 @@ describe('model', () => {
       expect(testModel.minValue).toBe(0);
       testModel.maxValue = 10;
       testModel.maxValue = -1;
+      testModel.updateState({ maxValue: 10 });
 
       expect(updateFunc).not.toBeCalled();
       expect(anotherUpdateFunc).not.toBeCalled();
@@ -363,6 +368,7 @@ describe('model', () => {
       expect(testModel.minValue).toBe(0);
       testModel.minValue = 0;
       testModel.minValue = 100;
+      testModel.updateState({ minValue: 0 });
 
       expect(updateFunc).not.toBeCalled();
       expect(anotherUpdateFunc).not.toBeCalled();
@@ -435,6 +441,7 @@ describe('model', () => {
     test('should not notify, if minValue has not changed', () => {
       expect(testModel.step).toBe(2);
       testModel.step = 2;
+      testModel.updateState({ step: 2 });
 
       expect(updateFunc).not.toBeCalled();
       expect(anotherUpdateFunc).not.toBeCalled();
