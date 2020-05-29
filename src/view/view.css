@@ -32,4 +32,5 @@
   position: absolute;
   border-radius: 50%;
   background-color: #53B6A8;
+  cursor: grab;
 }

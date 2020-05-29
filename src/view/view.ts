@@ -34,6 +34,7 @@ class SliderView implements View {
     }
 
     if (this.viewOptions.bar) this.renderBar();
+    if (this.viewOptions.runner) this.renderRunner();
   }
 
   update(viewData: View.Options): void {
@@ -103,6 +104,30 @@ class SliderView implements View {
     });
 
     return $runner;
+  }
+
+  private renderRunner(): void {
+    let position: number;
+    const runnerMetrics: DOMRect = this.$runner[0].getBoundingClientRect();
+    const viewMetrics: DOMRect = this.$view[0].getBoundingClientRect();
+    if (Array.isArray(this.renderData.percentage)) {
+      const [percentage] = this.renderData.percentage;
+      position = viewMetrics.width * (percentage / 100) - runnerMetrics.width / 2;
+    } else {
+      position = viewMetrics.width * (this.renderData.percentage / 100) - runnerMetrics.width / 2;
+    }
+    if (position <= 0) position = 0;
+    if (this.viewOptions.isHorizontal) {
+      if (position >= (viewMetrics.width - runnerMetrics.width)) {
+        position = viewMetrics.width - runnerMetrics.width;
+      }
+      this.$runner.css('left', `${position}px`);
+    } else {
+      if (position >= (viewMetrics.height - runnerMetrics.width)) {
+        position = viewMetrics.height - runnerMetrics.width;
+      }
+      this.$runner.css('top', `${position}px`);
+    }
   }
 
   private createScale(): JQuery {
@@ -207,6 +232,8 @@ class SliderView implements View {
   private dragStartHandler(): void {
     const startAction: {event: string; value?: [number, number] | number} = { event: 'start' };
     this.notify(startAction);
+    // const runner = event.currentTarget;
+    this.$runner.css('cursor', 'grabbing');
 
     const mouseMoveHandler = this.makeMouseMoveHandler();
     this.$container.on('mousemove', mouseMoveHandler);
@@ -232,6 +259,7 @@ class SliderView implements View {
 
       document.onmouseup = (): void => {
         this.$container.off('mousemove', mouseMoveHandler);
+        this.$runner.css('cursor', 'grab');
 
         const finishAction: {event: string; value: [number, number] | number} = { event: 'finish', value: selectedVal };
         this.notify(finishAction);
