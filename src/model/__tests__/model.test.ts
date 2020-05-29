@@ -106,6 +106,14 @@ describe('model', () => {
       const { maxValue } = testModel;
       testModel.value = 555;
       expect(testModel.value).toEqual(maxValue);
+
+      testModel.updateState({
+        maxValue: 10,
+        minValue: 0,
+        step: 4.5,
+      });
+      testModel.value = 10;
+      expect(testModel.value).toEqual(10);
     });
 
     test('should not be less than minCount', () => {
@@ -145,6 +153,15 @@ describe('model', () => {
 
       expect(updateFunc).not.toBeCalled();
       expect(anotherUpdateFunc).not.toBeCalled();
+
+      testModel.updateState({ value: 9999 });
+      expect(testModel.value).toBe(10);
+      updateFunc.mockClear();
+      testModel.updateState({ value: 9999 });
+      testModel.updateState({ value: 100 });
+      testModel.value = 9999;
+      expect(testModel.value).toBe(10);
+      expect(updateFunc).not.toBeCalled();
     });
 
     test('should not change value if it is locked', () => {
@@ -245,6 +262,23 @@ describe('model', () => {
 
       expect(updateFunc).not.toBeCalled();
       expect(anotherUpdateFunc).not.toBeCalled();
+
+      modelWithSecondValue.secondValue = 10;
+      expect(modelWithSecondValue.secondValue).toBe(10);
+      updateFunc.mockClear();
+      modelWithSecondValue.secondValue = 10;
+      expect(updateFunc).not.toBeCalled();
+      modelWithSecondValue.secondValue = 100;
+      modelWithSecondValue.updateState({ secondValue: 10000 });
+      expect(updateFunc).not.toBeCalled();
+
+      modelWithSecondValue.secondValue = 0;
+      expect(modelWithSecondValue.secondValue).toBe(2);
+      updateFunc.mockClear();
+      modelWithSecondValue.secondValue = 2;
+      modelWithSecondValue.updateState({ secondValue: 0 });
+      modelWithSecondValue.updateState({ secondValue: -10 });
+      expect(updateFunc).not.toBeCalled();
     });
 
     test('should not change secondValue if it is locked', () => {
@@ -361,6 +395,17 @@ describe('model', () => {
 
       expect(updateFunc).toHaveBeenCalledTimes(2);
       expect(anotherUpdateFunc).toHaveBeenCalledTimes(2);
+
+      testModel.updateState({
+        minValue: 0,
+        value: 4,
+        secondValue: 4,
+      });
+      updateFunc.mockClear();
+      anotherUpdateFunc.mockClear();
+      testModel.minValue = 4;
+      expect(updateFunc).toHaveBeenCalledTimes(1);
+      expect(anotherUpdateFunc).toHaveBeenCalledTimes(1);
     });
 
     test('should not notify, if minValue has not changed', () => {
