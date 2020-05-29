@@ -5,6 +5,7 @@ class SliderPresenter implements Presenter {
   private modelObserver: Model.Observer;
   private dataValues: App.Stringable[];
   private renderData: App.Stringable[];
+  private isChanging: boolean;
   private callbacks: {
     onStart: CallableFunction;
     onChange: CallableFunction;
@@ -30,6 +31,8 @@ class SliderPresenter implements Presenter {
       onFinish: options.onFinish,
       onUpdate: options.onUpdate,
     };
+
+    this.isChanging = false;
 
     this.subscribeToModel();
     this.subscribeToView();
@@ -134,6 +137,9 @@ class SliderPresenter implements Presenter {
       update: (): void => {
         const updatedModelState = this.getModelData();
         this.renderData = this.createDataValues(updatedModelState);
+        if (this.isChanging) {
+          this.callbacks.onChange(updatedModelState);
+        }
         this.renderView();
       },
     };
@@ -143,7 +149,7 @@ class SliderPresenter implements Presenter {
   private subscribeToView(): void {
     this.viewObserver = {
       start: (): void => {
-        this.callbacks.onStart();
+        this.callbacks.onStart(this.getModelData());
       },
       change: (values: [number, number] | number): void => {
         const convertedValues = this.convertPercentToValue(values);
@@ -154,10 +160,11 @@ class SliderPresenter implements Presenter {
           this.model.updateState({ value: convertedValues });
         }
 
-        this.callbacks.onChange();
+        this.isChanging = true;
       },
       finish: (values: [number, number] | number): void => {
         const convertedValues = this.convertPercentToValue(values);
+        this.isChanging = false;
         if (Array.isArray(convertedValues)) {
           const [newValue, newSecondValue] = convertedValues;
           this.model.updateState({ value: newValue, secondValue: newSecondValue });
@@ -165,7 +172,7 @@ class SliderPresenter implements Presenter {
           this.model.updateState({ value: convertedValues });
         }
 
-        this.callbacks.onFinish();
+        this.callbacks.onFinish(this.getModelData());
       },
     };
     this.view.addObserver(this.viewObserver);
