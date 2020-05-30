@@ -224,15 +224,15 @@ class SliderPresenter implements Presenter {
 
   private convertValueToPercent(values: [number, number] | number): [number, number] | number {
     const { minValue, maxValue } = this.getModelData();
-    let firstPercantage: number;
-    let secondPercantage: number;
+    let firstPercentage: number;
+    let secondPercentage: number;
     let percentage: [number, number] | number;
 
     if (Array.isArray(values)) {
       const [firstValue, secondValue] = values;
-      firstPercantage = ((firstValue - minValue) / (maxValue - minValue)) * 100;
-      secondPercantage = ((secondValue - minValue) / (maxValue - minValue)) * 100;
-      percentage = [firstPercantage, secondPercantage];
+      firstPercentage = ((firstValue - minValue) / (maxValue - minValue)) * 100;
+      secondPercentage = ((secondValue - minValue) / (maxValue - minValue)) * 100;
+      percentage = [firstPercentage, secondPercentage];
     } else {
       percentage = ((values - minValue) / (maxValue - minValue)) * 100;
     }
