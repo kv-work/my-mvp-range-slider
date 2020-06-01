@@ -5,11 +5,20 @@ import $ from 'jquery';
 class SliderScale implements Scale {
   private $container: JQuery;
   private $scale: JQuery;
+  private options: Scale.RenderOptions;
   private observer: Scale.Observer;
 
   constructor(options: Scale.Options) {
-    this.observer = options.observer;
     this.$container = options.$viewContainer;
+    this.observer = options.observer;
+
+    this.options = $.extend({
+      scaleStep: 1,
+      displayScaleValue: true,
+      displayValue: true,
+      displayMin: true,
+      displayMax: true,
+    }, options.renderOptions);
 
     this.createScale();
   }

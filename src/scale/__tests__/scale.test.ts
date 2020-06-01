@@ -8,6 +8,13 @@ describe('scale', () => {
   const mockUpdate = jest.fn();
   const testOptions: Scale.Options = {
     $viewContainer: $('#view_container'),
+    renderOptions: {
+      scaleStep: 1,
+      displayScaleValue: true,
+      displayValue: true,
+      displayMin: true,
+      displayMax: true,
+    },
     observer: {
       update: mockUpdate,
     },
@@ -20,6 +27,9 @@ describe('scale', () => {
   describe('constructor', () => {
     test('should save $container in prop', () => {
       expect(testScale).toHaveProperty('$container', testOptions.$viewContainer);
+    });
+    test('should save render options in prop', () => {
+      expect(testScale).toHaveProperty('options', testOptions.renderOptions);
     });
     test('should save observer object in prop', () => {
       expect(testScale).toHaveProperty('observer', testOptions.observer);
