@@ -19,6 +19,7 @@ describe('scale', () => {
       update: mockUpdate,
     },
   };
+  const testRenderData: App.Stringable[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   beforeEach(() => {
     testScale = new SliderScale(testOptions);
@@ -35,14 +36,54 @@ describe('scale', () => {
       expect(testScale).toHaveProperty('observer', testOptions.observer);
     });
     test('should create and save in prop jQuery element container of scale elements', () => {
-      expect(testScale).toHaveProperty('$scale', $('<div>', { class: 'slider__scale' }));
+      expect(testScale).toHaveProperty('$scale', $('<div>', { class: 'slider__scale scale' }));
     });
   });
   describe('render', () => {
-    test('should create jQuery elements of scale', () => {});
-    test('should append scale elements to container', () => {});
-    test('should append scale container to view container', () => {});
-    test('should update scale if it is rendered', () => {});
+    beforeEach(() => {
+      testScale.render(testRenderData);
+    });
+
+    afterEach(() => {
+      $('#view_container').empty();
+    });
+
+    test('should create and append scale elements to view container', () => {
+      const $view = $('#view_container');
+      const $scale = $view.find('.scale');
+      const $elements = $scale.find('.scale__element');
+
+      expect($scale.length).toBe(1);
+      expect($elements.length).toBe(testRenderData.length);
+    });
+    test('should render element.toString() content', () => {
+      const $container = $('#view_container');
+      $container.empty();
+      const newData = [
+        { toString(): string { return '1'; } },
+        { toString(): string { return 'second'; } },
+        { toString(): string { return '3333'; } },
+      ];
+
+      testScale.render(newData);
+      const $elements = $container.find('.scale__element');
+      expect($elements.length).toBe(3);
+      $elements.each(function test(idx: number) {
+        expect($(this).html()).toBe(newData[idx].toString());
+      });
+    });
+    test('should update scale if it is rendered', () => {
+      const $container = $('#view_container');
+      $container.empty();
+      const newData = [3, 4, 5, 6, 7, 8];
+
+      testScale.render(newData);
+      const $elements = $container.find('.scale__element');
+      expect($elements.length).toBe(6);
+      $elements.each(function test(idx: number) {
+        expect($(this).html()).toBe(newData[idx].toString());
+      });
+    });
     test('should attach event handlers to scale elements', () => {});
   });
   describe('Event handler', () => {
