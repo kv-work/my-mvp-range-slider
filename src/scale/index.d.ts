@@ -1,5 +1,5 @@
 declare interface Scale {
-  render(data: App.Stringable[], options?: Scale.Options): void;
+  render(data: View.RenderData, options?: Scale.RenderOptions): void;
   destroy(): void;
 }
 
@@ -11,13 +11,15 @@ declare namespace Scale {
   }
 
   interface Observer {
-    update(value: number): void;
+    start(value: number): void;
+    change(value: number): void;
+    finish(value: number): void;
   }
 
   interface RenderOptions {
+    isHorizontal?: boolean;
     scaleStep?: number;
     displayScaleValue?: boolean;
-    displayValue?: boolean;
     displayMin?: boolean;
     displayMax?: boolean;
   }

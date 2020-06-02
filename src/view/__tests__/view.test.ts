@@ -22,6 +22,7 @@ describe('SliderView', () => {
   };
   const testRenderData: View.RenderData = {
     data: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50],
+    percentageData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
     value: 4,
   };
 
@@ -77,6 +78,10 @@ describe('SliderView', () => {
       });
     });
 
+    test('should create $view', () => {
+      expect(testView).toHaveProperty('$view');
+    });
+
     test('should create $bar element, if options.bar is true', () => {
       expect(testOptions.bar).toBeTruthy();
       expect(testView).toHaveProperty('$bar');
@@ -87,9 +92,9 @@ describe('SliderView', () => {
       expect(testView).toHaveProperty('$runner');
     });
 
-    test('should create $scale element, if options.scale is true', () => {
+    test('should create scale instance, if options.scale is true', () => {
       expect(testOptions.scale).toBeTruthy();
-      expect(testView).toHaveProperty('$scale');
+      expect(testView).toHaveProperty('scale');
     });
 
     test('should create $secondRunner element, if options.range and options.runner is true', () => {
@@ -112,21 +117,17 @@ describe('SliderView', () => {
       expect(testView).toHaveProperty('renderData', testRenderData);
     });
 
-    test('should create $view if this.$view is undefined', () => {
-      expect(testView).not.toHaveProperty('$view');
-      testView.render(testRenderData);
-      expect(testView).toHaveProperty('$view');
-    });
-
-    test('should append bar, scale, runner, secondRunner to container node only once', () => {
-      expect(testView).not.toHaveProperty('$view');
+    test('should append bar, runner, secondRunner to container node only once', () => {
       testView.render(testRenderData);
       expect($(testNode).find('.js-slider__bar').length).toBe(1);
       expect($(testNode).find('.js-slider__runner').length).toBe(1);
       expect($(testNode).find('.js-slider__scale').length).toBe(1);
       expect($(testNode).find('.js-slider__second_runner').length).toBe(1);
 
-      testView.render({ value: 5 });
+      testView.render({
+        ...testRenderData,
+        value: 5,
+      });
       expect($(testNode).find('.js-slider__bar').length).toBe(1);
       expect($(testNode).find('.js-slider__runner').length).toBe(1);
       expect($(testNode).find('.js-slider__scale').length).toBe(1);

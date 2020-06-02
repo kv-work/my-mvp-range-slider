@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import $ from 'jquery';
 import './view.css';
+import SliderScale from '../scale/scale';
 
 class SliderView implements View {
   private $container: JQuery;
@@ -9,32 +10,60 @@ class SliderView implements View {
   private $view?: JQuery;
   private $bar?: JQuery;
   private $runner?: JQuery;
-  private $scale?: JQuery;
+  private scale: Scale;
   private $secondRunner?: JQuery;
   private observers: Set<View.Observer>;
+  private scaleObserver: Scale.Observer;
+  private isRendered: boolean;
 
   constructor(container: HTMLElement, options: View.Options) {
     this.$container = $(container);
     this.viewOptions = options;
     this.observers = new Set();
 
+    this.$view = this.createSliderContainer();
+    if (this.viewOptions.scale) {
+      this.createScaleObserver();
+      this.scale = new SliderScale({
+        $viewContainer: this.$view,
+        observer: this.scaleObserver,
+      });
+    }
+
     if (options.bar) this.$bar = this.createBar();
     if (options.runner) this.$runner = this.createRunner();
-    if (options.scale) this.$scale = this.createScale();
-    if (options.range && options.scale) this.$secondRunner = this.createSecondRunner();
+
+    if (options.range) this.$secondRunner = this.createSecondRunner();
+
+    this.isRendered = false;
   }
 
   render(renderData: View.RenderData): void {
-    this.renderData = renderData;
-
-    if (!this.$view) {
-      this.$view = this.createSliderContainer();
-
-      this.$container.append(this.$view);
+    if (this.isRendered) {
+      this.$container.empty();
+      this.isRendered = false;
     }
 
-    if (this.viewOptions.bar) this.renderBar();
-    if (this.viewOptions.runner) this.renderRunner();
+    this.renderData = renderData;
+
+    if (this.viewOptions.bar) {
+      this.renderBar();
+      this.$view.append(this.$bar);
+    }
+    if (this.viewOptions.runner) {
+      this.renderRunner();
+      this.$view.append(this.$runner);
+    }
+    if (this.viewOptions.range) {
+      this.$view.append(this.$secondRunner);
+    }
+
+    if (this.viewOptions.scale) this.scale.render(renderData, this.viewOptions);
+
+    this.attachEventHandlers();
+    this.$container.append(this.$view);
+
+    this.isRendered = true;
   }
 
   update(viewData: View.Options): void {
@@ -130,17 +159,21 @@ class SliderView implements View {
     }
   }
 
-  private createScale(): JQuery {
-    let classList = 'js-slider__scale';
-    if (this.viewOptions.isHorizontal) {
-      classList += ' slider__scale_horizontal';
-    }
-
-    const $scale = $('<div>', {
-      class: classList,
-    });
-
-    return $scale;
+  private createScaleObserver(): void {
+    this.scaleObserver = {
+      start(value: number): void {
+        const action = { event: 'start', value };
+        this.notify(action);
+      },
+      change(value: number): void {
+        const action = { event: 'change', value };
+        this.notify(action);
+      },
+      finish(value: number): void {
+        const action = { event: 'finish', value };
+        this.notify(action);
+      },
+    };
   }
 
   private createSecondRunner(): JQuery {
@@ -156,17 +189,6 @@ class SliderView implements View {
     const $view: JQuery = $('<div>', {
       class: 'js-slider__container slider__container',
     });
-
-    if (viewOptions.bar) {
-      $view.append(this.$bar);
-    }
-    if (viewOptions.runner) {
-      $view.append(this.$runner);
-    }
-    if (viewOptions.scale) $view.append(this.$scale);
-    if (this.$secondRunner) $view.append(this.$secondRunner);
-
-    this.attachEventHandlers();
 
     return $view;
   }

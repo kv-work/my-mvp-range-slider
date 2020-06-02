@@ -1,0 +1,8 @@
+.scale {
+  width: 100%;
+  position: relative;
+}
+
+.scale__element {
+  position: absolute;
+}

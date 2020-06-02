@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import $ from 'jquery';
+import './scale.css';
 
 class SliderScale implements Scale {
   private $container: JQuery;
@@ -15,9 +16,9 @@ class SliderScale implements Scale {
     this.isRendered = false;
 
     this.options = $.extend({
+      isHorizontal: true,
       scaleStep: 1,
       displayScaleValue: true,
-      displayValue: true,
       displayMin: true,
       displayMax: true,
     }, options.renderOptions);
@@ -25,14 +26,16 @@ class SliderScale implements Scale {
     this.createScale();
   }
 
-  public render(data: App.Stringable[]): void {
+  public render(renderData: View.RenderData, options?: Scale.RenderOptions): void {
     if (this.isRendered) {
       this.$scale.empty();
       this.isRendered = false;
     }
-    data.forEach((elem: App.Stringable) => {
+    const { data, percentageData } = renderData;
+    data.forEach((elem: App.Stringable, idx: number) => {
       const content = elem.toString();
-      const $elem = SliderScale.createScaleElement(content);
+      const percentage = percentageData[idx];
+      const $elem = this.createScaleElement(content, percentage);
       this.$scale.append($elem);
     });
 
@@ -44,15 +47,20 @@ class SliderScale implements Scale {
 
   private createScale(): void {
     const $scaleContainer = $('<div>', {
-      class: 'slider__scale scale',
+      class: 'js-slider__scale slider__scale scale',
     });
 
     this.$scale = $scaleContainer;
   }
 
-  static createScaleElement(content: string): JQuery {
+  private createScaleElement(content: string, percentage: number): JQuery {
     const $elem = $('<span>', { class: 'scale__element' });
     $elem.html(content);
+    if (this.options.isHorizontal) {
+      $elem.css('left', percentage);
+    } else {
+      $elem.css('top', percentage);
+    }
     return $elem;
   }
 }
