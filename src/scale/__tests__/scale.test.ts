@@ -4,6 +4,7 @@ import SliderScale from '../scale';
 describe('scale', () => {
   document.body.innerHTML = '<div id="view_container"></div>';
   let testScale: SliderScale;
+  let verticalScale: SliderScale;
 
   const mockStart = jest.fn();
   const mockChange = jest.fn();
@@ -23,6 +24,14 @@ describe('scale', () => {
       finish: mockFinish,
     },
   };
+  const verticalOptions: Scale.Options = {
+    $viewContainer: testOptions.$viewContainer,
+    observer: testOptions.observer,
+    renderOptions: {
+      ...testOptions.renderOptions,
+      isHorizontal: false,
+    },
+  };
   const testRenderData: View.RenderData = {
     data: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     percentageData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
@@ -30,6 +39,7 @@ describe('scale', () => {
 
   beforeEach(() => {
     testScale = new SliderScale(testOptions);
+    verticalScale = new SliderScale(verticalOptions);
   });
 
   describe('constructor', () => {
@@ -38,17 +48,23 @@ describe('scale', () => {
     });
     test('should save render options in prop', () => {
       expect(testScale).toHaveProperty('options', testOptions.renderOptions);
+      expect(verticalScale).toHaveProperty('options', verticalOptions.renderOptions);
     });
     test('should save observer object in prop', () => {
       expect(testScale).toHaveProperty('observer', testOptions.observer);
     });
     test('should create and save in prop jQuery element container of scale elements', () => {
-      expect(testScale).toHaveProperty('$scale', $('<div>', { class: 'js-slider__scale slider__scale scale' }));
+      expect(testScale).toHaveProperty('$scale', $('<div>', { class: 'js-slider__scale scale slider__scale' }));
+      expect(verticalScale).toHaveProperty('$scale', $('<div>', { class: 'js-slider__scale scale slider__scale_vertical' }));
+    });
+    test('should reset isRendered flag', () => {
+      expect(testScale).toHaveProperty('isRendered', false);
     });
   });
   describe('render', () => {
     beforeEach(() => {
       testScale.render(testRenderData);
+      verticalScale.render(testRenderData);
     });
 
     afterEach(() => {
@@ -57,7 +73,7 @@ describe('scale', () => {
 
     test('should create and append scale elements to view container', () => {
       const $view = $('#view_container');
-      const $scale = $view.find('.scale');
+      const $scale = $view.find('.slider__scale');
       const $elements = $scale.find('.scale__element');
 
       expect($scale.length).toBe(1);
@@ -101,7 +117,22 @@ describe('scale', () => {
     test('should notify observer of onset event', () => {});
   });
   describe('destroy', () => {
-    test('should detach scale container', () => {});
+    beforeEach(() => {
+      testScale.render(testRenderData);
+    });
+    test('should detach scale container', () => {
+      const $scale = $('.js-slider__scale');
+      expect($scale.length).toBe(1);
+      expect($scale.find('.scale__element').length).not.toBe(0);
+
+      testScale.destroy();
+      expect($('.js-slider__scale').length).toBe(0);
+      expect($('#view_container').find('.scale__element').length).toBe(0);
+    });
+    test('should reset isRendered flag', () => {
+      testScale.destroy();
+      expect(testScale).toHaveProperty('isRendered', false);
+    });
     test('should remove scale elements event listeners', () => {});
   });
 });

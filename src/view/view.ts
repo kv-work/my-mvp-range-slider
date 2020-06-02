@@ -185,7 +185,6 @@ class SliderView implements View {
   }
 
   private createSliderContainer(): JQuery {
-    const { viewOptions } = this;
     const $view: JQuery = $('<div>', {
       class: 'js-slider__container slider__container',
     });

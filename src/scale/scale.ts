@@ -43,11 +43,18 @@ class SliderScale implements Scale {
     this.$container.append(this.$scale);
   }
 
-  public destroy(): void {}
+  public destroy(): void {
+    this.$scale.remove();
+    this.isRendered = false;
+  }
 
   private createScale(): void {
+    let classList = 'js-slider__scale scale slider__scale';
+    if (!this.options.isHorizontal) {
+      classList += '_vertical';
+    }
     const $scaleContainer = $('<div>', {
-      class: 'js-slider__scale slider__scale scale',
+      class: classList,
     });
 
     this.$scale = $scaleContainer;
