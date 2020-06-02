@@ -160,7 +160,10 @@ describe('Presenter', () => {
     test('should calls render method of view', () => {
       expect(mockRender).toBeCalledTimes(1);
       expect(mockRender).toBeCalledWith({
-        data: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
+        data: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50,
+          55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
+        percentageData: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50,
+          55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
         value: [25, 70],
         percentage: [25, 70],
       });
@@ -363,6 +366,7 @@ describe('Presenter', () => {
 
       expect(mockRender).toBeCalledWith({
         data: [0, 2, 4, 6, 8, 10],
+        percentageData: [0, 20, 40, 60, 80, 100],
         value: [2, 6],
         percentage: [20, 60],
       });
@@ -379,6 +383,7 @@ describe('Presenter', () => {
 
       expect(mockRender).toBeCalledWith({
         data: [25, 30, 35, 40, 45, 50],
+        percentageData: [0, 20, 40, 60, 80, 100],
         value: [35, 40],
         percentage: [40, 60],
       });
@@ -607,6 +612,7 @@ describe('Presenter', () => {
 
       expect(mockRender).toBeCalledWith({
         data: [12, 15, 18, 21, 24, 25],
+        percentageData: [0, 23.0769230769, 46.1538461538, 69.2307692308, 92.3076923077, 100],
         value: 18,
         percentage: 46.15384615384615,
       });

@@ -186,8 +186,10 @@ class SliderPresenter implements Presenter {
     }
     const value = values || currentValue;
     const percentage: [number, number] | number = this.convertValueToPercent(value);
+    const percentageData = this.createPercentageData();
     const viewRenderData: View.RenderData = {
       data: this.renderData,
+      percentageData,
       value,
       percentage,
     };
@@ -222,7 +224,7 @@ class SliderPresenter implements Presenter {
     return values;
   }
 
-  private convertValueToPercent(values: [number, number] | number): [number, number] | number {
+  private convertValueToPercent(values: [number, number] | number): number | [number, number] {
     const { minValue, maxValue } = this.getModelData();
     let firstPercentage: number;
     let secondPercentage: number;
@@ -238,6 +240,31 @@ class SliderPresenter implements Presenter {
     }
 
     return percentage;
+  }
+
+  private createPercentageData(): number[] {
+    const {
+      minValue: min,
+      maxValue: max,
+      step,
+    } = this.model.getState();
+
+    const values: number[] = [];
+
+    for (let i: number = min; i <= max; i += step) {
+      values.push(i);
+    }
+
+    if (values[values.length - 1] < max) {
+      values.push(max);
+    }
+
+    const percentageData = values.map((val): number => {
+      const percentage = ((val - min) / (max - min)) * 100;
+      return +percentage.toFixed(10);
+    });
+
+    return percentageData;
   }
 
   static isEmpty(object: {}): boolean {
