@@ -39,11 +39,13 @@ class SliderScale implements Scale {
       this.$scale.append($elem);
     });
 
-    this.isRendered = true;
+    this.attachEventHandlers();
     this.$container.append(this.$scale);
+    this.isRendered = true;
   }
 
   public destroy(): void {
+    this.detachEventHandlers();
     this.$scale.remove();
     this.isRendered = false;
   }
@@ -68,7 +70,27 @@ class SliderScale implements Scale {
     } else {
       $elem.css('top', percentage);
     }
+    $elem.data('value', percentage);
     return $elem;
+  }
+
+  private attachEventHandlers(): void {
+    this.$scale.on('click', this.clickEventListener.bind(this));
+  }
+
+  private detachEventHandlers(): void {
+    this.$scale.off('click', this.clickEventListener.bind(this));
+  }
+
+  private clickEventListener(event: JQuery.ClickEvent): void {
+    const elem: HTMLElement = event.target;
+    let value: number;
+    if (elem.classList.contains('scale__element')) {
+      value = $(elem).data('value');
+
+      this.observer.change(value);
+      this.observer.finish(value);
+    }
   }
 }
 

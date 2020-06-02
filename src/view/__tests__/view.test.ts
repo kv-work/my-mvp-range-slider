@@ -111,6 +111,11 @@ describe('SliderView', () => {
   });
 
   describe('render', () => {
+    const $container = $('#container');
+    beforeEach(() => {
+      testView.addObserver(testObserver);
+      jest.clearAllMocks();
+    });
     test('should save render data to this.renderData', () => {
       expect(testView).not.toHaveProperty('renderData');
       testView.render(testRenderData);
@@ -132,6 +137,56 @@ describe('SliderView', () => {
       expect($(testNode).find('.js-slider__runner').length).toBe(1);
       expect($(testNode).find('.js-slider__scale').length).toBe(1);
       expect($(testNode).find('.js-slider__second_runner').length).toBe(1);
+    });
+
+    test('should attach event handlers for bar', () => {
+      testView.render(testRenderData);
+      expect($(testNode).find('.js-slider__bar').length).toBe(1);
+
+      const $clickEvent = $.Event('click', {
+        clientX: 50,
+      });
+
+      const $bar = $container.find('.js-slider__bar');
+      $bar.trigger($clickEvent);
+      expect(mockStart).toBeCalledTimes(1);
+      expect(mockChange).toBeCalledTimes(1);
+      expect(mockChange).toBeCalledWith(50);
+      expect(mockFinish).toBeCalledTimes(1);
+      expect(mockFinish).toBeCalledWith(50);
+    });
+
+    test('should attach event handlers for runner', () => {
+      testView.render(testRenderData);
+      expect($(testNode).find('.js-slider__runner').length).toBe(1);
+
+      const $mouseDownEvent = $.Event('mousedown');
+      const $mouseMoveEvent = $.Event('mousemove', {
+        clientX: 70,
+      });
+      const $AnotherMouseMoveEvent = $.Event('mousemove', {
+        clientX: 90,
+      });
+      const mouseUpEvent = new Event('mouseup');
+
+      $container
+        .trigger($mouseMoveEvent)
+        .trigger($AnotherMouseMoveEvent);
+      expect(mockChange).toBeCalledTimes(0);
+
+      $('.js-slider__runner').trigger($mouseDownEvent);
+      expect(mockStart).toBeCalledTimes(1);
+
+      $container
+        .trigger($mouseMoveEvent)
+        .trigger($AnotherMouseMoveEvent);
+      expect(mockChange).toBeCalledTimes(2);
+      expect(mockChange.mock.calls[0][0]).toBe(70);
+      expect(mockChange.mock.calls[1][0]).toBe(90);
+
+      document.dispatchEvent(mouseUpEvent);
+      expect(mockFinish).toBeCalledTimes(1);
+      expect(mockFinish).toBeCalledWith(90);
     });
   });
 
@@ -254,63 +309,6 @@ describe('SliderView', () => {
           expect(observers.has(testObserver)).toBeFalsy();
         }
       });
-    });
-  });
-
-  describe('createSliderContainer', () => {
-    const $container = $('#container');
-    beforeEach(() => {
-      testView.addObserver(testObserver);
-      testView.render(testRenderData);
-      jest.clearAllMocks();
-    });
-
-    test('should attach event handlers for bar', () => {
-      expect($(testNode).find('.js-slider__bar').length).toBe(1);
-
-      const $clickEvent = $.Event('click', {
-        clientX: 50,
-      });
-
-      const $bar = $container.find('.js-slider__bar');
-      $bar.trigger($clickEvent);
-      expect(mockStart).toBeCalledTimes(1);
-      expect(mockChange).toBeCalledTimes(1);
-      expect(mockChange).toBeCalledWith(50);
-      expect(mockFinish).toBeCalledTimes(1);
-      expect(mockFinish).toBeCalledWith(50);
-    });
-
-    test('should attach event handlers for runner', () => {
-      expect($(testNode).find('.js-slider__runner').length).toBe(1);
-
-      const $mouseDownEvent = $.Event('mousedown');
-      const $mouseMoveEvent = $.Event('mousemove', {
-        clientX: 70,
-      });
-      const $AnotherMouseMoveEvent = $.Event('mousemove', {
-        clientX: 90,
-      });
-      const mouseUpEvent = new Event('mouseup');
-
-      $container
-        .trigger($mouseMoveEvent)
-        .trigger($AnotherMouseMoveEvent);
-      expect(mockChange).toBeCalledTimes(0);
-
-      $('.js-slider__runner').trigger($mouseDownEvent);
-      expect(mockStart).toBeCalledTimes(1);
-
-      $container
-        .trigger($mouseMoveEvent)
-        .trigger($AnotherMouseMoveEvent);
-      expect(mockChange).toBeCalledTimes(2);
-      expect(mockChange.mock.calls[0][0]).toBe(70);
-      expect(mockChange.mock.calls[1][0]).toBe(90);
-
-      document.dispatchEvent(mouseUpEvent);
-      expect(mockFinish).toBeCalledTimes(1);
-      expect(mockFinish).toBeCalledWith(90);
     });
   });
 });

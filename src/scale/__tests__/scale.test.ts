@@ -3,6 +3,7 @@ import SliderScale from '../scale';
 
 describe('scale', () => {
   document.body.innerHTML = '<div id="view_container"></div>';
+
   let testScale: SliderScale;
   let verticalScale: SliderScale;
 
@@ -65,6 +66,7 @@ describe('scale', () => {
     beforeEach(() => {
       testScale.render(testRenderData);
       verticalScale.render(testRenderData);
+      jest.clearAllMocks();
     });
 
     afterEach(() => {
@@ -110,7 +112,24 @@ describe('scale', () => {
         expect($(this).html()).toBe(newData.data[idx].toString());
       });
     });
-    test('should attach event handlers to scale elements', () => {});
+    test('should attach event handlers to scale elements', () => {
+      const $clickEvent = $.Event('click');
+
+      const $scale = $('.js-slider__scale');
+      const scaleElement = $scale.find('.scale__element')[5];
+      $(scaleElement).trigger($clickEvent);
+      expect(mockChange).toBeCalledTimes(1);
+      expect(mockChange).toBeCalledWith(50);
+      expect(mockFinish).toBeCalledTimes(1);
+      expect(mockFinish).toBeCalledWith(50);
+
+      mockChange.mockClear();
+      const $scaleClickEvent = $.Event('click', {
+        target: $scale[0],
+      });
+      $scale.trigger($scaleClickEvent);
+      expect(mockChange).not.toBeCalled();
+    });
   });
   describe('Event handler', () => {
     test('should listen click event', () => {});
@@ -119,6 +138,7 @@ describe('scale', () => {
   describe('destroy', () => {
     beforeEach(() => {
       testScale.render(testRenderData);
+      jest.clearAllMocks();
     });
     test('should detach scale container', () => {
       const $scale = $('.js-slider__scale');
@@ -133,6 +153,15 @@ describe('scale', () => {
       testScale.destroy();
       expect(testScale).toHaveProperty('isRendered', false);
     });
-    test('should remove scale elements event listeners', () => {});
+    test('should remove scale elements event listeners', () => {
+      const $clickEvent = $.Event('click');
+
+      const $scale = $('.js-slider__scale');
+      const scaleElement = $scale.find('.scale__element')[5];
+      testScale.destroy();
+      $(scaleElement).trigger($clickEvent);
+      expect(mockChange).not.toBeCalled();
+      expect(mockFinish).not.toBeCalled();
+    });
   });
 });
