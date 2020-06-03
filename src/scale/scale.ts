@@ -26,9 +26,7 @@ class SliderScale implements Scale {
 
     if (this.isRendered) {
       this.$container.find('.js-slider__scale').replaceWith(this.$scale);
-    }
-
-    if (!this.isRendered) {
+    } else {
       this.attachEventHandlers();
       this.$container.append(this.$scale);
       this.isRendered = true;

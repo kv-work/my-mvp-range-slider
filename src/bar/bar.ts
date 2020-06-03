@@ -9,21 +9,16 @@ class SliderBar implements Bar {
 
   constructor(options: Bar.Options) {
     this.$container = options.$viewContainer;
+    this.observer = options.observer;
     this.isRendered = false;
-
-    this.options = $.extend({
-      isHorizontal: true,
-      range: true,
-      dragInterval: true,
-    }, options.renderOptions);
-
-    this.createBar();
   }
 
-  public render(data: number | [number, number]): void {
+  public render(data: number | [number, number], options: Bar.RenderOptions): void {
+    this.$bar = SliderBar.createBar(options);
+
     let direction: string;
     const color = '#53B6A8';
-    if (this.options.isHorizontal) {
+    if (options.isHorizontal) {
       direction = 'to right';
     } else {
       direction = 'to bottom';
@@ -40,25 +35,17 @@ class SliderBar implements Bar {
       });
     }
 
-    this.attachEventHandlers();
-    this.$container.append(this.$bar);
+    if (this.isRendered) {
+      this.$container.find('js-slider__bar').replaceWith(this.$bar);
+    } else {
+      this.attachEventHandlers();
+      this.$container.append(this.$bar);
+      this.isRendered = true;
+    }
   }
 
   public destroy(): void {
     this.$bar.remove();
-  }
-
-  private createBar(): void {
-    let classList = 'js-slider__bar slider__bar';
-    if (this.options.isHorizontal) {
-      classList += ' slider__bar_horizontal';
-    } else {
-      classList += ' slider__bar_vertical';
-    }
-
-    this.$bar = $('<div>', {
-      class: classList,
-    });
   }
 
   private attachEventHandlers(): void {
@@ -70,7 +57,8 @@ class SliderBar implements Bar {
     let selectedVal: number;
     const elem: HTMLElement = event.currentTarget;
     const elemMetrics: DOMRect = elem.getBoundingClientRect();
-    if (this.options.isHorizontal) {
+    const options: Bar.RenderOptions = this.$bar.data('options');
+    if (options.isHorizontal) {
       clickCoord = event.clientX - elemMetrics.x;
       selectedVal = (clickCoord / elemMetrics.width) * 100;
     } else {
@@ -78,14 +66,23 @@ class SliderBar implements Bar {
       selectedVal = (clickCoord / elemMetrics.height) * 100;
     }
 
-    const startAction: {event: string; value?: [number, number] | number} = { event: 'start' };
-    this.observer.notify(startAction);
+    this.observer.start();
+    this.observer.change(selectedVal);
+    this.observer.finish(selectedVal);
+  }
 
-    const changeAction: {event: string; value: [number, number] | number} = { event: 'change', value: selectedVal };
-    this.observer.notify(changeAction);
+  static createBar(options: Bar.RenderOptions): JQuery {
+    const $bar = $('<div>', {
+      class: 'js-slider__bar slider__bar',
+    });
 
-    const finishAction: {event: string; value: [number, number] | number} = { event: 'finish', value: selectedVal };
-    this.observer.notify(finishAction);
+    if (options.isHorizontal) {
+      $bar.addClass(' slider__bar_horizontal');
+    }
+
+    $bar.data('options', options);
+
+    return $bar;
   }
 }
 
