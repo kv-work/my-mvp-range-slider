@@ -2,18 +2,19 @@
 import $ from 'jquery';
 import './view.css';
 import SliderScale from '../scale/scale';
+import SliderBar from '../bar/bar';
 
 class SliderView implements View {
   private $container: JQuery;
   private viewOptions: View.Options;
   private renderData?: View.RenderData;
   private $view?: JQuery;
-  private $bar?: JQuery;
+  private bar: Bar;
   private $runner?: JQuery;
   private scale: Scale;
   private $secondRunner?: JQuery;
   private observers: Set<View.Observer>;
-  private scaleObserver: Scale.Observer;
+  private subViewObserver: View.SubViewObserver;
   private isRendered: boolean;
 
   constructor(container: HTMLElement, options: View.Options) {
@@ -22,15 +23,22 @@ class SliderView implements View {
     this.observers = new Set();
 
     this.$view = this.createSliderContainer();
+    this.createSubViewObserver();
+
     if (this.viewOptions.scale) {
-      this.createScaleObserver();
       this.scale = new SliderScale({
         $viewContainer: this.$view,
-        observer: this.scaleObserver,
+        observer: this.subViewObserver,
       });
     }
 
-    if (options.bar) this.$bar = this.createBar();
+    if (options.bar) {
+      this.bar = new SliderBar({
+        $viewContainer: this.$view,
+        observer: this.subViewObserver,
+      });
+    }
+
     if (options.runner) this.$runner = this.createRunner();
 
     if (options.range) this.$secondRunner = this.createSecondRunner();
@@ -46,10 +54,6 @@ class SliderView implements View {
 
     this.renderData = renderData;
 
-    if (this.viewOptions.bar) {
-      this.renderBar();
-      this.$view.append(this.$bar);
-    }
     if (this.viewOptions.runner) {
       this.renderRunner();
       this.$view.append(this.$runner);
@@ -58,6 +62,7 @@ class SliderView implements View {
       this.$view.append(this.$secondRunner);
     }
 
+    if (this.viewOptions.bar) this.bar.render(renderData.percentage, this.viewOptions);
     if (this.viewOptions.scale) this.scale.render(renderData, this.viewOptions);
 
     this.attachEventHandlers();
@@ -89,42 +94,6 @@ class SliderView implements View {
 
   getData(): View.Options {
     return this.viewOptions;
-  }
-
-  private createBar(): JQuery {
-    let classList = 'js-slider__bar slider__bar';
-    if (this.viewOptions.isHorizontal) {
-      classList += ' slider__bar_horizontal';
-    } else {
-      classList += ' slider__bar_vertical';
-    }
-
-    const $bar = $('<div>', {
-      class: classList,
-    });
-
-    return $bar;
-  }
-
-  private renderBar(): void {
-    let direction: string;
-    const color = '#53B6A8';
-    if (this.viewOptions.isHorizontal) {
-      direction = 'to right';
-    } else {
-      direction = 'to bottom';
-    }
-
-    if (Array.isArray(this.renderData.percentage)) {
-      const [value, secondValue] = this.renderData.percentage;
-      this.$bar.css({
-        background: `linear-gradient(${direction}, #E5E5E5 ${value}%, ${color} ${value}%, ${color} ${secondValue}%, #E5E5E5 ${secondValue}%)`,
-      });
-    } else {
-      this.$bar.css({
-        background: `linear-gradient(${direction}, ${color} ${this.renderData.percentage}%, #E5E5E5 ${this.renderData.percentage}%)`,
-      });
-    }
   }
 
   private createRunner(): JQuery {
@@ -159,17 +128,17 @@ class SliderView implements View {
     }
   }
 
-  private createScaleObserver(): void {
-    this.scaleObserver = {
-      start(value: number): void {
-        const action = { event: 'start', value };
+  private createSubViewObserver(): void {
+    this.subViewObserver = {
+      start: (): void => {
+        const action = { event: 'start' };
         this.notify(action);
       },
-      change(value: number): void {
+      change: (value: number): void => {
         const action = { event: 'change', value };
         this.notify(action);
       },
-      finish(value: number): void {
+      finish: (value: number): void => {
         const action = { event: 'finish', value };
         this.notify(action);
       },
@@ -218,36 +187,10 @@ class SliderView implements View {
   }
 
   private attachEventHandlers(): void {
-    if (this.$bar) {
-      this.$bar.on('click', this.clickHandler.bind(this));
-    }
     if (this.$runner) {
       this.$runner.on('mousedown', this.dragStartHandler.bind(this));
       this.$runner.on('dragstart', false);
     }
-  }
-
-  private clickHandler(event: JQuery.MouseDownEvent): void {
-    let clickCoord: number;
-    let selectedVal: number;
-    const elem: HTMLElement = event.currentTarget;
-    const elemMetrics: DOMRect = elem.getBoundingClientRect();
-    if (this.viewOptions.isHorizontal) {
-      clickCoord = event.clientX - elemMetrics.x;
-      selectedVal = (clickCoord / elemMetrics.width) * 100;
-    } else {
-      clickCoord = event.clientY - elemMetrics.y;
-      selectedVal = (clickCoord / elemMetrics.height) * 100;
-    }
-
-    const startAction: {event: string; value?: [number, number] | number} = { event: 'start' };
-    this.notify(startAction);
-
-    const changeAction: {event: string; value: [number, number] | number} = { event: 'change', value: selectedVal };
-    this.notify(changeAction);
-
-    const finishAction: {event: string; value: [number, number] | number} = { event: 'finish', value: selectedVal };
-    this.notify(finishAction);
   }
 
   private dragStartHandler(): void {

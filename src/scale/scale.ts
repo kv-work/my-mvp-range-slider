@@ -63,6 +63,16 @@ class SliderScale implements Scale {
       $scaleContainer.addClass('slider__scale_horizontal');
     }
 
+    const scaleOptions = $.extend({
+      isHorizontal: true,
+      scaleStep: 1,
+      displayScaleValue: true,
+      displayMin: true,
+      displayMax: true,
+    }, options);
+
+    $scaleContainer.data('options', scaleOptions);
+
     return $scaleContainer;
   }
 

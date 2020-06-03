@@ -36,4 +36,10 @@ declare namespace View {
     change?(values: [number, number] | number): void;
     finish?(values: [number, number] | number): void;
   }
+
+  interface SubViewObserver {
+    start(): void;
+    change(value: number): void;
+    finish(value: number): void;
+  }
 }

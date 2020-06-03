@@ -6,13 +6,7 @@ declare interface Scale {
 declare namespace Scale {
   interface Options {
     $viewContainer: JQuery;
-    observer: Scale.Observer;
-  }
-
-  interface Observer {
-    start(value: number): void;
-    change(value: number): void;
-    finish(value: number): void;
+    observer: View.SubViewObserver;
   }
 
   interface RenderOptions {

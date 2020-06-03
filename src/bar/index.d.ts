@@ -6,14 +6,8 @@ declare interface Bar {
 declare namespace Bar {
   interface Options {
     $viewContainer: JQuery;
-    observer: Bar.Observer;
+    observer: View.SubViewObserver;
     renderOptions? : Bar.RenderOptions;
-  }
-
-  interface Observer {
-    start(): void;
-    change(value: number): void;
-    finish(value: number): void;
   }
 
   interface RenderOptions {

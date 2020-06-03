@@ -82,9 +82,9 @@ describe('SliderView', () => {
       expect(testView).toHaveProperty('$view');
     });
 
-    test('should create $bar element, if options.bar is true', () => {
+    test('should create bar instance, if options.bar is true', () => {
       expect(testOptions.bar).toBeTruthy();
-      expect(testView).toHaveProperty('$bar');
+      expect(testView).toHaveProperty('bar');
     });
 
     test('should create $runner element, if options.runner is true', () => {

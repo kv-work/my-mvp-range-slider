@@ -4,7 +4,7 @@ class SliderBar implements Bar {
   private $container: JQuery;
   private $bar: JQuery;
   private options: Bar.RenderOptions;
-  private observer: Bar.Observer;
+  private observer: View.SubViewObserver;
   private isRendered: boolean;
 
   constructor(options: Bar.Options) {
