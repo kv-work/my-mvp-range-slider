@@ -36,7 +36,7 @@ class SliderBar implements Bar {
     }
 
     if (this.isRendered) {
-      this.$container.find('js-slider__bar').replaceWith(this.$bar);
+      this.$container.find('.js-slider__bar').replaceWith(this.$bar);
     } else {
       this.attachEventHandlers();
       this.$container.append(this.$bar);
@@ -45,7 +45,9 @@ class SliderBar implements Bar {
   }
 
   public destroy(): void {
+    this.$container.find('.js-slider__bar').off('click');
     this.$bar.remove();
+    this.isRendered = false;
   }
 
   private attachEventHandlers(): void {
@@ -80,7 +82,12 @@ class SliderBar implements Bar {
       $bar.addClass(' slider__bar_horizontal');
     }
 
-    $bar.data('options', options);
+    const barOptions: Bar.RenderOptions = $.extend({
+      isHorizontal: true,
+      range: true,
+      dragInterval: false,
+    }, options);
+    $bar.data('options', barOptions);
 
     return $bar;
   }

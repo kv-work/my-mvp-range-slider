@@ -103,6 +103,19 @@ describe('bar', () => {
       testBar.render(newData, renderOpts);
 
       expect($horizontalView.find('.js-slider__bar').length).toBe(1);
+
+      testBar.render(50, {
+        isHorizontal: false,
+        range: false,
+      });
+      const $bar = $horizontalView.find('.js-slider__bar');
+      expect($bar.length).toBe(1);
+      const options = $bar.data('options');
+      expect(options).toEqual({
+        isHorizontal: false,
+        range: false,
+        dragInterval: false,
+      });
     });
 
     test('should attache click event handler to bar', () => {
@@ -127,6 +140,55 @@ describe('bar', () => {
       expect(mockChange).toBeCalledWith(20);
       expect(mockFinish).toBeCalledTimes(1);
       expect(mockFinish).toBeCalledWith(20);
+    });
+  });
+
+  describe('destroy', () => {
+    const $horizontalView = $('#view_container_horizontal');
+
+    beforeEach(() => {
+      testBar.render([40, 60], renderOpts);
+      jest.clearAllMocks();
+    });
+
+    test('should detach scale container', () => {
+      const $bar = $('.js-slider__bar');
+      expect($bar.length).toBe(1);
+
+      testBar.destroy();
+      expect($('.js-slider__bar').length).toBe(0);
+
+      testBar.render([10, 90], renderOpts);
+      const $horizontalBar = $horizontalView.find('.slider__bar_horizontal');
+
+      expect($horizontalBar.length).toBe(1);
+    });
+
+    test('should reset isRendered flag', () => {
+      testBar.destroy();
+      expect(testBar).toHaveProperty('isRendered', false);
+    });
+
+    test('should remove bar event listeners', () => {
+      const $clickEvent = $.Event('click', {
+        clientX: 30,
+        clientY: 20,
+      });
+      const $bar = $horizontalView.find('.js-slider__bar');
+      $bar.trigger($clickEvent);
+
+      expect(mockStart).toBeCalledTimes(1);
+      expect(mockChange).toBeCalledTimes(1);
+      expect(mockChange).toBeCalledWith(30);
+      expect(mockFinish).toBeCalledTimes(1);
+      expect(mockFinish).toBeCalledWith(30);
+      jest.clearAllMocks();
+
+      testBar.destroy();
+      $bar.trigger($clickEvent);
+      expect(mockStart).not.toBeCalled();
+      expect(mockChange).not.toBeCalled();
+      expect(mockFinish).not.toBeCalled();
     });
   });
 });
