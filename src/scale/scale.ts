@@ -6,7 +6,6 @@ import './scale.css';
 class SliderScale implements Scale {
   private $container: JQuery;
   private $scale: JQuery;
-  private options: Scale.RenderOptions;
   private observer: Scale.Observer;
   private isRendered: boolean;
 
@@ -15,18 +14,10 @@ class SliderScale implements Scale {
     this.observer = options.observer;
     this.isRendered = false;
 
-    this.options = $.extend({
-      isHorizontal: true,
-      scaleStep: 1,
-      displayScaleValue: true,
-      displayMin: true,
-      displayMax: true,
-    }, options.renderOptions);
-
     this.createScale();
   }
 
-  public render(renderData: View.RenderData, options?: Scale.RenderOptions): void {
+  public render(renderData: View.RenderData, options: Scale.RenderOptions): void {
     if (this.isRendered) {
       this.$scale.empty();
       this.isRendered = false;
@@ -35,9 +26,19 @@ class SliderScale implements Scale {
     data.forEach((elem: App.Stringable, idx: number) => {
       const content = elem.toString();
       const percentage = percentageData[idx];
-      const $elem = this.createScaleElement(content, percentage);
+      const $elem = this.createElement(content, percentage, options);
       this.$scale.append($elem);
     });
+
+    if (options.isHorizontal && !this.$scale.hasClass('slider__scale_horizontal')) {
+      this.$scale.removeClass('slider__scale');
+      this.$scale.addClass('slider__scale_horizontal');
+    }
+
+    if (!options.isHorizontal && !this.$scale.hasClass('slider__scale')) {
+      this.$scale.removeClass('slider__scale_horizontal');
+      this.$scale.addClass('slider__scale');
+    }
 
     this.attachEventHandlers();
     this.$container.append(this.$scale);
@@ -51,26 +52,31 @@ class SliderScale implements Scale {
   }
 
   private createScale(): void {
-    let classList = 'js-slider__scale scale slider__scale';
-    if (!this.options.isHorizontal) {
-      classList += '_vertical';
-    }
     const $scaleContainer = $('<div>', {
-      class: classList,
+      class: 'js-slider__scale',
     });
 
     this.$scale = $scaleContainer;
   }
 
-  private createScaleElement(content: string, percentage: number): JQuery {
+  private createElement(content: string, percentage: number, options: Scale.RenderOptions): JQuery {
     const $elem = $('<span>', { class: 'scale__element' });
     $elem.html(content);
-    if (this.options.isHorizontal) {
+    if (options.isHorizontal) {
       $elem.css('left', percentage);
     } else {
       $elem.css('top', percentage);
     }
     $elem.data('value', percentage);
+
+    if (options.isHorizontal && !$elem.hasClass('scale__element_horizontal')) {
+      $elem.addClass('scale__element_horizontal');
+    }
+
+    if (!options.isHorizontal && $elem.hasClass('scale__element_horizontal')) {
+      $elem.removeClass('scale__element_horizontal');
+    }
+
     return $elem;
   }
 

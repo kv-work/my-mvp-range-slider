@@ -10,27 +10,23 @@ describe('scale', () => {
   const mockStart = jest.fn();
   const mockChange = jest.fn();
   const mockFinish = jest.fn();
+  const renderOptions: Scale.RenderOptions = {
+    isHorizontal: true,
+    scaleStep: 1,
+    displayScaleValue: true,
+    displayMin: true,
+    displayMax: true,
+  };
+  const vertRenderOptions: Scale.RenderOptions = {
+    ...renderOptions,
+    isHorizontal: false,
+  };
   const testOptions: Scale.Options = {
     $viewContainer: $('#view_container'),
-    renderOptions: {
-      isHorizontal: true,
-      scaleStep: 1,
-      displayScaleValue: true,
-      displayMin: true,
-      displayMax: true,
-    },
     observer: {
       start: mockStart,
       change: mockChange,
       finish: mockFinish,
-    },
-  };
-  const verticalOptions: Scale.Options = {
-    $viewContainer: testOptions.$viewContainer,
-    observer: testOptions.observer,
-    renderOptions: {
-      ...testOptions.renderOptions,
-      isHorizontal: false,
     },
   };
   const testRenderData: View.RenderData = {
@@ -40,32 +36,30 @@ describe('scale', () => {
 
   beforeEach(() => {
     testScale = new SliderScale(testOptions);
-    verticalScale = new SliderScale(verticalOptions);
+    verticalScale = new SliderScale(testOptions);
   });
 
   describe('constructor', () => {
     test('should save $container in prop', () => {
       expect(testScale).toHaveProperty('$container', testOptions.$viewContainer);
     });
-    test('should save render options in prop', () => {
-      expect(testScale).toHaveProperty('options', testOptions.renderOptions);
-      expect(verticalScale).toHaveProperty('options', verticalOptions.renderOptions);
-    });
+
     test('should save observer object in prop', () => {
       expect(testScale).toHaveProperty('observer', testOptions.observer);
     });
+
     test('should create and save in prop jQuery element container of scale elements', () => {
-      expect(testScale).toHaveProperty('$scale', $('<div>', { class: 'js-slider__scale scale slider__scale' }));
-      expect(verticalScale).toHaveProperty('$scale', $('<div>', { class: 'js-slider__scale scale slider__scale_vertical' }));
+      expect(testScale).toHaveProperty('$scale', $('<div>', { class: 'js-slider__scale' }));
     });
+
     test('should reset isRendered flag', () => {
       expect(testScale).toHaveProperty('isRendered', false);
     });
   });
   describe('render', () => {
     beforeEach(() => {
-      testScale.render(testRenderData);
-      verticalScale.render(testRenderData);
+      testScale.render(testRenderData, renderOptions);
+      verticalScale.render(testRenderData, vertRenderOptions);
       jest.clearAllMocks();
     });
 
@@ -75,11 +69,15 @@ describe('scale', () => {
 
     test('should create and append scale elements to view container', () => {
       const $view = $('#view_container');
-      const $scale = $view.find('.slider__scale');
-      const $elements = $scale.find('.scale__element');
+      const $horizontalScale = $view.find('.slider__scale_horizontal');
+      const $verticalScale = $view.find('.slider__scale');
+      const $horizontalElements = $horizontalScale.find('.scale__element_horizontal');
+      const $verticalElements = $verticalScale.find('.scale__element');
 
-      expect($scale.length).toBe(1);
-      expect($elements.length).toBe(testRenderData.percentageData.length);
+      expect($horizontalScale.length).toBe(1);
+      expect($verticalScale.length).toBe(1);
+      expect($horizontalElements.length).toBe(testRenderData.percentageData.length);
+      expect($verticalElements.length).toBe(testRenderData.percentageData.length);
     });
     test('should render element.toString() content', () => {
       const $container = $('#view_container');
@@ -93,7 +91,7 @@ describe('scale', () => {
         percentageData: [0, 50, 100],
       };
 
-      testScale.render(newData);
+      testScale.render(newData, renderOptions);
       const $elements = $container.find('.scale__element');
       expect($elements.length).toBe(3);
       $elements.each(function test(idx: number) {
@@ -105,7 +103,7 @@ describe('scale', () => {
       $container.empty();
       const newData = { data: [3, 4, 5, 6, 7, 8], percentageData: [0, 20, 40, 60, 80, 100] };
 
-      testScale.render(newData);
+      testScale.render(newData, renderOptions);
       const $elements = $container.find('.scale__element');
       expect($elements.length).toBe(6);
       $elements.each(function test(idx: number) {
@@ -137,7 +135,7 @@ describe('scale', () => {
   });
   describe('destroy', () => {
     beforeEach(() => {
-      testScale.render(testRenderData);
+      testScale.render(testRenderData, renderOptions);
       jest.clearAllMocks();
     });
     test('should detach scale container', () => {
