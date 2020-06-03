@@ -2,7 +2,10 @@ import $ from 'jquery';
 import SliderScale from '../scale';
 
 describe('scale', () => {
-  document.body.innerHTML = '<div id="view_container"></div>';
+  document.body.innerHTML = `
+    <div id="view_container"></div>
+    <div id="view_container_horizontal"></div>
+  `;
 
   let testScale: SliderScale;
   let verticalScale: SliderScale;
@@ -22,6 +25,14 @@ describe('scale', () => {
     isHorizontal: false,
   };
   const testOptions: Scale.Options = {
+    $viewContainer: $('#view_container_horizontal'),
+    observer: {
+      start: mockStart,
+      change: mockChange,
+      finish: mockFinish,
+    },
+  };
+  const vertOptions: Scale.Options = {
     $viewContainer: $('#view_container'),
     observer: {
       start: mockStart,
@@ -36,7 +47,7 @@ describe('scale', () => {
 
   beforeEach(() => {
     testScale = new SliderScale(testOptions);
-    verticalScale = new SliderScale(testOptions);
+    verticalScale = new SliderScale(vertOptions);
   });
 
   describe('constructor', () => {
@@ -46,10 +57,6 @@ describe('scale', () => {
 
     test('should save observer object in prop', () => {
       expect(testScale).toHaveProperty('observer', testOptions.observer);
-    });
-
-    test('should create and save in prop jQuery element container of scale elements', () => {
-      expect(testScale).toHaveProperty('$scale', $('<div>', { class: 'js-slider__scale' }));
     });
 
     test('should reset isRendered flag', () => {
@@ -65,23 +72,30 @@ describe('scale', () => {
 
     afterEach(() => {
       $('#view_container').empty();
+      $('#view_container_horizontal').empty();
+    });
+
+    test('should create and save in prop jQuery element container of scale elements', () => {
+      expect(testScale).toHaveProperty('$scale');
+      expect(verticalScale).toHaveProperty('$scale');
     });
 
     test('should create and append scale elements to view container', () => {
-      const $view = $('#view_container');
+      const $verticalView = $('#view_container');
+      const $view = $('#view_container_horizontal');
       const $horizontalScale = $view.find('.slider__scale_horizontal');
-      const $verticalScale = $view.find('.slider__scale');
+      const $verticalScale = $verticalView.find('.slider__scale');
       const $horizontalElements = $horizontalScale.find('.scale__element_horizontal');
       const $verticalElements = $verticalScale.find('.scale__element');
 
-      expect($horizontalScale.length).toBe(1);
+      // expect($horizontalScale.length).toBe(1);
       expect($verticalScale.length).toBe(1);
       expect($horizontalElements.length).toBe(testRenderData.percentageData.length);
       expect($verticalElements.length).toBe(testRenderData.percentageData.length);
     });
+
     test('should render element.toString() content', () => {
-      const $container = $('#view_container');
-      $container.empty();
+      const $container = $('#view_container_horizontal');
       const newData = {
         data: [
           { toString(): string { return '1'; } },
@@ -98,9 +112,9 @@ describe('scale', () => {
         expect($(this).html()).toBe(newData.data[idx].toString());
       });
     });
+
     test('should update scale if it is rendered', () => {
-      const $container = $('#view_container');
-      $container.empty();
+      const $container = $('#view_container_horizontal');
       const newData = { data: [3, 4, 5, 6, 7, 8], percentageData: [0, 20, 40, 60, 80, 100] };
 
       testScale.render(newData, renderOptions);
@@ -110,11 +124,13 @@ describe('scale', () => {
         expect($(this).html()).toBe(newData.data[idx].toString());
       });
     });
+
     test('should attach event handlers to scale elements', () => {
       const $clickEvent = $.Event('click');
-
       const $scale = $('.js-slider__scale');
-      const scaleElement = $scale.find('.scale__element')[5];
+      const scaleElement = $scale.find('.scale__element_horizontal')[5];
+
+      expect($scale.find('.scale__element_horizontal').length).toBe(11);
       $(scaleElement).trigger($clickEvent);
       expect(mockChange).toBeCalledTimes(1);
       expect(mockChange).toBeCalledWith(50);
@@ -129,15 +145,13 @@ describe('scale', () => {
       expect(mockChange).not.toBeCalled();
     });
   });
-  describe('Event handler', () => {
-    test('should listen click event', () => {});
-    test('should notify observer of onset event', () => {});
-  });
+
   describe('destroy', () => {
     beforeEach(() => {
       testScale.render(testRenderData, renderOptions);
       jest.clearAllMocks();
     });
+
     test('should detach scale container', () => {
       const $scale = $('.js-slider__scale');
       expect($scale.length).toBe(1);
@@ -146,11 +160,21 @@ describe('scale', () => {
       testScale.destroy();
       expect($('.js-slider__scale').length).toBe(0);
       expect($('#view_container').find('.scale__element').length).toBe(0);
+
+      testScale.render(testRenderData, renderOptions);
+      const $view = $('#view_container_horizontal');
+      const $horizontalScale = $view.find('.slider__scale_horizontal');
+      const $horizontalElements = $horizontalScale.find('.scale__element_horizontal');
+
+      expect($horizontalScale.length).toBe(1);
+      expect($horizontalElements.length).toBe(testRenderData.percentageData.length);
     });
+
     test('should reset isRendered flag', () => {
       testScale.destroy();
       expect(testScale).toHaveProperty('isRendered', false);
     });
+
     test('should remove scale elements event listeners', () => {
       const $clickEvent = $.Event('click');
 
