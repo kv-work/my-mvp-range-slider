@@ -20,7 +20,12 @@ class SliderModel implements Model {
       this.secondValue = options.secondValue;
     }
 
-    this.lockedValues = new Set();
+    if (options.lockedValues !== undefined) {
+      this.lockedValues = new Set(options.lockedValues);
+    } else {
+      this.lockedValues = new Set();
+    }
+
 
     this.isReadyNotify = true;
     this.isUpdated = true;
@@ -166,12 +171,12 @@ class SliderModel implements Model {
   }
 
   public getState(): Model.Options {
-    const state = {
+    const state: Model.Options = {
       maxValue: this._maxValue,
       minValue: this._minValue,
       value: this._value,
-      secondValue: this._secondValue,
       step: this._step,
+      lockedValues: Array.from(this.lockedValues),
     };
 
     if (this._secondValue !== undefined) {

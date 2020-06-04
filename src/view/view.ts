@@ -9,10 +9,10 @@ class SliderView implements View {
   private viewOptions: View.Options;
   private renderData?: View.RenderData;
   private $view?: JQuery;
-  private bar: Bar;
   private $runner?: JQuery;
-  private scale: Scale;
   private $secondRunner?: JQuery;
+  private bar: Bar;
+  private scale: Scale;
   private observers: Set<View.Observer>;
   private subViewObserver: View.SubViewObserver;
   private isRendered: boolean;

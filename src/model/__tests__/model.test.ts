@@ -59,6 +59,22 @@ describe('model', () => {
       expect(modelWithSecondValue).toBeInstanceOf(SliderModel);
       expect(modelWithSecondValue.secondValue).toBe(8);
     });
+
+    test('should create lockedValues', () => {
+      expect(testModel).toHaveProperty('lockedValues');
+      expect(testModel.lockedValues.size).toBe(0);
+
+      const options: Model.Options = {
+        ...testOptions,
+        lockedValues: ['maxValue', 'minValue', 'step'],
+      };
+
+      const model = new SliderModel(options);
+
+      expect(model.lockedValues.has('maxValue')).toBeTruthy();
+      expect(model.lockedValues.has('minValue')).toBeTruthy();
+      expect(model.lockedValues.has('step')).toBeTruthy();
+    });
   });
 
   describe('getState', () => {
@@ -74,6 +90,16 @@ describe('model', () => {
       // With second value
       const stateWithSecondValue = modelWithSecondValue.getState();
       expect(stateWithSecondValue).toHaveProperty('secondValue', 8);
+
+      const options: Model.Options = {
+        ...testOptions,
+        lockedValues: ['maxValue', 'minValue', 'step'],
+      };
+
+      const model = new SliderModel(options);
+      const modelState = model.getState();
+
+      expect(modelState.lockedValues).toEqual(['maxValue', 'minValue', 'step']);
     });
   });
 
@@ -626,6 +652,7 @@ describe('model', () => {
         minValue: 0,
         step: 2,
         value: 2,
+        lockedValues: [],
       });
       testModel.updateState({
         maxValue: 10,
@@ -639,6 +666,7 @@ describe('model', () => {
         minValue: 0,
         step: 2,
         value: 2,
+        lockedValues: [],
       });
 
       expect(updateFunc).not.toHaveBeenCalled();

@@ -14,6 +14,7 @@ declare namespace Model {
     step?: number;
     value?: number;
     secondValue?: number;
+    lockedValues?: string[];
   }
 
   interface Observer {
