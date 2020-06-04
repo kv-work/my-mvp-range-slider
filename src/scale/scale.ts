@@ -4,7 +4,7 @@ import './scale.css';
 class SliderScale implements Scale {
   private $container: JQuery;
   private $scale: JQuery;
-  private observer: Scale.Observer;
+  private observer: View.SubViewObserver;
   private isRendered: boolean;
 
   constructor(options: Scale.Options) {

@@ -649,6 +649,7 @@ describe('model', () => {
   describe('lockState', () => {
     test('should adds selected values into lockValues', () => {
       testModel.lockState(['minValue', 'maxValue']);
+
       expect(testModel.lockedValues.has('minValue')).toBeTruthy();
       expect(testModel.lockedValues.has('maxValue')).toBeTruthy();
       expect(testModel.lockedValues.has('step')).toBeFalsy();
@@ -656,11 +657,22 @@ describe('model', () => {
 
     test('should adds all values into lockValues, if lockState argument is "all"', () => {
       testModel.lockState('all');
+
       expect(testModel.lockedValues.has('maxValue')).toBeTruthy();
       expect(testModel.lockedValues.has('minValue')).toBeTruthy();
       expect(testModel.lockedValues.has('value')).toBeTruthy();
       expect(testModel.lockedValues.has('step')).toBeTruthy();
       expect(testModel.lockedValues.has('secondValue')).toBeTruthy();
+    });
+
+    test('should not lock values if argument is unknown', () => {
+      testModel.lockState(['test']);
+
+      expect(testModel.lockedValues.has('maxValue')).toBeFalsy();
+      expect(testModel.lockedValues.has('minValue')).toBeFalsy();
+      expect(testModel.lockedValues.has('value')).toBeFalsy();
+      expect(testModel.lockedValues.has('step')).toBeFalsy();
+      expect(testModel.lockedValues.has('secondValue')).toBeFalsy();
     });
   });
 
@@ -670,12 +682,16 @@ describe('model', () => {
       expect(testModel.lockedValues.has('minValue')).toBeTruthy();
       expect(testModel.lockedValues.has('maxValue')).toBeTruthy();
       expect(testModel.lockedValues.has('step')).toBeTruthy();
+
       testModel.unlockState(['maxValue', 'step', 'value']);
+
       expect(testModel.lockedValues.has('minValue')).toBeTruthy();
       expect(testModel.lockedValues.has('maxValue')).toBeFalsy();
       expect(testModel.lockedValues.has('step')).toBeFalsy();
       expect(testModel.lockedValues.has('value')).toBeFalsy();
+
       testModel.unlockState(['minValue', 'secondValue']);
+
       expect(testModel.lockedValues.has('minValue')).toBeFalsy();
       expect(testModel.lockedValues.has('secondValue')).toBeFalsy();
     });
@@ -683,11 +699,38 @@ describe('model', () => {
     test('should removes all values in lockValues, if lockState argument is "all"', () => {
       testModel.lockState('all');
       testModel.unlockState('all');
+
       expect(testModel.lockedValues.has('maxValue')).toBeFalsy();
       expect(testModel.lockedValues.has('minValue')).toBeFalsy();
       expect(testModel.lockedValues.has('value')).toBeFalsy();
       expect(testModel.lockedValues.has('step')).toBeFalsy();
       expect(testModel.lockedValues.has('secondValue')).toBeFalsy();
+    });
+
+    test('should not unlock values if argument is unknown', () => {
+      testModel.unlockState(['test']);
+
+      expect(testModel.lockedValues.has('maxValue')).toBeFalsy();
+      expect(testModel.lockedValues.has('minValue')).toBeFalsy();
+      expect(testModel.lockedValues.has('value')).toBeFalsy();
+      expect(testModel.lockedValues.has('step')).toBeFalsy();
+      expect(testModel.lockedValues.has('secondValue')).toBeFalsy();
+
+      testModel.lockState('all');
+
+      expect(testModel.lockedValues.has('maxValue')).toBeTruthy();
+      expect(testModel.lockedValues.has('minValue')).toBeTruthy();
+      expect(testModel.lockedValues.has('value')).toBeTruthy();
+      expect(testModel.lockedValues.has('step')).toBeTruthy();
+      expect(testModel.lockedValues.has('secondValue')).toBeTruthy();
+
+      testModel.unlockState(['test']);
+
+      expect(testModel.lockedValues.has('maxValue')).toBeTruthy();
+      expect(testModel.lockedValues.has('minValue')).toBeTruthy();
+      expect(testModel.lockedValues.has('value')).toBeTruthy();
+      expect(testModel.lockedValues.has('step')).toBeTruthy();
+      expect(testModel.lockedValues.has('secondValue')).toBeTruthy();
     });
   });
 });

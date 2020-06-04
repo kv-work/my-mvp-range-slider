@@ -62,7 +62,7 @@ class SliderModel implements Model {
 
   set maxValue(newValue: number) {
     if (this._ableToChange('maxValue', newValue)) {
-      this._maxValue = newValue;
+      this._maxValue = this.fixValue(newValue);
 
       this.isUpdated = false;
 
@@ -85,7 +85,7 @@ class SliderModel implements Model {
 
   set minValue(newValue: number) {
     if (this._ableToChange('minValue', newValue)) {
-      this._minValue = newValue;
+      this._minValue = this.fixValue(newValue);
 
       this.isUpdated = false;
 
@@ -109,7 +109,7 @@ class SliderModel implements Model {
 
   set step(newValue: number) {
     if (this._ableToChange('step', newValue)) {
-      this._step = newValue;
+      this._step = this.fixValue(newValue);
 
       this.isUpdated = false;
 
@@ -140,17 +140,12 @@ class SliderModel implements Model {
       if (newValue !== undefined) {
         const fixedValue = this._getMultipleStep(newValue);
 
-        switch (true) {
-          case (fixedValue <= _value):
-            this._secondValue = _value;
-            this.isUpdated = oldValue === _value;
-            break;
-          case (oldValue !== fixedValue):
-            this._secondValue = fixedValue;
-            this.isUpdated = false;
-            break;
-          default:
-            break;
+        if (fixedValue <= _value) {
+          this._secondValue = _value;
+          this.isUpdated = oldValue === _value;
+        } else if (oldValue !== fixedValue) {
+          this._secondValue = fixedValue;
+          this.isUpdated = false;
         }
       } else {
         this._secondValue = undefined;
@@ -347,11 +342,7 @@ class SliderModel implements Model {
       return value;
     }
 
-    let base: number = this._step.toString().split('.')[1].length;
-    if (base > 10) {
-      base = 10;
-    }
-    const result = +value.toFixed(base);
+    const result = +value.toFixed(10);
     return result;
   }
 
