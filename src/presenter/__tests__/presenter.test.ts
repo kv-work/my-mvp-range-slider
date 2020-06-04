@@ -277,53 +277,6 @@ describe('Presenter', () => {
     });
   });
 
-  describe('resetUserData', () => {
-    beforeEach(() => {
-      testPresenter.setUserData(testDataValues);
-      mockUpdateState.mockClear();
-      mockLockState.mockClear();
-      mockRender.mockClear();
-    });
-
-    test('should changes and unlocks model values', () => {
-      testPresenter.resetUserData({
-        maxValue: 10,
-        minValue: 1,
-        step: 1,
-        value: 5,
-      });
-
-      expect(mockUpdateState).toHaveBeenCalledWith({
-        maxValue: 10,
-        minValue: 1,
-        step: 1,
-        value: 5,
-      });
-    });
-
-    test('should not changes and locks model values, if data is empty object or one of values (min, max, step) is undefined', () => {
-      testPresenter.resetUserData({});
-      testPresenter.resetUserData({
-        maxValue: undefined,
-        minValue: undefined,
-        step: undefined,
-      });
-      expect(mockLockState).not.toBeCalled();
-      expect(mockUpdateState).not.toBeCalled();
-    });
-
-    test('should render view, after updating dataValues', () => {
-      testPresenter.resetUserData({
-        maxValue: 10,
-        minValue: 1,
-        step: 1,
-        value: 5,
-      });
-
-      expect(mockRender).toBeCalled();
-    });
-  });
-
   describe('setUserData', () => {
     beforeEach(() => {
       mockUpdateState.mockClear();

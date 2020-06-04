@@ -102,28 +102,11 @@ class SliderPresenter implements Presenter {
     };
   }
 
-  setUserData(data: App.Stringable[]): void {
-    if (data.length > 0) {
+  setUserData(data: App.Stringable[] | Model.Options): void {
+    if (Array.isArray(data) && data.length > 0) {
       this.updateDataValues(data);
       this.renderData = this.createDataValues();
       this.renderView();
-    }
-  }
-
-  resetUserData(data: Model.Options): void {
-    const modelOptions: Model.Options = {
-      maxValue: data.maxValue,
-      minValue: data.minValue,
-      step: data.step,
-      value: data.value,
-      secondValue: data.secondValue,
-      lockedValues: data.lockedValues,
-    };
-
-    if (!SliderPresenter.isEmpty(modelOptions)) {
-      this.model.unlockState('all');
-      this.model.updateState(modelOptions);
-      this.model.lockState(modelOptions.lockedValues);
     }
   }
 
