@@ -277,16 +277,63 @@ describe('Presenter', () => {
     });
   });
 
-  describe('dataValues', () => {
+  describe('resetUserData', () => {
+    beforeEach(() => {
+      testPresenter.setUserData(testDataValues);
+      mockUpdateState.mockClear();
+      mockLockState.mockClear();
+      mockRender.mockClear();
+    });
+
+    test('should changes and unlocks model values', () => {
+      testPresenter.resetUserData({
+        maxValue: 10,
+        minValue: 1,
+        step: 1,
+        value: 5,
+      });
+
+      expect(mockUpdateState).toHaveBeenCalledWith({
+        maxValue: 10,
+        minValue: 1,
+        step: 1,
+        value: 5,
+      });
+    });
+
+    test('should not changes and locks model values, if data is empty object or one of values (min, max, step) is undefined', () => {
+      testPresenter.resetUserData({});
+      testPresenter.resetUserData({
+        maxValue: undefined,
+        minValue: undefined,
+        step: undefined,
+      });
+      expect(mockLockState).not.toBeCalled();
+      expect(mockUpdateState).not.toBeCalled();
+    });
+
+    test('should render view, after updating dataValues', () => {
+      testPresenter.resetUserData({
+        maxValue: 10,
+        minValue: 1,
+        step: 1,
+        value: 5,
+      });
+
+      expect(mockRender).toBeCalled();
+    });
+  });
+
+  describe('setUserData', () => {
     beforeEach(() => {
       mockUpdateState.mockClear();
       mockLockState.mockClear();
       mockRender.mockClear();
     });
 
-    test('should changes and locks model values, if dataValues.length > 0', () => {
+    test('should changes and locks model values', () => {
       // ['one', 'two', 'three', 'four']
-      testPresenter.update({ dataValues: testDataValues });
+      testPresenter.setUserData(testDataValues);
 
       expect(mockUpdateState).toBeCalledWith({
         maxValue: 3,
@@ -296,9 +343,7 @@ describe('Presenter', () => {
 
       expect(mockLockState).toBeCalledWith(['maxValue', 'minValue', 'step']);
 
-      testPresenter.update({
-        dataValues: [14, 122, 78, 90, 50, 88],
-      });
+      testPresenter.setUserData([14, 122, 78, 90, 50, 88]);
 
       expect(mockUpdateState).toBeCalledWith({
         maxValue: 5,
@@ -307,8 +352,8 @@ describe('Presenter', () => {
       });
     });
 
-    test('should not changes and locks model values, if dataValues.length <= 0', () => {
-      testPresenter.update({ dataValues: [] });
+    test('should not changes and locks model values, if data.length <= 0', () => {
+      testPresenter.setUserData([]);
 
       expect(mockLockState).not.toBeCalled();
       expect(mockUpdateState).not.toBeCalled();
@@ -316,7 +361,7 @@ describe('Presenter', () => {
 
     test('should render view, after updating dataValues', () => {
       // ['one', 'two', 'three', 'four']
-      testPresenter.update({ dataValues: testDataValues });
+      testPresenter.setUserData(testDataValues);
 
       expect(mockRender).toBeCalled();
     });
@@ -616,14 +661,6 @@ describe('Presenter', () => {
         value: 18,
         percentage: 46.15384615384615,
       });
-    });
-
-    test('should updates dataValues and renderData', () => {
-      testPresenter.update({ dataValues: testDataValues });
-
-      expect(testPresenter).toHaveProperty('dataValues', ['one', 'two', 'three', 'four']);
-
-      expect(testPresenter).toHaveProperty('renderData', ['one', 'two', 'three', 'four']);
     });
 
     test('should calls onUpdate callback', () => {

@@ -39,7 +39,7 @@ class SliderPresenter implements Presenter {
     this.renderView();
   }
 
-  public update(options: App.Option): void {
+  update(options: App.Option): void {
     const modelOptions: Model.Options = {
       maxValue: options.maxValue,
       minValue: options.minValue,
@@ -75,16 +75,10 @@ class SliderPresenter implements Presenter {
       this.model.updateState(modelOptions);
     }
 
-    if (options.dataValues !== undefined && options.dataValues.length) {
-      this.updateDataValues(options.dataValues);
-      this.renderData = this.createDataValues();
-      this.renderView();
-    }
-
     this.callbacks.onUpdate();
   }
 
-  public getAllData(): App.Option {
+  getAllData(): App.Option {
     const data = {
       ...this.getModelData(),
       ...this.getViewData(),
@@ -93,19 +87,44 @@ class SliderPresenter implements Presenter {
     return data;
   }
 
-  public getModelData(): Model.Options {
+  getModelData(): Model.Options {
     return this.model.getState();
   }
 
-  public getViewData(): View.Options {
+  getViewData(): View.Options {
     return this.view.getData();
   }
 
-  public getPresenterData(): Presenter.Data {
+  getPresenterData(): Presenter.Data {
     return {
       dataValues: this.dataValues,
       renderData: this.renderData,
     };
+  }
+
+  setUserData(data: App.Stringable[]): void {
+    if (data.length > 0) {
+      this.updateDataValues(data);
+      this.renderData = this.createDataValues();
+      this.renderView();
+    }
+  }
+
+  resetUserData(data: Model.Options): void {
+    const modelOptions: Model.Options = {
+      maxValue: data.maxValue,
+      minValue: data.minValue,
+      step: data.step,
+      value: data.value,
+      secondValue: data.secondValue,
+      lockedValues: data.lockedValues,
+    };
+
+    if (!SliderPresenter.isEmpty(modelOptions)) {
+      this.model.unlockState('all');
+      this.model.updateState(modelOptions);
+      this.model.lockState(modelOptions.lockedValues);
+    }
   }
 
   private createDataValues(data?: Model.Options): App.Stringable[] {

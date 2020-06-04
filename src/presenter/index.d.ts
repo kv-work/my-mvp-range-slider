@@ -4,6 +4,8 @@ declare interface Presenter {
   getModelData(): Model.Options;
   getViewData(): View.Options;
   getPresenterData(): Presenter.Data;
+  setUserData(data: App.Stringable[]): void;
+  resetUserData(data: Model.Options): void;
 }
 
 declare namespace Presenter {
