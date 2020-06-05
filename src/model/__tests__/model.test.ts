@@ -646,16 +646,17 @@ describe('model', () => {
         maxValue: -10,
         minValue: -20,
         step: 2,
-        value: -14,
-        secondValue: -18,
+        value: -18,
+        secondValue: -14,
       });
 
       expect(testModel.getState()).toEqual({
         maxValue: -10,
         minValue: -20,
         step: 2,
-        value: -14,
-        secondValue: -18,
+        value: -18,
+        secondValue: -14,
+        lockedValues: [],
       });
     });
 

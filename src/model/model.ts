@@ -19,6 +19,7 @@ class SliderModel implements Model {
       this.minValue = 0;
       this.step = 1;
     }
+
     this.observers = new Set();
     this.value = options.value;
 
@@ -198,12 +199,12 @@ class SliderModel implements Model {
     };
 
     this.isReadyNotify = false;
-    if (SliderModel.validateInitOptions(newState)) {
+    if (newState.maxValue > newState.minValue) {
       this._maxValue = newState.maxValue;
       this._minValue = newState.minValue;
-      this._step = newState.step;
     }
 
+    this.step = newState.step;
     this.value = newState.value;
     this.secondValue = newState.secondValue;
 
