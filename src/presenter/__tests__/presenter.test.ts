@@ -284,7 +284,7 @@ describe('Presenter', () => {
       mockRender.mockClear();
     });
 
-    test('should changes and locks model values', () => {
+    test('should changes and locks model values if data is Array', () => {
       // ['one', 'two', 'three', 'four']
       testPresenter.setUserData(testDataValues);
 
@@ -305,10 +305,54 @@ describe('Presenter', () => {
       });
     });
 
-    test('should not changes and locks model values, if data.length <= 0', () => {
+    test('should not changes and locks model values, if data is Array and data.length <= 0', () => {
       testPresenter.setUserData([]);
 
       expect(mockLockState).not.toBeCalled();
+      expect(mockUpdateState).not.toBeCalled();
+    });
+
+    test('should update model state if type of data is Model.Options', () => {
+      testPresenter.setUserData({
+        maxValue: 100,
+        minValue: 0,
+        step: 10,
+      });
+
+      expect(mockUpdateState).toBeCalledWith({
+        maxValue: 100,
+        minValue: 0,
+        step: 10,
+      });
+    });
+
+    test('should reset this.dataValues and create new renderData', () => {
+      testPresenter.setUserData(testDataValues);
+      expect(testPresenter).toHaveProperty('dataValues', ['one', 'two', 'three', 'four']);
+      expect(testPresenter).toHaveProperty('renderData', ['one', 'two', 'three', 'four']);
+
+      testPresenter.setUserData({
+        maxValue: 5,
+        minValue: 1,
+        step: 1,
+      });
+      expect(testPresenter).toHaveProperty('dataValues', []);
+      expect(testPresenter).toHaveProperty('renderData', [1, 2, 3, 4, 5]);
+    });
+
+    test('should not update model state if argument is wrong', () => {
+      testPresenter.setUserData({
+        maxValue: 0,
+        minValue: 4,
+        step: 1,
+      });
+
+      testPresenter.setUserData({
+        maxValue: 2,
+        minValue: 1,
+        step: 0,
+      });
+
       expect(mockUpdateState).not.toBeCalled();
     });
 
@@ -316,7 +360,15 @@ describe('Presenter', () => {
       // ['one', 'two', 'three', 'four']
       testPresenter.setUserData(testDataValues);
 
-      expect(mockRender).toBeCalled();
+      expect(mockRender).toBeCalledTimes(1);
+
+      testPresenter.setUserData({
+        maxValue: 5,
+        minValue: 1,
+        step: 1,
+      });
+
+      expect(mockRender).toBeCalledTimes(2);
     });
   });
 

@@ -10,9 +10,15 @@ class SliderModel implements Model {
   public readonly lockedValues: Set<string>;
 
   constructor(options: Model.Options) {
-    this.maxValue = options.maxValue;
-    this.minValue = options.minValue;
-    this.step = options.step;
+    if (SliderModel.validateInitOptions(options)) {
+      this.maxValue = options.maxValue;
+      this.minValue = options.minValue;
+      this.step = options.step;
+    } else {
+      this.maxValue = 10;
+      this.minValue = 0;
+      this.step = 1;
+    }
     this.observers = new Set();
     this.value = options.value;
 
@@ -25,7 +31,6 @@ class SliderModel implements Model {
     } else {
       this.lockedValues = new Set();
     }
-
 
     this.isReadyNotify = true;
     this.isUpdated = true;
@@ -353,6 +358,17 @@ class SliderModel implements Model {
 
   static _validate(value: number): boolean {
     return !(value === null || Number.isNaN(value) || !Number.isFinite(value));
+  }
+
+  static validateInitOptions(options: Model.Options): boolean {
+    const hasMaxVal = Object.prototype.hasOwnProperty.call(options, 'maxValue');
+    const hasMinVal = Object.prototype.hasOwnProperty.call(options, 'minValue');
+    const hasStep = Object.prototype.hasOwnProperty.call(options, 'step');
+
+    const isMaxGreaterMin = options.maxValue > options.minValue;
+    const isStepPositive = options.step > 0;
+
+    return hasMaxVal && hasMinVal && hasStep && isMaxGreaterMin && isStepPositive;
   }
 }
 

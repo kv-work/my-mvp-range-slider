@@ -75,6 +75,27 @@ describe('model', () => {
       expect(model.lockedValues.has('minValue')).toBeTruthy();
       expect(model.lockedValues.has('step')).toBeTruthy();
     });
+
+    test('should create instance with default values if constructor get wrong options', () => {
+      let newModel = new SliderModel({});
+
+      expect(newModel).toBeInstanceOf(SliderModel);
+      expect(newModel.maxValue).toBe(10);
+      expect(newModel.minValue).toBe(0);
+      expect(newModel.step).toBe(1);
+      expect(newModel.secondValue).toBeUndefined();
+
+      newModel = new SliderModel({
+        maxValue: 0,
+        step: 0,
+      });
+
+      expect(newModel).toBeInstanceOf(SliderModel);
+      expect(newModel.maxValue).toBe(10);
+      expect(newModel.minValue).toBe(0);
+      expect(newModel.step).toBe(1);
+      expect(newModel.secondValue).toBeUndefined();
+    });
   });
 
   describe('getState', () => {

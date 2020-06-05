@@ -1,3 +1,5 @@
+import SliderModel from '../model/model';
+
 class SliderPresenter implements Presenter {
   private view: View;
   private model: Model;
@@ -106,7 +108,9 @@ class SliderPresenter implements Presenter {
     if (Array.isArray(data) && data.length > 0) {
       this.updateDataValues(data);
       this.renderData = this.createDataValues();
-      this.renderView();
+    } else if (!Array.isArray(data) && SliderModel.validateInitOptions(data)) {
+      this.dataValues = [];
+      this.model.updateState(data);
     }
   }
 
