@@ -59,10 +59,6 @@ class SliderScale implements Scale {
       class: 'js-slider__scale slider__scale',
     });
 
-    if (options.isHorizontal) {
-      $scaleContainer.addClass('slider__scale_horizontal');
-    }
-
     const scaleOptions = $.extend({
       isHorizontal: true,
       scaleStep: 1,
@@ -72,6 +68,10 @@ class SliderScale implements Scale {
     }, options);
 
     $scaleContainer.data('options', scaleOptions);
+
+    if (scaleOptions.isHorizontal) {
+      $scaleContainer.addClass('slider__scale_horizontal');
+    }
 
     return $scaleContainer;
   }

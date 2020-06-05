@@ -78,16 +78,16 @@ class SliderBar implements Bar {
       class: 'js-slider__bar slider__bar',
     });
 
-    if (options.isHorizontal) {
-      $bar.addClass(' slider__bar_horizontal');
-    }
-
     const barOptions: Bar.RenderOptions = $.extend({
       isHorizontal: true,
       range: true,
       dragInterval: false,
     }, options);
     $bar.data('options', barOptions);
+
+    if (barOptions.isHorizontal) {
+      $bar.addClass(' slider__bar_horizontal');
+    }
 
     return $bar;
   }

@@ -37,4 +37,39 @@ describe('SliderRunner', () => {
     testRunner = new SliderRunner(testOptions);
     vertRunner = new SliderRunner(testOptionsVertical);
   });
+
+  describe('constructor', () => {
+    test('should save $view in prop', () => {
+      expect(testRunner).toHaveProperty('$view', testOptions.$viewContainer);
+      expect(vertRunner).toHaveProperty('$view', testOptionsVertical.$viewContainer);
+    });
+
+    test('should reset isRendered flag', () => {
+      expect(testRunner).toHaveProperty('isRendered', false);
+      expect(vertRunner).toHaveProperty('isRendered', false);
+    });
+  });
+
+  describe('render', () => {
+    beforeEach(() => {
+      testRunner.render(10, horizontalOptions);
+      vertRunner.render(10, horizontalOptions);
+    });
+
+    afterEach(() => {
+      $horizontalView.empty();
+      $verticalView.empty();
+    });
+
+    test('should create $runner prop', () => {
+      expect(testRunner).toHaveProperty('$runner');
+      expect(vertRunner).toHaveProperty('$runner');
+    });
+    test('should append $runner to $view', () => {
+      expect($horizontalView.find('.js-slider__runner').length).toBe(1);
+      expect($verticalView.find('.js-slider__runner').length).toBe(1);
+    });
+    test('should update $runner if it is rendered', () => {});
+    test('should attach mouse events handlers to $runner', () => {});
+  });
 });
