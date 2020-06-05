@@ -110,6 +110,12 @@ class SliderPresenter implements Presenter {
       this.renderData = this.createDataValues();
     } else if (!Array.isArray(data) && SliderModel.validateInitOptions(data)) {
       this.dataValues = [];
+      this.model.unlockState(['maxValue', 'minValue', 'step']);
+
+      if (Object.prototype.hasOwnProperty.call(data, 'lockedValues')) {
+        this.model.lockState(data.lockedValues);
+      }
+
       this.model.updateState(data);
     }
   }

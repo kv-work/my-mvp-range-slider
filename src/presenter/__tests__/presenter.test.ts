@@ -324,9 +324,24 @@ describe('Presenter', () => {
         minValue: 0,
         step: 10,
       });
+
+      testPresenter.setUserData({
+        maxValue: -10,
+        minValue: -30,
+        step: 10,
+        lockedValues: ['value', 'minValue', 'maxValue'],
+      });
+
+      expect(mockUpdateState).toHaveBeenLastCalledWith({
+        maxValue: -10,
+        minValue: -30,
+        step: 10,
+        lockedValues: ['value', 'minValue', 'maxValue'],
+      });
+      expect(mockLockState).toBeCalledWith(['value', 'minValue', 'maxValue']);
     });
 
-    test('should reset this.dataValues and create new renderData', () => {
+    test('should reset this.dataValues, unlock model values and create new renderData if type of data is Model.Options', () => {
       testPresenter.setUserData(testDataValues);
       expect(testPresenter).toHaveProperty('dataValues', ['one', 'two', 'three', 'four']);
       expect(testPresenter).toHaveProperty('renderData', ['one', 'two', 'three', 'four']);
@@ -338,6 +353,7 @@ describe('Presenter', () => {
       });
       expect(testPresenter).toHaveProperty('dataValues', []);
       expect(testPresenter).toHaveProperty('renderData', [1, 2, 3, 4, 5]);
+      expect(mockUnlockState).toHaveBeenCalledWith(['maxValue', 'minValue', 'step']);
     });
 
     test('should not update model state if argument is wrong', () => {
