@@ -192,20 +192,20 @@ class SliderModel implements Model {
   }
 
   public updateState(state: Model.Options): void {
-    const {
-      maxValue,
-      minValue,
-      step,
-      value,
-      secondValue,
-    } = state;
+    const newState = {
+      ...this.getState(),
+      ...state,
+    };
 
     this.isReadyNotify = false;
-    this.maxValue = maxValue;
-    this.minValue = minValue;
-    this.step = step;
-    this.value = value;
-    this.secondValue = secondValue;
+    if (SliderModel.validateInitOptions(newState)) {
+      this._maxValue = newState.maxValue;
+      this._minValue = newState.minValue;
+      this._step = newState.step;
+    }
+
+    this.value = newState.value;
+    this.secondValue = newState.secondValue;
 
     this.isReadyNotify = true;
     if (!this.isUpdated) this.notify();

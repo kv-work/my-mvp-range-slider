@@ -20,4 +20,13 @@ declare namespace Model {
   interface Observer {
     update?(): void;
   }
+
+  interface InitOptions {
+    maxValue: number;
+    minValue: number;
+    step: number;
+    value?: number;
+    secondValue?: number;
+    lockedValues?: string[];
+  }
 }

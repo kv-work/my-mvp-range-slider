@@ -641,6 +641,22 @@ describe('model', () => {
         secondValue: 50,
       });
       expect(testModel.secondValue).toBe(50);
+
+      testModel.updateState({
+        maxValue: -10,
+        minValue: -20,
+        step: 2,
+        value: -14,
+        secondValue: -18,
+      });
+
+      expect(testModel.getState()).toEqual({
+        maxValue: -10,
+        minValue: -20,
+        step: 2,
+        value: -14,
+        secondValue: -18,
+      });
     });
 
     test('should notify of changes only once', () => {
