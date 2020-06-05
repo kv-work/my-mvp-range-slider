@@ -1,12 +1,12 @@
 declare interface Runner {
-  render(data: number, options: Runner.RenderOptions): void;
+  render(data: View.RenderData, options: Runner.RenderOptions): void;
   destroy(): void;
 }
 
 declare namespace Runner {
   interface InitOptions {
     $viewContainer: JQuery;
-    renderOptions?: Runner.RenderOptions;
+    isSecond?: boolean;
   }
 
   interface RenderOptions {
