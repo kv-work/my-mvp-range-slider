@@ -158,9 +158,11 @@ describe('SliderRunner', () => {
       const $mouseDownEvent = $.Event('mousedown');
       const $mouseMoveEvent = $.Event('mousemove', {
         clientX: 70,
+        clientY: 50,
       });
       const $AnotherMouseMoveEvent = $.Event('mousemove', {
         clientX: 90,
+        clientY: 20,
       });
       const mouseUpEvent = new Event('mouseup');
 
@@ -183,9 +185,30 @@ describe('SliderRunner', () => {
         .trigger($mouseMoveEvent)
         .trigger($AnotherMouseMoveEvent);
       expect(mockChange).toBeCalledTimes(2);
+      expect(mockChange.mock.calls[0][0]).toHaveProperty('newValue', 70);
+      expect(mockChange.mock.calls[0][0]).toHaveProperty('isSecond', false);
+      expect(mockChange.mock.calls[1][0]).toHaveProperty('newValue', 90);
+      expect(mockChange.mock.calls[1][0]).toHaveProperty('isSecond', false);
 
       document.dispatchEvent(mouseUpEvent);
       expect(mockFinish).toBeCalledTimes(1);
+      expect(mockFinish.mock.calls[0][0]).toHaveProperty('value', 90);
+
+      mockChange.mockClear();
+      mockFinish.mockClear();
+
+      $verticalView
+        .trigger($mouseMoveEvent)
+        .trigger($AnotherMouseMoveEvent);
+      expect(mockChange).toBeCalledTimes(2);
+      expect(mockChange.mock.calls[0][0]).toHaveProperty('newValue', 50);
+      expect(mockChange.mock.calls[0][0]).toHaveProperty('isSecond', false);
+      expect(mockChange.mock.calls[1][0]).toHaveProperty('newValue', 20);
+      expect(mockChange.mock.calls[1][0]).toHaveProperty('isSecond', false);
+
+      document.dispatchEvent(mouseUpEvent);
+      expect(mockFinish).toBeCalledTimes(1);
+      expect(mockFinish.mock.calls[0][0]).toHaveProperty('value', 20);
     });
   });
 });
