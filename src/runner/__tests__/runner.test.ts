@@ -19,8 +19,20 @@ describe('SliderRunner', () => {
     toJSON: (): void => {},
   });
 
+  const mockStart = jest.fn();
+  const mockChange = jest.fn();
+  const mockFinish = jest.fn();
+
   const $horizontalView = $('#view_container_horizontal');
+  $horizontalView.bind('startChanging', mockStart);
+  $horizontalView.bind('changeValue', mockChange);
+  $horizontalView.bind('finish', mockFinish);
+
   const $verticalView = $('#view_container');
+  $verticalView.bind('startChanging', mockStart);
+  $verticalView.bind('changeValue', mockChange);
+  $verticalView.bind('finish', mockFinish);
+
   const renderData: View.RenderData = {
     value: 10,
     percentage: 10,
@@ -43,10 +55,6 @@ describe('SliderRunner', () => {
   const testOptionsVertical: Runner.InitOptions = {
     $viewContainer: $verticalView,
   };
-
-  const mockStart = jest.fn();
-  const mockChange = jest.fn();
-  const mockFinish = jest.fn();
 
   let testRunner: SliderRunner;
   let vertRunner: SliderRunner;
@@ -165,6 +173,19 @@ describe('SliderRunner', () => {
         .trigger($mouseMoveEvent)
         .trigger($AnotherMouseMoveEvent);
       expect(mockChange).toBeCalledTimes(0);
+
+      const $runner = $('.js-slider__runner');
+
+      $runner.trigger($mouseDownEvent);
+      expect(mockStart).toBeCalledTimes(2);
+
+      $horizontalView
+        .trigger($mouseMoveEvent)
+        .trigger($AnotherMouseMoveEvent);
+      expect(mockChange).toBeCalledTimes(2);
+
+      document.dispatchEvent(mouseUpEvent);
+      expect(mockFinish).toBeCalledTimes(1);
     });
   });
 });
