@@ -185,14 +185,14 @@ describe('SliderRunner', () => {
         .trigger($mouseMoveEvent)
         .trigger($AnotherMouseMoveEvent);
       expect(mockChange).toBeCalledTimes(2);
-      expect(mockChange.mock.calls[0][0]).toHaveProperty('newValue', 70);
-      expect(mockChange.mock.calls[0][0]).toHaveProperty('isSecond', false);
-      expect(mockChange.mock.calls[1][0]).toHaveProperty('newValue', 90);
-      expect(mockChange.mock.calls[1][0]).toHaveProperty('isSecond', false);
+      expect(mockChange.mock.calls[0][1]).toBe(70);
+      expect(mockChange.mock.calls[0][2]).toBe(false);
+      expect(mockChange.mock.calls[1][1]).toBe(90);
+      expect(mockChange.mock.calls[1][2]).toBe(false);
 
       document.dispatchEvent(mouseUpEvent);
       expect(mockFinish).toBeCalledTimes(1);
-      expect(mockFinish.mock.calls[0][0]).toHaveProperty('value', 90);
+      expect(mockFinish.mock.calls[0][1]).toBe(90);
 
       mockChange.mockClear();
       mockFinish.mockClear();
@@ -201,14 +201,14 @@ describe('SliderRunner', () => {
         .trigger($mouseMoveEvent)
         .trigger($AnotherMouseMoveEvent);
       expect(mockChange).toBeCalledTimes(2);
-      expect(mockChange.mock.calls[0][0]).toHaveProperty('newValue', 50);
-      expect(mockChange.mock.calls[0][0]).toHaveProperty('isSecond', false);
-      expect(mockChange.mock.calls[1][0]).toHaveProperty('newValue', 20);
-      expect(mockChange.mock.calls[1][0]).toHaveProperty('isSecond', false);
+      expect(mockChange.mock.calls[0][1]).toBe(50);
+      expect(mockChange.mock.calls[0][2]).toBe(false);
+      expect(mockChange.mock.calls[1][1]).toBe(20);
+      expect(mockChange.mock.calls[1][2]).toBe(false);
 
       document.dispatchEvent(mouseUpEvent);
       expect(mockFinish).toBeCalledTimes(1);
-      expect(mockFinish.mock.calls[0][0]).toHaveProperty('value', 20);
+      expect(mockFinish.mock.calls[0][1]).toBe(20);
     });
   });
 });

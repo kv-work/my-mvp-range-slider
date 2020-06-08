@@ -3,14 +3,15 @@ import $ from 'jquery';
 import './view.css';
 import SliderScale from '../scale/scale';
 import SliderBar from '../bar/bar';
+import SliderRunner from '../runner/runner';
 
 class SliderView implements View {
   private $container: JQuery;
   private viewOptions: View.Options;
   private renderData?: View.RenderData;
   private $view?: JQuery;
-  private $runner?: JQuery;
-  private $secondRunner?: JQuery;
+  private runner?: Runner;
+  private secondRunner?: Runner;
   private bar: Bar;
   private scale: Scale;
   private observers: Set<View.Observer>;
@@ -39,9 +40,19 @@ class SliderView implements View {
       });
     }
 
-    if (options.runner) this.$runner = this.createRunner();
+    if (options.runner) {
+      this.runner = new SliderRunner({
+        $viewContainer: this.$view,
+        isSecond: false,
+      });
+    }
 
-    if (options.range) this.$secondRunner = this.createSecondRunner();
+    if (options.range) {
+      this.secondRunner = new SliderRunner({
+        $viewContainer: this.$view,
+        isSecond: true,
+      });
+    }
 
     this.isRendered = false;
   }
@@ -55,11 +66,10 @@ class SliderView implements View {
     this.renderData = renderData;
 
     if (this.viewOptions.runner) {
-      this.renderRunner();
-      this.$view.append(this.$runner);
+      this.runner.render(renderData, this.viewOptions);
     }
-    if (this.viewOptions.range) {
-      this.$view.append(this.$secondRunner);
+    if (this.viewOptions.range && this.secondRunner) {
+      this.secondRunner.render(renderData, this.viewOptions);
     }
 
     if (this.viewOptions.bar) this.bar.render(renderData.percentage, this.viewOptions);
@@ -96,38 +106,6 @@ class SliderView implements View {
     return this.viewOptions;
   }
 
-  private createRunner(): JQuery {
-    const $runner = $('<div>', {
-      class: 'js-slider__runner slider__runner',
-    });
-
-    return $runner;
-  }
-
-  private renderRunner(): void {
-    let position: number;
-    const runnerMetrics: DOMRect = this.$runner[0].getBoundingClientRect();
-    const viewMetrics: DOMRect = this.$view[0].getBoundingClientRect();
-    if (Array.isArray(this.renderData.percentage)) {
-      const [percentage] = this.renderData.percentage;
-      position = viewMetrics.width * (percentage / 100) - runnerMetrics.width / 2;
-    } else {
-      position = viewMetrics.width * (this.renderData.percentage / 100) - runnerMetrics.width / 2;
-    }
-    if (position <= 0) position = 0;
-    if (this.viewOptions.isHorizontal) {
-      if (position >= (viewMetrics.width - runnerMetrics.width)) {
-        position = viewMetrics.width - runnerMetrics.width;
-      }
-      this.$runner.css('left', `${position}px`);
-    } else {
-      if (position >= (viewMetrics.height - runnerMetrics.width)) {
-        position = viewMetrics.height - runnerMetrics.width;
-      }
-      this.$runner.css('top', `${position}px`);
-    }
-  }
-
   private createSubViewObserver(): void {
     this.subViewObserver = {
       start: (): void => {
@@ -143,14 +121,6 @@ class SliderView implements View {
         this.notify(action);
       },
     };
-  }
-
-  private createSecondRunner(): JQuery {
-    const $secondRunner = $('<div>', {
-      class: 'js-slider__second_runner',
-    });
-
-    return $secondRunner;
   }
 
   private createSliderContainer(): JQuery {
@@ -187,52 +157,41 @@ class SliderView implements View {
   }
 
   private attachEventHandlers(): void {
-    if (this.$runner) {
-      this.$runner.on('mousedown', this.dragStartHandler.bind(this));
-      this.$runner.on('dragstart', false);
-    }
+    this.$view.bind('startChanging', this.startChangingHandler.bind(this));
+    this.$view.bind('changeValue', this.changeValueHandler.bind(this));
+    this.$view.bind('finish', this.finishEventHandler.bind(this));
   }
 
-  private dragStartHandler(): void {
+  private startChangingHandler(): void {
     const startAction: {event: string; value?: [number, number] | number} = { event: 'start' };
-    this.notify(startAction);
-    // const runner = event.currentTarget;
-    this.$runner.css('cursor', 'grabbing');
 
-    const mouseMoveHandler = this.makeMouseMoveHandler();
-    this.$container.on('mousemove', mouseMoveHandler);
+    this.notify(startAction);
   }
 
-  private makeMouseMoveHandler(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
-    let moveCoord: number;
-    let selectedVal: number;
-    const view: HTMLElement = this.$view[0];
-    const elemMetrics: DOMRect = view.getBoundingClientRect();
+  private changeValueHandler(event: JQuery.Event, value: number, isSecond: boolean): void {
+    const currentValue = this.renderData.value;
+    let changeAction: {event: string; value: [number, number] | number};
+    if (isSecond && Array.isArray(currentValue)) {
+      changeAction = { event: 'change', value: [currentValue[0], value] };
+    } else if (Array.isArray(currentValue)) {
+      changeAction = { event: 'change', value: [value, currentValue[1]] };
+    } else {
+      changeAction = { event: 'change', value };
+    }
+    this.notify(changeAction);
+  }
 
-    const mouseMoveHandler = (e: JQuery.MouseMoveEvent): void => {
-      if (this.viewOptions.isHorizontal) {
-        moveCoord = e.clientX - elemMetrics.x;
-        selectedVal = (moveCoord / elemMetrics.width) * 100;
-      } else {
-        moveCoord = e.clientY - elemMetrics.y;
-        selectedVal = (moveCoord / elemMetrics.height) * 100;
-      }
-
-      const changeAction: {event: string; value: [number, number] | number} = { event: 'change', value: selectedVal };
-      this.notify(changeAction);
-
-      document.onmouseup = (): void => {
-        this.$container.off('mousemove', mouseMoveHandler);
-        this.$runner.css('cursor', 'grab');
-
-        const finishAction: {event: string; value: [number, number] | number} = { event: 'finish', value: selectedVal };
-        this.notify(finishAction);
-
-        document.onmouseup = null;
-      };
-    };
-
-    return mouseMoveHandler;
+  private finishEventHandler(event: JQuery.Event, value: number, isSecond: boolean): void {
+    const currentValue = this.renderData.value;
+    let finishAction: {event: string; value: [number, number] | number};
+    if (isSecond && Array.isArray(currentValue)) {
+      finishAction = { event: 'finish', value: [currentValue[0], value] };
+    } else if (Array.isArray(currentValue)) {
+      finishAction = { event: 'finish', value: [value, currentValue[1]] };
+    } else {
+      finishAction = { event: 'finish', value };
+    }
+    this.notify(finishAction);
   }
 
   private validateData(data: View.Options): View.Options {

@@ -90,21 +90,15 @@ class SliderRunner implements Runner {
         selectedVal = (moveCoord / elemMetrics.height) * 100;
       }
 
-      const $changeEvent = $.Event('changeValue', {
-        newValue: selectedVal,
-        isSecond: this.isSecond,
-      });
-      this.$view.trigger($changeEvent);
+      const $changeEvent = $.Event('changeValue');
+      this.$view.trigger($changeEvent, [selectedVal, this.isSecond]);
 
       document.onmouseup = (): void => {
         this.$view.off('mousemove', mouseMoveHandler);
         this.$runner.css('cursor', 'grab');
 
-        const $finishEvent = $.Event('finish', {
-          value: selectedVal,
-          isSecond: this.isSecond,
-        });
-        this.$view.trigger($finishEvent);
+        const $finishEvent = $.Event('finish');
+        this.$view.trigger($finishEvent, [selectedVal, this.isSecond]);
 
         document.onmouseup = null;
       };
