@@ -7,6 +7,18 @@ describe('SliderRunner', () => {
     <div id="view_container"></div>
   `;
 
+  HTMLElement.prototype.getBoundingClientRect = (): DOMRect => ({
+    x: 0,
+    y: 0,
+    height: 100,
+    width: 100,
+    bottom: 100,
+    left: 0,
+    right: 100,
+    top: 0,
+    toJSON: (): void => {},
+  });
+
   const $horizontalView = $('#view_container_horizontal');
   const $verticalView = $('#view_container');
   const renderData: View.RenderData = {
@@ -31,6 +43,10 @@ describe('SliderRunner', () => {
   const testOptionsVertical: Runner.InitOptions = {
     $viewContainer: $verticalView,
   };
+
+  const mockStart = jest.fn();
+  const mockChange = jest.fn();
+  const mockFinish = jest.fn();
 
   let testRunner: SliderRunner;
   let vertRunner: SliderRunner;
@@ -130,6 +146,25 @@ describe('SliderRunner', () => {
         value: newData.value,
       });
     });
-    test('should attach mouse events handlers to $runner', () => {});
+    test('should attach mouse events handlers to $runner', () => {
+      const $mouseDownEvent = $.Event('mousedown');
+      const $mouseMoveEvent = $.Event('mousemove', {
+        clientX: 70,
+      });
+      const $AnotherMouseMoveEvent = $.Event('mousemove', {
+        clientX: 90,
+      });
+      const mouseUpEvent = new Event('mouseup');
+
+      $horizontalView
+        .trigger($mouseMoveEvent)
+        .trigger($AnotherMouseMoveEvent);
+      expect(mockChange).toBeCalledTimes(0);
+
+      $verticalView
+        .trigger($mouseMoveEvent)
+        .trigger($AnotherMouseMoveEvent);
+      expect(mockChange).toBeCalledTimes(0);
+    });
   });
 });
