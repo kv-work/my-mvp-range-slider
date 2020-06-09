@@ -20,6 +20,15 @@
       "no-underscore-dangle": "off",
       "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }]
     },
+    "overrides": [
+      {
+        "files": ["*.config.js"],
+        "rules": {
+          "@typescript-eslint/no-var-requires": "off",
+          "@typescript-eslint/explicit-function-return-type": "off"
+        }
+      }
+    ],
     "plugins": [
       "@typescript-eslint",
       "fsd"
