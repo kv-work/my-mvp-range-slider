@@ -1,0 +1,44 @@
+.slider__container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.slider__bar {
+  background-color: #E5E5E5;
+  border-radius: 0.25rem;
+  
+  cursor: pointer;
+}
+
+.slider__bar_vertical {
+  width: 0.5rem;
+  height: 50rem;
+  margin-left: 0.5rem;
+}
+
+.slider__bar_horizontal {
+  height: 0.5rem;
+  width: 100%;
+  flex-basis: 100%;
+}
+ 
+.slider__runner {
+  width: 1.5rem;
+  height: 1.5rem;
+  position: absolute;
+  border-radius: 50%;
+  background-color: #53B6A8;
+  cursor: grab;
+}
+.scale {
+  width: 100%;
+  position: relative;
+}
+
+.scale__element {
+  position: absolute;
+}
