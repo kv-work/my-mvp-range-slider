@@ -151,7 +151,7 @@ describe('bar', () => {
       jest.clearAllMocks();
     });
 
-    test('should detach scale container', () => {
+    test('should detach bar', () => {
       const $bar = $('.js-slider__bar');
       expect($bar.length).toBe(1);
 

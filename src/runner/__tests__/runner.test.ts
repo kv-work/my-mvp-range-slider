@@ -92,6 +92,7 @@ describe('SliderRunner', () => {
     beforeEach(() => {
       testRunner.render(renderData, horizontalOptions);
       vertRunner.render(renderData, verticalOptions);
+      jest.clearAllMocks();
     });
 
     afterEach(() => {
@@ -154,6 +155,7 @@ describe('SliderRunner', () => {
         value: newData.value,
       });
     });
+
     test('should attach mouse events handlers to $runner', () => {
       const $mouseDownEvent = $.Event('mousedown');
       const $mouseMoveEvent = $.Event('mousemove', {
@@ -209,6 +211,64 @@ describe('SliderRunner', () => {
       document.dispatchEvent(mouseUpEvent);
       expect(mockFinish).toBeCalledTimes(1);
       expect(mockFinish.mock.calls[0][1]).toBe(20);
+    });
+  });
+
+  describe('destroy', () => {
+    beforeEach(() => {
+      testRunner.render(renderData, horizontalOptions);
+      vertRunner.render(renderData, verticalOptions);
+      jest.clearAllMocks();
+    });
+
+    test('should detach runner', () => {
+      testRunner.destroy();
+      vertRunner.destroy();
+      expect($horizontalView.find('.js-slider__runner').length).toBe(0);
+      expect($verticalView.find('.js-slider__runner').length).toBe(0);
+
+      testRunner.render(renderData, horizontalOptions);
+      expect($horizontalView.find('.js-slider__runner').length).toBe(1);
+    });
+
+    test('should reset isRendered flag', () => {
+      testRunner.destroy();
+      vertRunner.destroy();
+      expect(testRunner).toHaveProperty('isSecond', false);
+      expect(vertRunner).toHaveProperty('isSecond', false);
+    });
+
+    test('should remove event listeners', () => {
+      const $mouseDownEvent = $.Event('mousedown');
+      const $mouseMoveEvent = $.Event('mousemove', {
+        clientX: 70,
+        clientY: 50,
+      });
+      const $AnotherMouseMoveEvent = $.Event('mousemove', {
+        clientX: 90,
+        clientY: 20,
+      });
+      const mouseUpEvent = new Event('mouseup');
+
+      testRunner.destroy();
+      vertRunner.destroy();
+
+      const $runner = $('.js-slider__runner');
+
+      $runner.trigger($mouseDownEvent);
+      expect(mockStart).toBeCalledTimes(0);
+
+      $horizontalView
+        .trigger($mouseMoveEvent)
+        .trigger($AnotherMouseMoveEvent);
+      expect(mockChange).toBeCalledTimes(0);
+      $verticalView
+        .trigger($mouseMoveEvent)
+        .trigger($AnotherMouseMoveEvent);
+      expect(mockChange).toBeCalledTimes(0);
+
+      document.dispatchEvent(mouseUpEvent);
+      expect(mockFinish).toBeCalledTimes(0);
     });
   });
 });

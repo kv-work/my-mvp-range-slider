@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-useless-constructor */
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable class-methods-use-this */
 import $ from 'jquery';
 
 class SliderRunner implements Runner {
@@ -57,7 +53,11 @@ class SliderRunner implements Runner {
     }
   }
 
-  destroy(): void {}
+  destroy(): void {
+    this.$view.find('.js-slider__runner').off('mousedown');
+    this.$runner.remove();
+    this.isRendered = false;
+  }
 
   private attacheEventHandlers(): void {
     this.$runner.on('mousedown', this.dragStartHandler.bind(this));
@@ -71,11 +71,11 @@ class SliderRunner implements Runner {
     const renderOptions = $(runner).data('options');
     this.$runner.css('cursor', 'grabbing');
 
-    const mouseMoveHandler = this.makeMouseMoveHandler(renderOptions);
+    const mouseMoveHandler = this.makeHandler(renderOptions);
     this.$view.on('mousemove', mouseMoveHandler);
   }
 
-  private makeMouseMoveHandler(opts: Runner.RenderOptions): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+  private makeHandler(opts: Runner.RenderOptions): JQuery.EventHandler<HTMLElement, JQuery.Event> {
     let moveCoord: number;
     let selectedVal: number;
     const view: HTMLElement = this.$view[0];
