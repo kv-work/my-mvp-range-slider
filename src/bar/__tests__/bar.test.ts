@@ -30,13 +30,16 @@ describe.only('bar', () => {
   const mockChange = jest.fn();
   const mockFinish = jest.fn();
 
+  $horizontalView.bind('myMVPSlider.startChanging', mockStart);
+  $horizontalView.bind('myMVPSlider.changeValue', mockChange);
+  $horizontalView.bind('myMVPSlider.finish', mockFinish);
+
+  $verticalView.bind('myMVPSlider.startChanging', mockStart);
+  $verticalView.bind('myMVPSlider.changeValue', mockChange);
+  $verticalView.bind('myMVPSlider.finish', mockFinish);
+
   const horzOptions = {
     $viewContainer: $('#view_container_horizontal'),
-    observer: {
-      start: mockStart,
-      change: mockChange,
-      finish: mockFinish,
-    },
     renderOptions: {
       isHorizontal: true,
       range: true,
@@ -46,11 +49,6 @@ describe.only('bar', () => {
   };
   const vertOptions = {
     $viewContainer: $('#view_container'),
-    observer: {
-      start: mockStart,
-      change: mockChange,
-      finish: mockFinish,
-    },
     renderOptions: {
       isHorizontal: false,
       range: true,
@@ -74,14 +72,16 @@ describe.only('bar', () => {
       jest.clearAllMocks();
     });
 
-    test('should create $view, observer, $bar', () => {
-      expect(testBar).toHaveProperty('observer', horzOptions.observer);
+    test('should create $view, $bar', () => {
       expect(testBar).toHaveProperty('$view', horzOptions.$viewContainer);
       expect(testBar).toHaveProperty('$bar');
 
-      expect(verticalBar).toHaveProperty('observer', vertOptions.observer);
       expect(verticalBar).toHaveProperty('$view', vertOptions.$viewContainer);
       expect(verticalBar).toHaveProperty('$bar');
+    });
+
+    test('should set isRender flag', () => {
+      expect(testBar).toHaveProperty('isRendered', true);
     });
 
     test('should append $bar to $view', () => {
@@ -99,18 +99,18 @@ describe.only('bar', () => {
 
       expect(mockStart).toBeCalledTimes(1);
       expect(mockChange).toBeCalledTimes(1);
-      expect(mockChange).toBeCalledWith(30);
+      expect(mockChange.mock.calls[0][1]).toBe(30);
       expect(mockFinish).toBeCalledTimes(1);
-      expect(mockFinish).toBeCalledWith(30);
+      expect(mockFinish.mock.calls[0][1]).toBe(30);
 
       jest.clearAllMocks();
       const $vertBar = $verticalView.find('.js-slider__bar');
       $vertBar.trigger($clickEvent);
       expect(mockStart).toBeCalledTimes(1);
       expect(mockChange).toBeCalledTimes(1);
-      expect(mockChange).toBeCalledWith(20);
+      expect(mockChange.mock.calls[0][1]).toBe(20);
       expect(mockFinish).toBeCalledTimes(1);
-      expect(mockFinish).toBeCalledWith(20);
+      expect(mockFinish.mock.calls[0][1]).toBe(20);
     });
   });
 
@@ -126,13 +126,13 @@ describe.only('bar', () => {
       testBar.destroy();
       expect($horizontalView.find('.js-slider__bar').length).toBe(0);
 
-      // testBar.update({
-      //   data: [10, 90],
-      //   options: renderOpts,
-      // });
-      // const $horizontalBar = $horizontalView.find('.slider__bar_horizontal');
+      testBar.update({
+        data: [10, 90],
+        options: horzOptions.renderOptions,
+      });
+      const $horizontalBar = $horizontalView.find('.slider__bar_horizontal');
 
-      // expect($horizontalBar.length).toBe(1);
+      expect($horizontalBar.length).toBe(1);
     });
 
     test('should remove bar event listeners', () => {
@@ -145,9 +145,7 @@ describe.only('bar', () => {
 
       expect(mockStart).toBeCalledTimes(1);
       expect(mockChange).toBeCalledTimes(1);
-      expect(mockChange).toBeCalledWith(30);
       expect(mockFinish).toBeCalledTimes(1);
-      expect(mockFinish).toBeCalledWith(30);
       jest.clearAllMocks();
 
       testBar.destroy();
@@ -155,6 +153,11 @@ describe.only('bar', () => {
       expect(mockStart).not.toBeCalled();
       expect(mockChange).not.toBeCalled();
       expect(mockFinish).not.toBeCalled();
+    });
+
+    test('should reset isRender flag', () => {
+      testBar.destroy();
+      expect(testBar).toHaveProperty('isRendered', false);
     });
   });
 });

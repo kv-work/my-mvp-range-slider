@@ -3,18 +3,16 @@ import $ from 'jquery';
 class SliderBar implements Bar {
   private $view: JQuery;
   private $bar: JQuery;
-  private observer: View.SubViewObserver;
+  private isRendered: boolean;
 
   constructor(options: Bar.Options) {
     this.$view = options.$viewContainer;
-    this.observer = options.observer;
     this.$bar = SliderBar.createBar();
     this.update({
       options: options.renderOptions,
       data: options.data,
     });
     this.attachEventHandlers();
-    this.$view.append(this.$bar);
   }
 
   update(opts: Bar.UpdateOptions): void {
@@ -58,11 +56,17 @@ class SliderBar implements Bar {
         background: `linear-gradient(${direction}, ${color} ${data}%, #E5E5E5 ${data}%)`,
       });
     }
+
+    if (!this.isRendered) {
+      this.$view.append(this.$bar);
+      this.isRendered = true;
+    }
   }
 
-  public destroy(): void {
+  destroy(): void {
     this.$bar.off('click');
     this.$bar.remove();
+    this.isRendered = false;
   }
 
   private attachEventHandlers(): void {
@@ -70,6 +74,9 @@ class SliderBar implements Bar {
   }
 
   private clickHandler(event: JQuery.ClickEvent): void {
+    const $startEvent = $.Event('myMVPSlider.startChanging');
+    this.$view.trigger($startEvent);
+
     let clickCoord: number;
     let selectedVal: number;
     const elem: HTMLElement = event.currentTarget;
@@ -83,9 +90,11 @@ class SliderBar implements Bar {
       selectedVal = (clickCoord / elemMetrics.height) * 100;
     }
 
-    this.observer.start();
-    this.observer.change(selectedVal);
-    this.observer.finish(selectedVal);
+    const $changeEvent = $.Event('myMVPSlider.changeValue');
+    this.$view.trigger($changeEvent, [selectedVal]);
+
+    const $finishEvent = $.Event('myMVPSlider.finish');
+    this.$view.trigger($finishEvent, [selectedVal]);
   }
 
   static createBar(): JQuery {

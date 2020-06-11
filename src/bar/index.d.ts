@@ -6,7 +6,6 @@ declare interface Bar {
 declare namespace Bar {
   interface Options {
     $viewContainer: JQuery;
-    observer: View.SubViewObserver;
     renderOptions? : Bar.RenderOptions;
     data?: number | [number, number];
   }
