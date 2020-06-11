@@ -24,10 +24,11 @@ class SliderScale implements Scale {
       this.$scale.append($elem);
     });
 
+    this.attachEventHandlers();
+
     if (this.isRendered) {
       this.$container.find('.js-slider__scale').replaceWith(this.$scale);
     } else {
-      this.attachEventHandlers();
       this.$container.append(this.$scale);
       this.isRendered = true;
     }
@@ -80,9 +81,9 @@ class SliderScale implements Scale {
     const $elem = $('<span>', { class: 'scale__element' });
     $elem.html(content);
     if (options.isHorizontal) {
-      $elem.css('left', percentage);
+      $elem.css('left', `${percentage}%`);
     } else {
-      $elem.css('top', percentage);
+      $elem.css('top', `${percentage}%`);
     }
     $elem.data('value', percentage);
 

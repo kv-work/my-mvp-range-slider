@@ -1,3 +1,4 @@
+/* eslint-disable fsd/no-function-declaration-in-event-listener */
 import $ from 'jquery';
 import SliderView from '../view';
 
@@ -82,9 +83,11 @@ describe('SliderView', () => {
       expect(testView).toHaveProperty('$view');
     });
 
-    test('should create bar instance, if options.bar is true', () => {
+    test('should create bar instance, if options.bar is true and append $bar to $view', () => {
       expect(testOptions.bar).toBeTruthy();
       expect(testView).toHaveProperty('bar');
+      const $view = Object.entries(testView).filter((entry) => (entry[0] === '$view'))[0][1];
+      expect($view.find('.js-slider__bar').length).toBe(1);
     });
 
     test('should create runner instance, if options.runner is true', () => {

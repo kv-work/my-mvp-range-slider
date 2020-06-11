@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import $ from 'jquery';
 import './view.css';
 import SliderScale from '../scale/scale';
@@ -22,19 +21,11 @@ class SliderView implements View {
     this.$container = $(container);
     this.viewOptions = options;
     this.observers = new Set();
-
-    this.$view = this.createSliderContainer();
     this.createSubViewObserver();
+    this.$view = this.createView();
 
     if (this.viewOptions.scale) {
       this.scale = new SliderScale({
-        $viewContainer: this.$view,
-        observer: this.subViewObserver,
-      });
-    }
-
-    if (options.bar) {
-      this.bar = new SliderBar({
         $viewContainer: this.$view,
         observer: this.subViewObserver,
       });
@@ -47,7 +38,7 @@ class SliderView implements View {
       });
     }
 
-    if (options.range) {
+    if (options.range && options.runner) {
       this.secondRunner = new SliderRunner({
         $viewContainer: this.$view,
         isSecond: true,
@@ -55,6 +46,29 @@ class SliderView implements View {
     }
 
     this.isRendered = false;
+  }
+
+  private createView(): JQuery {
+    const { viewOptions } = this;
+    const $view: JQuery = $('<div>', {
+      class: 'js-slider__container slider__container',
+    });
+
+    $view.data('options', viewOptions);
+
+    if (viewOptions.bar) {
+      const { isHorizontal, range, dragInterval } = viewOptions;
+      this.bar = new SliderBar({
+        $viewContainer: $view,
+        renderOptions: {
+          isHorizontal,
+          range,
+          dragInterval,
+        },
+      });
+    }
+
+    return $view;
   }
 
   render(renderData: View.RenderData): void {
@@ -72,7 +86,7 @@ class SliderView implements View {
       this.secondRunner.render(renderData, this.viewOptions);
     }
 
-    if (this.viewOptions.bar) this.bar.render(renderData.percentage, this.viewOptions);
+    // if (this.viewOptions.bar) this.bar.render(renderData.percentage, this.viewOptions);
     if (this.viewOptions.scale) this.scale.render(renderData, this.viewOptions);
 
     this.attachEventHandlers();
@@ -88,6 +102,7 @@ class SliderView implements View {
     };
 
     this.viewOptions = state;
+    this.$view.data('options', state);
 
     if (this.renderData) {
       this.render(this.renderData);
@@ -123,14 +138,6 @@ class SliderView implements View {
     };
   }
 
-  private createSliderContainer(): JQuery {
-    const $view: JQuery = $('<div>', {
-      class: 'js-slider__container slider__container',
-    });
-
-    return $view;
-  }
-
   private notify(action: {event: string; value?: [number, number] | number}): void {
     switch (action.event) {
       case 'start':
@@ -157,9 +164,9 @@ class SliderView implements View {
   }
 
   private attachEventHandlers(): void {
-    this.$view.bind('startChanging', this.startChangingHandler.bind(this));
-    this.$view.bind('changeValue', this.changeValueHandler.bind(this));
-    this.$view.bind('finish', this.finishEventHandler.bind(this));
+    this.$view.bind('myMVPSlider.startChanging', this.startChangingHandler.bind(this));
+    this.$view.bind('myMVPSlider.changeValue', this.changeValueHandler.bind(this));
+    this.$view.bind('myMVPSlider.finish', this.finishEventHandler.bind(this));
   }
 
   private startChangingHandler(): void {
@@ -239,6 +246,16 @@ class SliderView implements View {
       return Number.isFinite(value) && (value > 0);
     }
     return false;
+  }
+
+  static createSliderContainer(options: View.Options): JQuery {
+    const $view: JQuery = $('<div>', {
+      class: 'js-slider__container slider__container',
+    });
+
+    $view.data('options', options);
+
+    return $view;
   }
 }
 

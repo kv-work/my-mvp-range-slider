@@ -32,9 +32,9 @@ class SliderRunner implements Runner {
     this.attacheEventHandlers();
 
     if (options.isHorizontal) {
-      this.$runner.css({ left: percentage });
+      this.$runner.css({ left: `${percentage}%` });
     } else {
-      this.$runner.css({ top: percentage });
+      this.$runner.css({ top: `${percentage}%` });
     }
 
     if (this.isSecond) {
@@ -65,7 +65,7 @@ class SliderRunner implements Runner {
   }
 
   private dragStartHandler(event: JQuery.MouseDownEvent): void {
-    const $startEvent = $.Event('startChanging');
+    const $startEvent = $.Event('myMVPSlider.startChanging');
     this.$view.trigger($startEvent);
     const runner = event.currentTarget;
     const renderOptions = $(runner).data('options');
@@ -90,14 +90,14 @@ class SliderRunner implements Runner {
         selectedVal = (moveCoord / elemMetrics.height) * 100;
       }
 
-      const $changeEvent = $.Event('changeValue');
+      const $changeEvent = $.Event('myMVPSlider.changeValue');
       this.$view.trigger($changeEvent, [selectedVal, this.isSecond]);
 
       document.onmouseup = (): void => {
         this.$view.off('mousemove', mouseMoveHandler);
         this.$runner.css('cursor', 'grab');
 
-        const $finishEvent = $.Event('finish');
+        const $finishEvent = $.Event('myMVPSlider.finish');
         this.$view.trigger($finishEvent, [selectedVal, this.isSecond]);
 
         document.onmouseup = null;

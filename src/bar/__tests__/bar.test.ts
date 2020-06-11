@@ -1,8 +1,7 @@
-/* eslint-disable fsd/no-function-declaration-in-event-listener */
 import $ from 'jquery';
 import SliderBar from '../bar';
 
-describe.only('bar', () => {
+describe('bar', () => {
   document.body.innerHTML = `
     <div id="view_container"></div>
     <div id="view_container_horizontal"></div>
