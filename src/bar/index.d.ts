@@ -1,5 +1,5 @@
 declare interface Bar {
-  render(data: number | [number, number], options: Bar.RenderOptions): void;
+  update(options: Bar.UpdateOptions): void;
   destroy(): void;
 }
 
@@ -8,11 +8,17 @@ declare namespace Bar {
     $viewContainer: JQuery;
     observer: View.SubViewObserver;
     renderOptions? : Bar.RenderOptions;
+    data?: number | [number, number];
   }
 
   interface RenderOptions {
     isHorizontal?: boolean;
     range?: boolean;
     dragInterval?: boolean;
+  }
+
+  interface UpdateOptions {
+    data: number | [number, number];
+    options?: Bar.RenderOptions;
   }
 }

@@ -1,24 +1,48 @@
 import $ from 'jquery';
 
 class SliderBar implements Bar {
-  private $container: JQuery;
+  private $view: JQuery;
   private $bar: JQuery;
-  private options: Bar.RenderOptions;
   private observer: View.SubViewObserver;
-  private isRendered: boolean;
 
   constructor(options: Bar.Options) {
-    this.$container = options.$viewContainer;
+    this.$view = options.$viewContainer;
     this.observer = options.observer;
-    this.isRendered = false;
+    this.$bar = SliderBar.createBar();
+    this.update({
+      options: options.renderOptions,
+      data: options.data,
+    });
+    this.attachEventHandlers();
+    this.$view.append(this.$bar);
   }
 
-  public render(data: number | [number, number], options: Bar.RenderOptions): void {
-    this.$bar = SliderBar.createBar(options);
+  update(opts: Bar.UpdateOptions): void {
+    const currentData = this.$bar.data('options');
+    const { options, data } = opts;
+    const defaultOptions: Bar.RenderOptions = {
+      isHorizontal: true,
+      range: true,
+      dragInterval: false,
+    };
+    const newData = {
+      ...defaultOptions,
+      ...currentData,
+      ...options,
+    };
+
+    this.$bar.data('options', newData);
+    this.$bar.data('data', data);
+
+    if (!newData.isHorizontal && this.$bar.hasClass('slider__bar_horizontal')) {
+      this.$bar.removeClass('slider__bar_horizontal');
+    } else if (newData.isHorizontal && !this.$bar.hasClass('slider__bar_horizontal')) {
+      this.$bar.addClass('slider__bar_horizontal');
+    }
 
     let direction: string;
     const color = '#53B6A8';
-    if (options.isHorizontal) {
+    if (newData.isHorizontal) {
       direction = 'to right';
     } else {
       direction = 'to bottom';
@@ -34,20 +58,11 @@ class SliderBar implements Bar {
         background: `linear-gradient(${direction}, ${color} ${data}%, #E5E5E5 ${data}%)`,
       });
     }
-
-    if (this.isRendered) {
-      this.$container.find('.js-slider__bar').replaceWith(this.$bar);
-    } else {
-      this.attachEventHandlers();
-      this.$container.append(this.$bar);
-      this.isRendered = true;
-    }
   }
 
   public destroy(): void {
-    this.$container.find('.js-slider__bar').off('click');
+    this.$bar.off('click');
     this.$bar.remove();
-    this.isRendered = false;
   }
 
   private attachEventHandlers(): void {
@@ -59,7 +74,7 @@ class SliderBar implements Bar {
     let selectedVal: number;
     const elem: HTMLElement = event.currentTarget;
     const elemMetrics: DOMRect = elem.getBoundingClientRect();
-    const options: Bar.RenderOptions = this.$bar.data('options');
+    const options: Bar.RenderOptions = $(elem).data('options');
     if (options.isHorizontal) {
       clickCoord = event.clientX - elemMetrics.x;
       selectedVal = (clickCoord / elemMetrics.width) * 100;
@@ -73,21 +88,10 @@ class SliderBar implements Bar {
     this.observer.finish(selectedVal);
   }
 
-  static createBar(options: Bar.RenderOptions): JQuery {
+  static createBar(): JQuery {
     const $bar = $('<div>', {
       class: 'js-slider__bar slider__bar',
     });
-
-    const barOptions: Bar.RenderOptions = $.extend({
-      isHorizontal: true,
-      range: true,
-      dragInterval: false,
-    }, options);
-    $bar.data('options', barOptions);
-
-    if (barOptions.isHorizontal) {
-      $bar.addClass(' slider__bar_horizontal');
-    }
 
     return $bar;
   }

@@ -1,11 +1,15 @@
+/* eslint-disable fsd/no-function-declaration-in-event-listener */
 import $ from 'jquery';
 import SliderBar from '../bar';
 
-describe('bar', () => {
+describe.only('bar', () => {
   document.body.innerHTML = `
     <div id="view_container"></div>
     <div id="view_container_horizontal"></div>
   `;
+
+  const $horizontalView = $('#view_container_horizontal');
+  const $verticalView = $('#view_container');
 
   HTMLElement.prototype.getBoundingClientRect = (): DOMRect => ({
     x: 0,
@@ -26,13 +30,19 @@ describe('bar', () => {
   const mockChange = jest.fn();
   const mockFinish = jest.fn();
 
-  const testOptions = {
+  const horzOptions = {
     $viewContainer: $('#view_container_horizontal'),
     observer: {
       start: mockStart,
       change: mockChange,
       finish: mockFinish,
     },
+    renderOptions: {
+      isHorizontal: true,
+      range: true,
+      dragInterval: false,
+    },
+    data: 10,
   };
   const vertOptions = {
     $viewContainer: $('#view_container'),
@@ -41,81 +51,42 @@ describe('bar', () => {
       change: mockChange,
       finish: mockFinish,
     },
-  };
-
-  const renderOpts: Bar.RenderOptions = {
-    isHorizontal: true,
-    range: true,
-    dragInterval: false,
-  };
-  const vertRenderOpts: Bar.RenderOptions = {
-    ...renderOpts,
-    isHorizontal: false,
+    renderOptions: {
+      isHorizontal: false,
+      range: true,
+      dragInterval: false,
+    },
+    data: 20,
   };
 
   beforeEach(() => {
-    testBar = new SliderBar(testOptions);
+    testBar = new SliderBar(horzOptions);
     verticalBar = new SliderBar(vertOptions);
   });
 
-  describe('constructor', () => {
-    test('should create $container, observer', () => {
-      expect(testBar).toHaveProperty('observer', testOptions.observer);
-      expect(testBar).toHaveProperty('$container', testOptions.$viewContainer);
-
-      expect(verticalBar).toHaveProperty('observer', vertOptions.observer);
-      expect(verticalBar).toHaveProperty('$container', vertOptions.$viewContainer);
-    });
-
-    test('should reset isRendered flag', () => {
-      expect(testBar).toHaveProperty('isRendered', false);
-      expect(verticalBar).toHaveProperty('isRendered', false);
-    });
+  afterEach(() => {
+    $horizontalView.empty();
+    $verticalView.empty();
   });
-  describe('render', () => {
-    const $horizontalView = $('#view_container_horizontal');
-    const $verticalView = $('#view_container');
 
+  describe('constructor', () => {
     beforeEach(() => {
-      testBar.render([40, 60], renderOpts);
-      verticalBar.render([40, 60], vertRenderOpts);
       jest.clearAllMocks();
     });
 
-    afterEach(() => {
-      $('#view_container').empty();
-      $('#view_container_horizontal').empty();
-    });
-
-    test('should create $bar prop', () => {
+    test('should create $view, observer, $bar', () => {
+      expect(testBar).toHaveProperty('observer', horzOptions.observer);
+      expect(testBar).toHaveProperty('$view', horzOptions.$viewContainer);
       expect(testBar).toHaveProperty('$bar');
+
+      expect(verticalBar).toHaveProperty('observer', vertOptions.observer);
+      expect(verticalBar).toHaveProperty('$view', vertOptions.$viewContainer);
       expect(verticalBar).toHaveProperty('$bar');
     });
 
-    test('should append $bar to $container', () => {
+    test('should append $bar to $view', () => {
       expect($horizontalView.find('.js-slider__bar').length).toBe(1);
       expect($verticalView.find('.js-slider__bar').length).toBe(1);
-    });
-
-    test('should update bar if it is rendered', () => {
-      const newData: [number, number] = [30, 70];
-
-      testBar.render(newData, renderOpts);
-
-      expect($horizontalView.find('.js-slider__bar').length).toBe(1);
-
-      testBar.render(50, {
-        isHorizontal: false,
-        range: false,
-      });
-      const $bar = $horizontalView.find('.js-slider__bar');
-      expect($bar.length).toBe(1);
-      const options = $bar.data('options');
-      expect(options).toEqual({
-        isHorizontal: false,
-        range: false,
-        dragInterval: false,
-      });
     });
 
     test('should attache click event handler to bar', () => {
@@ -144,29 +115,24 @@ describe('bar', () => {
   });
 
   describe('destroy', () => {
-    const $horizontalView = $('#view_container_horizontal');
-
     beforeEach(() => {
-      testBar.render([40, 60], renderOpts);
       jest.clearAllMocks();
     });
 
     test('should detach bar', () => {
-      const $bar = $('.js-slider__bar');
+      const $bar = $horizontalView.find('.js-slider__bar');
       expect($bar.length).toBe(1);
 
       testBar.destroy();
-      expect($('.js-slider__bar').length).toBe(0);
+      expect($horizontalView.find('.js-slider__bar').length).toBe(0);
 
-      testBar.render([10, 90], renderOpts);
-      const $horizontalBar = $horizontalView.find('.slider__bar_horizontal');
+      // testBar.update({
+      //   data: [10, 90],
+      //   options: renderOpts,
+      // });
+      // const $horizontalBar = $horizontalView.find('.slider__bar_horizontal');
 
-      expect($horizontalBar.length).toBe(1);
-    });
-
-    test('should reset isRendered flag', () => {
-      testBar.destroy();
-      expect(testBar).toHaveProperty('isRendered', false);
+      // expect($horizontalBar.length).toBe(1);
     });
 
     test('should remove bar event listeners', () => {
