@@ -37,28 +37,9 @@ describe('bar', () => {
   $verticalView.bind('myMVPSlider.changeValue', mockChange);
   $verticalView.bind('myMVPSlider.finish', mockFinish);
 
-  const horzOptions = {
-    $viewContainer: $('#view_container_horizontal'),
-    renderOptions: {
-      isHorizontal: true,
-      range: true,
-      dragInterval: false,
-    },
-    data: 10,
-  };
-  const vertOptions = {
-    $viewContainer: $('#view_container'),
-    renderOptions: {
-      isHorizontal: false,
-      range: true,
-      dragInterval: false,
-    },
-    data: 20,
-  };
-
   beforeEach(() => {
-    testBar = new SliderBar(horzOptions);
-    verticalBar = new SliderBar(vertOptions);
+    testBar = new SliderBar({ $viewContainer: $('#view_container_horizontal') });
+    verticalBar = new SliderBar({ $viewContainer: $('#view_container') });
   });
 
   afterEach(() => {
@@ -67,23 +48,42 @@ describe('bar', () => {
   });
 
   describe('constructor', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
     test('should create $view, $bar', () => {
-      expect(testBar).toHaveProperty('$view', horzOptions.$viewContainer);
+      expect(testBar).toHaveProperty('$view', $('#view_container_horizontal'));
       expect(testBar).toHaveProperty('$bar');
 
-      expect(verticalBar).toHaveProperty('$view', vertOptions.$viewContainer);
+      expect(verticalBar).toHaveProperty('$view', $('#view_container'));
       expect(verticalBar).toHaveProperty('$bar');
     });
 
-    test('should set isRender flag', () => {
-      expect(testBar).toHaveProperty('isRendered', true);
+    test('should reset isRender flag', () => {
+      expect(testBar).toHaveProperty('isRendered', false);
+    });
+  });
+
+  describe('update', () => {
+    beforeEach(() => {
+      testBar.update({
+        options: {
+          isHorizontal: true,
+          range: true,
+          dragInterval: false,
+        },
+        data: 20,
+      });
+      verticalBar.update({
+        options: {
+          isHorizontal: false,
+          range: true,
+          dragInterval: false,
+        },
+        data: 20,
+      });
+
+      jest.clearAllMocks();
     });
 
-    test('should append $bar to $view', () => {
+    test('should append $bar to $view, if isRender is false', () => {
       expect($horizontalView.find('.js-slider__bar').length).toBe(1);
       expect($verticalView.find('.js-slider__bar').length).toBe(1);
     });
@@ -111,10 +111,30 @@ describe('bar', () => {
       expect(mockFinish).toBeCalledTimes(1);
       expect(mockFinish.mock.calls[0][1]).toBe(20);
     });
+
+    test('should set isRender flag', () => {
+      expect(testBar).toHaveProperty('isRendered', true);
+    });
   });
 
   describe('destroy', () => {
     beforeEach(() => {
+      testBar.update({
+        options: {
+          isHorizontal: true,
+          range: true,
+          dragInterval: false,
+        },
+        data: 20,
+      });
+      verticalBar.update({
+        options: {
+          isHorizontal: false,
+          range: true,
+          dragInterval: false,
+        },
+        data: 20,
+      });
       jest.clearAllMocks();
     });
 
@@ -127,7 +147,11 @@ describe('bar', () => {
 
       testBar.update({
         data: [10, 90],
-        options: horzOptions.renderOptions,
+        options: {
+          isHorizontal: true,
+          range: true,
+          dragInterval: false,
+        },
       });
       const $horizontalBar = $horizontalView.find('.slider__bar_horizontal');
 

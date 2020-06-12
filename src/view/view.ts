@@ -57,26 +57,13 @@ class SliderView implements View {
     $view.data('options', viewOptions);
 
     if (viewOptions.bar) {
-      const { isHorizontal, range, dragInterval } = viewOptions;
-      this.bar = new SliderBar({
-        $viewContainer: $view,
-        renderOptions: {
-          isHorizontal,
-          range,
-          dragInterval,
-        },
-      });
+      this.bar = new SliderBar({ $viewContainer: $view });
     }
 
     return $view;
   }
 
   render(renderData: View.RenderData): void {
-    if (this.isRendered) {
-      this.$container.empty();
-      this.isRendered = false;
-    }
-
     this.renderData = renderData;
 
     if (this.viewOptions.runner) {
@@ -86,7 +73,12 @@ class SliderView implements View {
       this.secondRunner.render(renderData, this.viewOptions);
     }
 
-    // if (this.viewOptions.bar) this.bar.render(renderData.percentage, this.viewOptions);
+    if (this.viewOptions.bar) {
+      this.bar.update({
+        data: renderData.percentage,
+        options: this.viewOptions,
+      });
+    }
     if (this.viewOptions.scale) this.scale.render(renderData, this.viewOptions);
 
     this.attachEventHandlers();

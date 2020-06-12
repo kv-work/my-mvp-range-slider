@@ -6,8 +6,6 @@ declare interface Bar {
 declare namespace Bar {
   interface Options {
     $viewContainer: JQuery;
-    renderOptions? : Bar.RenderOptions;
-    data?: number | [number, number];
   }
 
   interface RenderOptions {

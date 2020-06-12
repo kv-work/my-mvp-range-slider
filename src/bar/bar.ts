@@ -8,11 +8,7 @@ class SliderBar implements Bar {
   constructor(options: Bar.Options) {
     this.$view = options.$viewContainer;
     this.$bar = SliderBar.createBar();
-    this.update({
-      options: options.renderOptions,
-      data: options.data,
-    });
-    this.attachEventHandlers();
+    this.isRendered = false;
   }
 
   update(opts: Bar.UpdateOptions): void {
@@ -60,6 +56,7 @@ class SliderBar implements Bar {
     if (!this.isRendered) {
       this.$view.append(this.$bar);
       this.isRendered = true;
+      this.attachEventHandlers();
     }
   }
 
