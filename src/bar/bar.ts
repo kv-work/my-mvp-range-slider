@@ -34,6 +34,13 @@ class SliderBar implements Bar {
       this.$bar.addClass('slider__bar_horizontal');
     }
 
+    if (this.$bar.find('.slider__range').length === 0 && newData.range) {
+      const $range = $('<div>', { class: 'slider__range' });
+      this.$bar.append($range);
+    } else if (this.$bar.find('.slider__range').length !== 0 && !newData.range) {
+      this.$bar.find('.slider__range').remove();
+    }
+
     let direction: string;
     const color = '#53B6A8';
     if (newData.isHorizontal) {

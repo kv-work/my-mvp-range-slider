@@ -88,6 +88,17 @@ describe('bar', () => {
       expect($verticalView.find('.js-slider__bar').length).toBe(1);
     });
 
+    test('should save render options and data in data attr of $bar', () => {
+      const $bar = $horizontalView.find('.js-slider__bar');
+
+      expect($bar.data('options')).toEqual({
+        isHorizontal: true,
+        range: true,
+        dragInterval: false,
+      });
+      expect($bar.data('data')).toEqual(20);
+    });
+
     test('should attache click event handler to bar', () => {
       const $clickEvent = $.Event('click', {
         clientX: 30,
@@ -114,6 +125,17 @@ describe('bar', () => {
 
     test('should set isRender flag', () => {
       expect(testBar).toHaveProperty('isRendered', true);
+    });
+
+    test('should add class slider__bar_horizontal, if isHorizontal option changed from false to true', () => {
+      verticalBar.update({ options: { isHorizontal: true }, data: 20 });
+      expect($verticalView.find('.slider__bar_horizontal').length).toBe(1);
+    });
+
+    test('should append bar range to $bar if options.range is true', () => {
+      const $bar = $horizontalView.find('.js-slider__bar');
+      expect($bar.data('options').range).toBeTruthy();
+      expect($bar.find('.slider__range').length).toBe(1);
     });
   });
 
