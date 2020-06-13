@@ -62,6 +62,9 @@ describe('bar', () => {
   });
 
   describe('update', () => {
+    let $bar: JQuery;
+    let $vertBar: JQuery;
+
     beforeEach(() => {
       testBar.update({
         options: {
@@ -80,6 +83,9 @@ describe('bar', () => {
         data: 20,
       });
 
+      $bar = $horizontalView.find('.js-slider__bar');
+      $vertBar = $verticalView.find('.js-slider__bar');
+
       jest.clearAllMocks();
     });
 
@@ -89,8 +95,6 @@ describe('bar', () => {
     });
 
     test('should save render options and data in data attr of $bar', () => {
-      const $bar = $horizontalView.find('.js-slider__bar');
-
       expect($bar.data('options')).toEqual({
         isHorizontal: true,
         range: true,
@@ -104,7 +108,7 @@ describe('bar', () => {
         clientX: 30,
         clientY: 20,
       });
-      const $bar = $horizontalView.find('.js-slider__bar');
+
       $bar.trigger($clickEvent);
 
       expect(mockStart).toBeCalledTimes(1);
@@ -114,7 +118,7 @@ describe('bar', () => {
       expect(mockFinish.mock.calls[0][1]).toBe(30);
 
       jest.clearAllMocks();
-      const $vertBar = $verticalView.find('.js-slider__bar');
+
       $vertBar.trigger($clickEvent);
       expect(mockStart).toBeCalledTimes(1);
       expect(mockChange).toBeCalledTimes(1);
@@ -132,10 +136,20 @@ describe('bar', () => {
       expect($verticalView.find('.slider__bar_horizontal').length).toBe(1);
     });
 
+    test('should remove class slider__bar_horizontal, if isHorizontal option changed from true to false', () => {
+      testBar.update({ options: { isHorizontal: false }, data: 100 });
+      expect($horizontalView.find('.slider__bar_horizontal').length).toBe(0);
+    });
+
     test('should append bar range to $bar if options.range is true', () => {
-      const $bar = $horizontalView.find('.js-slider__bar');
       expect($bar.data('options').range).toBeTruthy();
       expect($bar.find('.slider__range').length).toBe(1);
+    });
+
+    test('should remove bar range if options.range is false', () => {
+      expect($bar.find('.slider__range').length).toBe(1);
+      testBar.update({ options: { range: false }, data: 0 });
+      expect($bar.find('.slider__range').length).toBe(0);
     });
   });
 

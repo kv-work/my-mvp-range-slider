@@ -98,9 +98,23 @@ class SliderBar implements Bar {
           left: `${value}%`,
           width: `${secondValue - value}%`,
         });
+        if (value === 0) {
+          this.$range.css({
+            'border-top-left-radius': '0.75rem',
+            'border-bottom-left-radius': '0.75rem',
+          });
+        }
+        if (secondValue === 100) {
+          this.$range.css({
+            'border-top-right-radius': '0.75rem',
+            'border-bottom-right-radius': '0.75rem',
+          });
+        }
       } else if (options.range) {
         this.$range.css({
           width: `${data}%`,
+          'border-top-left-radius': '0.75rem',
+          'border-bottom-left-radius': '0.75rem',
         });
       }
     } else if (Array.isArray(data) && options.range) {
