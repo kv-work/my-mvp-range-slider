@@ -192,8 +192,8 @@ class SliderPresenter implements Presenter {
   private renderView(): void {
     let values: [number, number];
     const currentValue = this.getModelData().value;
-    if (this.getViewData().range) {
-      const { secondValue } = this.getModelData();
+    const { secondValue } = this.getModelData();
+    if (this.getViewData().range && secondValue !== undefined) {
       values = [currentValue, secondValue];
     }
     const value = values || currentValue;
