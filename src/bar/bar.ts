@@ -1,8 +1,10 @@
 import $ from 'jquery';
+import './bar.css';
 
 class SliderBar implements Bar {
   private $view: JQuery;
   private $bar: JQuery;
+  private $range: JQuery;
   private isRendered: boolean;
 
   constructor(options: Bar.Options) {
@@ -34,30 +36,10 @@ class SliderBar implements Bar {
       this.$bar.addClass('slider__bar_horizontal');
     }
 
-    if (this.$bar.find('.slider__range').length === 0 && newData.range) {
-      const $range = $('<div>', { class: 'slider__range' });
-      this.$bar.append($range);
-    } else if (this.$bar.find('.slider__range').length !== 0 && !newData.range) {
-      this.$bar.find('.slider__range').remove();
-    }
-
-    let direction: string;
-    const color = '#53B6A8';
-    if (newData.isHorizontal) {
-      direction = 'to right';
-    } else {
-      direction = 'to bottom';
-    }
-
-    if (Array.isArray(data)) {
-      const [value, secondValue] = data;
-      this.$bar.css({
-        background: `linear-gradient(${direction}, #E5E5E5 ${value}%, ${color} ${value}%, ${color} ${secondValue}%, #E5E5E5 ${secondValue}%)`,
-      });
-    } else {
-      this.$bar.css({
-        background: `linear-gradient(${direction}, ${color} ${data}%, #E5E5E5 ${data}%)`,
-      });
+    if (newData.range) {
+      this.createRangeElement();
+    } else if (this.$range) {
+      this.destroyRangeElement();
     }
 
     if (!this.isRendered) {
@@ -99,6 +81,43 @@ class SliderBar implements Bar {
 
     const $finishEvent = $.Event('myMVPSlider.finish');
     this.$view.trigger($finishEvent, [selectedVal]);
+  }
+
+  private createRangeElement(): void {
+    const { options, data } = this.$bar.data();
+
+    if (!this.$range) {
+      this.$range = $('<div>', { class: 'slider__range' });
+      this.$bar.append(this.$range);
+    }
+
+    if (options.isHorizontal) {
+      if (Array.isArray(data) && options.range) {
+        const [value, secondValue] = data;
+        this.$range.css({
+          left: `${value}%`,
+          width: `${secondValue - value}%`,
+        });
+      } else if (options.range) {
+        this.$range.css({
+          width: `${data}%`,
+        });
+      }
+    } else if (Array.isArray(data) && options.range) {
+      const [value, secondValue] = data;
+      this.$range.css({
+        top: `${value}%`,
+        height: `${secondValue - value}%`,
+      });
+    } else if (options.range) {
+      this.$range.css({
+        height: `${data}%`,
+      });
+    }
+  }
+
+  private destroyRangeElement(): void {
+    this.$range.remove();
   }
 
   static createBar(): JQuery {
