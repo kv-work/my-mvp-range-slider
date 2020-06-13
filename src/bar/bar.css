@@ -1,0 +1,22 @@
+.slider__bar {
+  background-color: #E5E5E5;
+  border-radius: 0.75rem;
+  width: 0.5rem;
+  height: 50rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.slider__bar_horizontal {
+  height: 1.5rem;
+  width: 100%;
+  flex-basis: 100%;
+}
+
+.slider__range {
+  height: 100%;
+  background-color: #53B6A8;
+  position: absolute;
+  width: 100%;
+}
