@@ -95,24 +95,12 @@ class SliderBar implements Bar {
       if (Array.isArray(data) && options.range) {
         const [value, secondValue] = data;
         this.$range.css({
-          left: `${value}%`,
-          width: `${secondValue - value}%`,
+          left: `calc(0.75rem + ${value}%)`,
+          width: `calc(${secondValue - value}% - 1.5rem)`,
         });
-        if (value === 0) {
-          this.$range.css({
-            'border-top-left-radius': '0.75rem',
-            'border-bottom-left-radius': '0.75rem',
-          });
-        }
-        if (secondValue === 100) {
-          this.$range.css({
-            'border-top-right-radius': '0.75rem',
-            'border-bottom-right-radius': '0.75rem',
-          });
-        }
       } else if (options.range) {
         this.$range.css({
-          width: `${data}%`,
+          width: `calc(0.75rem + ${data}%)`,
           'border-top-left-radius': '0.75rem',
           'border-bottom-left-radius': '0.75rem',
         });
@@ -120,7 +108,7 @@ class SliderBar implements Bar {
     } else if (Array.isArray(data) && options.range) {
       const [value, secondValue] = data;
       this.$range.css({
-        top: `${value}%`,
+        top: `calc(0.75rem + ${value}%)`,
         height: `${secondValue - value}%`,
       });
     } else if (options.range) {
