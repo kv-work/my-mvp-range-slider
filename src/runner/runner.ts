@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import './runner.css';
 
 class SliderRunner implements Runner {
   private $view: JQuery;

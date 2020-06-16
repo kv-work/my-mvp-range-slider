@@ -1,0 +1,9 @@
+.slider__runner {
+  width: 2rem;
+  height: 2rem;
+  position: absolute;
+  border: 2px solid;
+  border-radius: 50%;
+  background-color: #53B6A8;
+  cursor: grab;
+}

@@ -6,12 +6,3 @@
   padding-top: 1rem;
   padding-bottom: 1rem;
 }
-
-.slider__runner {
-  width: 1.5rem;
-  height: 1.5rem;
-  position: absolute;
-  border-radius: 50%;
-  background-color: #53B6A8;
-  cursor: grab;
-}
