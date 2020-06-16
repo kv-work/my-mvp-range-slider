@@ -104,7 +104,7 @@ describe('bar', () => {
     });
 
     test('should attache click event handler to bar', () => {
-      const $clickEvent = $.Event('click', {
+      let $clickEvent = $.Event('click', {
         clientX: 30,
         clientY: 20,
       });
@@ -125,6 +125,43 @@ describe('bar', () => {
       expect(mockChange.mock.calls[0][1]).toBe(20);
       expect(mockFinish).toBeCalledTimes(1);
       expect(mockFinish.mock.calls[0][1]).toBe(20);
+
+      // if type of data is Array and options.range is true
+      jest.clearAllMocks();
+      testBar.update({
+        options: {
+          range: true,
+        },
+        data: [20, 60],
+      });
+      expect($bar.data('data')).toEqual([20, 60]);
+      $clickEvent = $.Event('click', {
+        clientX: 50,
+        clientY: 20,
+      });
+
+      $bar.trigger($clickEvent);
+      expect(mockStart).toBeCalledTimes(1);
+      expect(mockChange).toBeCalledTimes(1);
+      expect(mockChange.mock.calls[0][1]).toBe(50); // value
+      expect(mockChange.mock.calls[0][2]).toBe(true); // isSecond
+      expect(mockFinish).toBeCalledTimes(1);
+      expect(mockFinish.mock.calls[0][1]).toBe(50); // value
+      expect(mockFinish.mock.calls[0][2]).toBe(true); // isSecond
+
+      $clickEvent = $.Event('click', {
+        clientX: 30,
+        clientY: 20,
+      });
+
+      jest.clearAllMocks();
+      expect($bar.data('data')).toEqual([20, 60]);
+      $bar.trigger($clickEvent);
+      expect(mockStart).toBeCalledTimes(1);
+      expect(mockChange.mock.calls[0][1]).toBe(30); // value
+      expect(mockChange.mock.calls[0][2]).toBe(false); // isSecond
+      expect(mockFinish.mock.calls[0][1]).toBe(30); // value
+      expect(mockFinish.mock.calls[0][2]).toBe(false); // isSecond
     });
 
     test('should set isRender flag', () => {

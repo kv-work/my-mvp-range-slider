@@ -76,11 +76,21 @@ class SliderBar implements Bar {
       selectedVal = (clickCoord / elemMetrics.height) * 100;
     }
 
+    const currentData = $(elem).data('data');
+    let isSecond = false;
+
+    if (Array.isArray(currentData)) {
+      const average = (currentData[1] + currentData[0]) / 2;
+      isSecond = selectedVal > average;
+    }
+
+    const eventData = [selectedVal, isSecond];
+
     const $changeEvent = $.Event('myMVPSlider.changeValue');
-    this.$view.trigger($changeEvent, [selectedVal]);
+    this.$view.trigger($changeEvent, eventData);
 
     const $finishEvent = $.Event('myMVPSlider.finish');
-    this.$view.trigger($finishEvent, [selectedVal]);
+    this.$view.trigger($finishEvent, eventData);
   }
 
   private createRangeElement(): void {
