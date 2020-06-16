@@ -102,30 +102,88 @@ class SliderBar implements Bar {
     }
 
     if (options.isHorizontal) {
-      if (Array.isArray(data) && options.range) {
+      if (Array.isArray(data)) {
         const [value, secondValue] = data;
         this.$range.css({
           left: `calc(0.75rem + ${value}%)`,
           width: `calc(${secondValue - value}% - 1.5rem)`,
         });
-      } else if (options.range) {
+      } else {
         this.$range.css({
           width: `calc(0.75rem + ${data}%)`,
           'border-top-left-radius': '0.75rem',
           'border-bottom-left-radius': '0.75rem',
         });
       }
-    } else if (Array.isArray(data) && options.range) {
+    } else if (Array.isArray(data)) {
       const [value, secondValue] = data;
       this.$range.css({
         top: `calc(0.75rem + ${value}%)`,
         height: `${secondValue - value}%`,
       });
-    } else if (options.range) {
+    } else {
       this.$range.css({
         height: `${data}%`,
       });
     }
+
+    const rangeEvents = $.data(this.$range[0], 'events');
+    const haveNotHandler = !rangeEvents || !(rangeEvents.mousedown);
+
+    if (options.dragInterval && Array.isArray(data)) {
+      if (haveNotHandler) {
+        this.$range.css({ cursor: 'grab' });
+        this.$range.on('mousedown', this.dragStartHandler.bind(this));
+        this.$range[0].onclick = (e: Event): void => {
+          e.stopPropagation();
+        };
+        this.$range.on('dragstart', false);
+      }
+    }
+  }
+
+  private dragStartHandler(event: JQuery.MouseDownEvent): void {
+    let startCoord: number;
+    const viewMetrics: DOMRect = this.$view[0].getBoundingClientRect();
+    if (this.$bar.data('options').isHorizontal) {
+      startCoord = ((event.clientX - viewMetrics.x) / viewMetrics.width) * 100;
+    } else {
+      startCoord = ((event.clientY - viewMetrics.y) / viewMetrics.height) * 100;
+    }
+    const $startEvent = $.Event('myMVPSlider.startChanging');
+    this.$view.trigger($startEvent);
+    this.$range.css({ cursor: 'grabbing' });
+    const dragHandler = this.makeDragHandler(startCoord);
+    this.$view.on('mousemove', dragHandler);
+  }
+
+  private makeDragHandler(start: number): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+    const dragHandler = (event: JQuery.MouseMoveEvent): void => {
+      let newCoord: number;
+      const viewMetrics: DOMRect = this.$view[0].getBoundingClientRect();
+
+      if (this.$bar.data('options').isHorizontal) {
+        newCoord = ((event.clientX - viewMetrics.x) / viewMetrics.width) * 100;
+      } else {
+        newCoord = ((event.clientY - viewMetrics.y) / viewMetrics.height) * 100;
+      }
+
+      const dragDistance = newCoord - start;
+      const $dragRangeEvent = $.Event('myMVPSlider.dragRange');
+      this.$view.trigger($dragRangeEvent, [dragDistance]);
+
+      document.onmouseup = (): void => {
+        this.$view.off('mousemove', dragHandler);
+        this.$range.css({ cursor: 'grab' });
+
+        const $dropEvent = $.Event('myMVPSlider.dropRange');
+        this.$view.trigger($dropEvent, [dragDistance]);
+
+        document.onmouseup = null;
+      };
+    };
+
+    return dragHandler;
   }
 
   private destroyRangeElement(): void {

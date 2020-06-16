@@ -28,14 +28,20 @@ describe('bar', () => {
   const mockStart = jest.fn();
   const mockChange = jest.fn();
   const mockFinish = jest.fn();
+  const mockDragRange = jest.fn();
+  const mockDropRange = jest.fn();
 
   $horizontalView.bind('myMVPSlider.startChanging', mockStart);
   $horizontalView.bind('myMVPSlider.changeValue', mockChange);
   $horizontalView.bind('myMVPSlider.finish', mockFinish);
+  $horizontalView.bind('myMVPSlider.dragRange', mockDragRange);
+  $horizontalView.bind('myMVPSlider.dropRange', mockDropRange);
 
   $verticalView.bind('myMVPSlider.startChanging', mockStart);
   $verticalView.bind('myMVPSlider.changeValue', mockChange);
   $verticalView.bind('myMVPSlider.finish', mockFinish);
+  $verticalView.bind('myMVPSlider.dragRange', mockDragRange);
+  $verticalView.bind('myMVPSlider.dropRange', mockDropRange);
 
   beforeEach(() => {
     testBar = new SliderBar({ $viewContainer: $('#view_container_horizontal') });
@@ -162,6 +168,49 @@ describe('bar', () => {
       expect(mockChange.mock.calls[0][2]).toBe(false); // isSecond
       expect(mockFinish.mock.calls[0][1]).toBe(30); // value
       expect(mockFinish.mock.calls[0][2]).toBe(false); // isSecond
+    });
+
+    test('should attach drag and drop event handler to $range, if options.range && options.dragInterval && Array.isArray(data)', () => {
+      testBar.update({
+        options: { dragInterval: true },
+        data: [20, 60],
+      });
+      const $mousedownEvent = $.Event('mousedown', {
+        clientX: 40,
+        clientY: 30,
+      });
+      const $range = $horizontalView.find('.slider__range');
+
+      $range.trigger($mousedownEvent);
+      expect(mockStart).toBeCalledTimes(1);
+      expect(mockChange).not.toBeCalled();
+      expect(mockFinish).not.toBeCalled();
+
+      const $mousemoveEvent = $.Event('mousemove', {
+        clientX: 50,
+        clientY: 30,
+      });
+      const $newMousemoveEvent = $.Event('mousemove', {
+        clientX: 70,
+        clientY: 10,
+      });
+
+      $bar
+        .trigger($mousemoveEvent)
+        .trigger($newMousemoveEvent);
+      expect(mockChange).not.toBeCalled();
+      expect(mockFinish).not.toBeCalled();
+      expect(mockDragRange).toBeCalledTimes(2);
+      expect(mockDragRange.mock.calls[0][1]).toBe(10);
+      expect(mockDragRange.mock.calls[1][1]).toBe(30);
+
+      const mouseUpEvent = new Event('mouseup');
+
+      document.dispatchEvent(mouseUpEvent);
+      expect(mockChange).not.toBeCalled();
+      expect(mockFinish).not.toBeCalled();
+      expect(mockDropRange).toBeCalledTimes(1);
+      expect(mockDropRange.mock.calls[0][1]).toBe(30);
     });
 
     test('should set isRender flag', () => {
