@@ -66,13 +66,6 @@ class SliderView implements View {
   render(renderData: View.RenderData): void {
     this.renderData = renderData;
 
-    if (this.viewOptions.runner) {
-      this.runner.render(renderData, this.viewOptions);
-    }
-    if (this.viewOptions.range && this.secondRunner) {
-      this.secondRunner.render(renderData, this.viewOptions);
-    }
-
     if (this.viewOptions.bar) {
       this.bar.update({
         data: renderData.percentage,
@@ -83,6 +76,13 @@ class SliderView implements View {
 
     this.attachEventHandlers();
     this.$container.append(this.$view);
+
+    if (this.viewOptions.runner) {
+      this.runner.render(renderData, this.viewOptions);
+    }
+    if (this.viewOptions.range && this.secondRunner) {
+      this.secondRunner.render(renderData, this.viewOptions);
+    }
 
     this.isRendered = true;
   }
