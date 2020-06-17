@@ -27,7 +27,6 @@ class SliderView implements View {
     if (this.viewOptions.scale) {
       this.scale = new SliderScale({
         $viewContainer: this.$view,
-        observer: this.subViewObserver,
       });
     }
 
@@ -72,7 +71,12 @@ class SliderView implements View {
         options: this.viewOptions,
       });
     }
-    if (this.viewOptions.scale) this.scale.render(renderData, this.viewOptions);
+    if (this.viewOptions.scale) {
+      this.scale.update({
+        data: renderData,
+        options: this.viewOptions,
+      });
+    }
 
     this.attachEventHandlers();
     this.$container.append(this.$view);

@@ -2,40 +2,39 @@ import $ from 'jquery';
 import './scale.css';
 
 class SliderScale implements Scale {
-  private $container: JQuery;
+  private $view: JQuery;
   private $scale: JQuery;
-  private observer: View.SubViewObserver;
   private isRendered: boolean;
 
   constructor(options: Scale.Options) {
-    this.$container = options.$viewContainer;
-    this.observer = options.observer;
+    this.$view = options.$viewContainer;
     this.isRendered = false;
   }
 
-  public render(renderData: View.RenderData, options: Scale.RenderOptions): void {
-    const { data, percentageData } = renderData;
-    this.$scale = SliderScale.createScale(options);
+  public update(opts: Scale.UpdateOptions): void {
+    const { data, percentageData } = opts.data;
+    this.$scale = SliderScale.createScale(opts.options);
+    this.$scale.data('data', data);
 
     data.forEach((elem: App.Stringable, idx: number) => {
       const content = elem.toString();
       const percentage = percentageData[idx];
-      const $elem = SliderScale.createElement(content, percentage, options);
+      const $elem = SliderScale.createElement(content, percentage, opts.options);
       this.$scale.append($elem);
     });
 
     this.attachEventHandlers();
 
     if (this.isRendered) {
-      this.$container.find('.js-slider__scale').replaceWith(this.$scale);
+      this.$view.find('.js-slider__scale').replaceWith(this.$scale);
     } else {
-      this.$container.append(this.$scale);
+      this.$view.append(this.$scale);
       this.isRendered = true;
     }
   }
 
   public destroy(): void {
-    this.$container.find('.js-slider__scale').off('click');
+    this.$view.find('.js-slider__scale').off('click');
     this.$scale.remove();
     this.isRendered = false;
   }
@@ -50,8 +49,24 @@ class SliderScale implements Scale {
     if (elem.classList.contains('scale__element')) {
       value = $(elem).data('value');
 
-      this.observer.change(value);
-      this.observer.finish(value);
+      const $startEvent = $.Event('myMVPSlider.startChanging');
+      this.$view.trigger($startEvent);
+
+      const currentData = this.$scale.data('data');
+      let isSecond = false;
+
+      if (Array.isArray(currentData)) {
+        const average = (currentData[1] + currentData[0]) / 2;
+        isSecond = value > average;
+      }
+
+      const eventData = [value, isSecond];
+
+      const $changeEvent = $.Event('myMVPSlider.changeValue');
+      this.$view.trigger($changeEvent, eventData);
+
+      const $finishEvent = $.Event('myMVPSlider.finish');
+      this.$view.trigger($finishEvent, eventData);
     }
   }
 

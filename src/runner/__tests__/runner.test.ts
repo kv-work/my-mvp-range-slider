@@ -112,7 +112,7 @@ describe('SliderRunner', () => {
 
     test('should save options and value in data attr', () => {
       const horizontalData = $horizontalView.find('.js-slider__runner').data();
-      const verticalalData = $verticalView.find('.js-slider__runner').data();
+      const verticalData = $verticalView.find('.js-slider__runner').data();
 
       expect(horizontalData).toEqual({
         options: {
@@ -123,7 +123,7 @@ describe('SliderRunner', () => {
         },
         value: renderData.value,
       });
-      expect(verticalalData).toEqual({
+      expect(verticalData).toEqual({
         options: {
           isHorizontal: false,
           displayValue: true,
