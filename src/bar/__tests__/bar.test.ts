@@ -237,6 +237,47 @@ describe('bar', () => {
       testBar.update({ options: { range: false }, data: 0 });
       expect($bar.find('.slider__range').length).toBe(0);
     });
+
+    test('should detach bar range event listeners if options.dragInterval is false', () => {
+      testBar.update({ options: { dragInterval: true }, data: [20, 60] });
+      testBar.update({
+        options: { dragInterval: false },
+        data: [20, 60],
+      });
+      const $mousedownEvent = $.Event('mousedown', {
+        clientX: 40,
+        clientY: 30,
+      });
+      const $range = $horizontalView.find('.slider__range');
+      expect($bar.data('options').dragInterval).toBeFalsy();
+
+      $range.trigger($mousedownEvent);
+      // expect(mockStart).not.toBeCalled();
+      expect(mockChange).not.toBeCalled();
+      expect(mockFinish).not.toBeCalled();
+
+      const $mousemoveEvent = $.Event('mousemove', {
+        clientX: 50,
+        clientY: 30,
+      });
+      const $newMousemoveEvent = $.Event('mousemove', {
+        clientX: 70,
+        clientY: 10,
+      });
+
+      $bar
+        .trigger($mousemoveEvent)
+        .trigger($newMousemoveEvent);
+      expect(mockChange).not.toBeCalled();
+      expect(mockFinish).not.toBeCalled();
+      expect(mockDragRange).not.toBeCalled();
+      const mouseUpEvent = new Event('mouseup');
+
+      document.dispatchEvent(mouseUpEvent);
+      expect(mockChange).not.toBeCalled();
+      expect(mockFinish).not.toBeCalled();
+      expect(mockDropRange).not.toBeCalled();
+    });
   });
 
   describe('destroy', () => {

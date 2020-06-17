@@ -98,6 +98,7 @@ class SliderBar implements Bar {
 
     if (!this.$range) {
       this.$range = $('<div>', { class: 'slider__range' });
+      this.$range.data('have-handler', false);
       this.$bar.append(this.$range);
     }
 
@@ -127,13 +128,21 @@ class SliderBar implements Bar {
       });
     }
 
-    const rangeEvents = $.data(this.$range[0], 'events');
-    const haveNotHandler = !rangeEvents || !(rangeEvents.mousedown);
+    const haveHandler = this.$range.data('have-handler');
+
+    if (!options.dragInterval && haveHandler) {
+      this.$range.css({ cursor: 'default' });
+      this.$range.off('mousedown');
+      this.$range.data('have-handler', false);
+      this.$range[0].onclick = null;
+      this.$range.off('dragstart');
+    }
 
     if (options.dragInterval && Array.isArray(data)) {
-      if (haveNotHandler) {
+      if (!haveHandler) {
         this.$range.css({ cursor: 'grab' });
         this.$range.on('mousedown', this.dragStartHandler.bind(this));
+        this.$range.data('have-handler', true);
         this.$range[0].onclick = (e: Event): void => {
           e.stopPropagation();
         };
@@ -143,6 +152,7 @@ class SliderBar implements Bar {
   }
 
   private dragStartHandler(event: JQuery.MouseDownEvent): void {
+    this.$range.css({ cursor: 'grabbing' });
     let startCoord: number;
     const viewMetrics: DOMRect = this.$view[0].getBoundingClientRect();
     if (this.$bar.data('options').isHorizontal) {
@@ -152,7 +162,6 @@ class SliderBar implements Bar {
     }
     const $startEvent = $.Event('myMVPSlider.startChanging');
     this.$view.trigger($startEvent);
-    this.$range.css({ cursor: 'grabbing' });
     const dragHandler = this.makeDragHandler(startCoord);
     this.$view.on('mousemove', dragHandler);
   }
