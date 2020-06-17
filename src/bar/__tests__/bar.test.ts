@@ -175,6 +175,7 @@ describe('bar', () => {
         options: { dragInterval: true },
         data: [20, 60],
       });
+
       const $mousedownEvent = $.Event('mousedown', {
         clientX: 40,
         clientY: 30,
@@ -188,11 +189,11 @@ describe('bar', () => {
 
       const $mousemoveEvent = $.Event('mousemove', {
         clientX: 50,
-        clientY: 30,
+        clientY: 40,
       });
       const $newMousemoveEvent = $.Event('mousemove', {
         clientX: 70,
-        clientY: 10,
+        clientY: 60,
       });
 
       $bar
@@ -211,6 +212,44 @@ describe('bar', () => {
       expect(mockFinish).not.toBeCalled();
       expect(mockDropRange).toBeCalledTimes(1);
       expect(mockDropRange.mock.calls[0][1]).toBe(30);
+
+      // vertical
+      jest.clearAllMocks();
+      verticalBar.update({
+        options: { dragInterval: true },
+        data: [20, 50],
+      });
+
+      const $vertRange = $verticalView.find('.slider__range');
+
+      $vertRange.trigger($mousedownEvent);
+      expect(mockStart).toBeCalledTimes(1);
+      expect(mockChange).not.toBeCalled();
+      expect(mockFinish).not.toBeCalled();
+
+      $vertBar
+        .trigger($mousemoveEvent)
+        .trigger($newMousemoveEvent);
+      expect(mockChange).not.toBeCalled();
+      expect(mockFinish).not.toBeCalled();
+      expect(mockDragRange).toBeCalledTimes(2);
+      expect(mockDragRange.mock.calls[0][1]).toBe(10);
+      expect(mockDragRange.mock.calls[1][1]).toBe(30);
+
+      document.dispatchEvent(mouseUpEvent);
+      expect(mockChange).not.toBeCalled();
+      expect(mockFinish).not.toBeCalled();
+      expect(mockDropRange).toBeCalledTimes(1);
+      expect(mockDropRange.mock.calls[0][1]).toBe(30);
+
+      // click on range
+      jest.clearAllMocks();
+      const $clickEvent = $.Event('click');
+
+      $range.trigger($clickEvent);
+      $vertRange.trigger($clickEvent);
+      expect(mockChange).not.toBeCalled();
+      expect(mockFinish).not.toBeCalled();
     });
 
     test('should set isRender flag', () => {

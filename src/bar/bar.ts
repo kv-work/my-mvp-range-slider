@@ -129,25 +129,24 @@ class SliderBar implements Bar {
     }
 
     const haveHandler = this.$range.data('have-handler');
+    const isDragable = options.dragInterval && Array.isArray(data);
 
-    if (!options.dragInterval && haveHandler) {
+    if (isDragable && !haveHandler) {
+      this.$range.css({ cursor: 'grab' });
+      this.$range.on('mousedown', this.dragStartHandler.bind(this));
+      this.$range.data('have-handler', true);
+      this.$range[0].onclick = (e: Event): void => {
+        e.stopPropagation();
+      };
+      this.$range.on('dragstart', false);
+    }
+
+    if (!isDragable && haveHandler) {
       this.$range.css({ cursor: 'default' });
       this.$range.off('mousedown');
       this.$range.data('have-handler', false);
       this.$range[0].onclick = null;
       this.$range.off('dragstart');
-    }
-
-    if (options.dragInterval && Array.isArray(data)) {
-      if (!haveHandler) {
-        this.$range.css({ cursor: 'grab' });
-        this.$range.on('mousedown', this.dragStartHandler.bind(this));
-        this.$range.data('have-handler', true);
-        this.$range[0].onclick = (e: Event): void => {
-          e.stopPropagation();
-        };
-        this.$range.on('dragstart', false);
-      }
     }
   }
 
