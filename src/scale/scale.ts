@@ -44,8 +44,8 @@ class SliderScale implements Scale {
     this.$scale.empty();
     data.forEach((elem: App.Stringable, idx: number) => {
       const content = elem.toString();
-      const percentage = percentageData[idx];
-      const $elem = SliderScale.createElement(content, percentage, scaleOptions);
+      const value = percentageData[idx];
+      const $elem = SliderScale.createElement(content, value, scaleOptions);
       this.$scale.append($elem);
     });
 
@@ -68,27 +68,27 @@ class SliderScale implements Scale {
 
   private clickEventListener(event: JQuery.ClickEvent): void {
     const elem: HTMLElement = event.target;
-    let value: number;
+    let selectedVal: number;
     if (elem.classList.contains('scale__element')) {
-      value = $(elem).data('value');
+      selectedVal = $(elem).data('value');
 
-      const $startEvent = $.Event('myMVPSlider.startChanging');
+      const $startEvent = $.Event('startChanging.myMVPSlider');
       this.$view.trigger($startEvent);
 
-      const currentData = this.$scale.data('data');
+      const currentData = this.$scale.data('data').percentage;
       let isSecond = false;
 
       if (Array.isArray(currentData)) {
         const average = (currentData[1] + currentData[0]) / 2;
-        isSecond = value > average;
+        isSecond = selectedVal > average;
       }
 
-      const eventData = [value, isSecond];
+      const eventData = [selectedVal, isSecond];
 
-      const $changeEvent = $.Event('myMVPSlider.changeValue');
+      const $changeEvent = $.Event('changeValue.myMVPSlider');
       this.$view.trigger($changeEvent, eventData);
 
-      const $finishEvent = $.Event('myMVPSlider.finish');
+      const $finishEvent = $.Event('finish.myMVPSlider');
       this.$view.trigger($finishEvent, eventData);
     }
   }
@@ -101,15 +101,15 @@ class SliderScale implements Scale {
     return $scaleContainer;
   }
 
-  static createElement(content: string, percentage: number, options: Scale.RenderOptions): JQuery {
+  static createElement(content: string, value: number, options: Scale.RenderOptions): JQuery {
     const $elem = $('<span>', { class: 'scale__element' });
     $elem.html(content);
     if (options.isHorizontal) {
-      $elem.css('left', `${percentage}%`);
+      $elem.css('left', `${value}%`);
     } else {
-      $elem.css('top', `${percentage}%`);
+      $elem.css('top', `${value}%`);
     }
-    $elem.data('value', percentage);
+    $elem.data('value', value);
 
     if (options.isHorizontal) {
       $elem.addClass('scale__element_horizontal');

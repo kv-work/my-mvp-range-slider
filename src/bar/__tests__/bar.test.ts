@@ -31,17 +31,17 @@ describe('bar', () => {
   const mockDragRange = jest.fn();
   const mockDropRange = jest.fn();
 
-  $horizontalView.bind('myMVPSlider.startChanging', mockStart);
-  $horizontalView.bind('myMVPSlider.changeValue', mockChange);
-  $horizontalView.bind('myMVPSlider.finish', mockFinish);
-  $horizontalView.bind('myMVPSlider.dragRange', mockDragRange);
-  $horizontalView.bind('myMVPSlider.dropRange', mockDropRange);
+  $horizontalView.bind('startChanging.myMVPSlider', mockStart);
+  $horizontalView.bind('changeValue.myMVPSlider', mockChange);
+  $horizontalView.bind('finish.myMVPSlider', mockFinish);
+  $horizontalView.bind('dragRange.myMVPSlider', mockDragRange);
+  $horizontalView.bind('dropRange.myMVPSlider', mockDropRange);
 
-  $verticalView.bind('myMVPSlider.startChanging', mockStart);
-  $verticalView.bind('myMVPSlider.changeValue', mockChange);
-  $verticalView.bind('myMVPSlider.finish', mockFinish);
-  $verticalView.bind('myMVPSlider.dragRange', mockDragRange);
-  $verticalView.bind('myMVPSlider.dropRange', mockDropRange);
+  $verticalView.bind('startChanging.myMVPSlider', mockStart);
+  $verticalView.bind('changeValue.myMVPSlider', mockChange);
+  $verticalView.bind('finish.myMVPSlider', mockFinish);
+  $verticalView.bind('dragRange.myMVPSlider', mockDragRange);
+  $verticalView.bind('dropRange.myMVPSlider', mockDropRange);
 
   beforeEach(() => {
     testBar = new SliderBar({ $viewContainer: $('#view_container_horizontal') });

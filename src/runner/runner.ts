@@ -66,7 +66,7 @@ class SliderRunner implements Runner {
   }
 
   private dragStartHandler(event: JQuery.MouseDownEvent): void {
-    const $startEvent = $.Event('myMVPSlider.startChanging');
+    const $startEvent = $.Event('startChanging.myMVPSlider');
     this.$view.trigger($startEvent);
     const runner = event.currentTarget;
     const renderOptions = $(runner).data('options');
@@ -91,14 +91,14 @@ class SliderRunner implements Runner {
         selectedVal = (moveCoord / elemMetrics.height) * 100;
       }
 
-      const $changeEvent = $.Event('myMVPSlider.changeValue');
+      const $changeEvent = $.Event('changeValue.myMVPSlider');
       this.$view.trigger($changeEvent, [selectedVal, this.isSecond]);
 
       document.onmouseup = (): void => {
         this.$view.off('mousemove', mouseMoveHandler);
         this.$runner.css('cursor', 'grab');
 
-        const $finishEvent = $.Event('myMVPSlider.finish');
+        const $finishEvent = $.Event('finish.myMVPSlider');
         this.$view.trigger($finishEvent, [selectedVal, this.isSecond]);
 
         document.onmouseup = null;

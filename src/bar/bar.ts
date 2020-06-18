@@ -60,7 +60,7 @@ class SliderBar implements Bar {
   }
 
   private clickHandler(event: JQuery.ClickEvent): void {
-    const $startEvent = $.Event('myMVPSlider.startChanging');
+    const $startEvent = $.Event('startChanging.myMVPSlider');
     this.$view.trigger($startEvent);
 
     let clickCoord: number;
@@ -86,10 +86,10 @@ class SliderBar implements Bar {
 
     const eventData = [selectedVal, isSecond];
 
-    const $changeEvent = $.Event('myMVPSlider.changeValue');
+    const $changeEvent = $.Event('changeValue.myMVPSlider');
     this.$view.trigger($changeEvent, eventData);
 
-    const $finishEvent = $.Event('myMVPSlider.finish');
+    const $finishEvent = $.Event('finish.myMVPSlider');
     this.$view.trigger($finishEvent, eventData);
   }
 
@@ -159,7 +159,7 @@ class SliderBar implements Bar {
     } else {
       startCoord = ((event.clientY - viewMetrics.y) / viewMetrics.height) * 100;
     }
-    const $startEvent = $.Event('myMVPSlider.startChanging');
+    const $startEvent = $.Event('startChanging.myMVPSlider');
     this.$view.trigger($startEvent);
     const dragHandler = this.makeDragHandler(startCoord);
     this.$view.on('mousemove', dragHandler);
@@ -177,14 +177,14 @@ class SliderBar implements Bar {
       }
 
       const dragDistance = newCoord - start;
-      const $dragRangeEvent = $.Event('myMVPSlider.dragRange');
+      const $dragRangeEvent = $.Event('dragRange.myMVPSlider');
       this.$view.trigger($dragRangeEvent, [dragDistance]);
 
       document.onmouseup = (): void => {
         this.$view.off('mousemove', dragHandler);
         this.$range.css({ cursor: 'grab' });
 
-        const $dropEvent = $.Event('myMVPSlider.dropRange');
+        const $dropEvent = $.Event('dropRange.myMVPSlider');
         this.$view.trigger($dropEvent, [dragDistance]);
 
         document.onmouseup = null;

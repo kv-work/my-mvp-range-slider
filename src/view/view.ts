@@ -14,35 +14,13 @@ class SliderView implements View {
   private bar: Bar;
   private scale: Scale;
   private observers: Set<View.Observer>;
-  private subViewObserver: View.SubViewObserver;
   private isRendered: boolean;
 
   constructor(container: HTMLElement, options: View.Options) {
     this.$container = $(container);
     this.viewOptions = options;
     this.observers = new Set();
-    this.createSubViewObserver();
     this.$view = this.createView();
-
-    if (this.viewOptions.scale) {
-      this.scale = new SliderScale({
-        $viewContainer: this.$view,
-      });
-    }
-
-    if (options.runner) {
-      this.runner = new SliderRunner({
-        $viewContainer: this.$view,
-        isSecond: false,
-      });
-    }
-
-    if (options.range && options.runner) {
-      this.secondRunner = new SliderRunner({
-        $viewContainer: this.$view,
-        isSecond: true,
-      });
-    }
 
     this.isRendered = false;
   }
@@ -57,6 +35,24 @@ class SliderView implements View {
 
     if (viewOptions.bar) {
       this.bar = new SliderBar({ $viewContainer: $view });
+    }
+
+    if (viewOptions.scale) {
+      this.scale = new SliderScale({ $viewContainer: $view });
+    }
+
+    if (viewOptions.runner) {
+      this.runner = new SliderRunner({
+        $viewContainer: this.$view,
+        isSecond: false,
+      });
+    }
+
+    if (viewOptions.range && viewOptions.runner) {
+      this.secondRunner = new SliderRunner({
+        $viewContainer: this.$view,
+        isSecond: true,
+      });
     }
 
     return $view;
@@ -117,23 +113,6 @@ class SliderView implements View {
     return this.viewOptions;
   }
 
-  private createSubViewObserver(): void {
-    this.subViewObserver = {
-      start: (): void => {
-        const action = { event: 'start' };
-        this.notify(action);
-      },
-      change: (value: number): void => {
-        const action = { event: 'change', value };
-        this.notify(action);
-      },
-      finish: (value: number): void => {
-        const action = { event: 'finish', value };
-        this.notify(action);
-      },
-    };
-  }
-
   private notify(action: {event: string; value?: [number, number] | number}): void {
     switch (action.event) {
       case 'start':
@@ -160,9 +139,9 @@ class SliderView implements View {
   }
 
   private attachEventHandlers(): void {
-    this.$view.bind('myMVPSlider.startChanging', this.startChangingHandler.bind(this));
-    this.$view.bind('myMVPSlider.changeValue', this.changeValueHandler.bind(this));
-    this.$view.bind('myMVPSlider.finish', this.finishEventHandler.bind(this));
+    this.$view.bind('startChanging.myMVPSlider', this.startChangingHandler.bind(this));
+    this.$view.bind('changeValue.myMVPSlider', this.changeValueHandler.bind(this));
+    this.$view.bind('finish.myMVPSlider', this.finishEventHandler.bind(this));
   }
 
   private startChangingHandler(): void {

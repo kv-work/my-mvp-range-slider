@@ -17,13 +17,13 @@ describe('scale', () => {
   const mockChange = jest.fn();
   const mockFinish = jest.fn();
 
-  $horizontalView.bind('myMVPSlider.startChanging', mockStart);
-  $horizontalView.bind('myMVPSlider.changeValue', mockChange);
-  $horizontalView.bind('myMVPSlider.finish', mockFinish);
+  $horizontalView.bind('startChanging.myMVPSlider', mockStart);
+  $horizontalView.bind('changeValue.myMVPSlider', mockChange);
+  $horizontalView.bind('finish.myMVPSlider', mockFinish);
 
-  $verticalView.bind('myMVPSlider.startChanging', mockStart);
-  $verticalView.bind('myMVPSlider.changeValue', mockChange);
-  $verticalView.bind('myMVPSlider.finish', mockFinish);
+  $verticalView.bind('startChanging.myMVPSlider', mockStart);
+  $verticalView.bind('changeValue.myMVPSlider', mockChange);
+  $verticalView.bind('finish.myMVPSlider', mockFinish);
 
   const renderOptions: Scale.RenderOptions = {
     isHorizontal: true,
@@ -134,11 +134,12 @@ describe('scale', () => {
 
     test('should attach event handlers to scale elements', () => {
       const $clickEvent = $.Event('click');
-      const $scale = $('.js-slider__scale');
+      const $scale = $horizontalView.find('.slider__scale');
       const scaleElement = $scale.find('.scale__element_horizontal')[5];
 
       expect($scale.find('.scale__element_horizontal').length).toBe(11);
       $(scaleElement).trigger($clickEvent);
+      expect(mockStart).toBeCalledTimes(1);
       expect(mockChange).toBeCalledTimes(1);
       expect(mockChange.mock.calls[0][1]).toBe(50);
       expect(mockFinish).toBeCalledTimes(1);
@@ -150,6 +151,44 @@ describe('scale', () => {
       });
       $scale.trigger($scaleClickEvent);
       expect(mockChange).not.toBeCalled();
+
+      // if type of data is Array and options.range is true
+      jest.clearAllMocks();
+      const data: View.RenderData = {
+        data: [2, 3, 4, 5, 6],
+        percentageData: [0, 25, 50, 75, 100],
+        value: [2, 6],
+        percentage: [0, 100],
+      };
+      testScale.update({
+        options: {
+          range: true,
+        },
+        data,
+      });
+
+      expect($scale.data('data').percentage).toEqual([0, 100]);
+
+      const $newScaleElem = $scale.find('.scale__element_horizontal').eq(3);
+      expect($newScaleElem.data('value')).toBe(75);
+      $newScaleElem.trigger($clickEvent);
+      expect(mockStart).toBeCalledTimes(1);
+      expect(mockChange).toBeCalledTimes(1);
+      expect(mockChange.mock.calls[0][1]).toBe(75); // value
+      expect(mockChange.mock.calls[0][2]).toBe(true); // isSecond
+      expect(mockFinish).toBeCalledTimes(1);
+      expect(mockFinish.mock.calls[0][1]).toBe(75); // value
+      expect(mockFinish.mock.calls[0][2]).toBe(true); // isSecond
+
+      jest.clearAllMocks();
+      const anotherScaleElem = $scale.find('.scale__element_horizontal')[1];
+      expect($(anotherScaleElem).data('value')).toBe(25);
+      $(anotherScaleElem).trigger($clickEvent);
+      expect(mockStart).toBeCalledTimes(1);
+      expect(mockChange.mock.calls[0][1]).toBe(25); // value
+      expect(mockChange.mock.calls[0][2]).toBe(false); // isSecond
+      expect(mockFinish.mock.calls[0][1]).toBe(25); // value
+      expect(mockFinish.mock.calls[0][2]).toBe(false); // isSecond
     });
   });
 
