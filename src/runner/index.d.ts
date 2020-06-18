@@ -1,5 +1,5 @@
 declare interface Runner {
-  render(data: View.RenderData, options: Runner.RenderOptions): void;
+  update(data: View.RenderData, options: Runner.RenderOptions): void;
   destroy(): void;
 }
 

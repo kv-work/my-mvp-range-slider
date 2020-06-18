@@ -9,11 +9,25 @@ class SliderRunner implements Runner {
 
   constructor(options: Runner.InitOptions) {
     this.$view = options.$viewContainer;
+    this.$runner = SliderRunner.createRunner();
     this.isRendered = false;
     this.isSecond = (options.isSecond === true);
   }
 
-  render(data: View.RenderData, options: Runner.RenderOptions): void {
+  update(data: View.RenderData, options: Runner.RenderOptions): void {
+    const currentData = this.$runner.data('options');
+    const defaultOptions: Runner.RenderOptions = {
+      isHorizontal: true,
+      displayValue: false,
+      prefix: '',
+      postfix: '',
+    };
+    const runnerOptions = {
+      ...defaultOptions,
+      ...currentData,
+      ...options,
+    };
+
     let value: number;
     let percentage: number;
     if (Array.isArray(data.percentage) && Array.isArray(data.value)) {
@@ -29,8 +43,15 @@ class SliderRunner implements Runner {
       percentage = data.percentage;
     }
 
-    this.$runner = SliderRunner.createRunner(value, options);
-    this.attacheEventHandlers();
+    this.$runner.data('options', runnerOptions);
+    this.$runner.data('value', value);
+
+    if (runnerOptions.isHorizontal && !this.$runner.hasClass('slider__runner_horizontal')) {
+      this.$runner.addClass('slider__runner_horizontal');
+    }
+    if (!runnerOptions.isHorizontal && this.$runner.hasClass('slider__runner_horizontal')) {
+      this.$runner.removeClass('slider__runner_horizontal');
+    }
 
     if (options.isHorizontal) {
       this.$runner.css({ left: `${percentage}%` });
@@ -44,12 +65,9 @@ class SliderRunner implements Runner {
       this.$runner.addClass('runner_first');
     }
 
-    if (this.isRendered && this.isSecond) {
-      this.$view.find('.runner_second').replaceWith(this.$runner);
-    } else if (this.isRendered) {
-      this.$view.find('.runner_first').replaceWith(this.$runner);
-    } else {
+    if (!this.isRendered) {
       this.$view.append(this.$runner);
+      this.attacheEventHandlers();
       this.isRendered = true;
     }
   }
@@ -108,24 +126,10 @@ class SliderRunner implements Runner {
     return mouseMoveHandler;
   }
 
-  static createRunner(value: number, options: Runner.RenderOptions): JQuery {
+  static createRunner(): JQuery {
     const $runner = $('<div>', {
       class: 'js-slider__runner slider__runner',
     });
-
-    const runnerOptions = $.extend({
-      isHorizontal: true,
-      displayValue: false,
-      prefix: '',
-      postfix: '',
-    }, options);
-
-    $runner.data('options', runnerOptions);
-    $runner.data('value', value);
-
-    if (runnerOptions.isHorizontal) {
-      $runner.addClass('slider__runner_horizontal');
-    }
 
     return $runner;
   }

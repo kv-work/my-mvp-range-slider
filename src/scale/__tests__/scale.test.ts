@@ -89,10 +89,26 @@ describe('scale', () => {
       const $horizontalElements = $horizontalScale.find('.scale__element_horizontal');
       const $verticalElements = $verticalScale.find('.scale__element');
 
-      // expect($horizontalScale.length).toBe(1);
+      expect($horizontalScale.length).toBe(1);
       expect($verticalScale.length).toBe(1);
       expect($horizontalElements.length).toBe(testRenderData.percentageData.length);
       expect($verticalElements.length).toBe(testRenderData.percentageData.length);
+    });
+
+    test('should toggle "slider__scale_horizontal" class if options.isHorizontal changed', () => {
+      expect($horizontalView.find('.slider__scale_horizontal').length).toBe(1);
+
+      testScale.update({
+        options: { isHorizontal: false },
+        data: testRenderData,
+      });
+      expect($horizontalView.find('.slider__scale_horizontal').length).toBe(0);
+
+      testScale.update({
+        options: { isHorizontal: true },
+        data: testRenderData,
+      });
+      expect($horizontalView.find('.slider__scale_horizontal').length).toBe(1);
     });
 
     test('should render element.toString() content', () => {

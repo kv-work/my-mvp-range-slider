@@ -73,16 +73,15 @@ class SliderView implements View {
         options: this.viewOptions,
       });
     }
+    if (this.viewOptions.runner) {
+      this.runner.update(renderData, this.viewOptions);
+    }
+    if (this.viewOptions.range && this.secondRunner) {
+      this.secondRunner.update(renderData, this.viewOptions);
+    }
 
     this.attachEventHandlers();
     this.$container.append(this.$view);
-
-    if (this.viewOptions.runner) {
-      this.runner.render(renderData, this.viewOptions);
-    }
-    if (this.viewOptions.range && this.secondRunner) {
-      this.secondRunner.render(renderData, this.viewOptions);
-    }
 
     this.isRendered = true;
   }

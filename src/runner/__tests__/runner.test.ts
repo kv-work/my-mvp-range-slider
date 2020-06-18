@@ -88,10 +88,10 @@ describe('SliderRunner', () => {
     });
   });
 
-  describe('render', () => {
+  describe('update', () => {
     beforeEach(() => {
-      testRunner.render(renderData, horizontalOptions);
-      vertRunner.render(renderData, verticalOptions);
+      testRunner.update(renderData, horizontalOptions);
+      vertRunner.update(renderData, verticalOptions);
       jest.clearAllMocks();
     });
 
@@ -140,7 +140,7 @@ describe('SliderRunner', () => {
         percentage: 20,
       };
 
-      testRunner.render(newData, horizontalOptions);
+      testRunner.update(newData, horizontalOptions);
 
       expect($horizontalView.find('.js-slider__runner').length).toBe(1);
 
@@ -216,8 +216,8 @@ describe('SliderRunner', () => {
 
   describe('destroy', () => {
     beforeEach(() => {
-      testRunner.render(renderData, horizontalOptions);
-      vertRunner.render(renderData, verticalOptions);
+      testRunner.update(renderData, horizontalOptions);
+      vertRunner.update(renderData, verticalOptions);
       jest.clearAllMocks();
     });
 
@@ -227,7 +227,7 @@ describe('SliderRunner', () => {
       expect($horizontalView.find('.js-slider__runner').length).toBe(0);
       expect($verticalView.find('.js-slider__runner').length).toBe(0);
 
-      testRunner.render(renderData, horizontalOptions);
+      testRunner.update(renderData, horizontalOptions);
       expect($horizontalView.find('.js-slider__runner').length).toBe(1);
     });
 
