@@ -133,12 +133,11 @@ describe('scale', () => {
     });
 
     test('should attach event handlers to scale elements', () => {
-      const $clickEvent = $.Event('click');
       const $scale = $horizontalView.find('.slider__scale');
-      const scaleElement = $scale.find('.scale__element_horizontal')[5];
+      const $scaleElement = $scale.find('.scale__element_horizontal').eq(5);
 
       expect($scale.find('.scale__element_horizontal').length).toBe(11);
-      $(scaleElement).trigger($clickEvent);
+      $scaleElement.click();
       expect(mockStart).toBeCalledTimes(1);
       expect(mockChange).toBeCalledTimes(1);
       expect(mockChange.mock.calls[0][1]).toBe(50);
@@ -171,7 +170,8 @@ describe('scale', () => {
 
       const $newScaleElem = $scale.find('.scale__element_horizontal').eq(3);
       expect($newScaleElem.data('value')).toBe(75);
-      $newScaleElem.trigger($clickEvent);
+
+      $newScaleElem.click();
       expect(mockStart).toBeCalledTimes(1);
       expect(mockChange).toBeCalledTimes(1);
       expect(mockChange.mock.calls[0][1]).toBe(75); // value
@@ -183,7 +183,7 @@ describe('scale', () => {
       jest.clearAllMocks();
       const anotherScaleElem = $scale.find('.scale__element_horizontal')[1];
       expect($(anotherScaleElem).data('value')).toBe(25);
-      $(anotherScaleElem).trigger($clickEvent);
+      $(anotherScaleElem).click();
       expect(mockStart).toBeCalledTimes(1);
       expect(mockChange.mock.calls[0][1]).toBe(25); // value
       expect(mockChange.mock.calls[0][2]).toBe(false); // isSecond
