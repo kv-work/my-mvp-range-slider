@@ -46,9 +46,14 @@ describe('scale', () => {
     verticalScale = new SliderScale({ $viewContainer: $verticalView });
   });
 
+  afterEach(() => {
+    $horizontalView.empty();
+    $verticalView.empty();
+  });
+
   describe('constructor', () => {
     test('should save $view in prop', () => {
-      expect(testScale).toHaveProperty('$container', $horizontalView);
+      expect(testScale).toHaveProperty('$view', $horizontalView);
     });
 
     test('should create $scale', () => {
@@ -70,11 +75,6 @@ describe('scale', () => {
         options: vertRenderOptions,
       });
       jest.clearAllMocks();
-    });
-
-    afterEach(() => {
-      $('#view_container').empty();
-      $('#view_container_horizontal').empty();
     });
 
     test('should create and save in prop jQuery element container of scale elements', () => {
@@ -140,9 +140,9 @@ describe('scale', () => {
       expect($scale.find('.scale__element_horizontal').length).toBe(11);
       $(scaleElement).trigger($clickEvent);
       expect(mockChange).toBeCalledTimes(1);
-      expect(mockChange).toBeCalledWith(50);
+      expect(mockChange.mock.calls[0][1]).toBe(50);
       expect(mockFinish).toBeCalledTimes(1);
-      expect(mockFinish).toBeCalledWith(50);
+      expect(mockFinish.mock.calls[0][1]).toBe(50);
 
       mockChange.mockClear();
       const $scaleClickEvent = $.Event('click', {

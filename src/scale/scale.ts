@@ -8,33 +8,56 @@ class SliderScale implements Scale {
 
   constructor(options: Scale.Options) {
     this.$view = options.$viewContainer;
+    this.$scale = SliderScale.createScale();
     this.isRendered = false;
   }
 
   public update(opts: Scale.UpdateOptions): void {
-    const { data, percentageData } = opts.data;
-    this.$scale = SliderScale.createScale(opts.options);
-    this.$scale.data('data', data);
+    const currentData = this.$scale.data('options');
+    const { data: newData, options } = opts;
+    const defaultOptions: Scale.RenderOptions = {
+      isHorizontal: true,
+      scaleStep: 1,
+      displayScaleValue: true,
+      displayMin: true,
+      displayMax: true,
+    };
 
+    const scaleOptions = {
+      ...defaultOptions,
+      ...currentData,
+      ...options,
+    };
+
+    this.$scale.data('data', newData);
+    this.$scale.data('options', scaleOptions);
+
+    if (scaleOptions.isHorizontal && !this.$scale.hasClass('slider__scale_horizontal')) {
+      this.$scale.addClass('slider__scale_horizontal');
+    }
+
+    if (!scaleOptions.isHorizontal && this.$scale.hasClass('slider__scale_horizontal')) {
+      this.$scale.removeClass('slider__scale_horizontal');
+    }
+
+    const { data, percentageData } = newData;
+    this.$scale.empty();
     data.forEach((elem: App.Stringable, idx: number) => {
       const content = elem.toString();
       const percentage = percentageData[idx];
-      const $elem = SliderScale.createElement(content, percentage, opts.options);
+      const $elem = SliderScale.createElement(content, percentage, scaleOptions);
       this.$scale.append($elem);
     });
 
-    this.attachEventHandlers();
-
-    if (this.isRendered) {
-      this.$view.find('.js-slider__scale').replaceWith(this.$scale);
-    } else {
+    if (!this.isRendered) {
       this.$view.append(this.$scale);
+      this.attachEventHandlers();
       this.isRendered = true;
     }
   }
 
   public destroy(): void {
-    this.$view.find('.js-slider__scale').off('click');
+    this.$scale.off('click');
     this.$scale.remove();
     this.isRendered = false;
   }
@@ -70,24 +93,10 @@ class SliderScale implements Scale {
     }
   }
 
-  static createScale(options: Scale.RenderOptions): JQuery {
+  static createScale(): JQuery {
     const $scaleContainer = $('<div>', {
       class: 'js-slider__scale slider__scale',
     });
-
-    const scaleOptions = $.extend({
-      isHorizontal: true,
-      scaleStep: 1,
-      displayScaleValue: true,
-      displayMin: true,
-      displayMax: true,
-    }, options);
-
-    $scaleContainer.data('options', scaleOptions);
-
-    if (scaleOptions.isHorizontal) {
-      $scaleContainer.addClass('slider__scale_horizontal');
-    }
 
     return $scaleContainer;
   }
