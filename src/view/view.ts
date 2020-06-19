@@ -43,14 +43,14 @@ class SliderView implements View {
 
     if (viewOptions.runner) {
       this.runner = new SliderRunner({
-        $viewContainer: this.$view,
+        $viewContainer: $view,
         isSecond: false,
       });
     }
 
     if (viewOptions.range && viewOptions.runner) {
       this.secondRunner = new SliderRunner({
-        $viewContainer: this.$view,
+        $viewContainer: $view,
         isSecond: true,
       });
     }
