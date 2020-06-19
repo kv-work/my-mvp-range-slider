@@ -38,7 +38,8 @@ class SliderBar implements Bar {
 
     if (newData.range) {
       this.createRangeElement();
-    } else if (this.$range) {
+    }
+    if (!newData.range && this.$range) {
       this.destroyRangeElement();
     }
 

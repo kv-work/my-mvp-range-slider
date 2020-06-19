@@ -24,7 +24,8 @@ describe('SliderView', () => {
   const testRenderData: View.RenderData = {
     data: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50],
     percentageData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-    value: 4,
+    value: [10, 30],
+    percentage: [20, 60],
   };
 
   HTMLElement.prototype.getBoundingClientRect = (): DOMRect => ({
@@ -123,71 +124,10 @@ describe('SliderView', () => {
       expect(testView).toHaveProperty('renderData', testRenderData);
     });
 
-    test('should append bar, runner, secondRunner to container node only once', () => {
-      testView.render(testRenderData);
-      expect($(testNode).find('.js-slider__bar').length).toBe(1);
-      expect($(testNode).find('.runner_first').length).toBe(1);
-      expect($(testNode).find('.js-slider__scale').length).toBe(1);
-      expect($(testNode).find('.runner_second').length).toBe(1);
+    test('should append $view to container if isRender is false', () => {});
+    test('should attach event handlers to $view', () => {});
 
-      testView.render({
-        ...testRenderData,
-        value: 5,
-      });
-      expect($(testNode).find('.js-slider__bar').length).toBe(1);
-      expect($(testNode).find('.runner_first').length).toBe(1);
-      expect($(testNode).find('.js-slider__scale').length).toBe(1);
-      expect($(testNode).find('.runner_second').length).toBe(1);
-    });
-
-    test('should attach event handlers for bar', () => {
-      testView.render(testRenderData);
-      expect($(testNode).find('.js-slider__bar').length).toBe(1);
-
-      const $clickEvent = $.Event('click', {
-        clientX: 50,
-      });
-
-      const $bar = $container.find('.js-slider__bar');
-      $bar.trigger($clickEvent);
-      expect(mockStart).toBeCalledTimes(1);
-      expect(mockChange).toBeCalledTimes(1);
-      expect(mockChange).toBeCalledWith(50);
-      expect(mockFinish).toBeCalledTimes(1);
-      expect(mockFinish).toBeCalledWith(50);
-    });
-
-    test('should attach event handlers for runner', () => {
-      testView.render(testRenderData);
-      expect($(testNode).find('.runner_first').length).toBe(1);
-
-      const $mouseDownEvent = $.Event('mousedown');
-      const $mouseMoveEvent = $.Event('mousemove', {
-        clientX: 70,
-      });
-      const $AnotherMouseMoveEvent = $.Event('mousemove', {
-        clientX: 90,
-      });
-      const mouseUpEvent = new Event('mouseup');
-
-      $container.find('.js-slider__container')
-        .trigger($mouseMoveEvent)
-        .trigger($AnotherMouseMoveEvent);
-      expect(mockChange).toBeCalledTimes(0);
-
-      $('.js-slider__runner.runner_first').trigger($mouseDownEvent);
-      expect(mockStart).toBeCalledTimes(1);
-
-      $container.find('.js-slider__container')
-        .trigger($mouseMoveEvent)
-        .trigger($AnotherMouseMoveEvent);
-      expect(mockChange).toBeCalledTimes(2);
-      expect(mockChange.mock.calls[0][0]).toBe(70);
-      expect(mockChange.mock.calls[1][0]).toBe(90);
-
-      document.dispatchEvent(mouseUpEvent);
-      expect(mockFinish).toBeCalledTimes(1);
-      expect(mockFinish).toBeCalledWith(90);
+    test('should update bar, scale, runner, secondRunner', () => {
     });
   });
 
@@ -270,9 +210,17 @@ describe('SliderView', () => {
       });
     });
 
-    test('should re-render view with current renderData', () => {
+    test('should update bar, scale, runner and secondRunner', () => {});
 
-    });
+    test('should destroy bar,if options.bar is false', () => {});
+
+    test('should destroy scale,if options.scale is false', () => {});
+
+    test('should destroy runner,if options.runner is false', () => {});
+
+    test('should destroy secondRunner,if options.range or runner are false', () => {});
+
+    test('should re-render view with current renderData', () => {});
   });
 
   describe('addObserver', () => {

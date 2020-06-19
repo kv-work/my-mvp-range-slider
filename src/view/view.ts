@@ -61,29 +61,42 @@ class SliderView implements View {
   render(renderData: View.RenderData): void {
     this.renderData = renderData;
 
-    if (this.viewOptions.bar) {
+    // Bar
+    if (this.viewOptions.bar && this.bar) {
       this.bar.update({
         data: renderData.percentage,
         options: this.viewOptions,
       });
     }
-    if (this.viewOptions.scale) {
+    if (this.viewOptions.bar && !this.bar) {
+      this.bar = new SliderBar({ $viewContainer: this.$view });
+      this.bar.update({
+        data: renderData.percentage,
+        options: this.viewOptions,
+      });
+    }
+    if (!this.viewOptions.bar && this.bar) {
+      this.bar.destroy();
+    }
+
+    if (this.viewOptions.scale && this.scale) {
       this.scale.update({
         data: renderData,
         options: this.viewOptions,
       });
     }
-    if (this.viewOptions.runner) {
+    if (this.viewOptions.runner && this.runner) {
       this.runner.update(renderData, this.viewOptions);
     }
     if (this.viewOptions.range && this.secondRunner) {
       this.secondRunner.update(renderData, this.viewOptions);
     }
 
-    this.attachEventHandlers();
-    this.$container.append(this.$view);
-
-    this.isRendered = true;
+    if (!this.isRendered) {
+      this.attachEventHandlers();
+      this.$container.append(this.$view);
+      this.isRendered = true;
+    }
   }
 
   update(viewData: View.Options): void {
@@ -220,16 +233,6 @@ class SliderView implements View {
       return Number.isFinite(value) && (value > 0);
     }
     return false;
-  }
-
-  static createSliderContainer(options: View.Options): JQuery {
-    const $view: JQuery = $('<div>', {
-      class: 'js-slider__container slider__container',
-    });
-
-    $view.data('options', options);
-
-    return $view;
   }
 }
 
