@@ -2,7 +2,25 @@
 import $ from 'jquery';
 import SliderView from '../view';
 
+import SliderBar from '../../bar/bar';
+// import { mocked } from 'ts-jest/utils';
+
+const mockBarUpdate = jest.fn();
+const mockBarDestroy = jest.fn();
+
+jest.mock('../../bar/bar', jest.fn(() => {
+  return jest.fn().mockImplementation(() => {
+    return {
+      update: mockBarUpdate,
+      destroy: mockBarDestroy,
+    };
+  });
+}));
+
 describe('SliderView', () => {
+  // const SliderBar = mocked(new SliderBar());
+
+
   document.body.innerHTML = '<div id="container"></div>';
 
   const testNode = document.getElementById('container');
@@ -128,6 +146,8 @@ describe('SliderView', () => {
     test('should attach event handlers to $view', () => {});
 
     test('should update bar, scale, runner, secondRunner', () => {
+      testView.render(testRenderData);
+      expect(mockBarUpdate).toBeCalledTimes(1);
     });
   });
 
