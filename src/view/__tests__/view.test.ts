@@ -1,26 +1,35 @@
 /* eslint-disable fsd/no-function-declaration-in-event-listener */
 import $ from 'jquery';
 import SliderView from '../view';
-
 import SliderBar from '../../bar/bar';
-// import { mocked } from 'ts-jest/utils';
+import SliderScale from '../../scale/scale';
+import SliderRunner from '../../runner/runner';
 
 const mockBarUpdate = jest.fn();
 const mockBarDestroy = jest.fn();
 
-jest.mock('../../bar/bar', jest.fn(() => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      update: mockBarUpdate,
-      destroy: mockBarDestroy,
-    };
-  });
-}));
+jest.mock('../../bar/bar', jest.fn(() => jest.fn().mockImplementation(() => ({
+  update: mockBarUpdate,
+  destroy: mockBarDestroy,
+}))));
+
+const mockScaleUpdate = jest.fn();
+const mockScaleDestroy = jest.fn();
+
+jest.mock('../../scale/scale', jest.fn(() => jest.fn().mockImplementation(() => ({
+  update: mockScaleUpdate,
+  destroy: mockScaleDestroy,
+}))));
+
+const mockRunnerUpdate = jest.fn();
+const mockRunnerDestroy = jest.fn();
+
+jest.mock('../../runner/runner', jest.fn(() => jest.fn().mockImplementation(() => ({
+  update: mockRunnerUpdate,
+  destroy: mockRunnerDestroy,
+}))));
 
 describe('SliderView', () => {
-  // const SliderBar = mocked(new SliderBar());
-
-
   document.body.innerHTML = '<div id="container"></div>';
 
   const testNode = document.getElementById('container');
@@ -78,6 +87,8 @@ describe('SliderView', () => {
 
   afterEach(() => {
     $(testNode).html('');
+
+    jest.clearAllMocks();
   });
 
   describe('constructor', () => {
@@ -105,22 +116,26 @@ describe('SliderView', () => {
     test('should create bar instance', () => {
       expect(testOptions.bar).toBeTruthy();
       expect(testView).toHaveProperty('bar');
+      expect(SliderBar).toBeCalledTimes(1);
     });
 
     test('should create runner instance, if options.runner is true', () => {
       expect(testOptions.runner).toBeTruthy();
       expect(testView).toHaveProperty('runner');
+      expect(SliderRunner).toBeCalledTimes(2);
     });
 
     test('should create scale instance, if options.scale is true', () => {
       expect(testOptions.scale).toBeTruthy();
       expect(testView).toHaveProperty('scale');
+      expect(SliderScale).toBeCalledTimes(1);
     });
 
     test('should create second runner instance, if options.range and options.runner is true', () => {
       expect(testOptions.runner).toBeTruthy();
       expect(testOptions.range).toBeTruthy();
       expect(testView).toHaveProperty('secondRunner');
+      expect(SliderRunner).toBeCalledTimes(2);
     });
   });
 
@@ -134,7 +149,6 @@ describe('SliderView', () => {
     const $container = $('#container');
     beforeEach(() => {
       testView.addObserver(testObserver);
-      jest.clearAllMocks();
     });
     test('should save render data to this.renderData', () => {
       expect(testView).not.toHaveProperty('renderData');
@@ -148,6 +162,8 @@ describe('SliderView', () => {
     test('should update bar, scale, runner, secondRunner', () => {
       testView.render(testRenderData);
       expect(mockBarUpdate).toBeCalledTimes(1);
+      expect(mockScaleUpdate).toBeCalledTimes(1);
+      expect(mockRunnerUpdate).toBeCalledTimes(2);
     });
   });
 
