@@ -198,7 +198,6 @@ describe('SliderView', () => {
       $view.trigger($dragRangeEvent, [20]);
       $view.trigger($dropEvent, [20]);
 
-      expect(mockStart).toBeCalled();
       // [20+20, 60+20] = [40, 80]
       expect(mockChange).toBeCalledWith([40, 80]);
       expect(mockFinish).toBeCalledWith([40, 80]);
