@@ -125,6 +125,16 @@ class SliderView implements View {
     return this.viewOptions;
   }
 
+  destroy(): void {
+    if (this.bar) this.bar.destroy();
+    if (this.scale) this.scale.destroy();
+    if (this.runner) this.runner.destroy();
+    if (this.secondRunner) this.secondRunner.destroy();
+
+    this.$view.remove();
+    this.isRendered = false;
+  }
+
   private notify(action: {event: string; value?: [number, number] | number}): void {
     switch (action.event) {
       case 'start':
@@ -163,7 +173,7 @@ class SliderView implements View {
   }
 
   private changeValueHandler(event: JQuery.Event, value: number, isSecond: boolean): void {
-    const currentValue = this.renderData.value;
+    const currentValue = this.renderData.percentage;
     let changeAction: {event: string; value: [number, number] | number};
     if (isSecond && Array.isArray(currentValue)) {
       changeAction = { event: 'change', value: [currentValue[0], value] };
@@ -172,11 +182,12 @@ class SliderView implements View {
     } else {
       changeAction = { event: 'change', value };
     }
+
     this.notify(changeAction);
   }
 
   private finishEventHandler(event: JQuery.Event, value: number, isSecond: boolean): void {
-    const currentValue = this.renderData.value;
+    const currentValue = this.renderData.percentage;
     let finishAction: {event: string; value: [number, number] | number};
     if (isSecond && Array.isArray(currentValue)) {
       finishAction = { event: 'finish', value: [currentValue[0], value] };

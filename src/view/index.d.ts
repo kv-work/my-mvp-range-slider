@@ -4,6 +4,7 @@ declare interface View {
   addObserver(observer: View.Observer): void;
   removeObserver(observer: View.Observer): void;
   getData(): View.Options;
+  destroy(): void;
 }
 
 declare namespace View {

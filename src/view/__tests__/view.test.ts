@@ -86,7 +86,7 @@ describe('SliderView', () => {
   });
 
   afterEach(() => {
-    $(testNode).html('');
+    testView.destroy();
 
     jest.clearAllMocks();
   });
@@ -137,6 +137,10 @@ describe('SliderView', () => {
       expect(testView).toHaveProperty('secondRunner');
       expect(SliderRunner).toBeCalledTimes(2);
     });
+
+    test('should reset isRendered flag to false', () => {
+      expect(testView).toHaveProperty('isRendered', false);
+    });
   });
 
   describe('getData', () => {
@@ -147,17 +151,58 @@ describe('SliderView', () => {
 
   describe('render', () => {
     const $container = $('#container');
+
     beforeEach(() => {
       testView.addObserver(testObserver);
     });
+
     test('should save render data to this.renderData', () => {
       expect(testView).not.toHaveProperty('renderData');
       testView.render(testRenderData);
       expect(testView).toHaveProperty('renderData', testRenderData);
     });
 
-    test('should append $view to container if isRender is false', () => {});
-    test('should attach event handlers to $view', () => {});
+    test('should append $view to container if isRendered is false', () => {
+      expect(testView).toHaveProperty('isRendered', false);
+      expect($container.find('.js-slider__container').length).toBe(0);
+      testView.render(testRenderData);
+      expect($container.find('.js-slider__container').length).toBe(1);
+    });
+
+    test('should set isRendered flag to true', () => {
+      expect(testView).toHaveProperty('isRendered', false);
+      testView.render(testRenderData);
+      expect(testView).toHaveProperty('isRendered', true);
+    });
+
+    test('should attach event handlers to $view', () => {
+      const $startEvent = $.Event('startChanging.myMVPSlider');
+      const $changeEvent = $.Event('changeValue.myMVPSlider');
+      const $finishEvent = $.Event('finish.myMVPSlider');
+      const $dragRangeEvent = $.Event('dragRange.myMVPSlider');
+      const $dropEvent = $.Event('dropRange.myMVPSlider');
+
+      testView.render(testRenderData);
+
+      const $view = $container.find('.js-slider__container');
+
+      $view.trigger($startEvent);
+      $view.trigger($changeEvent, [30, false]); // value: 30, isSecond: false
+      $view.trigger($finishEvent, [30, false]); // value: 30, isSecond: false
+      expect(mockStart).toBeCalled();
+      expect(mockChange).toBeCalledWith([30, 60]);
+      expect(mockFinish).toBeCalledWith([30, 60]);
+
+      // drag and drop interval
+      jest.clearAllMocks();
+      $view.trigger($dragRangeEvent, [20]);
+      $view.trigger($dropEvent, [20]);
+
+      expect(mockStart).toBeCalled();
+      // [20+20, 60+20] = [40, 80]
+      expect(mockChange).toBeCalledWith([40, 80]);
+      expect(mockFinish).toBeCalledWith([40, 80]);
+    });
 
     test('should update bar, scale, runner, secondRunner', () => {
       testView.render(testRenderData);
@@ -294,6 +339,52 @@ describe('SliderView', () => {
           expect(observers.has(testObserver)).toBeFalsy();
         }
       });
+    });
+  });
+
+  describe('destroy', () => {
+    beforeEach(() => {
+      testView.render(testRenderData);
+    });
+
+    test('should call destroy methods of SliderBar, SliderScale, SliderRunner', () => {
+      testView.destroy();
+      expect(mockBarDestroy).toBeCalledTimes(1);
+      expect(mockScaleDestroy).toBeCalledTimes(1);
+      expect(mockRunnerDestroy).toBeCalledTimes(2);
+    });
+
+    test('should detach event listeners', () => {
+      const $startEvent = $.Event('startChanging.myMVPSlider');
+      const $changeEvent = $.Event('changeValue.myMVPSlider');
+      const $finishEvent = $.Event('finish.myMVPSlider');
+      const $dragRangeEvent = $.Event('dragRange.myMVPSlider');
+      const $dropEvent = $.Event('dropRange.myMVPSlider');
+
+      const $view = $(testNode).find('.js-slider__container');
+      testView.destroy();
+
+      $view.trigger($startEvent);
+      $view.trigger($changeEvent);
+      $view.trigger($finishEvent);
+      $view.trigger($dragRangeEvent);
+      $view.trigger($dropEvent);
+
+      expect(mockStart).not.toBeCalled();
+      expect(mockChange).not.toBeCalled();
+      expect(mockFinish).not.toBeCalled();
+    });
+
+    test('should remove $view', () => {
+      expect($(testNode).find('.js-slider__container').length).toBe(1);
+      testView.destroy();
+      expect($(testNode).find('.js-slider__container').length).toBe(0);
+    });
+
+    test('should reset isRendered flag to false', () => {
+      expect(testView).toHaveProperty('isRendered', true);
+      testView.destroy();
+      expect(testView).toHaveProperty('isRendered', false);
     });
   });
 });
