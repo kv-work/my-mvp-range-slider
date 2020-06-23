@@ -72,6 +72,7 @@ describe('Presenter', () => {
     };
   });
   const mockGetViewData = jest.fn((): View.Options => testViewData);
+  const mockDestroy = jest.fn();
 
   // Mock SliderModel class
   const MockModel = jest.fn<Model, []>(() => ({
@@ -89,6 +90,7 @@ describe('Presenter', () => {
     addObserver: mockViewAddObserver,
     removeObserver: mockViewRemoveObserver,
     getData: mockGetViewData,
+    destroy: mockDestroy,
   }));
 
   let testPresenter: SliderPresenter;

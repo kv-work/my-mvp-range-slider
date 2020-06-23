@@ -195,6 +195,7 @@ describe('SliderView', () => {
 
       // drag and drop interval
       jest.clearAllMocks();
+      $view.trigger($startEvent, [true]); // isDragStart is true
       $view.trigger($dragRangeEvent, [20]);
       $view.trigger($dropEvent, [20]);
 

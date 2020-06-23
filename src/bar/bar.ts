@@ -161,7 +161,8 @@ class SliderBar implements Bar {
       startCoord = ((event.clientY - viewMetrics.y) / viewMetrics.height) * 100;
     }
     const $startEvent = $.Event('startChanging.myMVPSlider');
-    this.$view.trigger($startEvent);
+    const isDragStarted = true;
+    this.$view.trigger($startEvent, [isDragStarted]);
     const dragHandler = this.makeDragHandler(startCoord);
     this.$view.on('mousemove', dragHandler);
   }

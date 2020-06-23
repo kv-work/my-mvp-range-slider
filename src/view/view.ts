@@ -164,14 +164,70 @@ class SliderView implements View {
     this.$view.bind('startChanging.myMVPSlider', this.startChangingHandler.bind(this));
     this.$view.bind('changeValue.myMVPSlider', this.changeValueHandler.bind(this));
     this.$view.bind('finish.myMVPSlider', this.finishEventHandler.bind(this));
-    this.$view.bind('dragRange.myMVPSlider', this.dragRangeEventHandler.bind(this));
-    this.$view.bind('dropRange.myMVPSlider', this.dropRangeEventHandler.bind(this));
   }
 
-  private startChangingHandler(): void {
+  private startChangingHandler(event: JQuery.Event, isDragStarted?: boolean): void {
     const startAction: {event: string; value?: [number, number] | number} = { event: 'start' };
 
     this.notify(startAction);
+
+    const startValue = this.renderData.percentage;
+
+    if (isDragStarted && Array.isArray(startValue)) {
+      const dragHandler = this.makeDragHandler(startValue);
+      const dropHandler = this.makeDropHandler(startValue);
+      this.$view.bind('dragRange.myMVPSlider', dragHandler);
+      this.$view.bind('dropRange.myMVPSlider', dropHandler);
+    }
+  }
+
+  private makeDragHandler(start: [number, number]): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+    const dragHandler = (event: JQuery.Event, dragDistance: number): void => {
+      const valuesDiff = start[1] - start[0];
+      let newVal = start[0] + dragDistance;
+      let newSecondVal = start[1] + dragDistance;
+
+      if (newVal < 0) {
+        newVal = 0;
+        newSecondVal = newVal + valuesDiff;
+      }
+
+      if (newSecondVal > 100) {
+        newSecondVal = 100;
+        newVal = newSecondVal - valuesDiff;
+      }
+
+      const changeAction: {event: string; value: [number, number]} = { event: 'change', value: [newVal, newSecondVal] };
+      this.notify(changeAction);
+    };
+
+    return dragHandler;
+  }
+
+  private makeDropHandler(start: [number, number]): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+    const dragHandler = (event: JQuery.Event, dragDistance: number): void => {
+      const valuesDiff = start[1] - start[0];
+      let newVal = start[0] + dragDistance;
+      let newSecondVal = start[1] + dragDistance;
+
+      if (newVal < 0) {
+        newVal = 0;
+        newSecondVal = newVal + valuesDiff;
+      }
+
+      if (newSecondVal > 100) {
+        newSecondVal = 100;
+        newVal = newSecondVal - valuesDiff;
+      }
+
+      const finishAction: {event: string; value: [number, number]} = { event: 'finish', value: [newVal, newSecondVal] };
+      this.notify(finishAction);
+
+      this.$view.unbind('dragRange.myMVPSlider', false);
+      this.$view.unbind('dropRange.myMVPSlider', false);
+    };
+
+    return dragHandler;
   }
 
   private changeValueHandler(event: JQuery.Event, value: number, isSecond: boolean): void {
@@ -199,50 +255,6 @@ class SliderView implements View {
       finishAction = { event: 'finish', value };
     }
     this.notify(finishAction);
-  }
-
-  private dragRangeEventHandler(event: JQuery.Event, dragDistance: number): void {
-    const currentValue = this.renderData.percentage;
-    if (Array.isArray(currentValue)) {
-      const valuesDiff = currentValue[1] - currentValue[0];
-      let newVal = currentValue[0] + dragDistance;
-      let newSecondVal = currentValue[1] + dragDistance;
-
-      if (newVal < 0) {
-        newVal = 0;
-        newSecondVal = newVal + valuesDiff;
-      }
-
-      if (newSecondVal > 100) {
-        newSecondVal = 100;
-        newVal = newSecondVal - valuesDiff;
-      }
-
-      const changeAction: {event: string; value: [number, number]} = { event: 'change', value: [newVal, newSecondVal] };
-      this.notify(changeAction);
-    }
-  }
-
-  private dropRangeEventHandler(event: JQuery.Event, dragDistance: number): void {
-    const currentValue = this.renderData.percentage;
-    if (Array.isArray(currentValue)) {
-      const valuesDiff = currentValue[1] - currentValue[0];
-      let newVal = currentValue[0] + dragDistance;
-      let newSecondVal = currentValue[1] + dragDistance;
-
-      if (newVal < 0) {
-        newVal = 0;
-        newSecondVal = newVal + valuesDiff;
-      }
-
-      if (newSecondVal > 100) {
-        newSecondVal = 100;
-        newVal = newSecondVal - valuesDiff;
-      }
-
-      const finishAction: {event: string; value: [number, number]} = { event: 'finish', value: [newVal, newSecondVal] };
-      this.notify(finishAction);
-    }
   }
 
   private validateData(data: View.Options): View.Options {
