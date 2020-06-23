@@ -199,9 +199,28 @@ describe('SliderView', () => {
       $view.trigger($dragRangeEvent, [20]);
       $view.trigger($dropEvent, [20]);
 
-      // [20+20, 60+20] = [40, 80]
+      // [20+20, 60+20] => [40, 80]
+      expect(mockStart).toBeCalled();
       expect(mockChange).toBeCalledWith([40, 80]);
       expect(mockFinish).toBeCalledWith([40, 80]);
+
+      jest.clearAllMocks();
+      $view.trigger($startEvent, [true]);
+      $view.trigger($dragRangeEvent, [50]);
+      $view.trigger($dropEvent, [50]);
+      // [20+50, 60+50] => [70, 110], but should [60, 100]
+      expect(mockStart).toBeCalled();
+      expect(mockChange).toBeCalledWith([60, 100]);
+      expect(mockFinish).toBeCalledWith([60, 100]);
+
+      jest.clearAllMocks();
+      $view.trigger($startEvent, [true]);
+      $view.trigger($dragRangeEvent, [-50]);
+      $view.trigger($dropEvent, [-50]);
+      // [20-50, 60-50] => [-30, 10], but should [0, 40]
+      expect(mockStart).toBeCalled();
+      expect(mockChange).toBeCalledWith([0, 40]);
+      expect(mockFinish).toBeCalledWith([0, 40]);
     });
 
     test('should update bar, scale, runner, secondRunner', () => {
@@ -213,6 +232,20 @@ describe('SliderView', () => {
   });
 
   describe('update', () => {
+    let newView: SliderView;
+
+    beforeEach(() => {
+      newView = new SliderView(testNode, {
+        isHorizontal: false,
+        bar: false,
+        scale: false,
+        runner: false,
+        range: false,
+      });
+      testView.render(testRenderData);
+      jest.clearAllMocks();
+    });
+
     test('should update this.viewOptions', () => {
       testView.update({ isHorizontal: false });
       expect(testView.getData().isHorizontal).toBe(false);
@@ -291,17 +324,107 @@ describe('SliderView', () => {
       });
     });
 
-    test('should update bar, scale, runner and secondRunner', () => {});
+    test('should update bar, scale, runner and secondRunner', () => {
+      testView.update({ isHorizontal: false });
 
-    test('should destroy bar,if options.bar is false', () => {});
+      expect(mockBarUpdate).toBeCalledTimes(1);
+      expect(mockScaleUpdate).toBeCalledTimes(1);
+      expect(mockRunnerUpdate).toBeCalledTimes(2);
+    });
 
-    test('should destroy scale,if options.scale is false', () => {});
+    test('should destroy bar,if options.bar is false', () => {
+      testView.update({ bar: false });
 
-    test('should destroy runner,if options.runner is false', () => {});
+      expect(mockBarDestroy).toBeCalled();
+    });
 
-    test('should destroy secondRunner,if options.range or runner are false', () => {});
+    test('should create SliderBar instance if (options.bar && !this.bar) is true', () => {
+      newView.render({
+        data: [0, 1, 2, 3, 4],
+        percentageData: [0, 25, 50, 75, 100],
+        value: [1, 3],
+        percentage: [25, 75],
+      });
 
-    test('should re-render view with current renderData', () => {});
+      newView.update({ bar: true });
+      expect(SliderBar).toBeCalledTimes(1);
+
+      newView.destroy();
+    });
+
+    test('should destroy scale,if options.scale is false', () => {
+      testView.update({ scale: false });
+
+      expect(mockScaleDestroy).toBeCalled();
+    });
+
+    test('should create SliderScale instance if (options.scale && !this.scale) is true', () => {
+      newView.render({
+        data: [0, 1, 2, 3, 4],
+        percentageData: [0, 25, 50, 75, 100],
+        value: [1, 3],
+        percentage: [25, 75],
+      });
+
+      newView.update({ scale: true });
+      expect(SliderScale).toBeCalledTimes(1);
+
+      newView.destroy();
+    });
+
+    test('should destroy runner and secondRunner,if options.runner is false', () => {
+      testView.update({ runner: false });
+
+      expect(mockRunnerDestroy).toBeCalledTimes(2);
+    });
+
+    test('should destroy secondRunner,if options.range is false', () => {
+      testView.update({ range: false });
+
+      expect(mockRunnerDestroy).toBeCalledTimes(1);
+    });
+
+    test('should create SliderRunner instance if (options.runner && !this.runner) is true', () => {
+      newView.render({
+        data: [0, 1, 2, 3, 4],
+        percentageData: [0, 25, 50, 75, 100],
+        value: 1,
+        percentage: 25,
+      });
+
+      newView.update({ runner: true });
+      expect(SliderRunner).toBeCalledTimes(1);
+
+      newView.destroy();
+    });
+
+    test('should create runner and secondRunner instance if (options.runner && options.range && !this.runner && !this.secondRunner) is true', () => {
+      newView.render({
+        data: [0, 1, 2, 3, 4],
+        percentageData: [0, 25, 50, 75, 100],
+        value: [1, 3],
+        percentage: [25, 75],
+      });
+
+      newView.update({
+        runner: true,
+        range: true,
+      });
+      expect(SliderRunner).toBeCalledTimes(2);
+
+      newView.destroy();
+    });
+
+    test('should re-render view with current renderData', () => {
+      const $container = $('#container');
+      expect(testView.getData().isHorizontal).toBe(true);
+      expect($container.find('.slider__container_horizontal').length).toBe(1);
+
+      testView.update({ isHorizontal: false });
+      expect(testView.getData().isHorizontal).toBe(false);
+      expect($container.find('.slider__container_horizontal').length).toBe(0);
+      expect($container.find('.slider__container').length).toBe(1);
+    });
   });
 
   describe('addObserver', () => {

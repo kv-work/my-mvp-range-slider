@@ -25,71 +25,21 @@ class SliderView implements View {
     this.isRendered = false;
   }
 
-  private createView(): JQuery {
-    const { viewOptions } = this;
-    const $view: JQuery = $('<div>', {
-      class: 'js-slider__container slider__container',
-    });
-
-    $view.data('options', viewOptions);
-
-    if (viewOptions.bar) {
-      this.bar = new SliderBar({ $viewContainer: $view });
-    }
-
-    if (viewOptions.scale) {
-      this.scale = new SliderScale({ $viewContainer: $view });
-    }
-
-    if (viewOptions.runner) {
-      this.runner = new SliderRunner({
-        $viewContainer: $view,
-        isSecond: false,
-      });
-    }
-
-    if (viewOptions.range && viewOptions.runner) {
-      this.secondRunner = new SliderRunner({
-        $viewContainer: $view,
-        isSecond: true,
-      });
-    }
-
-    return $view;
-  }
-
   render(renderData: View.RenderData): void {
     this.renderData = renderData;
 
-    // Bar
-    if (this.viewOptions.bar && this.bar) {
-      this.bar.update({
-        data: renderData.percentage,
-        options: this.viewOptions,
-      });
-    }
-    if (this.viewOptions.bar && !this.bar) {
-      this.bar = new SliderBar({ $viewContainer: this.$view });
-      this.bar.update({
-        data: renderData.percentage,
-        options: this.viewOptions,
-      });
-    }
-    if (!this.viewOptions.bar && this.bar) {
-      this.bar.destroy();
+    this.updateBar(renderData.percentage);
+
+    this.updateScale(renderData);
+
+    this.updateRunners(renderData);
+
+    if (this.viewOptions.isHorizontal && !this.$view.hasClass('slider__container_horizontal')) {
+      this.$view.addClass('slider__container_horizontal');
     }
 
-    if (this.viewOptions.scale && this.scale) {
-      this.scale.update({
-        data: renderData,
-        options: this.viewOptions,
-      });
-    }
-    if (this.viewOptions.runner && this.runner) {
-      this.runner.update(renderData, this.viewOptions);
-    }
-    if (this.viewOptions.range && this.secondRunner) {
-      this.secondRunner.update(renderData, this.viewOptions);
+    if (!this.viewOptions.isHorizontal && this.$view.hasClass('slider__container_horizontal')) {
+      this.$view.removeClass('slider__container_horizontal');
     }
 
     if (!this.isRendered) {
@@ -133,6 +83,117 @@ class SliderView implements View {
 
     this.$view.remove();
     this.isRendered = false;
+  }
+
+  private createView(): JQuery {
+    const { viewOptions } = this;
+    const $view: JQuery = $('<div>', {
+      class: 'js-slider__container slider__container',
+    });
+
+    $view.data('options', viewOptions);
+
+    if (viewOptions.bar) {
+      this.bar = new SliderBar({ $viewContainer: $view });
+    }
+
+    if (viewOptions.scale) {
+      this.scale = new SliderScale({ $viewContainer: $view });
+    }
+
+    if (viewOptions.runner) {
+      this.runner = new SliderRunner({
+        $viewContainer: $view,
+        isSecond: false,
+      });
+    }
+
+    if (viewOptions.range && viewOptions.runner) {
+      this.secondRunner = new SliderRunner({
+        $viewContainer: $view,
+        isSecond: true,
+      });
+    }
+
+    return $view;
+  }
+
+  private updateBar(percentage: number | [number, number]): void {
+    if (this.viewOptions.bar && this.bar) {
+      this.bar.update({
+        data: percentage,
+        options: this.viewOptions,
+      });
+    }
+    if (this.viewOptions.bar && !this.bar) {
+      this.bar = new SliderBar({ $viewContainer: this.$view });
+      this.bar.update({
+        data: percentage,
+        options: this.viewOptions,
+      });
+    }
+    if (!this.viewOptions.bar && this.bar) {
+      this.bar.destroy();
+    }
+  }
+
+  private updateScale(renderData: View.RenderData): void {
+    if (this.viewOptions.scale && this.scale) {
+      this.scale.update({
+        data: renderData,
+        options: this.viewOptions,
+      });
+    }
+    if (this.viewOptions.scale && !this.scale) {
+      this.scale = new SliderScale({ $viewContainer: this.$view });
+      this.scale.update({
+        data: renderData,
+        options: this.viewOptions,
+      });
+    }
+    if (!this.viewOptions.scale && this.scale) {
+      this.scale.destroy();
+    }
+  }
+
+  private updateRunners(renderData: View.RenderData): void {
+    if (this.viewOptions.runner) {
+      if (Array.isArray(renderData.value)) {
+        if (this.runner) {
+          this.runner.update(renderData, this.viewOptions);
+        } else {
+          this.runner = new SliderRunner({
+            $viewContainer: this.$view,
+            isSecond: false,
+          });
+        }
+        if (this.secondRunner) {
+          this.secondRunner.update(renderData, this.viewOptions);
+        } else {
+          this.secondRunner = new SliderRunner({
+            $viewContainer: this.$view,
+            isSecond: true,
+          });
+        }
+      } else if (this.runner) {
+        this.runner.update(renderData, this.viewOptions);
+      } else {
+        this.runner = new SliderRunner({
+          $viewContainer: this.$view,
+          isSecond: false,
+        });
+      }
+    } else {
+      if (this.runner) {
+        this.runner.destroy();
+      }
+      if (this.secondRunner) {
+        this.secondRunner.destroy();
+      }
+    }
+    if (!this.viewOptions.range && this.secondRunner) {
+      this.secondRunner.destroy();
+    }
   }
 
   private notify(action: {event: string; value?: [number, number] | number}): void {
