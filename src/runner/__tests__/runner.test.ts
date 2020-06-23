@@ -132,6 +132,42 @@ describe('SliderRunner', () => {
         },
         value: renderData.value,
       });
+
+      const newRunner = new SliderRunner({
+        ...testOptions,
+        isSecond: true,
+      });
+
+      const newData: View.RenderData = { value: [10, 40], percentage: [10, 40] };
+      const newOpts: Runner.RenderOptions = { isHorizontal: true };
+
+      newRunner.update(newData, newOpts);
+
+      const $newRunner = $horizontalView.find('.runner_second');
+      const newRunnerData = $newRunner.data();
+
+      expect($newRunner.length).toBe(1);
+
+      expect(newRunnerData).toEqual({
+        options: {
+          isHorizontal: true,
+          displayValue: false,
+          prefix: '',
+          postfix: '',
+        },
+        value: 40,
+      });
+
+      testRunner.update(newData, newOpts);
+      expect(horizontalData).toEqual({
+        options: {
+          isHorizontal: true,
+          displayValue: true,
+          prefix: '+',
+          postfix: '$',
+        },
+        value: 10,
+      });
     });
 
     test('should update $runner if it is rendered', () => {
@@ -154,6 +190,11 @@ describe('SliderRunner', () => {
         },
         value: newData.value,
       });
+
+      expect($horizontalView.find('.slider__runner_horizontal').length).toBe(1);
+      testRunner.update(newData, { isHorizontal: false });
+      expect($horizontalView.find('.slider__runner_horizontal').length).toBe(0);
+      expect($horizontalView.find('.slider__runner').length).toBe(1);
     });
 
     test('should attach mouse events handlers to $runner', () => {
@@ -226,16 +267,16 @@ describe('SliderRunner', () => {
       vertRunner.destroy();
       expect($horizontalView.find('.js-slider__runner').length).toBe(0);
       expect($verticalView.find('.js-slider__runner').length).toBe(0);
-
       testRunner.update(renderData, horizontalOptions);
       expect($horizontalView.find('.js-slider__runner').length).toBe(1);
+      testRunner.destroy();
     });
 
     test('should reset isRendered flag', () => {
       testRunner.destroy();
       vertRunner.destroy();
-      expect(testRunner).toHaveProperty('isSecond', false);
-      expect(vertRunner).toHaveProperty('isSecond', false);
+      expect(testRunner).toHaveProperty('isRendered', false);
+      expect(vertRunner).toHaveProperty('isRendered', false);
     });
 
     test('should remove event listeners', () => {
@@ -254,6 +295,7 @@ describe('SliderRunner', () => {
       vertRunner.destroy();
 
       const $runner = $('.js-slider__runner');
+      expect($runner.length).toBe(0);
 
       $runner.trigger($mouseDownEvent);
       expect(mockStart).toBeCalledTimes(0);

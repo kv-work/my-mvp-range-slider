@@ -73,7 +73,7 @@ class SliderRunner implements Runner {
   }
 
   destroy(): void {
-    this.$view.find('.js-slider__runner').off('mousedown');
+    this.$runner.off('mousedown');
     this.$runner.remove();
     this.isRendered = false;
   }
