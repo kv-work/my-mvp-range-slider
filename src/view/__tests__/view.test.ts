@@ -1,4 +1,3 @@
-/* eslint-disable fsd/no-function-declaration-in-event-listener */
 import $ from 'jquery';
 import SliderView from '../view';
 import SliderBar from '../../bar/bar';
@@ -122,20 +121,13 @@ describe('SliderView', () => {
     test('should create runner instance, if options.runner is true', () => {
       expect(testOptions.runner).toBeTruthy();
       expect(testView).toHaveProperty('runner');
-      expect(SliderRunner).toBeCalledTimes(2);
+      expect(SliderRunner).toBeCalledTimes(1);
     });
 
     test('should create scale instance, if options.scale is true', () => {
       expect(testOptions.scale).toBeTruthy();
       expect(testView).toHaveProperty('scale');
       expect(SliderScale).toBeCalledTimes(1);
-    });
-
-    test('should create second runner instance, if options.range and options.runner is true', () => {
-      expect(testOptions.runner).toBeTruthy();
-      expect(testOptions.range).toBeTruthy();
-      expect(testView).toHaveProperty('secondRunner');
-      expect(SliderRunner).toBeCalledTimes(2);
     });
 
     test('should reset isRendered flag to false', () => {
@@ -154,6 +146,7 @@ describe('SliderView', () => {
 
     beforeEach(() => {
       testView.addObserver(testObserver);
+      jest.clearAllMocks();
     });
 
     test('should save render data to this.renderData', () => {
@@ -223,10 +216,23 @@ describe('SliderView', () => {
       expect(mockFinish).toBeCalledWith([0, 40]);
     });
 
+    test('should create second runner instance, if renderData.value is array', () => {
+      expect(testOptions.runner).toBeTruthy();
+      expect(Array.isArray(testRenderData.value)).toBeTruthy();
+      testView.render(testRenderData);
+      expect(testView).toHaveProperty('secondRunner');
+      expect(SliderRunner).toBeCalledTimes(1);
+    });
+
     test('should update bar, scale, runner, secondRunner', () => {
       testView.render(testRenderData);
       expect(mockBarUpdate).toBeCalledTimes(1);
       expect(mockScaleUpdate).toBeCalledTimes(1);
+      expect(mockRunnerUpdate).toBeCalledTimes(1);
+      expect(SliderRunner).toBeCalledTimes(1);
+
+      mockRunnerUpdate.mockClear();
+      testView.render(testRenderData);
       expect(mockRunnerUpdate).toBeCalledTimes(2);
     });
   });
@@ -398,7 +404,7 @@ describe('SliderView', () => {
       newView.destroy();
     });
 
-    test('should create runner and secondRunner instance if (options.runner && options.range && !this.runner && !this.secondRunner) is true', () => {
+    test('should create runner and secondRunner instances if (options.runner && options.range && !this.runner && !this.secondRunner && Array.isArray(renderData.value)) is true', () => {
       newView.render({
         data: [0, 1, 2, 3, 4],
         percentageData: [0, 25, 50, 75, 100],

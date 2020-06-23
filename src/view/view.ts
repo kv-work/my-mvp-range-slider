@@ -108,13 +108,6 @@ class SliderView implements View {
       });
     }
 
-    if (viewOptions.range && viewOptions.runner) {
-      this.secondRunner = new SliderRunner({
-        $viewContainer: $view,
-        isSecond: true,
-      });
-    }
-
     return $view;
   }
 
