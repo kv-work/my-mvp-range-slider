@@ -274,11 +274,6 @@ describe('SliderView', () => {
       testView.render(testRenderData);
       expect(mockRunnerUpdate).toBeCalledTimes(2);
     });
-
-    test('should notify observers of the update', () => {
-      testView.render(testRenderData);
-      expect(mockUpdate).toBeCalled();
-    });
   });
 
   describe('update', () => {

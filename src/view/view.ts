@@ -47,8 +47,6 @@ class SliderView implements View {
       this.$container.append(this.$view);
       this.isRendered = true;
     }
-
-    this.notify({ event: 'update' });
   }
 
   update(viewData: View.Options): void {
@@ -209,9 +207,6 @@ class SliderView implements View {
         });
         break;
       default:
-        this.observers.forEach((observer) => {
-          observer.update();
-        });
         break;
     }
   }
