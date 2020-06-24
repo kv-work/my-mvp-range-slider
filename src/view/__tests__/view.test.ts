@@ -186,6 +186,15 @@ describe('SliderView', () => {
       expect(mockChange).toBeCalledWith([30, 60]);
       expect(mockFinish).toBeCalledWith([30, 60]);
 
+      // second runner
+      jest.clearAllMocks();
+      $view.trigger($startEvent);
+      $view.trigger($changeEvent, [50, true]); // value: 30, isSecond: true
+      $view.trigger($finishEvent, [50, true]); // value: 30, isSecond: true
+      expect(mockStart).toBeCalled();
+      expect(mockChange).toBeCalledWith([20, 50]);
+      expect(mockFinish).toBeCalledWith([20, 50]);
+
       // drag and drop interval
       jest.clearAllMocks();
       $view.trigger($startEvent, [true]); // isDragStart is true
@@ -214,6 +223,36 @@ describe('SliderView', () => {
       expect(mockStart).toBeCalled();
       expect(mockChange).toBeCalledWith([0, 40]);
       expect(mockFinish).toBeCalledWith([0, 40]);
+
+      // if range is false
+      jest.clearAllMocks();
+      const $newNode = $('<div>', { class: 'new_node' });
+      $('body').append($newNode);
+      const newView: SliderView = new SliderView($newNode[0], {
+        range: false,
+        runner: true,
+      });
+
+      expect(newView).toHaveProperty('isRendered', false);
+
+      newView.addObserver(testObserver);
+      newView.render({
+        data: [0, 10, 20],
+        percentageData: [0, 50, 100],
+        value: 10,
+        percentage: 50,
+      });
+      expect(newView).toHaveProperty('isRendered', true);
+      const $newView = $newNode.find('.js-slider__container');
+      expect($newView.length).toBe(1);
+      $newView.trigger($startEvent);
+      $newView.trigger($changeEvent, [100]);
+      $newView.trigger($finishEvent, [100]);
+      expect(mockStart).toBeCalled();
+      expect(mockChange).toBeCalledWith(100);
+      expect(mockFinish).toBeCalledWith(100);
+      newView.destroy();
+      $newNode.remove();
     });
 
     test('should create second runner instance, if renderData.value is array', () => {
@@ -234,6 +273,11 @@ describe('SliderView', () => {
       mockRunnerUpdate.mockClear();
       testView.render(testRenderData);
       expect(mockRunnerUpdate).toBeCalledTimes(2);
+    });
+
+    test('should notify observers of the update', () => {
+      testView.render(testRenderData);
+      expect(mockUpdate).toBeCalled();
     });
   });
 
@@ -328,6 +372,16 @@ describe('SliderView', () => {
         prefix: 'value',
         postfix: '$',
       });
+
+      testView.update({ scaleStep: undefined });
+      expect(testView.getData().scaleStep).toBe(25);
+
+      testView.update({ scaleStep: 20 });
+      expect(testView.getData().scaleStep).toBe(20);
+
+      testView.update({ prefix: '+', postfix: '!' });
+      expect(testView.getData().prefix).toBe('+');
+      expect(testView.getData().postfix).toBe('!');
     });
 
     test('should update bar, scale, runner and secondRunner', () => {
