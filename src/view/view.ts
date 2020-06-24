@@ -167,6 +167,7 @@ class SliderView implements View {
             $viewContainer: this.$view,
             isSecond: true,
           });
+          this.secondRunner.update(renderData, this.viewOptions);
         }
       } else if (this.runner) {
         this.runner.update(renderData, this.viewOptions);
@@ -175,6 +176,7 @@ class SliderView implements View {
           $viewContainer: this.$view,
           isSecond: false,
         });
+        this.runner.update(renderData, this.viewOptions);
       }
     } else {
       if (this.runner) {

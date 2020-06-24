@@ -267,12 +267,9 @@ describe('SliderView', () => {
       testView.render(testRenderData);
       expect(mockBarUpdate).toBeCalledTimes(1);
       expect(mockScaleUpdate).toBeCalledTimes(1);
-      expect(mockRunnerUpdate).toBeCalledTimes(1);
-      expect(SliderRunner).toBeCalledTimes(1);
-
-      mockRunnerUpdate.mockClear();
-      testView.render(testRenderData);
       expect(mockRunnerUpdate).toBeCalledTimes(2);
+      // create second runner
+      expect(SliderRunner).toBeCalledTimes(1);
     });
   });
 
