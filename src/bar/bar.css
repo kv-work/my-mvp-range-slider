@@ -10,7 +10,6 @@
 .slider__bar_horizontal {
   height: 1.5rem;
   width: 100%;
-  flex-basis: 100%;
 }
 
 .slider__range {
