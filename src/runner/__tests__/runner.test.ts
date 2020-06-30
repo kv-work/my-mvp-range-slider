@@ -173,7 +173,7 @@ describe('SliderRunner', () => {
     });
 
     test('should update $runner if it is rendered', () => {
-      const newData: View.RenderData = {
+      let newData: View.RenderData = {
         value: 20,
         percentage: 20,
       };
@@ -197,6 +197,20 @@ describe('SliderRunner', () => {
       testRunner.update(newData, { isHorizontal: false });
       expect($horizontalView.find('.slider__runner_horizontal').length).toBe(0);
       expect($horizontalView.find('.slider__runner').length).toBe(1);
+
+      newData = { value: [0, 100], percentage: [0, 100] };
+      const newRunner = new SliderRunner({
+        ...testOptions,
+        isSecond: true,
+      });
+
+      testRunner.update(newData, horizontalOptions);
+      newRunner.update(newData, horizontalOptions);
+      const $newRunner = $horizontalView.find('.runner_second');
+      const testRunnerVal = $horizontalView.find('.runner_first').data('value');
+      const newRunnerData = $newRunner.data();
+      expect(testRunnerVal).toBe(0);
+      expect(newRunnerData.value).toBe(100);
     });
 
     test('should attach mouse events handlers to $runner', () => {

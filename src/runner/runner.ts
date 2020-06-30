@@ -28,6 +28,25 @@ class SliderRunner implements Runner {
       ...options,
     };
 
+    if (runnerOptions.isHorizontal && !this.$runner.hasClass('slider__runner_horizontal')) {
+      this.$runner.addClass('slider__runner_horizontal');
+    }
+    if (!runnerOptions.isHorizontal && this.$runner.hasClass('slider__runner_horizontal')) {
+      this.$runner.removeClass('slider__runner_horizontal');
+    }
+
+    if (this.isSecond) {
+      this.$runner.addClass('runner_second');
+    } else {
+      this.$runner.addClass('runner_first');
+    }
+
+    if (!this.isRendered) {
+      this.$view.append(this.$runner);
+      this.attacheEventHandlers();
+      this.isRendered = true;
+    }
+
     const runnerMetrics: DOMRect = this.$runner[0].getBoundingClientRect();
     const runnerWidth = runnerMetrics.width;
     let value: number;
@@ -42,23 +61,17 @@ class SliderRunner implements Runner {
         case 0:
           fromPosition = `${fromPercentage}%`;
           break;
-        case 100:
-          fromPosition = `calc(100% - ${runnerWidth}px)`;
-          break;
         default:
           fromPosition = `calc(${fromPercentage}% - ${runnerWidth / 2}px)`;
           break;
       }
 
       switch (toPercentage) {
-        case 0:
-          toPosition = `${toPercentage}%`;
-          break;
         case 100:
           toPosition = `calc(100% - ${runnerWidth}px)`;
           break;
         default:
-          toPosition = `calc(${toPercentage}%)`;
+          toPosition = `calc(${toPercentage}% - ${runnerWidth / 2}px)`;
           break;
       }
 
@@ -74,29 +87,10 @@ class SliderRunner implements Runner {
     this.$runner.data('options', runnerOptions);
     this.$runner.data('value', value);
 
-    if (runnerOptions.isHorizontal && !this.$runner.hasClass('slider__runner_horizontal')) {
-      this.$runner.addClass('slider__runner_horizontal');
-    }
-    if (!runnerOptions.isHorizontal && this.$runner.hasClass('slider__runner_horizontal')) {
-      this.$runner.removeClass('slider__runner_horizontal');
-    }
-
     if (options.isHorizontal) {
       this.$runner.css({ left: percentage });
     } else {
       this.$runner.css({ top: percentage });
-    }
-
-    if (this.isSecond) {
-      this.$runner.addClass('runner_second');
-    } else {
-      this.$runner.addClass('runner_first');
-    }
-
-    if (!this.isRendered) {
-      this.$view.append(this.$runner);
-      this.attacheEventHandlers();
-      this.isRendered = true;
     }
   }
 

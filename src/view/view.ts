@@ -32,8 +32,6 @@ class SliderView implements View {
 
     this.updateScale(renderData);
 
-    this.updateRunners(renderData);
-
     if (this.viewOptions.isHorizontal && !this.$view.hasClass('slider__container_horizontal')) {
       this.$view.addClass('slider__container_horizontal');
     }
@@ -47,6 +45,8 @@ class SliderView implements View {
       this.$container.append(this.$view);
       this.isRendered = true;
     }
+
+    this.updateRunners(renderData);
   }
 
   update(viewData: View.Options): void {
@@ -228,7 +228,7 @@ class SliderView implements View {
 
     if (isDragStarted && Array.isArray(startValue)) {
       const dragHandler = this.makeDragHandler(startValue);
-      const dropHandler = this.makeDropHandler(startValue);
+      const dropHandler = this.makeDropHandler();
       this.$view.bind('dragRange.myMVPSlider', dragHandler);
       this.$view.bind('dropRange.myMVPSlider', dropHandler);
     }
@@ -257,23 +257,9 @@ class SliderView implements View {
     return dragHandler;
   }
 
-  private makeDropHandler(start: [number, number]): JQuery.EventHandler<HTMLElement, JQuery.Event> {
-    const dragHandler = (event: JQuery.Event, dragDistance: number): void => {
-      const valuesDiff = start[1] - start[0];
-      let newVal = start[0] + dragDistance;
-      let newSecondVal = start[1] + dragDistance;
-
-      if (newVal < 0) {
-        newVal = 0;
-        newSecondVal = newVal + valuesDiff;
-      }
-
-      if (newSecondVal > 100) {
-        newSecondVal = 100;
-        newVal = newSecondVal - valuesDiff;
-      }
-
-      const finishAction: {event: string; value: [number, number]} = { event: 'finish', value: [newVal, newSecondVal] };
+  private makeDropHandler(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+    const dragHandler = (): void => {
+      const finishAction: {event: string} = { event: 'finish' };
       this.notify(finishAction);
 
       this.$view.unbind('dragRange.myMVPSlider', false);
