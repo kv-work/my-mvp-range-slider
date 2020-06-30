@@ -1,11 +1,13 @@
-.scale {
+.slider__scale {
   width: 100%;
+  height: 1.5rem;
   position: relative;
 }
 
 .scale__element {
   position: absolute;
-  padding-top: 15px;
+  display: flex;
+  flex-direction: column;
   cursor: pointer;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -13,4 +15,10 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.scale__stria {
+  width: 1px;
+  height: 0.5rem;
+  border: solid 1px;
 }

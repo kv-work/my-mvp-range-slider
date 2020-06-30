@@ -69,7 +69,7 @@ class SliderScale implements Scale {
   private clickEventListener(event: JQuery.ClickEvent): void {
     const elem: HTMLElement = event.target;
     let selectedVal: number;
-    if (elem.classList.contains('scale__element')) {
+    if (elem.classList.contains('scale__element') || elem.parentElement.classList.contains('scale__element')) {
       selectedVal = $(elem).data('value');
 
       const $startEvent = $.Event('startChanging.myMVPSlider');
@@ -102,18 +102,47 @@ class SliderScale implements Scale {
   }
 
   static createElement(content: string, value: number, options: Scale.RenderOptions): JQuery {
-    const $elem = $('<span>', { class: 'scale__element' });
-    $elem.html(content);
+    const $elem = $('<div>', { class: 'scale__element' });
+    const $stria = $('<div>', {
+      class: 'scale__stria',
+    });
+    const $content = $('<div>', { class: 'scale__content' });
+    $content.html(content);
+
     if (options.isHorizontal) {
-      $elem.css('left', `${value}%`);
+      switch (value) {
+        case 100:
+          $elem.css({
+            right: '0%',
+            'align-items': 'flex-end',
+          });
+          $stria.css('text-align', 'right');
+          break;
+        default:
+          $elem.css('left', `${value}%`);
+          break;
+      }
     } else {
-      $elem.css('top', `${value}%`);
+      switch (value) {
+        case 100:
+          $elem.css('bottom', '0%');
+          break;
+        default:
+          $elem.css('top', `${value}%`);
+          break;
+      }
     }
     $elem.data('value', value);
+    $stria.data('value', value);
+    $content.data('value', value);
 
     if (options.isHorizontal) {
       $elem.addClass('scale__element_horizontal');
     }
+
+    $elem
+      .append($stria)
+      .append($content);
 
     return $elem;
   }
