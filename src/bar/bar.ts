@@ -106,13 +106,15 @@ class SliderBar implements Bar {
     if (options.isHorizontal) {
       if (Array.isArray(data)) {
         const [value, secondValue] = data;
+
         this.$range.css({
-          left: `calc(0.75rem + ${value}%)`,
-          width: `calc(${secondValue - value}% - 1.5rem)`,
+          left: `${value}%`,
+          width: `${secondValue - value}%`,
+          'border-radius': '0.75rem',
         });
       } else {
         this.$range.css({
-          width: `calc(0.75rem + ${data}%)`,
+          width: `${data}%`,
           'border-top-left-radius': '0.75rem',
           'border-bottom-left-radius': '0.75rem',
         });
@@ -120,8 +122,9 @@ class SliderBar implements Bar {
     } else if (Array.isArray(data)) {
       const [value, secondValue] = data;
       this.$range.css({
-        top: `calc(0.75rem + ${value}%)`,
+        top: `${value}%`,
         height: `${secondValue - value}%`,
+        'border-radius': '0.75rem',
       });
     } else {
       this.$range.css({
@@ -134,20 +137,20 @@ class SliderBar implements Bar {
 
     if (isDragable && !haveHandler) {
       this.$range.css({ cursor: 'grab' });
-      this.$range.on('mousedown', this.dragStartHandler.bind(this));
+      this.$range.on('mousedown.bar', this.dragStartHandler.bind(this));
       this.$range.data('have-handler', true);
       this.$range[0].onclick = (e: Event): void => {
         e.stopPropagation();
       };
-      this.$range.on('dragstart', false);
+      this.$range.on('dragstart.bar', false);
     }
 
     if (!isDragable && haveHandler) {
       this.$range.css({ cursor: 'default' });
-      this.$range.off('mousedown');
+      this.$range.off('mousedown.bar');
       this.$range.data('have-handler', false);
       this.$range[0].onclick = null;
-      this.$range.off('dragstart');
+      this.$range.off('dragstart.bar');
     }
   }
 
@@ -164,7 +167,16 @@ class SliderBar implements Bar {
     const isDragStarted = true;
     this.$view.trigger($startEvent, [isDragStarted]);
     const dragHandler = this.makeDragHandler(startCoord);
-    this.$view.on('mousemove', dragHandler);
+    this.$view.on('mousemove.bar', dragHandler);
+    document.onmouseup = (): void => {
+      this.$view.off('mousemove.bar', dragHandler);
+      this.$range.css({ cursor: 'grab' });
+
+      const $dropEvent = $.Event('dropRange.myMVPSlider');
+      this.$view.trigger($dropEvent);
+
+      document.onmouseup = null;
+    };
   }
 
   private makeDragHandler(start: number): JQuery.EventHandler<HTMLElement, JQuery.Event> {
@@ -181,16 +193,6 @@ class SliderBar implements Bar {
       const dragDistance = newCoord - start;
       const $dragRangeEvent = $.Event('dragRange.myMVPSlider');
       this.$view.trigger($dragRangeEvent, [dragDistance]);
-
-      document.onmouseup = (): void => {
-        this.$view.off('mousemove', dragHandler);
-        this.$range.css({ cursor: 'grab' });
-
-        const $dropEvent = $.Event('dropRange.myMVPSlider');
-        this.$view.trigger($dropEvent, [dragDistance]);
-
-        document.onmouseup = null;
-      };
     };
 
     return dragHandler;

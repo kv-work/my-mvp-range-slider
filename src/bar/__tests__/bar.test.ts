@@ -211,7 +211,6 @@ describe('bar', () => {
       expect(mockChange).not.toBeCalled();
       expect(mockFinish).not.toBeCalled();
       expect(mockDropRange).toBeCalledTimes(1);
-      expect(mockDropRange.mock.calls[0][1]).toBe(30);
 
       // vertical
       jest.clearAllMocks();
@@ -240,7 +239,6 @@ describe('bar', () => {
       expect(mockChange).not.toBeCalled();
       expect(mockFinish).not.toBeCalled();
       expect(mockDropRange).toBeCalledTimes(1);
-      expect(mockDropRange.mock.calls[0][1]).toBe(30);
 
       // click on range
       jest.clearAllMocks();
