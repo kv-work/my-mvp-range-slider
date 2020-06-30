@@ -28,19 +28,47 @@ class SliderRunner implements Runner {
       ...options,
     };
 
+    const runnerMetrics: DOMRect = this.$runner[0].getBoundingClientRect();
+    const runnerWidth = runnerMetrics.width;
     let value: number;
-    let percentage: number;
+    let percentage: string;
     if (Array.isArray(data.percentage) && Array.isArray(data.value)) {
       const [from, to] = data.value;
       const [fromPercentage, toPercentage] = data.percentage;
+      let fromPosition: string;
+      let toPosition: string;
+
+      switch (fromPercentage) {
+        case 0:
+          fromPosition = `${fromPercentage}%`;
+          break;
+        case 100:
+          fromPosition = `calc(100% - ${runnerWidth}px)`;
+          break;
+        default:
+          fromPosition = `calc(${fromPercentage}% - ${runnerWidth / 2}px)`;
+          break;
+      }
+
+      switch (toPercentage) {
+        case 0:
+          toPosition = `${toPercentage}%`;
+          break;
+        case 100:
+          toPosition = `calc(100% - ${runnerWidth}px)`;
+          break;
+        default:
+          toPosition = `calc(${toPercentage}%)`;
+          break;
+      }
 
       value = this.isSecond ? to : from;
-      percentage = this.isSecond ? toPercentage : fromPercentage;
+      percentage = this.isSecond ? toPosition : fromPosition;
     }
 
     if (!Array.isArray(data.percentage) && !Array.isArray(data.value)) {
       value = data.value;
-      percentage = data.percentage;
+      percentage = `${data.percentage}%`;
     }
 
     this.$runner.data('options', runnerOptions);
@@ -54,9 +82,9 @@ class SliderRunner implements Runner {
     }
 
     if (options.isHorizontal) {
-      this.$runner.css({ left: `${percentage}%` });
+      this.$runner.css({ left: percentage });
     } else {
-      this.$runner.css({ top: `${percentage}%` });
+      this.$runner.css({ top: percentage });
     }
 
     if (this.isSecond) {
@@ -73,13 +101,14 @@ class SliderRunner implements Runner {
   }
 
   destroy(): void {
-    this.$runner.off('mousedown');
+    this.$runner.off('mousedown.runner');
+    this.$view.off('mousemove.runner');
     this.$runner.remove();
     this.isRendered = false;
   }
 
   private attacheEventHandlers(): void {
-    this.$runner.on('mousedown', this.dragStartHandler.bind(this));
+    this.$runner.on('mousedown.runner', this.dragStartHandler.bind(this));
     this.$runner.on('dragstart', false);
   }
 
@@ -91,7 +120,16 @@ class SliderRunner implements Runner {
     this.$runner.css('cursor', 'grabbing');
 
     const mouseMoveHandler = this.makeHandler(renderOptions);
-    this.$view.on('mousemove', mouseMoveHandler);
+    this.$view.on('mousemove.runner', mouseMoveHandler);
+    document.onmouseup = (): void => {
+      this.$view.off('mousemove.runner', mouseMoveHandler);
+      this.$runner.css('cursor', 'grab');
+
+      const $finishEvent = $.Event('finish.myMVPSlider');
+      this.$view.trigger($finishEvent);
+
+      document.onmouseup = null;
+    };
   }
 
   private makeHandler(opts: Runner.RenderOptions): JQuery.EventHandler<HTMLElement, JQuery.Event> {
@@ -111,16 +149,6 @@ class SliderRunner implements Runner {
 
       const $changeEvent = $.Event('changeValue.myMVPSlider');
       this.$view.trigger($changeEvent, [selectedVal, this.isSecond]);
-
-      document.onmouseup = (): void => {
-        this.$view.off('mousemove', mouseMoveHandler);
-        this.$runner.css('cursor', 'grab');
-
-        const $finishEvent = $.Event('finish.myMVPSlider');
-        this.$view.trigger($finishEvent, [selectedVal, this.isSecond]);
-
-        document.onmouseup = null;
-      };
     };
 
     return mouseMoveHandler;

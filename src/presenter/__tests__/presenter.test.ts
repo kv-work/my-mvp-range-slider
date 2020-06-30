@@ -32,7 +32,7 @@ describe('Presenter', () => {
         viewObservers.forEach((observer: View.Observer) => observer.change(event.values));
         break;
       case 'finish':
-        viewObservers.forEach((observer: View.Observer) => observer.finish(event.values));
+        viewObservers.forEach((observer: View.Observer) => observer.finish());
         break;
       default:
         break;
@@ -507,27 +507,8 @@ describe('Presenter', () => {
       expect(mockOnUpdate).not.toBeCalled();
     });
 
-    test('should update model state after changing the value ', () => {
-      mockViewNotify({
-        type: 'finish',
-        values: 60,
-      });
-
-      expect(mockUpdateState).toBeCalledWith({ value: 60 });
-      expect(mockOnUpdate).not.toBeCalled();
-
-      // if range is true
-      mockViewNotify({
-        type: 'finish',
-        values: [60, 80],
-      });
-
-      expect(mockUpdateState).toBeCalledWith({ value: 60, secondValue: 80 });
-      expect(mockOnUpdate).not.toBeCalled();
-    });
-
     test('should call the onFinish callback after changing the value (for example, the mouseup event)', () => {
-      mockViewNotify({ type: 'finish', values: 35 });
+      mockViewNotify({ type: 'finish' });
 
       expect(mockOnFinish).toBeCalledTimes(1);
       expect(mockOnUpdate).not.toBeCalled();
@@ -535,10 +516,8 @@ describe('Presenter', () => {
       // if range is true
       mockViewNotify({
         type: 'finish',
-        values: [50, 75],
       });
 
-      expect(mockUpdateState).toBeCalledWith({ value: 50, secondValue: 75 });
       expect(mockOnUpdate).not.toBeCalled();
     });
 
@@ -567,8 +546,8 @@ describe('Presenter', () => {
       expect(mockUpdateState).toBeCalledWith({ value: 4 });
       mockUpdateState.mockClear();
 
-      mockViewNotify({ type: 'finish', values: 55 });
-      expect(mockUpdateState).toBeCalledWith({ value: 5.5 });
+      mockViewNotify({ type: 'finish' });
+      expect(mockOnUpdate).toBeCalled();
 
       testPresenter.update({
         maxValue: 15,

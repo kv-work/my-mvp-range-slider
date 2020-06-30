@@ -205,7 +205,7 @@ class SliderView implements View {
         break;
       case 'finish':
         this.observers.forEach((observer) => {
-          observer.finish(action.value);
+          observer.finish();
         });
         break;
       default:

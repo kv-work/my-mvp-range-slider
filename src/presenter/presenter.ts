@@ -173,16 +173,7 @@ class SliderPresenter implements Presenter {
           this.model.updateState({ value: convertedValues });
         }
       },
-      finish: (values: [number, number] | number): void => {
-        const convertedValues = this.convertPercentToValue(values);
-        this.isChanging = false;
-        if (Array.isArray(convertedValues)) {
-          const [newValue, newSecondValue] = convertedValues;
-          this.model.updateState({ value: newValue, secondValue: newSecondValue });
-        } else {
-          this.model.updateState({ value: convertedValues });
-        }
-
+      finish: (): void => {
         this.callbacks.onFinish(this.getModelData());
       },
     };

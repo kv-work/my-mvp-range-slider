@@ -98,6 +98,8 @@ describe('SliderRunner', () => {
     afterEach(() => {
       $horizontalView.empty();
       $verticalView.empty();
+      $horizontalView.off('**');
+      $verticalView.off('**');
     });
 
     test('should create $runner prop', () => {
@@ -235,11 +237,11 @@ describe('SliderRunner', () => {
 
       document.dispatchEvent(mouseUpEvent);
       expect(mockFinish).toBeCalledTimes(1);
-      expect(mockFinish.mock.calls[0][1]).toBe(90);
 
       mockChange.mockClear();
       mockFinish.mockClear();
 
+      $runner.trigger($mouseDownEvent);
       $verticalView
         .trigger($mouseMoveEvent)
         .trigger($AnotherMouseMoveEvent);
@@ -251,7 +253,6 @@ describe('SliderRunner', () => {
 
       document.dispatchEvent(mouseUpEvent);
       expect(mockFinish).toBeCalledTimes(1);
-      expect(mockFinish.mock.calls[0][1]).toBe(20);
     });
   });
 
@@ -297,6 +298,7 @@ describe('SliderRunner', () => {
       const $runner = $('.js-slider__runner');
       expect($runner.length).toBe(0);
 
+      mockChange.mockClear();
       $runner.trigger($mouseDownEvent);
       expect(mockStart).toBeCalledTimes(0);
 

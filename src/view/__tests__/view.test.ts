@@ -181,19 +181,19 @@ describe('SliderView', () => {
 
       $view.trigger($startEvent);
       $view.trigger($changeEvent, [30, false]); // value: 30, isSecond: false
-      $view.trigger($finishEvent, [30, false]); // value: 30, isSecond: false
+      $view.trigger($finishEvent); // value: 30, isSecond: false
       expect(mockStart).toBeCalled();
       expect(mockChange).toBeCalledWith([30, 60]);
-      expect(mockFinish).toBeCalledWith([30, 60]);
+      expect(mockFinish).toBeCalled();
 
       // second runner
       jest.clearAllMocks();
       $view.trigger($startEvent);
       $view.trigger($changeEvent, [50, true]); // value: 30, isSecond: true
-      $view.trigger($finishEvent, [50, true]); // value: 30, isSecond: true
+      $view.trigger($finishEvent); // value: 30, isSecond: true
       expect(mockStart).toBeCalled();
       expect(mockChange).toBeCalledWith([20, 50]);
-      expect(mockFinish).toBeCalledWith([20, 50]);
+      expect(mockFinish).toBeCalled();
 
       // drag and drop interval
       jest.clearAllMocks();
@@ -204,7 +204,7 @@ describe('SliderView', () => {
       // [20+20, 60+20] => [40, 80]
       expect(mockStart).toBeCalled();
       expect(mockChange).toBeCalledWith([40, 80]);
-      expect(mockFinish).toBeCalledWith([40, 80]);
+      expect(mockFinish).toBeCalled();
 
       jest.clearAllMocks();
       $view.trigger($startEvent, [true]);
@@ -213,7 +213,7 @@ describe('SliderView', () => {
       // [20+50, 60+50] => [70, 110], but should [60, 100]
       expect(mockStart).toBeCalled();
       expect(mockChange).toBeCalledWith([60, 100]);
-      expect(mockFinish).toBeCalledWith([60, 100]);
+      expect(mockFinish).toBeCalled();
 
       jest.clearAllMocks();
       $view.trigger($startEvent, [true]);
@@ -222,7 +222,7 @@ describe('SliderView', () => {
       // [20-50, 60-50] => [-30, 10], but should [0, 40]
       expect(mockStart).toBeCalled();
       expect(mockChange).toBeCalledWith([0, 40]);
-      expect(mockFinish).toBeCalledWith([0, 40]);
+      expect(mockFinish).toBeCalled();
 
       // if range is false
       jest.clearAllMocks();
@@ -247,10 +247,10 @@ describe('SliderView', () => {
       expect($newView.length).toBe(1);
       $newView.trigger($startEvent);
       $newView.trigger($changeEvent, [100]);
-      $newView.trigger($finishEvent, [100]);
+      $newView.trigger($finishEvent);
       expect(mockStart).toBeCalled();
       expect(mockChange).toBeCalledWith(100);
-      expect(mockFinish).toBeCalledWith(100);
+      expect(mockFinish).toBeCalled();
       newView.destroy();
       $newNode.remove();
     });
