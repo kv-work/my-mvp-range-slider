@@ -20,5 +20,10 @@
 .scale__stria {
   width: 1px;
   height: 0.5rem;
-  border: solid 1px;
+  background-color: black;
+  /* border: solid 1px; */
+}
+
+.scale__content {
+  color: #e5e5e5;
 }

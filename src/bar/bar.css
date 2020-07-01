@@ -2,13 +2,13 @@
   background-color: #E5E5E5;
   border-radius: 0.75rem;
   width: 0.5rem;
-  height: 50rem;
+  height: 100%;
   cursor: pointer;
   position: relative;
 }
 
 .slider__bar_horizontal {
-  height: 1.5rem;
+  height: 0.5rem;
   width: 100%;
 }
 

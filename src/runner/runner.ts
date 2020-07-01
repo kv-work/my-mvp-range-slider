@@ -80,8 +80,18 @@ class SliderRunner implements Runner {
     }
 
     if (!Array.isArray(data.percentage) && !Array.isArray(data.value)) {
+      switch (data.percentage) {
+        case 0:
+          percentage = '0%';
+          break;
+        case 100:
+          percentage = `calc(100% - ${runnerWidth}px)`;
+          break;
+        default:
+          percentage = `calc(${data.percentage}% - ${runnerWidth / 2}px)`;
+          break;
+      }
       value = data.value;
-      percentage = `${data.percentage}%`;
     }
 
     this.$runner.data('options', runnerOptions);
