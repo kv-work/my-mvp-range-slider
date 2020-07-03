@@ -14,12 +14,6 @@ declare namespace ValuesDisplay {
     postfix?: string;
   }
 
-  interface CreationData {
-    renderData: View.RenderData;
-    options: ValuesDisplay.UpdateOptions;
-    isSecond?: boolean;
-  }
-
   interface UpdateData {
     renderData: View.RenderData;
     options: ValuesDisplay.UpdateOptions;

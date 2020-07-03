@@ -5,7 +5,7 @@ import './values-display.css';
 export default class SliderValuesDisplay implements ValuesDisplay {
   private $view: JQuery;
   private $displayContainer: JQuery;
-  private $firstValDisplay: JQuery;
+  private $firstValDisplay?: JQuery;
   private $secondValDisplay?: JQuery;
   private isRendered: boolean;
 
@@ -74,6 +74,14 @@ export default class SliderValuesDisplay implements ValuesDisplay {
 
   destroy(): void {
     this.$displayContainer.remove();
+    if (this.$firstValDisplay) {
+      this.$firstValDisplay.remove();
+      this.$firstValDisplay = null;
+    }
+    if (this.$secondValDisplay) {
+      this.$secondValDisplay.remove();
+      this.$secondValDisplay = null;
+    }
     this.isRendered = false;
   }
 
@@ -100,15 +108,12 @@ export default class SliderValuesDisplay implements ValuesDisplay {
       this.$secondValDisplay.data('data', secondData);
       this.$secondValDisplay.data('options', options);
 
-      let firstHtml: string;
-      let secondHtml: string;
-      if (options.prefix) {
-        firstHtml = options.prefix;
-        secondHtml = options.prefix;
-      }
+      let firstHtml = options.prefix;
+      let secondHtml = options.prefix;
+
       firstHtml += firstData;
       secondHtml += secondData;
-      if (options.postfix) {
+      if (options.postfix !== '') {
         firstHtml += options.postfix;
         secondHtml += options.postfix;
       }
@@ -128,10 +133,9 @@ export default class SliderValuesDisplay implements ValuesDisplay {
       this.$firstValDisplay.data('data', firstData);
       this.$firstValDisplay.data('options', options);
 
-      let firstHtml: string;
-      if (options.prefix) firstHtml = options.prefix;
+      let firstHtml = options.prefix;
       firstHtml += firstData;
-      if (options.postfix) firstHtml += options.postfix;
+      if (options.postfix !== '') firstHtml += options.postfix;
       this.$firstValDisplay.html(firstHtml);
 
       if (options.isHorizontal) {

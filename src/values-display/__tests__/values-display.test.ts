@@ -89,17 +89,70 @@ describe('SliderValuesDisplay', () => {
       expect($verticalDisplay.find('.slider__display_value').length).toBe(1);
 
       testValDisplay.update(rangeRenderData, updOpts);
+      vertValDisplay.update(rangeRenderData, vertUpdOpts);
       expect($horizontalDisplay.find('.slider__display_value').length).toBe(2);
+      expect($verticalDisplay.find('.slider__display_value').length).toBe(2);
+
+      testValDisplay.update(renderData, updOpts);
+      vertValDisplay.update(renderData, vertUpdOpts);
+
+      expect($horizontalDisplay.find('.slider__display_value').length).toBe(1);
+      expect($verticalDisplay.find('.slider__display_value').length).toBe(1);
+
+      testValDisplay.destroy();
+      vertValDisplay.destroy();
+
+      expect($horizontalDisplay.find('.slider__display_value').length).toBe(0);
+      expect($verticalDisplay.find('.slider__display_value').length).toBe(0);
+
+      testValDisplay.update(rangeRenderData, updOpts);
+      vertValDisplay.update(rangeRenderData, vertUpdOpts);
+
+      expect($horizontalDisplay.find('.slider__display_value').length).toBe(2);
+      expect($verticalDisplay.find('.slider__display_value').length).toBe(2);
     });
 
-    test('should append $displayContainer to $view', () => {});
+    test('should append $displayContainer to $view', () => {
+      const $horizontalDisplay = $horizontalView.find('.slider__display_container');
+      const $verticalDisplay = $verticalView.find('.slider__display_container');
+
+      expect($horizontalDisplay.length).toBe(1);
+      expect($verticalDisplay.length).toBe(1);
+    });
 
     test('should set isRendered flag to true', () => {
       expect(testValDisplay).toHaveProperty('isRendered', true);
       expect(vertValDisplay).toHaveProperty('isRendered', true);
     });
 
-    test('should add prefix and postfix to values', () => {});
+    test('should add prefix and postfix to values', () => {
+      const $horizontalDisplay = $horizontalView.find('.slider__display_container');
+      const $verticalDisplay = $verticalView.find('.slider__display_container');
+
+      expect($horizontalDisplay.find('.slider__display_value').html()).toBe('+10$');
+      expect($verticalDisplay.find('.slider__display_value').html()).toBe('+10$');
+
+      testValDisplay.update(rangeRenderData, updOpts);
+      vertValDisplay.update(rangeRenderData, vertUpdOpts);
+
+      expect($horizontalDisplay.find('.slider__display_value').eq(0).html()).toBe('+10$');
+      expect($horizontalDisplay.find('.slider__display_value').eq(1).html()).toBe('+50$');
+      expect($verticalDisplay.find('.slider__display_value').eq(0).html()).toBe('+10$');
+      expect($verticalDisplay.find('.slider__display_value').eq(1).html()).toBe('+50$');
+
+      const newUpdOpts = {
+        ...updOpts,
+        prefix: '',
+        postfix: '',
+      };
+
+      testValDisplay.update(rangeRenderData, newUpdOpts);
+      expect($horizontalDisplay.find('.slider__display_value').eq(0).html()).toBe('10');
+      expect($horizontalDisplay.find('.slider__display_value').eq(1).html()).toBe('50');
+
+      testValDisplay.update(renderData, newUpdOpts);
+      expect($horizontalDisplay.find('.slider__display_value').eq(0).html()).toBe('10');
+    });
 
     test('should save options and data in data-attrs of $displayContainer', () => {
       const $displayContainer = $horizontalView.find('.slider__display_container');
@@ -119,6 +172,17 @@ describe('SliderValuesDisplay', () => {
     test('should detach $displayContainer', () => {
       testValDisplay.destroy();
       vertValDisplay.destroy();
+
+      const $horizontalDisplay = $horizontalView.find('.slider__display_container');
+      const $verticalDisplay = $verticalView.find('.slider__display_container');
+
+      expect($horizontalDisplay.length).toBe(0);
+      expect($verticalDisplay.length).toBe(0);
+
+      const newValDisplay = new SliderValuesDisplay({ $viewContainer: $horizontalView });
+      newValDisplay.destroy();
+      expect($horizontalView.find('.slider__display_container').length).toBe(0);
+      expect($horizontalView.find('.slider__display_value').length).toBe(0);
     });
 
     test('should reset isRendered flag', () => {
