@@ -170,10 +170,21 @@ describe('SliderRunner', () => {
       testRunner.update(newData, horizontalOptions);
       newRunner.update(newData, horizontalOptions);
       const $newRunner = $horizontalView.find('.runner_second');
-      const testRunnerVal = $horizontalView.find('.runner_first').data('value');
+      let testRunnerVal = $horizontalView.find('.runner_first').data('value');
       const newRunnerData = $newRunner.data();
       expect(testRunnerVal).toBe(0);
       expect(newRunnerData.value).toBe(100);
+
+      newData = { value: 0, percentage: 0 };
+      testRunner.update(newData, horizontalOptions);
+      testRunnerVal = $horizontalView.find('.runner_first').data('value');
+      expect($horizontalView.find('.runner_first').length).toBe(1);
+      expect(testRunnerVal).toBe(0);
+
+      newData = { value: 100, percentage: 100 };
+      testRunner.update(newData, horizontalOptions);
+      testRunnerVal = $horizontalView.find('.runner_first').data('value');
+      expect(testRunnerVal).toBe(100);
     });
 
     test('should attach mouse events handlers to $runner', () => {
