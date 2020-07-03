@@ -38,23 +38,11 @@ describe('SliderRunner', () => {
     percentage: 10,
   };
 
-  const horizontalOptions: Runner.RenderOptions = {
-    isHorizontal: true,
-    displayValue: true,
-    prefix: '+',
-    postfix: '$',
-  };
-  const verticalOptions: Runner.RenderOptions = {
-    ...horizontalOptions,
-    isHorizontal: false,
-  };
+  const horizontalOptions: Runner.RenderOptions = { isHorizontal: true };
+  const verticalOptions: Runner.RenderOptions = { isHorizontal: false };
 
-  const testOptions: Runner.InitOptions = {
-    $viewContainer: $horizontalView,
-  };
-  const testOptionsVertical: Runner.InitOptions = {
-    $viewContainer: $verticalView,
-  };
+  const testOptions: Runner.InitOptions = { $viewContainer: $horizontalView };
+  const testOptionsVertical: Runner.InitOptions = { $viewContainer: $verticalView };
 
   let testRunner: SliderRunner;
   let vertRunner: SliderRunner;
@@ -117,21 +105,11 @@ describe('SliderRunner', () => {
       const verticalData = $verticalView.find('.js-slider__runner').data();
 
       expect(horizontalData).toEqual({
-        options: {
-          isHorizontal: true,
-          displayValue: true,
-          prefix: '+',
-          postfix: '$',
-        },
+        options: { isHorizontal: true },
         value: renderData.value,
       });
       expect(verticalData).toEqual({
-        options: {
-          isHorizontal: false,
-          displayValue: true,
-          prefix: '+',
-          postfix: '$',
-        },
+        options: { isHorizontal: false },
         value: renderData.value,
       });
 
@@ -151,23 +129,13 @@ describe('SliderRunner', () => {
       expect($newRunner.length).toBe(1);
 
       expect(newRunnerData).toEqual({
-        options: {
-          isHorizontal: true,
-          displayValue: false,
-          prefix: '',
-          postfix: '',
-        },
+        options: { isHorizontal: true },
         value: 40,
       });
 
       testRunner.update(newData, newOpts);
       expect(horizontalData).toEqual({
-        options: {
-          isHorizontal: true,
-          displayValue: true,
-          prefix: '+',
-          postfix: '$',
-        },
+        options: { isHorizontal: true },
         value: 10,
       });
     });
@@ -184,12 +152,7 @@ describe('SliderRunner', () => {
 
       const horizontalData = $horizontalView.find('.js-slider__runner').data();
       expect(horizontalData).toEqual({
-        options: {
-          isHorizontal: true,
-          displayValue: true,
-          prefix: '+',
-          postfix: '$',
-        },
+        options: { isHorizontal: true },
         value: newData.value,
       });
 

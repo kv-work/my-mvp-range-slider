@@ -11,8 +11,5 @@ declare namespace Runner {
 
   interface RenderOptions {
     isHorizontal?: boolean;
-    displayValue?: boolean;
-    prefix?: string;
-    postfix?: string;
   }
 }
