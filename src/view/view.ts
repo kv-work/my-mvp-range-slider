@@ -3,6 +3,7 @@ import './view.css';
 import SliderScale from '../scale/scale';
 import SliderBar from '../bar/bar';
 import SliderRunner from '../runner/runner';
+import SliderValuesDisplay from '../values-display/values-display';
 
 class SliderView implements View {
   private $container: JQuery;
@@ -11,8 +12,9 @@ class SliderView implements View {
   private $view?: JQuery;
   private runner?: Runner;
   private secondRunner?: Runner;
-  private bar: Bar;
-  private scale: Scale;
+  private bar?: Bar;
+  private scale?: Scale;
+  private valueDisplay: ValuesDisplay;
   private observers: Set<View.Observer>;
   private isRendered: boolean;
 
@@ -28,10 +30,6 @@ class SliderView implements View {
   render(renderData: View.RenderData): void {
     this.renderData = renderData;
 
-    this.updateBar(renderData.percentage);
-
-    this.updateScale(renderData);
-
     if (this.viewOptions.isHorizontal && !this.$view.hasClass('slider__container_horizontal')) {
       this.$view.addClass('slider__container_horizontal');
     }
@@ -46,6 +44,9 @@ class SliderView implements View {
       this.isRendered = true;
     }
 
+    this.updateBar(renderData.percentage);
+    this.updateScale(renderData);
+    this.updateValuesDisplay(renderData);
     this.updateRunners(renderData);
   }
 
@@ -80,6 +81,7 @@ class SliderView implements View {
     if (this.scale) this.scale.destroy();
     if (this.runner) this.runner.destroy();
     if (this.secondRunner) this.secondRunner.destroy();
+    if (this.valueDisplay) this.valueDisplay.destroy();
 
     this.$view.remove();
     this.isRendered = false;
@@ -92,21 +94,6 @@ class SliderView implements View {
     });
 
     $view.data('options', viewOptions);
-
-    if (viewOptions.bar) {
-      this.bar = new SliderBar({ $viewContainer: $view });
-    }
-
-    if (viewOptions.scale) {
-      this.scale = new SliderScale({ $viewContainer: $view });
-    }
-
-    if (viewOptions.runner) {
-      this.runner = new SliderRunner({
-        $viewContainer: $view,
-        isSecond: false,
-      });
-    }
 
     return $view;
   }
@@ -149,6 +136,19 @@ class SliderView implements View {
     }
   }
 
+  private updateValuesDisplay(renderData: View.RenderData): void {
+    if (this.viewOptions.displayValue && this.valueDisplay) {
+      this.valueDisplay.update(renderData, this.viewOptions);
+    }
+    if (this.viewOptions.displayValue && !this.valueDisplay) {
+      this.valueDisplay = new SliderValuesDisplay({ $viewContainer: this.$view });
+      this.valueDisplay.update(renderData, this.viewOptions);
+    }
+    if (!this.viewOptions.displayValue && this.valueDisplay) {
+      this.valueDisplay.destroy();
+    }
+  }
+
   private updateRunners(renderData: View.RenderData): void {
     if (this.viewOptions.runner) {
       if (Array.isArray(renderData.value)) {
@@ -159,6 +159,7 @@ class SliderView implements View {
             $viewContainer: this.$view,
             isSecond: false,
           });
+          this.runner.update(renderData, this.viewOptions);
         }
         if (this.secondRunner) {
           this.secondRunner.update(renderData, this.viewOptions);
@@ -283,16 +284,9 @@ class SliderView implements View {
     this.notify(changeAction);
   }
 
-  private finishEventHandler(event: JQuery.Event, value: number, isSecond: boolean): void {
-    const currentValue = this.renderData.percentage;
-    let finishAction: {event: string; value: [number, number] | number};
-    if (isSecond && Array.isArray(currentValue)) {
-      finishAction = { event: 'finish', value: [currentValue[0], value] };
-    } else if (Array.isArray(currentValue)) {
-      finishAction = { event: 'finish', value: [value, currentValue[1]] };
-    } else {
-      finishAction = { event: 'finish', value };
-    }
+  private finishEventHandler(): void {
+    const finishAction: {event: string; value?: [number, number] | number} = { event: 'finish' };
+
     this.notify(finishAction);
   }
 
