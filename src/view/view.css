@@ -7,3 +7,18 @@
   padding-top: 1rem;
   padding-bottom: 1rem;
 }
+
+.slider__bar_container {
+  position: relative;
+  width: 100%;
+  z-index: 2;
+}
+
+.none-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

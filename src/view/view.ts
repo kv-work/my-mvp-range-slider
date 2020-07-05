@@ -10,6 +10,7 @@ class SliderView implements View {
   private viewOptions: View.Options;
   private renderData?: View.RenderData;
   private $view?: JQuery;
+  private $barContainer: JQuery;
   private runner?: Runner;
   private secondRunner?: Runner;
   private bar?: Bar;
@@ -23,6 +24,8 @@ class SliderView implements View {
     this.viewOptions = options;
     this.observers = new Set();
     this.$view = this.createView();
+    this.$barContainer = $('<div>', { class: 'slider__bar_container' });
+    this.$view.append(this.$barContainer);
 
     this.isRendered = false;
   }
@@ -44,9 +47,9 @@ class SliderView implements View {
       this.isRendered = true;
     }
 
-    this.updateBar(renderData.percentage);
-    this.updateScale(renderData);
     this.updateValuesDisplay(renderData);
+    this.updateScale(renderData);
+    this.updateBar(renderData.percentage);
     this.updateRunners(renderData);
   }
 
@@ -106,7 +109,7 @@ class SliderView implements View {
       });
     }
     if (this.viewOptions.bar && !this.bar) {
-      this.bar = new SliderBar({ $viewContainer: this.$view });
+      this.bar = new SliderBar({ $viewContainer: this.$barContainer });
       this.bar.update({
         data: percentage,
         options: this.viewOptions,
@@ -156,7 +159,7 @@ class SliderView implements View {
           this.runner.update(renderData, this.viewOptions);
         } else {
           this.runner = new SliderRunner({
-            $viewContainer: this.$view,
+            $viewContainer: this.$barContainer,
             isSecond: false,
           });
           this.runner.update(renderData, this.viewOptions);
@@ -165,7 +168,7 @@ class SliderView implements View {
           this.secondRunner.update(renderData, this.viewOptions);
         } else {
           this.secondRunner = new SliderRunner({
-            $viewContainer: this.$view,
+            $viewContainer: this.$barContainer,
             isSecond: true,
           });
           this.secondRunner.update(renderData, this.viewOptions);
@@ -174,7 +177,7 @@ class SliderView implements View {
         this.runner.update(renderData, this.viewOptions);
       } else {
         this.runner = new SliderRunner({
-          $viewContainer: this.$view,
+          $viewContainer: this.$barContainer,
           isSecond: false,
         });
         this.runner.update(renderData, this.viewOptions);

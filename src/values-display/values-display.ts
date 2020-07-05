@@ -55,8 +55,6 @@ export default class SliderValuesDisplay implements ValuesDisplay {
       }
     }
 
-    this.updateValueDisplay({ renderData: data, options: newOpts });
-
     this.$displayContainer.data({ options: newOpts, data: data.value });
 
     if (options.isHorizontal && !this.$displayContainer.hasClass('slider__display_container_horizontal')) {
@@ -67,9 +65,11 @@ export default class SliderValuesDisplay implements ValuesDisplay {
     }
 
     if (!this.isRendered) {
-      this.$view.append(this.$displayContainer);
+      this.$view.prepend(this.$displayContainer);
       this.isRendered = true;
     }
+
+    this.updateValueDisplay({ renderData: data, options: newOpts });
   }
 
   destroy(): void {
@@ -120,12 +120,48 @@ export default class SliderValuesDisplay implements ValuesDisplay {
       this.$firstValDisplay.html(firstHtml);
       this.$secondValDisplay.html(secondHtml);
 
-      if (options.isHorizontal) {
-        this.$firstValDisplay.css({ left: `${from}%` });
-        this.$secondValDisplay.css({ left: `${to}%` });
-      } else {
-        this.$firstValDisplay.css({ top: `${from}%` });
-        this.$secondValDisplay.css({ top: `${to}%` });
+      const firstMetrics = this.$firstValDisplay[0].getBoundingClientRect();
+      const secondMetrics = this.$secondValDisplay[0].getBoundingClientRect();
+      let firstPos: string;
+      let secondPos: string;
+
+      switch (from) {
+        case 0:
+          if (options.isHorizontal) {
+            this.$firstValDisplay.css({ left: '0%' });
+          } else {
+            this.$firstValDisplay.css({ top: '0%' });
+          }
+          break;
+        default:
+          if (options.isHorizontal) {
+            firstPos = `calc(${from}% - ${firstMetrics.width / 2}px)`;
+            this.$firstValDisplay.css({ left: firstPos });
+          } else {
+            firstPos = `calc(${from}% - ${firstMetrics.height / 2}px)`;
+            this.$firstValDisplay.css({ top: firstPos });
+          }
+          break;
+      }
+
+      switch (to) {
+        case 100:
+          if (options.isHorizontal) {
+            secondPos = `calc(${to}% - ${secondMetrics.width}px)`;
+            this.$secondValDisplay.css({ left: secondPos });
+          } else {
+            this.$secondValDisplay.css({ down: '0%' });
+          }
+          break;
+        default:
+          if (options.isHorizontal) {
+            secondPos = `calc(${to}% - ${secondMetrics.width / 2}px)`;
+            this.$secondValDisplay.css({ left: secondPos });
+          } else {
+            secondPos = `calc(${to}% - ${secondMetrics.height / 2}px)`;
+            this.$secondValDisplay.css({ top: secondPos });
+          }
+          break;
       }
     } else {
       firstIdx = percentageData.indexOf(percentage);

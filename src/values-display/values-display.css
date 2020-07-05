@@ -1,0 +1,15 @@
+.slider__display_container {
+}
+
+.slider__display_container_horizontal {
+  height: 2rem;
+}
+
+.slider__display_value {
+  display: inline-block;
+  position: absolute;
+  color: white;
+  background-color: #53B6A8;
+  padding: 0.1rem 0.5rem 0.3rem;
+  border-radius: 0.4rem;
+}
