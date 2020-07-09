@@ -40,6 +40,12 @@ class SliderScale implements Scale {
       this.$scale.removeClass('slider__scale_horizontal');
     }
 
+    if (!this.isRendered) {
+      this.$view.append(this.$scale);
+      this.attachEventHandlers();
+      this.isRendered = true;
+    }
+
     const { data, percentageData } = newData;
     this.$scale.empty();
     data.forEach((elem: App.Stringable, idx: number) => {
@@ -47,13 +53,40 @@ class SliderScale implements Scale {
       const value = percentageData[idx];
       const $elem = SliderScale.createElement(content, value, scaleOptions);
       this.$scale.append($elem);
-    });
 
-    if (!this.isRendered) {
-      this.$view.append(this.$scale);
-      this.attachEventHandlers();
-      this.isRendered = true;
-    }
+      const $content = $elem.find('.scale__content');
+      const $stria = $elem.find('.scale__stria');
+      const elemMetrics: DOMRect = $elem[0].getBoundingClientRect();
+
+      if (options.isHorizontal) {
+        switch (value) {
+          case 100:
+            $elem.css({
+              right: '0%',
+              'align-items': 'flex-end',
+            });
+            break;
+          case 0:
+            $elem.css('left', `${value}%`);
+            break;
+          default:
+            $elem.css({
+              left: `calc(${value}% - ${elemMetrics.width / 2}px)`,
+              'align-items': 'center',
+            });
+            break;
+        }
+      } else {
+        switch (value) {
+          case 100:
+            $elem.css('bottom', '0%');
+            break;
+          default:
+            $elem.css('top', `${value}%`);
+            break;
+        }
+      }
+    });
   }
 
   public destroy(): void {
@@ -109,29 +142,6 @@ class SliderScale implements Scale {
     const $content = $('<div>', { class: 'scale__content' });
     $content.html(content);
 
-    if (options.isHorizontal) {
-      switch (value) {
-        case 100:
-          $elem.css({
-            right: '0%',
-            'align-items': 'flex-end',
-          });
-          $stria.css('text-align', 'right');
-          break;
-        default:
-          $elem.css('left', `${value}%`);
-          break;
-      }
-    } else {
-      switch (value) {
-        case 100:
-          $elem.css('bottom', '0%');
-          break;
-        default:
-          $elem.css('top', `${value}%`);
-          break;
-      }
-    }
     $elem.data('value', value);
     $stria.data('value', value);
     $content.data('value', value);
