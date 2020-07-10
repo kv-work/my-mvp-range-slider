@@ -54,8 +54,6 @@ class SliderScale implements Scale {
       const $elem = SliderScale.createElement(content, value, scaleOptions);
       this.$scale.append($elem);
 
-      const $content = $elem.find('.scale__content');
-      const $stria = $elem.find('.scale__stria');
       const elemMetrics: DOMRect = $elem[0].getBoundingClientRect();
 
       if (options.isHorizontal) {

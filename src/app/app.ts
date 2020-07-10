@@ -8,13 +8,14 @@ import SliderView from '../view/view';
 
 export default class SliderApp implements App {
   private options: App.Option;
+  private initOptions: App.Option;
   private node: HTMLElement;
   private model: Model;
   private presenter: Presenter;
   private view: View;
 
   constructor(options: App.Option, node: HTMLElement) {
-    this.options = options;
+    this.initOptions = options;
     this.node = node;
 
     this.createModel();
@@ -22,27 +23,34 @@ export default class SliderApp implements App {
     this.createPresenter();
   }
 
-  public update(options: App.Option): void {};
+  update(options: App.Option): void {
+    this.options = {
+      ...this.initOptions,
+      ...this.options,
+      ...options,
+    };
+    this.presenter.update(options);
+  };
 
-  public getAllData(): App.Option {
-    return;
+  getAllData(): App.Option {
+    return this.presenter.getAllData();
   }
 
-  public getModelData(): Model.Options {
-    return;
+  getModelData(): Model.Options {
+    return this.presenter.getModelData();
   }
 
-  public getViewData(): View.Options {
-    return;
+  getViewData(): View.Options {
+    return this.presenter.getViewData();
   }
 
-  public getPresenterData(): Presenter.Data {
-    return;
+  getPresenterData(): Presenter.Data {
+    return this.presenter.getPresenterData();
   }
 
-  public reset(): void {}
+  reset(): void {}
 
-  public destroy(): void {}
+  destroy(): void {}
 
   private createModel(): void {
     const {
@@ -51,7 +59,7 @@ export default class SliderApp implements App {
       step,
       value,
       secondValue,
-    } = this.options;
+    } = this.initOptions;
 
     this.model = new SliderModel({
       maxValue,
@@ -69,7 +77,7 @@ export default class SliderApp implements App {
       onChange,
       onFinish,
       onUpdate,
-    } = this.options;
+    } = this.initOptions;
 
     this.presenter = new SliderPresenter({
       model: this.model,
@@ -97,7 +105,7 @@ export default class SliderApp implements App {
       displayMax,
       prefix,
       postfix,
-    } = this.options;
+    } = this.initOptions;
 
     this.view = new SliderView(this.node, {
       isHorizontal,
