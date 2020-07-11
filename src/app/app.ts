@@ -53,7 +53,9 @@ export default class SliderApp implements App {
     this.update(this.initOptions);
   }
 
-  destroy(): void {}
+  destroy(): void {
+    this.view.destroy();
+  }
 
   private createModel(): void {
     const {

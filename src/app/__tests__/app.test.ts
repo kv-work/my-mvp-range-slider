@@ -207,5 +207,10 @@ describe('app', () => {
       expect(mockUpdatePresenter).toBeCalledWith(testOptions);
     });
   });
-  describe('destroy', () => {});
+  describe('destroy', () => {
+    test('should call destroy method of view', () => {
+      testApp.destroy();
+      expect(mockDestroyView).toBeCalled();
+    });
+  });
 });
