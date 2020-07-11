@@ -48,7 +48,10 @@ export default class SliderApp implements App {
     return this.presenter.getPresenterData();
   }
 
-  reset(): void {}
+  reset(): void {
+    this.options = this.initOptions;
+    this.update(this.initOptions);
+  }
 
   destroy(): void {}
 

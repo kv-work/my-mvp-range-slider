@@ -167,6 +167,45 @@ describe('app', () => {
       expect(mockGetViewData).toBeCalledTimes(1);
     });
   });
-  describe('reset', () => {});
+  describe('reset', () => {
+    test('should update presenter, model and view with init options', () => {
+      testApp.update({
+        maxValue: 50,
+        minValue: 10,
+        step: 5,
+        value: 15,
+        secondValue: undefined,
+        isHorizontal: false,
+        range: false,
+        dragInterval: false,
+        runner: false,
+        bar: true,
+        scale: false,
+      });
+      expect(testApp).toHaveProperty('options', {
+        maxValue: 50,
+        minValue: 10,
+        step: 5,
+        value: 15,
+        secondValue: undefined,
+        isHorizontal: false,
+        range: false,
+        dragInterval: false,
+        runner: false,
+        bar: true,
+        scale: false,
+        scaleStep: 10,
+        displayScaleValue: true,
+        displayValue: true,
+        displayMin: true,
+        displayMax: true,
+        prefix: '$',
+        postfix: 'USD',
+      });
+      testApp.reset();
+      expect(testApp).toHaveProperty('options', testOptions);
+      expect(mockUpdatePresenter).toBeCalledWith(testOptions);
+    });
+  });
   describe('destroy', () => {});
 });
