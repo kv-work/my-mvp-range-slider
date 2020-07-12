@@ -134,7 +134,8 @@ class SliderPresenter implements Presenter {
     const values: number[] = [];
 
     for (let i: number = min; i <= max; i += step) {
-      values.push(i);
+      const fixed = SliderModel.fixVal(i, step);
+      values.push(fixed);
     }
 
     if (values[values.length - 1] < max) {
@@ -228,18 +229,22 @@ class SliderPresenter implements Presenter {
   }
 
   private convertValueToPercent(values: [number, number] | number): number | [number, number] {
-    const { minValue, maxValue } = this.getModelData();
+    const { minValue, maxValue, step } = this.getModelData();
     let firstPercentage: number;
     let secondPercentage: number;
     let percentage: [number, number] | number;
+    const baseValue = step / (maxValue - minValue);
 
     if (Array.isArray(values)) {
       const [firstValue, secondValue] = values;
       firstPercentage = ((firstValue - minValue) / (maxValue - minValue)) * 100;
+      const fixedFirst = SliderModel.fixVal(firstPercentage, baseValue);
       secondPercentage = ((secondValue - minValue) / (maxValue - minValue)) * 100;
-      percentage = [firstPercentage, secondPercentage];
+      const fixedSecond = SliderModel.fixVal(secondPercentage, baseValue);
+      percentage = [fixedFirst, fixedSecond];
     } else {
-      percentage = ((values - minValue) / (maxValue - minValue)) * 100;
+      const p = ((values - minValue) / (maxValue - minValue)) * 100;
+      percentage = SliderModel.fixVal(p, baseValue);
     }
 
     return percentage;
@@ -253,9 +258,11 @@ class SliderPresenter implements Presenter {
     } = this.model.getState();
 
     const values: number[] = [];
+    const baseValue = step / (max - min);
 
     for (let i: number = min; i <= max; i += step) {
-      values.push(i);
+      const fixed = SliderModel.fixVal(i, baseValue);
+      values.push(fixed);
     }
 
     if (values[values.length - 1] < max) {
@@ -264,7 +271,7 @@ class SliderPresenter implements Presenter {
 
     const percentageData = values.map((val): number => {
       const percentage = ((val - min) / (max - min)) * 100;
-      return +percentage.toFixed(10);
+      return SliderModel.fixVal(percentage, baseValue);
     });
 
     return percentageData;
