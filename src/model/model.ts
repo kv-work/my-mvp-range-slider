@@ -73,7 +73,7 @@ class SliderModel implements Model {
 
   set maxValue(newValue: number) {
     if (this._ableToChange('maxValue', newValue)) {
-      this._maxValue = this.fixValue(newValue);
+      this._maxValue = newValue;
 
       this.isUpdated = false;
 
@@ -96,7 +96,7 @@ class SliderModel implements Model {
 
   set minValue(newValue: number) {
     if (this._ableToChange('minValue', newValue)) {
-      this._minValue = this.fixValue(newValue);
+      this._minValue = newValue;
 
       this.isUpdated = false;
 
@@ -120,7 +120,7 @@ class SliderModel implements Model {
 
   set step(newValue: number) {
     if (this._ableToChange('step', newValue)) {
-      this._step = this.fixValue(newValue);
+      this._step = +newValue.toFixed(17);
 
       this.isUpdated = false;
 
@@ -168,11 +168,11 @@ class SliderModel implements Model {
     }
   }
 
-  public addObserver(observer: Model.Observer): void {
+  addObserver(observer: Model.Observer): void {
     this.observers.add(observer);
   }
 
-  public removeObserver(observer: Model.Observer): void {
+  removeObserver(observer: Model.Observer): void {
     this.observers.delete(observer);
   }
 
@@ -192,7 +192,7 @@ class SliderModel implements Model {
     return state;
   }
 
-  public updateState(state: Model.Options): void {
+  updateState(state: Model.Options): void {
     const newState = {
       ...this.getState(),
       ...state,
@@ -212,7 +212,7 @@ class SliderModel implements Model {
     if (!this.isUpdated) this.notify();
   }
 
-  public lockState(props: string[] | 'all'): void {
+  lockState(props: string[] | 'all'): void {
     if (Array.isArray(props)) {
       props.forEach((valueName) => {
         switch (valueName) {
@@ -244,7 +244,7 @@ class SliderModel implements Model {
     }
   }
 
-  public unlockState(props: string[] | 'all'): void {
+  unlockState(props: string[] | 'all'): void {
     if (Array.isArray(props)) {
       props.forEach((valueName) => {
         switch (valueName) {
@@ -309,7 +309,7 @@ class SliderModel implements Model {
         break;
     }
 
-    return this.fixValue(result);
+    return SliderModel.fixVal(result, step);
   }
 
   private _isLocked(value: string): boolean {
@@ -348,15 +348,6 @@ class SliderModel implements Model {
     }
   }
 
-  private fixValue(value: number): number {
-    if (!(this._step % 1)) {
-      return value;
-    }
-
-    const result = +value.toFixed(10);
-    return result;
-  }
-
   static _validate(value: number): boolean {
     return !(value === null || Number.isNaN(value) || !Number.isFinite(value));
   }
@@ -370,6 +361,15 @@ class SliderModel implements Model {
     const isStepPositive = options.step > 0;
 
     return hasMaxVal && hasMinVal && hasStep && isMaxGreaterMin && isStepPositive;
+  }
+
+  static fixVal(value: number, baseVal: number): number {
+    if (!(baseVal % 1)) {
+      return +value.toFixed(0);
+    }
+    const base = `${baseVal}`.split('.')[1].length;
+    const fixedVal = +value.toFixed(base);
+    return fixedVal;
   }
 }
 
