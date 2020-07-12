@@ -167,7 +167,7 @@ describe('scale', () => {
       $scale.trigger($scaleClickEvent);
       expect(mockChange).not.toBeCalled();
 
-      // if type of data is Array and options.range is true
+      // if type of data is Array
       jest.clearAllMocks();
       const data: View.RenderData = {
         data: [2, 3, 4, 5, 6],
@@ -176,9 +176,7 @@ describe('scale', () => {
         percentage: [0, 100],
       };
       testScale.update({
-        options: {
-          range: true,
-        },
+        options: {},
         data,
       });
 

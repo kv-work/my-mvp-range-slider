@@ -48,8 +48,22 @@ class SliderScale implements Scale {
 
     const { data, percentageData } = newData;
     this.$scale.empty();
-    data.forEach((elem: App.Stringable, idx: number) => {
-      const content = elem.toString();
+    data.forEach((elem: App.Stringable, idx: number, arr: App.Stringable[]) => {
+      let content: string;
+
+      switch (true) {
+        case (!scaleOptions.displayMin && idx === 0):
+        case (!scaleOptions.displayMax && idx === (arr.length - 1)):
+          content = '';
+          break;
+        case (idx % scaleOptions.scaleStep !== 0):
+          content = '';
+          break;
+        default:
+          content = elem.toString();
+          break;
+      }
+
       const value = percentageData[idx];
       const $elem = SliderScale.createElement(content, value, scaleOptions);
       this.$scale.append($elem);
