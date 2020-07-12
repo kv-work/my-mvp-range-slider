@@ -18,7 +18,7 @@ $.fn.myMVPSlider = function myMVPSlider(options: App.Option): JQuery {
     runner: true,
     bar: true,
     scale: false,
-    scaleStep: false,
+    scaleStep: 1,
     displayScaleValue: false,
     displayValue: false,
     displayMin: false,
