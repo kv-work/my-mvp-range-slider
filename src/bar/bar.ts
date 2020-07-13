@@ -167,9 +167,9 @@ class SliderBar implements Bar {
     const isDragStarted = true;
     this.$view.trigger($startEvent, [isDragStarted]);
     const dragHandler = this.makeDragHandler(startCoord);
-    this.$view.on('mousemove.bar', dragHandler);
+    this.$view.parent('.js-slider__container').on('mousemove.bar', dragHandler);
     document.onmouseup = (): void => {
-      this.$view.off('mousemove.bar', dragHandler);
+      this.$view.parent('.js-slider__container').off('mousemove.bar', dragHandler);
       this.$range.css({ cursor: 'grab' });
 
       const $dropEvent = $.Event('dropRange.myMVPSlider');
