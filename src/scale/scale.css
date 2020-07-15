@@ -23,7 +23,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-repeat-y: no-repeat;
+  background-repeat: repeat-x;
 }
 
 .scale__content {

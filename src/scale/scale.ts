@@ -76,30 +76,39 @@ class SliderScale implements Scale {
   }
 
   private clickEventListener(event: JQuery.ClickEvent): void {
-    const elem: HTMLElement = event.target;
+    const $startEvent = $.Event('startChanging.myMVPSlider');
+    this.$view.trigger($startEvent);
+
+    let clickCoord: number;
     let selectedVal: number;
-    if (elem.classList.contains('scale__element') || elem.parentElement.classList.contains('scale__element')) {
-      selectedVal = $(elem).data('value');
+    const elem: HTMLElement = event.currentTarget;
+    const elemMetrics: DOMRect = elem.getBoundingClientRect();
+    const options: Scale.RenderOptions = $(elem).data('options');
 
-      const $startEvent = $.Event('startChanging.myMVPSlider');
-      this.$view.trigger($startEvent);
-
-      const currentData = this.$scale.data('data').percentage;
-      let isSecond = false;
-
-      if (Array.isArray(currentData)) {
-        const average = (currentData[1] + currentData[0]) / 2;
-        isSecond = selectedVal > average;
-      }
-
-      const eventData = [selectedVal, isSecond];
-
-      const $changeEvent = $.Event('changeValue.myMVPSlider');
-      this.$view.trigger($changeEvent, eventData);
-
-      const $finishEvent = $.Event('finish.myMVPSlider');
-      this.$view.trigger($finishEvent, eventData);
+    if (options.isHorizontal) {
+      clickCoord = event.clientX - elemMetrics.x;
+      selectedVal = (clickCoord / elemMetrics.width) * 100;
+    } else {
+      clickCoord = event.clientY - elemMetrics.y;
+      selectedVal = (clickCoord / elemMetrics.height) * 100;
     }
+
+    const data: View.RenderData = $(elem).data('data');
+    const currentData = data.percentage;
+    let isSecond = false;
+
+    if (Array.isArray(currentData)) {
+      const average = (currentData[1] + currentData[0]) / 2;
+      isSecond = selectedVal > average;
+    }
+
+    const eventData = [selectedVal, isSecond];
+
+    const $changeEvent = $.Event('changeValue.myMVPSlider');
+    this.$view.trigger($changeEvent, eventData);
+
+    const $finishEvent = $.Event('finish.myMVPSlider');
+    this.$view.trigger($finishEvent, eventData);
   }
 
   static createScale(): JQuery {
