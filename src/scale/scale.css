@@ -17,11 +17,13 @@
   user-select: none;
 }
 
-.scale__stria {
-  width: 1px;
-  height: 0.5rem;
-  background-color: black;
-  /* border: solid 1px; */
+.scale__strips {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-repeat-y: no-repeat;
 }
 
 .scale__content {

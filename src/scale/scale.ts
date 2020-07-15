@@ -4,11 +4,13 @@ import './scale.css';
 class SliderScale implements Scale {
   private $view: JQuery;
   private $scale: JQuery;
+  private $scaleStripes: JQuery;
   private isRendered: boolean;
 
   constructor(options: Scale.Options) {
     this.$view = options.$viewContainer;
     this.$scale = SliderScale.createScale();
+    this.$scaleStripes = SliderScale.createStrips();
     this.isRendered = false;
   }
 
@@ -18,6 +20,7 @@ class SliderScale implements Scale {
     const defaultOptions: Scale.RenderOptions = {
       isHorizontal: true,
       scaleStep: 1,
+      displayScaleStrips: true,
       displayScaleValue: true,
       displayMin: true,
       displayMax: true,
@@ -40,64 +43,25 @@ class SliderScale implements Scale {
       this.$scale.removeClass('slider__scale_horizontal');
     }
 
+    if (scaleOptions.displayScaleStrips && this.$scale.find('.scale__strips').length === 0) {
+      this.$scale.append(this.$scaleStripes);
+    }
+
+    if (!scaleOptions.displayScaleStrips && this.$scale.find('.scale__strips').length !== 0) {
+      this.$scale.find('.slider__scale_strips').remove();
+    }
+
     if (!this.isRendered) {
       this.$view.append(this.$scale);
       this.attachEventHandlers();
       this.isRendered = true;
     }
 
-    const { data, percentageData } = newData;
-    this.$scale.empty();
-    data.forEach((elem: App.Stringable, idx: number, arr: App.Stringable[]) => {
-      let content: string;
+    const scaleStripsStep: number = (1 / (newData.data.length - 1)) * 100;
 
-      switch (true) {
-        case (!scaleOptions.displayMin && idx === 0):
-        case (!scaleOptions.displayMax && idx === (arr.length - 1)):
-          content = '';
-          break;
-        case (idx % scaleOptions.scaleStep !== 0):
-          content = '';
-          break;
-        default:
-          content = elem.toString();
-          break;
-      }
-
-      const value = percentageData[idx];
-      const $elem = SliderScale.createElement(content, value, scaleOptions);
-      this.$scale.append($elem);
-
-      const elemMetrics: DOMRect = $elem[0].getBoundingClientRect();
-
-      if (options.isHorizontal) {
-        switch (value) {
-          case 100:
-            $elem.css({
-              right: '0%',
-              'align-items': 'flex-end',
-            });
-            break;
-          case 0:
-            $elem.css('left', `${value}%`);
-            break;
-          default:
-            $elem.css({
-              left: `calc(${value}% - ${elemMetrics.width / 2}px)`,
-              'align-items': 'center',
-            });
-            break;
-        }
-      } else {
-        switch (value) {
-          case 100:
-            $elem.css('bottom', '0%');
-            break;
-          default:
-            $elem.css('top', `${value}%`);
-            break;
-        }
-      }
+    this.$scaleStripes.css({
+      'background-image': `linear-gradient(to right, #000 0%, #000 ${1}px, transparent ${1}px, transparent 100%)`,
+      'background-size': `${scaleStripsStep}% 50%`,
     });
   }
 
@@ -148,25 +112,27 @@ class SliderScale implements Scale {
 
   static createElement(content: string, value: number, options: Scale.RenderOptions): JQuery {
     const $elem = $('<div>', { class: 'scale__element' });
-    const $stria = $('<div>', {
-      class: 'scale__stria',
-    });
     const $content = $('<div>', { class: 'scale__content' });
     $content.html(content);
 
     $elem.data('value', value);
-    $stria.data('value', value);
     $content.data('value', value);
 
     if (options.isHorizontal) {
       $elem.addClass('scale__element_horizontal');
     }
 
-    $elem
-      .append($stria)
-      .append($content);
+    $elem.append($content);
 
     return $elem;
+  }
+
+  static createStrips(): JQuery {
+    const $scaleStrips = $('<div>', {
+      class: 'scale__strips',
+    });
+
+    return $scaleStrips;
   }
 }
 

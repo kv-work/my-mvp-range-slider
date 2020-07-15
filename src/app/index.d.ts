@@ -25,6 +25,7 @@ declare namespace App {
     bar?: boolean;
     scale?: boolean;
     scaleStep?: number;
+    displayScaleStrips?: boolean;
     displayScaleValue?: boolean;
     displayValue?: boolean;
     displayMin?: boolean;
