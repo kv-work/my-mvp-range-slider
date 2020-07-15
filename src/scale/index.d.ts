@@ -15,7 +15,6 @@ declare namespace Scale {
     displayScaleValue?: boolean;
     displayMin?: boolean;
     displayMax?: boolean;
-    range?: boolean;
   }
 
   interface UpdateOptions {

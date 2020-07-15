@@ -15,17 +15,5 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-}
-
-.scale__strips {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-repeat: repeat-x;
-}
-
-.scale__content {
   color: #e5e5e5;
 }
