@@ -1,9 +1,9 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
-const ghpages = require('gh-pages');
+// const ghpages = require('gh-pages');
 
-ghpages.publish('dist');
+// ghpages.publish('dist');
 
 module.exports = (env = {}) => {
   const { mode = 'development' } = env;
@@ -47,10 +47,17 @@ module.exports = (env = {}) => {
 
     mode,
 
-    entry: './src/demo/index.ts',
+    entry: {
+      'demo': './src/demo/index.ts',
+      'plugin': './src/plugin/plugin.ts',
+    },
 
     output: {
-      filename: 'index.js',
+      // path: ({chunk}) => chunk.name === 'demo' ? 'dist' : 'lib',
+      filename: ({chunk}) => chunk.name === 'demo' ? 'index.js' : 'my-mvp-range-slider.min.js',
+      library: 'my-mvp-range-slider',
+      libraryTarget: 'umd',
+      umdNamedDefine: true,
     },
 
     resolve: {
