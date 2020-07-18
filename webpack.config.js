@@ -37,6 +37,10 @@ module.exports = (env = {}) => {
 
     mode,
 
+    optimization: {
+      minimize: false,
+    },
+
     entry: './src/plugin/plugin.ts',
 
     output: {
