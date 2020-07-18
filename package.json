@@ -2,7 +2,7 @@
   "name": "the_4th_task",
   "version": "1.0.0",
   "description": "slider plugin",
-  "main": "index.js",
+  "main": "lib/my-mvp-range-slider.min.js",
   "scripts": {
     "silent-test": "jest --silent --watch",
     "test": "jest --coverage",
