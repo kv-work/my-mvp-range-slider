@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import App from '../app';
 import SliderModel from '../../model/model';
 import SliderPresenter from '../../presenter/presenter';

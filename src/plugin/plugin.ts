@@ -1,9 +1,12 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable no-shadow */
+/* eslint-disable func-names */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable eol-last */
-import $ from 'jquery';
 import SliderApp from '../app/app';
 
-$.fn.myMVPSlider = function myMVPSlider(options: App.Option): JQuery {
+$.fn.myMVPSlider = function (options: App.Option): JQuery {
   const settings = $.extend({
     maxValue: 100,
     minValue: 0,

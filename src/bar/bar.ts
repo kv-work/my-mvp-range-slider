@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import './bar.css';
 
 class SliderBar implements Bar {

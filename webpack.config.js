@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
+const path = require('path');
 // const ghpages = require('gh-pages');
 
 // ghpages.publish('dist');
@@ -20,22 +21,11 @@ module.exports = (env = {}) => {
 
   // Функция для настройки подключаемых plagin'ов
   function getPlugins() {
-    const plugins = [
-      new HtmlWebpackPlugin({
-        filename: 'index.html',
-        template: './src/demo/index.html',
-      }),
-
-      new webpack.ProvidePlugin({
-        $: 'jquery',
-        jQuery: 'jquery',
-        'window.jQuery': 'jquery',
-      }),
-    ];
+    const plugins = [];
 
     if (isProd) {
       plugins.push(new MiniCssExtractPlugin({
-        filename: '[name].css',
+        filename: 'my-mvp-range-slider.min.css',
       }));
     }
 
@@ -47,24 +37,16 @@ module.exports = (env = {}) => {
 
     mode,
 
-    entry: {
-      'demo': './src/demo/index.ts',
-      'plugin': './src/plugin/plugin.ts',
-    },
+    entry: './src/plugin/plugin.ts',
 
     output: {
-      // path: ({chunk}) => chunk.name === 'demo' ? 'dist' : 'lib',
-      filename: ({chunk}) => chunk.name === 'demo' ? 'index.js' : 'my-mvp-range-slider.min.js',
-      library: 'my-mvp-range-slider',
-      libraryTarget: 'umd',
-      umdNamedDefine: true,
+      path: path.resolve(__dirname, 'dist', 'lib'),
+      filename: 'my-mvp-range-slider.min.js',
     },
 
     resolve: {
       extensions: ['.ts', '.js'],
     },
-
-    // devtool: 'inline-source-map',
 
     module: {
       // Loading TypeScript files
@@ -79,6 +61,14 @@ module.exports = (env = {}) => {
         {
           test: /\.css$/,
           use: getStyleLoaders(),
+        },
+        {
+          // Expose jQuery
+          test: require.resolve('jquery'),
+          loader: 'expose-loader',
+          options: {
+            exposes: ['$', 'jQuery'],
+          },
         },
       ],
     },

@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import './view.css';
 import SliderScale from '../scale/scale';
 import SliderBar from '../bar/bar';

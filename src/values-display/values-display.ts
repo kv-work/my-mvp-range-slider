@@ -1,5 +1,4 @@
 /* eslint-disable class-methods-use-this */
-import $ from 'jquery';
 import './values-display.css';
 
 export default class SliderValuesDisplay implements ValuesDisplay {

@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import './scale.css';
 
 class SliderScale implements Scale {

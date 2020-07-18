@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import SliderScale from '../scale';
 
 describe('scale', () => {

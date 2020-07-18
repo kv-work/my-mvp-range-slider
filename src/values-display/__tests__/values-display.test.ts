@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import SliderValuesDisplay from '../values-display';
 
 describe('SliderValuesDisplay', () => {

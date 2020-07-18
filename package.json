@@ -39,6 +39,7 @@
     "eslint-config-airbnb-typescript": "^7.2.1",
     "eslint-plugin-fsd": "^1.0.1",
     "eslint-plugin-import": "^2.20.2",
+    "expose-loader": "^1.0.0",
     "gh-pages": "^2.2.0",
     "html-webpack-plugin": "^4.2.0",
     "identity-obj-proxy": "^3.0.0",

@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import SliderBar from '../bar';
 
 describe('bar', () => {
