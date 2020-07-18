@@ -2,9 +2,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
 const path = require('path');
-// const ghpages = require('gh-pages');
+const ghpages = require('gh-pages');
 
-// ghpages.publish('dist');
+ghpages.publish('dist');
 
 module.exports = (env = {}) => {
   const { mode = 'development' } = env;
@@ -40,7 +40,7 @@ module.exports = (env = {}) => {
     entry: './src/plugin/plugin.ts',
 
     output: {
-      path: path.resolve(__dirname, 'dist', 'lib'),
+      path: path.resolve(__dirname, 'lib'),
       filename: 'my-mvp-range-slider.min.js',
     },
 
