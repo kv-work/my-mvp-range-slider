@@ -42,6 +42,9 @@ module.exports = (env = {}) => {
     output: {
       path: path.resolve(__dirname, 'lib'),
       filename: 'my-mvp-range-slider.min.js',
+      library: 'my-mvp-range-slider',
+      libraryTarget: 'umd',
+      umdNamedDefine: true,
     },
 
     resolve: {
