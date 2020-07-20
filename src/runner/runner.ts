@@ -2,12 +2,14 @@ import './runner.css';
 
 class SliderRunner implements Runner {
   private $view: JQuery;
+  private $barContainer: JQuery;
   private $runner: JQuery;
   private isRendered: boolean;
   private isSecond: boolean;
 
   constructor(options: Runner.InitOptions) {
-    this.$view = options.$viewContainer;
+    this.$barContainer = options.$viewContainer;
+    this.$view = this.$barContainer.parent('.js-slider__container');
     this.$runner = SliderRunner.createRunner();
     this.isRendered = false;
     this.isSecond = (options.isSecond === true);
@@ -36,7 +38,7 @@ class SliderRunner implements Runner {
     }
 
     if (!this.isRendered) {
-      this.$view.append(this.$runner);
+      this.$barContainer.append(this.$runner);
       this.attacheEventHandlers();
       this.isRendered = true;
     }
@@ -118,9 +120,9 @@ class SliderRunner implements Runner {
     this.$runner.css('cursor', 'grabbing');
 
     const mouseMoveHandler = this.makeHandler(renderOptions);
-    this.$view.parent('.js-slider__container').on('mousemove.runner', mouseMoveHandler);
+    this.$view.on('mousemove.runner', mouseMoveHandler);
     document.onmouseup = (): void => {
-      this.$view.parent('.js-slider__container').off('mousemove.runner', mouseMoveHandler);
+      this.$view.off('mousemove.runner', mouseMoveHandler);
       this.$runner.css('cursor', 'grab');
 
       const $finishEvent = $.Event('finish.myMVPSlider');

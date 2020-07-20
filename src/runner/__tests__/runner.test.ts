@@ -2,8 +2,12 @@ import SliderRunner from '../runner';
 
 describe('SliderRunner', () => {
   document.body.innerHTML = `
-    <div id="view_container_horizontal"></div>
-    <div id="view_container"></div>
+  <div id="view_container" class="js-slider__container">
+    <div class="slider__bar_container"></div>
+  </div>
+  <div id="view_container_horizontal" class="js-slider__container">
+    <div class="slider__bar_container"></div>
+  </div>
   `;
 
   HTMLElement.prototype.getBoundingClientRect = (): DOMRect => ({
@@ -32,6 +36,9 @@ describe('SliderRunner', () => {
   $verticalView.bind('changeValue.myMVPSlider', mockChange);
   $verticalView.bind('finish.myMVPSlider', mockFinish);
 
+  const $horizontalBarContainer = $horizontalView.find('.slider__bar_container');
+  const $verticalBarContainer = $verticalView.find('.slider__bar_container');
+
   const renderData: View.RenderData = {
     value: 10,
     percentage: 10,
@@ -40,8 +47,8 @@ describe('SliderRunner', () => {
   const horizontalOptions: Runner.RenderOptions = { isHorizontal: true };
   const verticalOptions: Runner.RenderOptions = { isHorizontal: false };
 
-  const testOptions: Runner.InitOptions = { $viewContainer: $horizontalView };
-  const testOptionsVertical: Runner.InitOptions = { $viewContainer: $verticalView };
+  const testOptions: Runner.InitOptions = { $viewContainer: $horizontalBarContainer };
+  const testOptionsVertical: Runner.InitOptions = { $viewContainer: $verticalBarContainer };
 
   let testRunner: SliderRunner;
   let vertRunner: SliderRunner;
@@ -53,8 +60,8 @@ describe('SliderRunner', () => {
 
   describe('constructor', () => {
     test('should save $view in prop', () => {
-      expect(testRunner).toHaveProperty('$view', testOptions.$viewContainer);
-      expect(vertRunner).toHaveProperty('$view', testOptionsVertical.$viewContainer);
+      expect(testRunner).toHaveProperty('$view', $horizontalView);
+      expect(vertRunner).toHaveProperty('$view', $verticalView);
     });
 
     test('should reset isRendered flag', () => {
@@ -83,8 +90,8 @@ describe('SliderRunner', () => {
     });
 
     afterEach(() => {
-      $horizontalView.empty();
-      $verticalView.empty();
+      $horizontalBarContainer.empty();
+      $verticalBarContainer.empty();
       $horizontalView.off('**');
       $verticalView.off('**');
     });
@@ -208,10 +215,10 @@ describe('SliderRunner', () => {
         .trigger($AnotherMouseMoveEvent);
       expect(mockChange).toBeCalledTimes(0);
 
-      const $runner = $('.js-slider__runner');
+      const $horizontalRunner = $horizontalView.find('.js-slider__runner');
 
-      $runner.trigger($mouseDownEvent);
-      expect(mockStart).toBeCalledTimes(2);
+      $horizontalRunner.trigger($mouseDownEvent);
+      expect(mockStart).toBeCalledTimes(1);
 
       $horizontalView
         .trigger($mouseMoveEvent)
@@ -228,7 +235,8 @@ describe('SliderRunner', () => {
       mockChange.mockClear();
       mockFinish.mockClear();
 
-      $runner.trigger($mouseDownEvent);
+      const $verticalRunner = $verticalView.find('.js-slider__runner');
+      $verticalRunner.trigger($mouseDownEvent);
       $verticalView
         .trigger($mouseMoveEvent)
         .trigger($AnotherMouseMoveEvent);
