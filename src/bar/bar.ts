@@ -172,7 +172,7 @@ class SliderBar implements Bar {
       this.$range.css({ cursor: 'grab' });
 
       const $dropEvent = $.Event('dropRange.myMVPSlider');
-      this.$view.trigger($dropEvent);
+      this.$view.parent('.js-slider__container').trigger($dropEvent);
 
       document.onmouseup = null;
     };
@@ -191,7 +191,7 @@ class SliderBar implements Bar {
 
       const dragDistance = newCoord - start;
       const $dragRangeEvent = $.Event('dragRange.myMVPSlider');
-      this.$view.trigger($dragRangeEvent, [dragDistance]);
+      this.$view.parent('.js-slider__container').trigger($dragRangeEvent, [dragDistance]);
     };
 
     return dragHandler;

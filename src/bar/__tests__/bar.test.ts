@@ -1,13 +1,21 @@
+/* eslint-disable fsd/no-function-declaration-in-event-listener */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import SliderBar from '../bar';
 
 describe('bar', () => {
   document.body.innerHTML = `
-    <div id="view_container"></div>
-    <div id="view_container_horizontal"></div>
+    <div id="view_container" class="js-slider__container">
+      <div class="slider__bar_container"></div>
+    </div>
+    <div id="view_container_horizontal" class="js-slider__container">
+      <div class="slider__bar_container"></div>
+    </div>
   `;
 
   const $horizontalView = $('#view_container_horizontal');
+  const $horizontalBarContainer = $horizontalView.find('.slider__bar_container');
   const $verticalView = $('#view_container');
+  const $verticalBarContainer = $verticalView.find('.slider__bar_container');
 
   HTMLElement.prototype.getBoundingClientRect = (): DOMRect => ({
     x: 0,
@@ -43,21 +51,21 @@ describe('bar', () => {
   $verticalView.bind('dropRange.myMVPSlider', mockDropRange);
 
   beforeEach(() => {
-    testBar = new SliderBar({ $viewContainer: $('#view_container_horizontal') });
-    verticalBar = new SliderBar({ $viewContainer: $('#view_container') });
+    testBar = new SliderBar({ $viewContainer: $horizontalView.find('.slider__bar_container') });
+    verticalBar = new SliderBar({ $viewContainer: $verticalView.find('.slider__bar_container') });
   });
 
   afterEach(() => {
-    $horizontalView.empty();
-    $verticalView.empty();
+    $horizontalBarContainer.empty();
+    $verticalBarContainer.empty();
   });
 
   describe('constructor', () => {
     test('should create $view, $bar', () => {
-      expect(testBar).toHaveProperty('$view', $('#view_container_horizontal'));
+      expect(testBar).toHaveProperty('$view', $horizontalBarContainer);
       expect(testBar).toHaveProperty('$bar');
 
-      expect(verticalBar).toHaveProperty('$view', $('#view_container'));
+      expect(verticalBar).toHaveProperty('$view', $verticalBarContainer);
       expect(verticalBar).toHaveProperty('$bar');
     });
 
@@ -195,7 +203,7 @@ describe('bar', () => {
         clientY: 60,
       });
 
-      $bar
+      $horizontalView
         .trigger($mousemoveEvent)
         .trigger($newMousemoveEvent);
       expect(mockChange).not.toBeCalled();
@@ -225,7 +233,7 @@ describe('bar', () => {
       expect(mockChange).not.toBeCalled();
       expect(mockFinish).not.toBeCalled();
 
-      $vertBar
+      $verticalView
         .trigger($mousemoveEvent)
         .trigger($newMousemoveEvent);
       expect(mockChange).not.toBeCalled();
