@@ -46,5 +46,5 @@ const anotherOptions = {
   onUpdate: () => {},
 };
 
-$('.js-test_with_options').myMVPSlider(options);
-$('.js-test_with_another_options').myMVPSlider(anotherOptions);
+$('.js-slider_default').myMVPSlider();
+$('.js-slider').myMVPSlider(options);
