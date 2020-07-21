@@ -129,7 +129,7 @@ describe('scale', () => {
       const $elements = $container.find('.scale__element');
       expect($elements.length).toBe(3);
       $elements.each(function test(idx: number) {
-        expect($(this).find('.scale__content').html()).toBe(newData.data[idx].toString());
+        expect($(this).html()).toBe(newData.data[idx].toString());
       });
     });
 
@@ -144,7 +144,7 @@ describe('scale', () => {
       const $elements = $container.find('.scale__element');
       expect($elements.length).toBe(6);
       $elements.each(function test(idx: number) {
-        expect($(this).find('.scale__content').html()).toBe(newData.data[idx].toString());
+        expect($(this).html()).toBe(newData.data[idx].toString());
       });
     });
 
