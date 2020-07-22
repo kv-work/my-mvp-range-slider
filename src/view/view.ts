@@ -158,7 +158,8 @@ class SliderView implements View {
           this.runner.update(renderData, this.viewOptions);
         } else {
           this.runner = new SliderRunner({
-            $viewContainer: this.$barContainer,
+            $viewContainer: this.$view,
+            $barContainer: this.$barContainer,
             isSecond: false,
           });
           this.runner.update(renderData, this.viewOptions);
@@ -167,7 +168,8 @@ class SliderView implements View {
           this.secondRunner.update(renderData, this.viewOptions);
         } else {
           this.secondRunner = new SliderRunner({
-            $viewContainer: this.$barContainer,
+            $viewContainer: this.$view,
+            $barContainer: this.$barContainer,
             isSecond: true,
           });
           this.secondRunner.update(renderData, this.viewOptions);
@@ -176,7 +178,8 @@ class SliderView implements View {
         this.runner.update(renderData, this.viewOptions);
       } else {
         this.runner = new SliderRunner({
-          $viewContainer: this.$barContainer,
+          $viewContainer: this.$view,
+          $barContainer: this.$barContainer,
           isSecond: false,
         });
         this.runner.update(renderData, this.viewOptions);

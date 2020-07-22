@@ -6,6 +6,7 @@ declare interface Runner {
 declare namespace Runner {
   interface InitOptions {
     $viewContainer: JQuery;
+    $barContainer: JQuery;
     isSecond?: boolean;
   }
 

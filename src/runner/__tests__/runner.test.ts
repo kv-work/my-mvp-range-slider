@@ -47,8 +47,14 @@ describe('SliderRunner', () => {
   const horizontalOptions: Runner.RenderOptions = { isHorizontal: true };
   const verticalOptions: Runner.RenderOptions = { isHorizontal: false };
 
-  const testOptions: Runner.InitOptions = { $viewContainer: $horizontalBarContainer };
-  const testOptionsVertical: Runner.InitOptions = { $viewContainer: $verticalBarContainer };
+  const testOptions: Runner.InitOptions = {
+    $viewContainer: $horizontalView,
+    $barContainer: $horizontalBarContainer,
+  };
+  const testOptionsVertical: Runner.InitOptions = {
+    $viewContainer: $verticalView,
+    $barContainer: $verticalBarContainer,
+  };
 
   let testRunner: SliderRunner;
   let vertRunner: SliderRunner;
@@ -62,6 +68,11 @@ describe('SliderRunner', () => {
     test('should save $view in prop', () => {
       expect(testRunner).toHaveProperty('$view', $horizontalView);
       expect(vertRunner).toHaveProperty('$view', $verticalView);
+    });
+
+    test('should save $barContainer in prop', () => {
+      expect(testRunner).toHaveProperty('$barContainer', $horizontalBarContainer);
+      expect(vertRunner).toHaveProperty('$barContainer', $verticalBarContainer);
     });
 
     test('should reset isRendered flag', () => {

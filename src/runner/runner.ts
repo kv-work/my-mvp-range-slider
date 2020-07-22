@@ -8,8 +8,8 @@ class SliderRunner implements Runner {
   private isSecond: boolean;
 
   constructor(options: Runner.InitOptions) {
-    this.$barContainer = options.$viewContainer;
-    this.$view = this.$barContainer.parent('.js-slider__container');
+    this.$barContainer = options.$barContainer;
+    this.$view = options.$viewContainer;
     this.$runner = SliderRunner.createRunner();
     this.isRendered = false;
     this.isSecond = (options.isSecond === true);
