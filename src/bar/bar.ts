@@ -2,12 +2,14 @@ import './bar.css';
 
 class SliderBar implements Bar {
   private $view: JQuery;
+  private $barContainer: JQuery;
   private $bar: JQuery;
   private $range: JQuery;
   private isRendered: boolean;
 
   constructor(options: Bar.Options) {
     this.$view = options.$viewContainer;
+    this.$barContainer = options.$barContainer;
     this.$bar = SliderBar.createBar();
     this.isRendered = false;
   }
@@ -43,7 +45,7 @@ class SliderBar implements Bar {
     }
 
     if (!this.isRendered) {
-      this.$view.append(this.$bar);
+      this.$barContainer.append(this.$bar);
       this.isRendered = true;
       this.attachEventHandlers();
     }
@@ -166,13 +168,13 @@ class SliderBar implements Bar {
     const isDragStarted = true;
     this.$view.trigger($startEvent, [isDragStarted]);
     const dragHandler = this.makeDragHandler(startCoord);
-    this.$view.parent('.js-slider__container').on('mousemove.bar', dragHandler);
+    this.$view.on('mousemove.bar', dragHandler);
     document.onmouseup = (): void => {
-      this.$view.parent('.js-slider__container').off('mousemove.bar', dragHandler);
+      this.$view.off('mousemove.bar', dragHandler);
       this.$range.css({ cursor: 'grab' });
 
       const $dropEvent = $.Event('dropRange.myMVPSlider');
-      this.$view.parent('.js-slider__container').trigger($dropEvent);
+      this.$view.trigger($dropEvent);
 
       document.onmouseup = null;
     };
@@ -191,7 +193,7 @@ class SliderBar implements Bar {
 
       const dragDistance = newCoord - start;
       const $dragRangeEvent = $.Event('dragRange.myMVPSlider');
-      this.$view.parent('.js-slider__container').trigger($dragRangeEvent, [dragDistance]);
+      this.$view.trigger($dragRangeEvent, [dragDistance]);
     };
 
     return dragHandler;

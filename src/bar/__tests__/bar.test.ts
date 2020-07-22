@@ -1,5 +1,3 @@
-/* eslint-disable fsd/no-function-declaration-in-event-listener */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import SliderBar from '../bar';
 
 describe('bar', () => {
@@ -29,6 +27,15 @@ describe('bar', () => {
     toJSON: (): void => {},
   });
 
+  const initOpts: Bar.Options = {
+    $viewContainer: $horizontalView,
+    $barContainer: $horizontalBarContainer,
+  };
+  const vertInitOpts: Bar.Options = {
+    $viewContainer: $verticalView,
+    $barContainer: $verticalBarContainer,
+  };
+
   let testBar: SliderBar;
   let verticalBar: SliderBar;
 
@@ -51,8 +58,8 @@ describe('bar', () => {
   $verticalView.bind('dropRange.myMVPSlider', mockDropRange);
 
   beforeEach(() => {
-    testBar = new SliderBar({ $viewContainer: $horizontalView.find('.slider__bar_container') });
-    verticalBar = new SliderBar({ $viewContainer: $verticalView.find('.slider__bar_container') });
+    testBar = new SliderBar(initOpts);
+    verticalBar = new SliderBar(vertInitOpts);
   });
 
   afterEach(() => {
@@ -61,11 +68,13 @@ describe('bar', () => {
   });
 
   describe('constructor', () => {
-    test('should create $view, $bar', () => {
-      expect(testBar).toHaveProperty('$view', $horizontalBarContainer);
+    test('should create $view, $barContainer and $bar', () => {
+      expect(testBar).toHaveProperty('$view', $horizontalView);
+      expect(testBar).toHaveProperty('$barContainer', $horizontalBarContainer);
       expect(testBar).toHaveProperty('$bar');
 
-      expect(verticalBar).toHaveProperty('$view', $verticalBarContainer);
+      expect(verticalBar).toHaveProperty('$view', $verticalView);
+      expect(verticalBar).toHaveProperty('$barContainer', $horizontalBarContainer);
       expect(verticalBar).toHaveProperty('$bar');
     });
 

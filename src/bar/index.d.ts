@@ -6,6 +6,7 @@ declare interface Bar {
 declare namespace Bar {
   interface Options {
     $viewContainer: JQuery;
+    $barContainer: JQuery;
   }
 
   interface RenderOptions {

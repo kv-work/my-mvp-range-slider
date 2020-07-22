@@ -108,7 +108,10 @@ class SliderView implements View {
       });
     }
     if (this.viewOptions.bar && !this.bar) {
-      this.bar = new SliderBar({ $viewContainer: this.$barContainer });
+      this.bar = new SliderBar({
+        $viewContainer: this.$view,
+        $barContainer: this.$barContainer,
+      });
       this.bar.update({
         data: percentage,
         options: this.viewOptions,
