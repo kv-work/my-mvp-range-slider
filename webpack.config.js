@@ -1,7 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const webpack = require('webpack');
-const path = require('path');
 const ghpages = require('gh-pages');
 
 ghpages.publish('dist');
@@ -21,11 +19,22 @@ module.exports = (env = {}) => {
 
   // Функция для настройки подключаемых plagin'ов
   function getPlugins() {
-    const plugins = [];
+    const plugins = [
+      new HtmlWebpackPlugin({
+        filename: 'index.html',
+        template: './demo/demo.html',
+      }),
+    ];
 
     if (isProd) {
       plugins.push(new MiniCssExtractPlugin({
-        filename: 'my-mvp-range-slider.min.css',
+        moduleFilename: ({ name }) => {
+          const chunkName = name.replace('/js/', '/css/');
+          if (chunkName === 'lib') {
+            return 'lib/my-mvp-range-slider.min.css';
+          }
+          return 'styles.css';
+        },
       }));
     }
 
@@ -37,11 +46,18 @@ module.exports = (env = {}) => {
 
     mode,
 
-    entry: './src/plugin/plugin.ts',
+    entry: {
+      lib: './src/plugin/plugin.ts',
+      demo: './demo/demo.ts',
+    },
 
     output: {
-      path: path.resolve(__dirname, 'lib'),
-      filename: 'my-mvp-range-slider.min.js',
+      filename: ({ chunk }) => {
+        if (chunk.name === 'lib') {
+          return 'lib/my-mvp-range-slider.min.js';
+        }
+        return 'index.js';
+      },
       library: 'my-mvp-range-slider',
       libraryTarget: 'umd',
       umdNamedDefine: true,
