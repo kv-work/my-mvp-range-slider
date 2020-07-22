@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import './values-display.css';
 
 export default class SliderValuesDisplay implements ValuesDisplay {
