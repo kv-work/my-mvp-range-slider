@@ -22,9 +22,9 @@ declare namespace View {
     runner?: boolean;
     bar?: boolean;
     scale?: boolean;
-    scaleStep?: number;
     displayScaleValue?: boolean;
     displayValue?: boolean;
+    numOfScaleVal?: number;
     displayMin?: boolean;
     displayMax?: boolean;
     prefix?: string;

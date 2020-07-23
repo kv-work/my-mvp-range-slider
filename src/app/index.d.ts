@@ -24,9 +24,8 @@ declare namespace App {
     runner?: boolean;
     bar?: boolean;
     scale?: boolean;
-    scaleStep?: number;
-    displayScaleStrips?: boolean;
     displayScaleValue?: boolean;
+    numOfScaleVal?: number;
     displayValue?: boolean;
     displayMin?: boolean;
     displayMax?: boolean;

@@ -317,8 +317,8 @@ class SliderView implements View {
             return entry;
           }
           break;
-        case 'scaleStep':
-          if (SliderView.isValidStep(entry[1])) {
+        case 'numOfScaleVal':
+          if (SliderView.isValidNumOfValue(entry[1])) {
             return entry;
           }
           break;
@@ -338,9 +338,9 @@ class SliderView implements View {
     return resultData;
   }
 
-  static isValidStep(value: string | boolean | number): boolean {
+  static isValidNumOfValue(value: string | boolean | number): boolean {
     if (typeof value === 'number') {
-      return Number.isFinite(value) && (value > 0);
+      return Number.isFinite(value) && (value >= 0) && (value <= 9);
     }
     return false;
   }

@@ -60,7 +60,7 @@ class SliderPresenter implements Presenter {
       runner: options.runner,
       bar: options.bar,
       scale: options.scale,
-      scaleStep: options.scaleStep,
+      numOfScaleVal: options.numOfScaleVal,
       displayScaleValue: options.displayScaleValue,
       displayValue: options.displayValue,
       displayMin: options.displayMin,

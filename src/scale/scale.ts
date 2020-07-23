@@ -16,14 +16,13 @@ class SliderScale implements Scale {
     const { data: newData, options } = opts;
     const defaultOptions: Scale.RenderOptions = {
       isHorizontal: true,
-      scaleStep: 1,
-      displayScaleStrips: true,
       displayScaleValue: true,
       displayMin: true,
       displayMax: true,
+      numOfScaleVal: 3,
     };
 
-    const scaleOptions = {
+    const scaleOptions: Scale.RenderOptions = {
       ...defaultOptions,
       ...currentData,
       ...options,
@@ -48,59 +47,43 @@ class SliderScale implements Scale {
 
     const { data, percentageData } = newData;
     this.$scale.empty();
-    data.forEach((elem: App.Stringable, idx: number, arr: App.Stringable[]) => {
-      let content: string;
 
-      switch (true) {
-        case (!scaleOptions.displayMin && idx === 0):
-        case (!scaleOptions.displayMax && idx === (arr.length - 1)):
-          content = '';
-          break;
-        case (idx % scaleOptions.scaleStep !== 0):
-          content = '';
-          break;
-        default:
-          content = elem.toString();
-          break;
-      }
+    // append min
+    if (scaleOptions.displayMin) {
+      const content = data[0].toString();
+      const value = percentageData[0];
+      const $elem = SliderScale.createElement(content, value, scaleOptions);
+      this.$scale.append($elem);
+      SliderScale.positionElem($elem, scaleOptions);
+    }
 
-      if (content !== '') {
-        const value = percentageData[idx];
-        const $elem = SliderScale.createElement(content, value, scaleOptions);
-        this.$scale.append($elem);
+    // append values
+    if (scaleOptions.displayScaleValue && scaleOptions.numOfScaleVal !== undefined) {
+      const total = data.length;
+      const num = SliderScale.normalizeNumOfScaleVal(scaleOptions.numOfScaleVal, total);
 
-        const elemMetrics: DOMRect = $elem[0].getBoundingClientRect();
-
-        if (options.isHorizontal) {
-          switch (value) {
-            case 100:
-              $elem.css({
-                right: '0%',
-                'align-items': 'flex-end',
-              });
-              break;
-            case 0:
-              $elem.css('left', `${value}%`);
-              break;
-            default:
-              $elem.css({
-                left: `calc(${value}% - ${elemMetrics.width / 2}px)`,
-                'align-items': 'center',
-              });
-              break;
-          }
-        } else {
-          switch (value) {
-            case 100:
-              $elem.css('bottom', '0%');
-              break;
-            default:
-              $elem.css('top', `${value}%`);
-              break;
-          }
+      if (num > 0) {
+        const scaleStep = Math.floor(total / (num + 1));
+        for (let i = 1; i <= num; i += 1) {
+          const idx = i * scaleStep;
+          const content = data[idx].toString();
+          const value = percentageData[idx];
+          const $elem = SliderScale.createElement(content, value, scaleOptions);
+          this.$scale.append($elem);
+          SliderScale.positionElem($elem, scaleOptions);
         }
       }
-    });
+    }
+
+    // append max
+    if (scaleOptions.displayMax) {
+      const idx = data.length - 1;
+      const content = data[idx].toString();
+      const value = percentageData[idx];
+      const $elem = SliderScale.createElement(content, value, scaleOptions);
+      this.$scale.append($elem);
+      SliderScale.positionElem($elem, scaleOptions);
+    }
   }
 
   public destroy(): void {
@@ -117,7 +100,7 @@ class SliderScale implements Scale {
     const elem: HTMLElement = event.target;
     let selectedVal: number;
     if (elem.classList.contains('scale__element')) {
-      selectedVal = $(elem).data('value');
+      selectedVal = $(elem).data('percentage');
 
       const $startEvent = $.Event('startChanging.myMVPSlider');
       this.$view.trigger($startEvent);
@@ -152,13 +135,61 @@ class SliderScale implements Scale {
     const $elem = $('<span>', { class: 'scale__element' });
     $elem.html(content);
 
-    $elem.data('value', value);
+    $elem.data('percentage', value);
 
     if (options.isHorizontal) {
       $elem.addClass('scale__element_horizontal');
     }
 
     return $elem;
+  }
+
+  static normalizeNumOfScaleVal(num: number, total: number): number {
+    let resultNum: number = num < (total - 2) ? num : (total - 2);
+
+    if (resultNum < 0) {
+      resultNum = 0;
+    }
+
+    if (resultNum > 9) {
+      resultNum = 9;
+    }
+
+    return resultNum;
+  }
+
+  static positionElem($elem: JQuery, options: Scale.RenderOptions): void {
+    const value = $elem.data('percentage');
+    const elemMetrics: DOMRect = $elem[0].getBoundingClientRect();
+
+    if (options.isHorizontal) {
+      switch (value) {
+        case 100:
+          $elem.css({
+            right: '0%',
+            'align-items': 'flex-end',
+          });
+          break;
+        case 0:
+          $elem.css('left', `${value}%`);
+          break;
+        default:
+          $elem.css({
+            left: `calc(${value}% - ${elemMetrics.width / 2}px)`,
+            'align-items': 'center',
+          });
+          break;
+      }
+    } else {
+      switch (value) {
+        case 100:
+          $elem.css('bottom', '0%');
+          break;
+        default:
+          $elem.css('top', `${value}%`);
+          break;
+      }
+    }
   }
 }
 

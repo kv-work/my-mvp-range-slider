@@ -10,11 +10,10 @@ declare namespace Scale {
 
   interface RenderOptions {
     isHorizontal?: boolean;
-    scaleStep?: number;
-    displayScaleStrips?: boolean;
     displayScaleValue?: boolean;
     displayMin?: boolean;
     displayMax?: boolean;
+    numOfScaleVal?: number;
   }
 
   interface UpdateOptions {
