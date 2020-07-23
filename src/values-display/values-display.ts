@@ -172,10 +172,36 @@ export default class SliderValuesDisplay implements ValuesDisplay {
       if (options.postfix !== '') firstHtml += options.postfix;
       this.$firstValDisplay.html(firstHtml);
 
+      const firstMetrics: DOMRect = this.$firstValDisplay[0].getBoundingClientRect();
+      let firstPos: string;
+
       if (options.isHorizontal) {
-        this.$firstValDisplay.css({ left: `${percentage}%` });
+        switch (percentage) {
+          case 0:
+            this.$firstValDisplay.css({ left: '0%' });
+            break;
+          case 100:
+            firstPos = `calc(${percentage}% - ${firstMetrics.width}px)`;
+            this.$firstValDisplay.css({ left: firstPos });
+            break;
+          default:
+            firstPos = `calc(${percentage}% - ${firstMetrics.width / 2}px)`;
+            this.$firstValDisplay.css({ left: firstPos });
+            break;
+        }
       } else {
-        this.$firstValDisplay.css({ top: `${percentage}%` });
+        switch (percentage) {
+          case 0:
+            this.$firstValDisplay.css({ top: '0%' });
+            break;
+          case 100:
+            this.$firstValDisplay.css({ down: '0%' });
+            break;
+          default:
+            firstPos = `calc(${percentage}% - ${firstMetrics.height / 2}px)`;
+            this.$firstValDisplay.css({ left: firstPos });
+            break;
+        }
       }
     }
   }
