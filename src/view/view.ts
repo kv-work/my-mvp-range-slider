@@ -34,10 +34,12 @@ class SliderView implements View {
 
     if (this.viewOptions.isHorizontal && !this.$view.hasClass('slider__container_horizontal')) {
       this.$view.addClass('slider__container_horizontal');
+      this.$barContainer.addClass('slider__bar_container_horizontal');
     }
 
     if (!this.viewOptions.isHorizontal && this.$view.hasClass('slider__container_horizontal')) {
       this.$view.removeClass('slider__container_horizontal');
+      this.$barContainer.removeClass('slider__bar_container_horizontal');
     }
 
     if (!this.isRendered) {
