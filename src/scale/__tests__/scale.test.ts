@@ -27,10 +27,10 @@ describe('scale', () => {
 
   const renderOptions: Scale.RenderOptions = {
     isHorizontal: true,
-    scaleStep: 1,
     displayScaleValue: true,
     displayMin: true,
     displayMax: true,
+    numOfScaleVal: 9,
   };
   const vertRenderOptions: Scale.RenderOptions = {
     ...renderOptions,
@@ -64,6 +64,7 @@ describe('scale', () => {
       expect(testScale).toHaveProperty('isRendered', false);
     });
   });
+
   describe('update', () => {
     beforeEach(() => {
       testScale.update({
@@ -82,7 +83,7 @@ describe('scale', () => {
       expect(verticalScale).toHaveProperty('$scale');
     });
 
-    test('should create and append scale elements to view container', () => {
+    test('should create and append scale elements (max 12 elements) to view container', () => {
       const $view = $('#view_container_horizontal');
       const $horizontalScale = $view.find('.slider__scale_horizontal');
       const $verticalScale = $verticalView.find('.slider__scale');
@@ -183,7 +184,7 @@ describe('scale', () => {
       expect($scale.data('data').percentage).toEqual([0, 100]);
 
       const $newScaleElem = $scale.find('.scale__element_horizontal').eq(3);
-      expect($newScaleElem.data('value')).toBe(75);
+      expect($newScaleElem.data('percentage')).toBe(75);
 
       $newScaleElem.click();
       expect(mockStart).toBeCalledTimes(1);
@@ -196,7 +197,7 @@ describe('scale', () => {
 
       jest.clearAllMocks();
       const anotherScaleElem = $scale.find('.scale__element_horizontal')[1];
-      expect($(anotherScaleElem).data('value')).toBe(25);
+      expect($(anotherScaleElem).data('percentage')).toBe(25);
       $(anotherScaleElem).click();
       expect(mockStart).toBeCalledTimes(1);
       expect(mockChange.mock.calls[0][1]).toBe(25); // value
