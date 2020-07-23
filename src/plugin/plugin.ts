@@ -13,16 +13,16 @@ import SliderApp from '../app/app';
 
       // view
       isHorizontal: true,
-      range: false,
+      range: true,
       dragInterval: false,
       runner: true,
       bar: true,
-      scale: false,
+      scale: true,
       numOfScaleVal: 3,
-      displayScaleValue: false,
-      displayValue: false,
-      displayMin: false,
-      displayMax: false,
+      displayScaleValue: true,
+      displayValue: true,
+      displayMin: true,
+      displayMax: true,
       prefix: '',
       postfix: '',
 
