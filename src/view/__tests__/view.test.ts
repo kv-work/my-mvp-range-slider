@@ -44,8 +44,8 @@ describe('SliderView', () => {
     runner: true,
     bar: true,
     scale: true,
-    scaleStep: 25,
     displayScaleValue: true,
+    numOfScaleVal: 9,
     displayValue: true,
     displayMin: true,
     displayMax: true,
@@ -299,7 +299,7 @@ describe('SliderView', () => {
         runner: true,
         bar: false,
         scale: false,
-        scaleStep: 25,
+        numOfScaleVal: 9,
         displayScaleValue: true,
         displayValue: true,
         displayMin: true,
@@ -317,7 +317,7 @@ describe('SliderView', () => {
         runner: undefined,
         bar: undefined,
         scale: undefined,
-        scaleStep: -25,
+        numOfScaleVal: -15,
         displayScaleValue: undefined,
         displayValue: undefined,
         displayMin: undefined,
@@ -333,7 +333,6 @@ describe('SliderView', () => {
         runner: null,
         bar: null,
         scale: null,
-        scaleStep: 0,
         displayScaleValue: null,
         displayValue: null,
         displayMin: null,
@@ -342,7 +341,7 @@ describe('SliderView', () => {
         postfix: null,
       });
 
-      testView.update({ scaleStep: NaN });
+      testView.update({ numOfScaleVal: NaN });
 
       expect(testView.getData()).toEqual({
         isHorizontal: true,
@@ -351,7 +350,7 @@ describe('SliderView', () => {
         runner: true,
         bar: true,
         scale: true,
-        scaleStep: 25,
+        numOfScaleVal: 9,
         displayScaleValue: true,
         displayValue: true,
         displayMin: true,
@@ -360,11 +359,11 @@ describe('SliderView', () => {
         postfix: '$',
       });
 
-      testView.update({ scaleStep: undefined });
-      expect(testView.getData().scaleStep).toBe(25);
+      testView.update({ numOfScaleVal: undefined });
+      expect(testView.getData().numOfScaleVal).toBe(9);
 
-      testView.update({ scaleStep: 20 });
-      expect(testView.getData().scaleStep).toBe(20);
+      testView.update({ numOfScaleVal: 8 });
+      expect(testView.getData().numOfScaleVal).toBe(8);
 
       testView.update({ prefix: '+', postfix: '!' });
       expect(testView.getData().prefix).toBe('+');

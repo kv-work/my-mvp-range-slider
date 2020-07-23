@@ -1,8 +1,8 @@
 import $ from 'jquery';
-import '../plugin';
+// import '../plugin';
 import SliderApp from '../../app/app';
 
-describe('myMVPSlider', () => {
+describe.skip('myMVPSlider', () => {
   document.body.innerHTML = `
     <div class="js-container"></div>
     <div class="js-container"></div>
