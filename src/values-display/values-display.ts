@@ -57,9 +57,13 @@ export default class SliderValuesDisplay implements ValuesDisplay {
 
     if (options.isHorizontal && !this.$displayContainer.hasClass('slider__display_container_horizontal')) {
       this.$displayContainer.addClass('slider__display_container_horizontal');
+      this.$firstValDisplay.addClass('slider__display_value_horizontal');
+      this.$secondValDisplay?.addClass('slider__display_value_horizontal');
     }
     if (!options.isHorizontal && this.$displayContainer.hasClass('slider__display_container_horizontal')) {
       this.$displayContainer.removeClass('slider__display_container_horizontal');
+      this.$firstValDisplay.removeClass('slider__display_value_horizontal');
+      this.$secondValDisplay?.removeClass('slider__display_value_horizontal');
     }
 
     if (!this.isRendered) {
@@ -148,7 +152,7 @@ export default class SliderValuesDisplay implements ValuesDisplay {
             secondPos = `calc(${to}% - ${secondMetrics.width}px)`;
             this.$secondValDisplay.css({ left: secondPos });
           } else {
-            this.$secondValDisplay.css({ down: '0%' });
+            this.$secondValDisplay.css({ top: `calc(${to}% - ${secondMetrics.height}px)` });
           }
           break;
         default:
@@ -176,8 +180,6 @@ export default class SliderValuesDisplay implements ValuesDisplay {
       let firstPos: string;
 
       if (options.isHorizontal) {
-        this.$firstValDisplay.css('right', '');
-        this.$firstValDisplay.css('top', '');
         switch (percentage) {
           case 0:
             this.$firstValDisplay.css({ left: '0%' });
@@ -192,8 +194,6 @@ export default class SliderValuesDisplay implements ValuesDisplay {
             break;
         }
       } else {
-        this.$firstValDisplay.css('left', '');
-        this.$firstValDisplay.css({ right: '1.3rem' });
         switch (percentage) {
           case 0:
             this.$firstValDisplay.css({ top: '0%' });
@@ -207,6 +207,14 @@ export default class SliderValuesDisplay implements ValuesDisplay {
             break;
         }
       }
+    }
+
+    if (options.isHorizontal) {
+      this.$firstValDisplay.css({ top: '' });
+      this.$secondValDisplay?.css({ top: '' });
+    } else {
+      this.$firstValDisplay.css({ left: '' });
+      this.$secondValDisplay?.css({ left: '' });
     }
   }
 
