@@ -5,5 +5,10 @@
   border-radius: 50%;
   background-color: #53B6A8;
   cursor: grab;
+  left: -0.5rem;
+}
+
+.slider__runner_horizontal {
   top: -0.5rem;
+  left: 0;
 }

@@ -1,7 +1,7 @@
 .slider__container {
   position: relative;
   height: 100%;
-  width: 1rem;
+  width: 5rem;
   display: flex;
   align-items: center;
 }
@@ -9,7 +9,6 @@
 .slider__container_horizontal {
   width: 100%;
   height: auto;
-  border: 1px solid;
   flex-direction: column;
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -18,7 +17,6 @@
 .slider__bar_container {
   position: relative;
   height: 100%;
-  width: 1rem;
   z-index: 2;
 }
 

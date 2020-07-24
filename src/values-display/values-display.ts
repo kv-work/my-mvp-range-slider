@@ -190,16 +190,17 @@ export default class SliderValuesDisplay implements ValuesDisplay {
             break;
         }
       } else {
+        this.$firstValDisplay.css({ right: '1.3rem' });
         switch (percentage) {
           case 0:
             this.$firstValDisplay.css({ top: '0%' });
             break;
           case 100:
-            this.$firstValDisplay.css({ down: '0%' });
+            this.$firstValDisplay.css('top', `calc(${percentage}% - ${firstMetrics.height}px)`);
             break;
           default:
             firstPos = `calc(${percentage}% - ${firstMetrics.height / 2}px)`;
-            this.$firstValDisplay.css({ left: firstPos });
+            this.$firstValDisplay.css({ top: firstPos });
             break;
         }
       }

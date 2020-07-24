@@ -181,12 +181,16 @@ class SliderScale implements Scale {
           break;
       }
     } else {
+      $elem.css('padding-left', '0.8rem');
       switch (value) {
+        case 0:
+          $elem.css('top', '0%');
+          break;
         case 100:
-          $elem.css('bottom', '0%');
+          $elem.css('top', `calc(${value}% - ${elemMetrics.height}px)`);
           break;
         default:
-          $elem.css('top', `${value}%`);
+          $elem.css('top', `calc(${value}% - ${elemMetrics.height / 2}px)`);
           break;
       }
     }

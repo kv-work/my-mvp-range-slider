@@ -1,4 +1,9 @@
 .slider__scale {
+  height: 100%;
+  position: relative;
+}
+
+.slider__scale_horizontal {
   width: 100%;
   height: 1.5rem;
   position: relative;
