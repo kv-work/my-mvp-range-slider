@@ -31,7 +31,12 @@ class SliderScale implements Scale {
     this.$scale.data('data', newData);
     this.$scale.data('options', scaleOptions);
 
-    const { isHorizontal, displayMin, displayMax, displayScaleValue } = scaleOptions;
+    const {
+      isHorizontal,
+      displayMin,
+      displayMax,
+      displayScaleValue,
+    } = scaleOptions;
 
     if (isHorizontal && !this.$scale.hasClass('slider__scale_horizontal')) {
       this.$scale.addClass('slider__scale_horizontal');
@@ -49,7 +54,6 @@ class SliderScale implements Scale {
 
     const { data, percentageData } = newData;
     this.$scale.empty();
-    let height: number;
 
     // append min
     if (displayMin) {
@@ -58,7 +62,6 @@ class SliderScale implements Scale {
       const $elem = SliderScale.createElement(content, value, scaleOptions);
       this.$scale.append($elem);
       SliderScale.positionElem($elem, scaleOptions);
-      height = $elem[0].getBoundingClientRect().height;
     }
 
     // append values
@@ -75,7 +78,6 @@ class SliderScale implements Scale {
           const $elem = SliderScale.createElement(content, value, scaleOptions);
           this.$scale.append($elem);
           SliderScale.positionElem($elem, scaleOptions);
-          height = $elem[0].getBoundingClientRect().height;
         }
       }
     }
@@ -88,11 +90,31 @@ class SliderScale implements Scale {
       const $elem = SliderScale.createElement(content, value, scaleOptions);
       this.$scale.append($elem);
       SliderScale.positionElem($elem, scaleOptions);
-      height = $elem[0].getBoundingClientRect().height;
     }
 
-    const heightVal: string = isHorizontal ? `${height}px` : '';
-    this.$scale.css('height', heightVal);
+    let maxVal = 0;
+
+    this.$scale.find('.scale__element').each(function compareWithMaxVal() {
+      if (isHorizontal) {
+        const h = this.getBoundingClientRect().height;
+        maxVal = (maxVal > h) ? maxVal : h;
+      } else {
+        const w = this.getBoundingClientRect().width;
+        maxVal = (maxVal > w) ? maxVal : w;
+      }
+    });
+
+    if (isHorizontal) {
+      this.$scale.css({
+        height: `${maxVal}px`,
+        width: '100%',
+      });
+    } else {
+      this.$scale.css({
+        width: `${maxVal}px`,
+        height: '100%',
+      });
+    }
   }
 
   public destroy(): void {
