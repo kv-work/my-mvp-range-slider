@@ -50,44 +50,16 @@ class SliderRunner implements Runner {
     if (Array.isArray(data.percentage) && Array.isArray(data.value)) {
       const [from, to] = data.value;
       const [fromPercentage, toPercentage] = data.percentage;
-      let fromPosition: string;
-      let toPosition: string;
-
-      switch (fromPercentage) {
-        case 0:
-          fromPosition = `${fromPercentage}%`;
-          break;
-        default:
-          fromPosition = `calc(${fromPercentage}% - ${runnerWidth / 2}px)`;
-          break;
-      }
-
-      switch (toPercentage) {
-        case 100:
-          toPosition = `calc(100% - ${runnerWidth}px)`;
-          break;
-        default:
-          toPosition = `calc(${toPercentage}% - ${runnerWidth / 2}px)`;
-          break;
-      }
+      const fromPosition = `calc(${fromPercentage}% - ${runnerWidth / 2}px)`;
+      const toPosition = `calc(${toPercentage}% - ${runnerWidth / 2}px)`;
 
       value = this.isSecond ? to : from;
       percentage = this.isSecond ? toPosition : fromPosition;
     }
 
     if (!Array.isArray(data.percentage) && !Array.isArray(data.value)) {
-      switch (data.percentage) {
-        case 0:
-          percentage = '0%';
-          break;
-        case 100:
-          percentage = `calc(100% - ${runnerWidth}px)`;
-          break;
-        default:
-          percentage = `calc(${data.percentage}% - ${runnerWidth / 2}px)`;
-          break;
-      }
       value = data.value;
+      percentage = `calc(${data.percentage}% - ${runnerWidth / 2}px)`;
     }
 
     this.$runner.data('options', runnerOptions);

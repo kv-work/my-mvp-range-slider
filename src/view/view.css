@@ -1,17 +1,16 @@
 .slider__container {
+  padding: 0.75rem;
   position: relative;
   height: 100%;
-  width: 5rem;
+  width: auto;
   display: flex;
   align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
-
 .slider__container_horizontal {
-  width: 100%;
   height: auto;
   flex-direction: column;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
 }
 
 .slider__bar_container {
@@ -21,8 +20,6 @@
 }
 
 .slider__bar_container_horizontal {
-  position: relative;
   height: auto;
   width: 100%;
-  z-index: 2;
 }
