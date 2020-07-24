@@ -94,8 +94,10 @@ class SliderRunner implements Runner {
     this.$runner.data('value', value);
 
     if (options.isHorizontal) {
+      this.$runner.css('top', '');
       this.$runner.css({ left: percentage });
     } else {
+      this.$runner.css('left', '');
       this.$runner.css({ top: percentage });
     }
   }

@@ -176,6 +176,8 @@ export default class SliderValuesDisplay implements ValuesDisplay {
       let firstPos: string;
 
       if (options.isHorizontal) {
+        this.$firstValDisplay.css('right', '');
+        this.$firstValDisplay.css('top', '');
         switch (percentage) {
           case 0:
             this.$firstValDisplay.css({ left: '0%' });
@@ -190,6 +192,7 @@ export default class SliderValuesDisplay implements ValuesDisplay {
             break;
         }
       } else {
+        this.$firstValDisplay.css('left', '');
         this.$firstValDisplay.css({ right: '1.3rem' });
         switch (percentage) {
           case 0:
