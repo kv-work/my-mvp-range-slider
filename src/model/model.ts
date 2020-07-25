@@ -43,9 +43,7 @@ class SliderModel implements Model {
 
   set value(newValue: number) {
     if (this._ableToChange('value', newValue)) {
-      const {
-        _value: oldValue,
-      } = this;
+      const { _value: oldValue } = this;
 
       if (this._value === undefined) {
         this._value = this._minValue;
@@ -311,7 +309,12 @@ class SliderModel implements Model {
         }
         break;
       default:
-        result = (value - ((value - min) % step));
+        tempResult = (value - ((value - min) % step));
+        if ((tempResult + step) >= max && ((max + tempResult) / 2) < value) {
+          result = max;
+        } else {
+          result = (value - ((value - min) % step));
+        }
         break;
     }
 
