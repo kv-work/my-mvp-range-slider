@@ -293,6 +293,7 @@ class SliderModel implements Model {
       _minValue: min,
     } = this;
     let result: number;
+    let tempResult: number;
 
     switch (true) {
       case (value >= max):
@@ -301,11 +302,16 @@ class SliderModel implements Model {
       case (value <= min):
         result = min;
         break;
-      case (((value % step) / step > 0.5)):
-        result = (value - (value % step) + step);
+      case ((((value - min) % step) / step > 0.5)):
+        tempResult = (value - ((value - min) % step) + step);
+        if (tempResult > max) {
+          result = max;
+        } else {
+          result = tempResult;
+        }
         break;
       default:
-        result = (value - (value % step));
+        result = (value - ((value - min) % step));
         break;
     }
 
