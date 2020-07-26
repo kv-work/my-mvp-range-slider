@@ -109,8 +109,8 @@ class SliderRunner implements Runner {
   private makeHandler(opts: Runner.RenderOptions): JQuery.EventHandler<HTMLElement, JQuery.Event> {
     let moveCoord: number;
     let selectedVal: number;
-    const view: HTMLElement = this.$view[0];
-    const elemMetrics: DOMRect = view.getBoundingClientRect();
+    const bar: HTMLElement = this.$barContainer[0];
+    const elemMetrics: DOMRect = bar.getBoundingClientRect();
 
     const mouseMoveHandler = (e: JQuery.MouseMoveEvent): void => {
       if (opts.isHorizontal) {
