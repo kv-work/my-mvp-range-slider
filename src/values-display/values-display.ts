@@ -131,23 +131,35 @@ export default class SliderValuesDisplay implements ValuesDisplay {
     firstHtml += firstData;
     if (options.postfix !== '') firstHtml += options.postfix;
     this.$firstValDisplay.html(firstHtml);
-    const firstMetrics = this.$firstValDisplay[0].getBoundingClientRect();
+    let firstMetrics = this.$firstValDisplay[0].getBoundingClientRect();
 
     let firstPos: string;
     let secondPos: string;
 
     if (isHorizontal) {
       firstPos = `calc(${from}% - ${firstMetrics.width / 2}px)`;
-      secondPos = `calc(${to}% - ${secondMetrics?.width / 2}px)`;
 
       this.$firstValDisplay.css({
         top: '',
         left: firstPos,
       });
-      this.$secondValDisplay?.css({
-        top: '',
-        left: secondPos,
-      });
+
+      firstMetrics = this.$firstValDisplay[0].getBoundingClientRect();
+      const containerMetrics = this.$displayContainer[0].getBoundingClientRect();
+      if (firstMetrics.x < 0) {
+        this.$firstValDisplay.css({ left: 'calc(0% - 0.75rem)' });
+      }
+      if ((firstMetrics.x + firstMetrics.width) > containerMetrics.width) {
+        this.$firstValDisplay.css({ left: '', right: 'calc(0% - 0.75rem)' });
+      }
+
+      if (this.$secondValDisplay) {
+        secondPos = `calc(${to}% - ${secondMetrics?.width / 2}px)`;
+        this.$secondValDisplay.css({
+          top: '',
+          left: secondPos,
+        });
+      }
     } else {
       firstPos = `calc(${from}% - ${firstMetrics.height / 2}px)`;
       secondPos = `calc(${to}% - ${secondMetrics?.height / 2}px)`;
