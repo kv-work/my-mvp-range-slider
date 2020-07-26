@@ -144,33 +144,70 @@ export default class SliderValuesDisplay implements ValuesDisplay {
         left: firstPos,
       });
 
-      firstMetrics = this.$firstValDisplay[0].getBoundingClientRect();
-      const containerMetrics = this.$displayContainer[0].getBoundingClientRect();
-      if (firstMetrics.x < 0) {
+      const { x: firstX, width: firstWidth } = this.$firstValDisplay[0].getBoundingClientRect();
+
+      const { x: containerX, width: containerWidth } = this.$view[0].getBoundingClientRect();
+
+      if (firstX < containerX) {
         this.$firstValDisplay.css({ left: 'calc(0% - 0.75rem)' });
       }
-      if ((firstMetrics.x + firstMetrics.width) > containerMetrics.width) {
-        this.$firstValDisplay.css({ left: '', right: 'calc(0% - 0.75rem)' });
+      if ((firstX + firstWidth) > containerWidth) {
+        this.$firstValDisplay.css({
+          left: `calc(${containerWidth - firstWidth}px - 0.75rem)`,
+        });
       }
 
       if (this.$secondValDisplay) {
-        secondPos = `calc(${to}% - ${secondMetrics?.width / 2}px)`;
+        secondPos = `calc(${to}% - ${secondMetrics.width / 2}px)`;
         this.$secondValDisplay.css({
           top: '',
           left: secondPos,
         });
+
+        const { x, width } = this.$secondValDisplay[0].getBoundingClientRect();
+
+        if ((x + width) > containerWidth) {
+          this.$secondValDisplay.css({
+            left: `calc(${containerWidth - width}px - 0.75rem)`,
+          });
+        }
       }
     } else {
       firstPos = `calc(${from}% - ${firstMetrics.height / 2}px)`;
-      secondPos = `calc(${to}% - ${secondMetrics?.height / 2}px)`;
       this.$firstValDisplay.css({
         left: '',
         top: firstPos,
       });
-      this.$secondValDisplay?.css({
-        left: '',
-        top: secondPos,
-      });
+
+      const { y: firstY, height: firstHeight } = this.$firstValDisplay[0].getBoundingClientRect();
+
+      const { y: containerY, height: containerHeight } = this.$view[0].getBoundingClientRect();
+
+      if (firstY < containerY) {
+        this.$firstValDisplay.css({ top: 'calc(0% - 0.75rem)' });
+      }
+      if ((firstY + firstHeight) > containerHeight) {
+        this.$firstValDisplay.css({
+          top: `calc(${containerHeight - firstHeight}px - 0.75rem)`,
+        });
+      }
+
+
+      if (this.$secondValDisplay) {
+        secondPos = `calc(${to}% - ${secondMetrics.height / 2}px)`;
+        this.$secondValDisplay.css({
+          left: '',
+          top: secondPos,
+        });
+
+        const { y, height } = this.$secondValDisplay[0].getBoundingClientRect();
+
+        if ((y + height) > containerHeight) {
+          this.$secondValDisplay.css({
+            top: `calc(${containerHeight - height}px - 0.75rem)`,
+          });
+        }
+      }
     }
   }
 
