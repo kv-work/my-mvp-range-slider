@@ -182,8 +182,8 @@ class SliderScale implements Scale {
       resultNum = 0;
     }
 
-    if (resultNum > 9) {
-      resultNum = 9;
+    if (resultNum > 10) {
+      resultNum = 10;
     }
 
     return resultNum;
@@ -195,6 +195,11 @@ class SliderScale implements Scale {
 
     if (options.isHorizontal) {
       switch (value) {
+        case 0:
+          $elem.css({
+            left: 'calc(0% - 0.75rem)',
+          });
+          break;
         case 100:
           $elem.css({
             right: 'calc(0% - 0.75rem)',
