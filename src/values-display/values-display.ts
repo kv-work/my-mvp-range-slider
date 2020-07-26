@@ -131,7 +131,7 @@ export default class SliderValuesDisplay implements ValuesDisplay {
     firstHtml += firstData;
     if (options.postfix !== '') firstHtml += options.postfix;
     this.$firstValDisplay.html(firstHtml);
-    let firstMetrics = this.$firstValDisplay[0].getBoundingClientRect();
+    const firstMetrics = this.$firstValDisplay[0].getBoundingClientRect();
 
     let firstPos: string;
     let secondPos: string;
