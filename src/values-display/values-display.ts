@@ -94,127 +94,71 @@ export default class SliderValuesDisplay implements ValuesDisplay {
       percentage,
       percentageData,
     } = renderData;
-    let firstIdx: number;
+    const { isHorizontal } = options;
+
+    let from: number;
+    let to: number;
+
     let secondIdx: number;
+    let secondMetrics: DOMRect;
 
     if (Array.isArray(percentage)) {
-      const [from, to] = percentage;
-
-      firstIdx = percentageData.indexOf(from);
-      const firstData = data[firstIdx].toString();
-      this.$firstValDisplay.data('data', firstData);
-      this.$firstValDisplay.data('options', options);
-
+      [from, to] = percentage;
       secondIdx = percentageData.indexOf(to);
       const secondData = data[secondIdx].toString();
+
       this.$secondValDisplay.data('data', secondData);
       this.$secondValDisplay.data('options', options);
 
-      let firstHtml = options.prefix;
       let secondHtml = options.prefix;
-
-      firstHtml += firstData;
       secondHtml += secondData;
       if (options.postfix !== '') {
-        firstHtml += options.postfix;
         secondHtml += options.postfix;
       }
-      this.$firstValDisplay.html(firstHtml);
+
       this.$secondValDisplay.html(secondHtml);
-
-      const firstMetrics = this.$firstValDisplay[0].getBoundingClientRect();
-      const secondMetrics = this.$secondValDisplay[0].getBoundingClientRect();
-      let firstPos: string;
-      let secondPos: string;
-
-      switch (from) {
-        case 0:
-          if (options.isHorizontal) {
-            this.$firstValDisplay.css({ left: '0%' });
-          } else {
-            this.$firstValDisplay.css({ top: '0%' });
-          }
-          break;
-        default:
-          if (options.isHorizontal) {
-            firstPos = `calc(${from}% - ${firstMetrics.width / 2}px)`;
-            this.$firstValDisplay.css({ left: firstPos });
-          } else {
-            firstPos = `calc(${from}% - ${firstMetrics.height / 2}px)`;
-            this.$firstValDisplay.css({ top: firstPos });
-          }
-          break;
-      }
-
-      switch (to) {
-        case 100:
-          if (options.isHorizontal) {
-            secondPos = `calc(${to}% - ${secondMetrics.width}px)`;
-            this.$secondValDisplay.css({ left: secondPos });
-          } else {
-            this.$secondValDisplay.css({ top: `calc(${to}% - ${secondMetrics.height}px)` });
-          }
-          break;
-        default:
-          if (options.isHorizontal) {
-            secondPos = `calc(${to}% - ${secondMetrics.width / 2}px)`;
-            this.$secondValDisplay.css({ left: secondPos });
-          } else {
-            secondPos = `calc(${to}% - ${secondMetrics.height / 2}px)`;
-            this.$secondValDisplay.css({ top: secondPos });
-          }
-          break;
-      }
+      secondMetrics = this.$secondValDisplay[0].getBoundingClientRect();
     } else {
-      firstIdx = percentageData.indexOf(percentage);
-      const firstData = data[firstIdx].toString();
-      this.$firstValDisplay.data('data', firstData);
-      this.$firstValDisplay.data('options', options);
-
-      let firstHtml = options.prefix;
-      firstHtml += firstData;
-      if (options.postfix !== '') firstHtml += options.postfix;
-      this.$firstValDisplay.html(firstHtml);
-
-      const firstMetrics: DOMRect = this.$firstValDisplay[0].getBoundingClientRect();
-      let firstPos: string;
-
-      if (options.isHorizontal) {
-        switch (percentage) {
-          case 0:
-            this.$firstValDisplay.css({ left: '0%' });
-            break;
-          case 100:
-            firstPos = `calc(${percentage}% - ${firstMetrics.width}px)`;
-            this.$firstValDisplay.css({ left: firstPos });
-            break;
-          default:
-            firstPos = `calc(${percentage}% - ${firstMetrics.width / 2}px)`;
-            this.$firstValDisplay.css({ left: firstPos });
-            break;
-        }
-      } else {
-        switch (percentage) {
-          case 0:
-            this.$firstValDisplay.css({ top: '0%' });
-            break;
-          case 100:
-            this.$firstValDisplay.css('top', `calc(${percentage}% - ${firstMetrics.height}px)`);
-            break;
-          default:
-            firstPos = `calc(${percentage}% - ${firstMetrics.height / 2}px)`;
-            this.$firstValDisplay.css({ top: firstPos });
-            break;
-        }
-      }
+      from = percentage;
     }
 
-    if (options.isHorizontal) {
-      this.$firstValDisplay.css({ top: '' });
-      this.$secondValDisplay?.css({ top: '' });
+    const firstIdx = percentageData.indexOf(from);
+    const firstData = data[firstIdx].toString();
+    this.$firstValDisplay.data('data', firstData);
+    this.$firstValDisplay.data('options', options);
+
+    let firstHtml = options.prefix;
+    firstHtml += firstData;
+    if (options.postfix !== '') firstHtml += options.postfix;
+    this.$firstValDisplay.html(firstHtml);
+    const firstMetrics = this.$firstValDisplay[0].getBoundingClientRect();
+
+    let firstPos: string;
+    let secondPos: string;
+
+    if (isHorizontal) {
+      firstPos = `calc(${from}% - ${firstMetrics.width / 2}px)`;
+      secondPos = `calc(${to}% - ${secondMetrics?.width / 2}px)`;
+
+      this.$firstValDisplay.css({
+        top: '',
+        left: firstPos,
+      });
+      this.$secondValDisplay?.css({
+        top: '',
+        left: secondPos,
+      });
     } else {
-      this.$firstValDisplay.css({ left: '' });
-      this.$secondValDisplay?.css({ left: '' });
+      firstPos = `calc(${from}% - ${firstMetrics.height / 2}px)`;
+      secondPos = `calc(${to}% - ${secondMetrics?.height / 2}px)`;
+      this.$firstValDisplay.css({
+        left: '',
+        top: firstPos,
+      });
+      this.$secondValDisplay?.css({
+        left: '',
+        top: secondPos,
+      });
     }
   }
 
