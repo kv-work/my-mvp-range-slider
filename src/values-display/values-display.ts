@@ -213,7 +213,7 @@ export default class SliderValuesDisplay implements ValuesDisplay {
 
   static createValuesDisplayContainer(): JQuery {
     const $displayContainer = $('<div>', {
-      class: 'slider__display_container',
+      class: 'js-slider__display_container slider__display_container',
     });
 
     return $displayContainer;

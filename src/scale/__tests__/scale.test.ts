@@ -88,7 +88,7 @@ describe('scale', () => {
       expect(verticalScale).toHaveProperty('$scale');
     });
 
-    test('should create and append scale elements (max 11 elements) to view container', () => {
+    test('should create and append scale elements (max 12 elements) to view container', () => {
       const $horizontalElements = $horizontalScale.find('.scale__element_horizontal');
       const $verticalElements = $verticalScale.find('.scale__element');
 
@@ -98,7 +98,7 @@ describe('scale', () => {
       expect($verticalElements.length).toBe(testRenderData.percentageData.length);
     });
 
-    test('should append no more then 11 elements', () => {
+    test('should append no more then 12 elements', () => {
       const newData = {
         data: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         percentageData: [
@@ -122,7 +122,7 @@ describe('scale', () => {
         options: newOpts,
       });
       const $elements = $horizontalView.find('.scale__element');
-      expect($elements.length).toBe(11);
+      expect($elements.length).toBe(12);
     });
 
     test('should not append scale elements to view container if options.numOfScaleVal <= 0', () => {
