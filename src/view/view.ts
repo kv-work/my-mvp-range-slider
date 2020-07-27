@@ -342,7 +342,7 @@ class SliderView implements View {
 
   static isValidNumOfValue(value: string | boolean | number): boolean {
     if (typeof value === 'number') {
-      return Number.isFinite(value) && (value >= 0) && (value <= 9);
+      return Number.isFinite(value) && (value >= 0) && (value <= 10);
     }
     return false;
   }
