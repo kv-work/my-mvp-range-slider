@@ -515,6 +515,7 @@ describe('model', () => {
       modelWithSecondValue.step = 3;
       expect(modelWithSecondValue.secondValue).toBe(9);
 
+      modelWithSecondValue.maxValue = 14;
       modelWithSecondValue.step = 7;
       expect(modelWithSecondValue.secondValue).toBe(7);
     });
