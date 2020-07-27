@@ -3,7 +3,7 @@
 
 declare global {
   interface JQuery {
-    myMVPSlider(options?: MyMVPSliderOptions): JQuery;
+    myMVPSlider(options?: MyMVPSliderOptions | 'destroy'): JQuery;
   }
 }
 
