@@ -56,6 +56,8 @@ describe('myMVPSlider', () => {
   test('should render slider with default options', () => {
     expect($('.js-slider__bar').length).toBe(1);
     expect($('.js-slider__runner').length).toBe(1);
+    expect($('.js-slider__scale').length).toBe(1);
+    expect($('.js-slider__display_container').length).toBe(1);
   });
 
   test('should support call chains', () => {
@@ -69,9 +71,13 @@ describe('myMVPSlider', () => {
     const slider = $(testNodes[0]).data('myMVPSlider');
     expect(slider).toBeInstanceOf(SliderApp);
   });
-  // test('should have some methods');
+
   test('should save initial options in data attributes', () => {
     $testWithOptions.myMVPSlider(initialOpts);
     expect($testWithOptions.data('init-options')).toEqual(initialOpts);
+  });
+
+  test('should validate init options', () => {
+
   });
 });

@@ -41,6 +41,7 @@ import SliderApp from '../app/app';
       const app = new SliderApp(settings, this);
 
       $this.data('myMVPSlider', app);
+      $this.data('init-options', settings);
     });
 
     return this;
