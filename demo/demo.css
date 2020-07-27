@@ -1,7 +1,14 @@
 .demo_slider {
-  height: 500px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
-.slider_default {
-  height: 100%;
+.config__model {
+  display: flex;
+  flex-direction: column;
+}
+
+.config__view {
+  display: flex;
+  flex-direction: column;
 }
