@@ -289,8 +289,27 @@ class Demo {
       return handler;
     }
 
+    function changeRange(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+      const handler = (e: JQuery.ChangeEvent): void => {
+        const val = +$(e.target).val();
+        slider.update({ numOfScaleVal: val });
+      };
+      return handler;
+    }
+
+    function changeRadio(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+      const handler = (): void => {
+        const rotate = !slider.getViewData().isHorizontal;
+        slider.update({ isHorizontal: rotate });
+      };
+
+      return handler;
+    }
+
     $inputs.on('blur', unfocusInput());
     $checkbox.on('change', changeCheckbox());
+    $numScaleValRange.on('change', changeRange());
+    $orientationRadio.on('change', changeRadio());
   }
 
   private onChangeSlider(): void {
