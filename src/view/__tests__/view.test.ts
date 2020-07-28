@@ -444,12 +444,6 @@ describe('SliderView', () => {
       expect(mockRunnerDestroy).toBeCalledTimes(2);
     });
 
-    test('should destroy secondRunner,if renderData.value is not Array', () => {
-      testView.update({ range: false });
-
-      expect(mockRunnerDestroy).toBeCalledTimes(1);
-    });
-
     test('should create SliderRunner instance if (options.runner && !this.runner) is true', () => {
       newView.render({
         data: [0, 1, 2, 3, 4],

@@ -49,7 +49,7 @@ export default class SliderValuesDisplay implements ValuesDisplay {
 
       if (this.$secondValDisplay) {
         this.$secondValDisplay.remove();
-        this.$secondValDisplay = undefined;
+        this.$secondValDisplay = null;
       }
     }
 

@@ -197,9 +197,6 @@ class SliderView implements View {
         this.secondRunner.destroy();
       }
     }
-    if (!this.viewOptions.range && this.secondRunner) {
-      this.secondRunner.destroy();
-    }
   }
 
   private notify(action: {event: string; value?: [number, number] | number}): void {

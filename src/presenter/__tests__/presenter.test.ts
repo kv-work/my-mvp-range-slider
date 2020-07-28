@@ -643,6 +643,7 @@ describe('Presenter', () => {
         minValue: 12,
         step: 3,
         value: 18,
+        secondValue: undefined,
       });
 
       expect(mockUpdate).toBeCalledWith({ range: false });
