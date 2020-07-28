@@ -39,6 +39,13 @@ export default class SliderValuesDisplay implements ValuesDisplay {
         this.$secondValDisplay = $('<div>', { class: 'slider__display_value' });
         this.$displayContainer.append(this.$secondValDisplay);
       }
+
+      if (options.isHorizontal && !this.$secondValDisplay.hasClass('slider__display_container_horizontal')) {
+        this.$secondValDisplay.addClass('slider__display_value_horizontal');
+      }
+      if (!options.isHorizontal && this.$secondValDisplay.hasClass('slider__display_container_horizontal')) {
+        this.$secondValDisplay.removeClass('slider__display_value_horizontal');
+      }
     }
 
     if (!Array.isArray(value) && !Array.isArray(percentage)) {
@@ -58,12 +65,10 @@ export default class SliderValuesDisplay implements ValuesDisplay {
     if (options.isHorizontal && !this.$displayContainer.hasClass('slider__display_container_horizontal')) {
       this.$displayContainer.addClass('slider__display_container_horizontal');
       this.$firstValDisplay.addClass('slider__display_value_horizontal');
-      this.$secondValDisplay?.addClass('slider__display_value_horizontal');
     }
     if (!options.isHorizontal && this.$displayContainer.hasClass('slider__display_container_horizontal')) {
       this.$displayContainer.removeClass('slider__display_container_horizontal');
       this.$firstValDisplay.removeClass('slider__display_value_horizontal');
-      this.$secondValDisplay?.removeClass('slider__display_value_horizontal');
     }
 
     if (!this.isRendered) {

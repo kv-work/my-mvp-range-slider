@@ -153,6 +153,7 @@ class SliderView implements View {
     }
     if (!this.viewOptions.displayValue && this.valueDisplay) {
       this.valueDisplay.destroy();
+      this.valueDisplay = null;
     }
   }
 
