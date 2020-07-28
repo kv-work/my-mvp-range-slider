@@ -36,48 +36,211 @@ class Demo {
   constructor($container: JQuery, options?: App.Option) {
     this.$container = $container;
 
-    if (options) {
-      this.slider = this.$container.find('.js-slider').myMVPSlider(options).data('myMVPSlider');
-    } else {
-      this.slider = this.$container.find('.js-slider').myMVPSlider().data('myMVPSlider');
-    }
+    const callbacks = {
+      onStart: (): void => {},
+      onChange: (): void => {
+        this.onChangeSlider();
+      },
+      onFinish: (): void => {
+        this.onChangeSlider();
+      },
+      onUpdate: (): void => {
+        this.onChangeSlider();
+      },
+    };
+
+    const newOptions = $.extend(options, callbacks);
+
+    this.slider = this.$container.find('.js-slider').myMVPSlider(newOptions).data('myMVPSlider');
 
     this.settings = this.$container.find('.js-slider').data('init-options');
 
     this.$configPanel = this.$container.find('.js-congig_panel');
-    this.$maxValInput = this.$configPanel.find('.input_max_val');
 
-    this.setConfig(this.settings);
+
+    this.initInputs();
+    this.setInputValues(this.settings);
     this.attachEventHandlers();
   }
 
-  private setConfig(settings: App.Option): void {
-    const { $maxValInput } = this;
+  private initInputs(): void {
+    const { $configPanel } = this;
+
+    this.$maxValInput = $configPanel.find('.input_max_val');
+    this.$minValInput = $configPanel.find('.input_min_val');
+    this.$stepInput = $configPanel.find('.input_step');
+    this.$valInput = $configPanel.find('.input_val');
+    this.$secondValInput = $configPanel.find('.input_second_val');
+
+    this.$lockMaxValCheck = $configPanel.find('.input_lock_max');
+    this.$lockMinValCheck = $configPanel.find('.input_lock_min');
+    this.$lockStepCheck = $configPanel.find('.input_lock_step');
+    this.$lockValCheck = $configPanel.find('.input_lock_val');
+    this.$lockSecondValCheck = $configPanel.find('.input_lock_second_val');
+    this.$lockAllCheck = $configPanel.find('.input_lock_all');
+
+    this.$orientationRadio = $configPanel.find('.input_orientation');
+
+    this.$rangeCheck = $configPanel.find('.input_range');
+    this.$dragIntervalCheck = $configPanel.find('.input_drag_interval');
+    this.$barCheck = $configPanel.find('.input_bar');
+    this.$runnerCheck = $configPanel.find('.input_runner');
+    this.$scaleCheck = $configPanel.find('.input_scale');
+    this.$displayValCheck = $configPanel.find('.input_display_value');
+    this.$displayScaleValCheck = $configPanel.find('.input_scale_value');
+    this.$numScaleValRange = $configPanel.find('.input_num_scale_val');
+    this.$displayMaxValCheck = $configPanel.find('.input_display_max');
+    this.$displayMinValCheck = $configPanel.find('.input_display_min');
+    this.$prefixInput = $configPanel.find('.input_prefix');
+
+    this.$postfixInput = $configPanel.find('.input_postfix');
+  }
+
+  private setInputValues(settings: App.Option): void {
+    const {
+      $maxValInput,
+      $minValInput,
+      $stepInput,
+      $valInput,
+      $secondValInput,
+      $lockMaxValCheck,
+      $lockMinValCheck,
+      $lockStepCheck,
+      $lockValCheck,
+      $lockSecondValCheck,
+      $lockAllCheck,
+      $orientationRadio,
+      $rangeCheck,
+      $dragIntervalCheck,
+      $barCheck,
+      $runnerCheck,
+      $scaleCheck,
+      $displayValCheck,
+      $displayScaleValCheck,
+      $numScaleValRange,
+      $displayMaxValCheck,
+      $displayMinValCheck,
+      $prefixInput,
+      $postfixInput,
+    } = this;
 
     $maxValInput.val(settings.maxValue);
+    $minValInput.val(settings.minValue);
+    $stepInput.val(settings.step);
+    $valInput.val(settings.value);
+    if (settings.secondValue !== undefined) {
+      $secondValInput.val(settings.secondValue);
+    }
+
+    if (settings.isHorizontal) {
+      $orientationRadio.find('[value="0"]').prop('checked', true);
+    } else {
+      $orientationRadio.find('[value="1"]').prop('checked', true);
+    }
+    $rangeCheck.prop('checked', settings.range);
+    $dragIntervalCheck.prop('checked', settings.dragInterval);
+    $barCheck.prop('checked', settings.bar);
+    $runnerCheck.prop('checked', settings.runner);
+    $scaleCheck.prop('checked', settings.scale);
+    $displayValCheck.prop('checked', settings.dataValues);
+    $displayScaleValCheck.prop('checked', settings.displayScaleValue);
+    $numScaleValRange.val(settings.numOfScaleVal);
+    $displayMaxValCheck.prop('checked', settings.displayMax);
+    $displayMinValCheck.prop('checked', settings.displayMin);
+
+    if (settings.prefix !== '') {
+      $prefixInput.val(settings.prefix);
+    }
+
+    if (settings.postfix !== '') {
+      $postfixInput.val(settings.postfix);
+    }
   }
 
   private attachEventHandlers(): void {
     const {
       $configPanel,
       $maxValInput,
+      $minValInput,
+      $stepInput,
+      $valInput,
+      $secondValInput,
+      $lockMaxValCheck,
+      $lockMinValCheck,
+      $lockStepCheck,
+      $lockValCheck,
+      $lockSecondValCheck,
+      $lockAllCheck,
+      $orientationRadio,
+      $rangeCheck,
+      $dragIntervalCheck,
+      $barCheck,
+      $runnerCheck,
+      $scaleCheck,
+      $displayValCheck,
+      $displayScaleValCheck,
+      $numScaleValRange,
+      $displayMaxValCheck,
+      $displayMinValCheck,
+      $prefixInput,
+      $postfixInput,
       slider,
     } = this;
+
+    const $inputs = $maxValInput
+      .add($minValInput)
+      .add($stepInput)
+      .add($valInput)
+      .add($secondValInput)
+      .add($prefixInput)
+      .add($postfixInput);
+
+    const $checkbox = $lockMaxValCheck;
 
     function unfocusInput(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
       const handler = (e: JQuery.BlurEvent): void => {
         const elem = e.target;
         const newVal = $(elem).val();
         const config = elem.name;
-        if (config === 'max-value') {
-          slider.update({ maxValue: +newVal });
+        switch (config) {
+          case 'max-value':
+            slider.update({ maxValue: +newVal });
+            break;
+          case 'min-value':
+            slider.update({ minValue: +newVal });
+            break;
+          case 'step':
+            slider.update({ step: +newVal });
+            break;
+          case 'value':
+            slider.update({ value: +newVal });
+            break;
+          case 'second-value':
+            if (newVal) {
+              slider.update({ secondValue: +newVal });
+            }
+            break;
+          case 'prefix':
+            slider.update({ prefix: newVal.toString() });
+            break;
+          case 'postfix':
+            slider.update({ postfix: newVal.toString() });
+            break;
+          default:
+            break;
         }
       };
 
       return handler;
     }
 
-    $maxValInput.on('blur', unfocusInput());
+    $inputs.on('blur', unfocusInput());
+  }
+
+  private onChangeSlider(): void {
+    this.settings = this.slider.getAllData();
+
+    this.setInputValues(this.settings);
   }
 }
 
