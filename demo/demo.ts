@@ -142,7 +142,7 @@ class Demo {
     $barCheck.prop('checked', settings.bar);
     $runnerCheck.prop('checked', settings.runner);
     $scaleCheck.prop('checked', settings.scale);
-    $displayValCheck.prop('checked', settings.dataValues);
+    $displayValCheck.prop('checked', settings.displayValue);
     $displayScaleValCheck.prop('checked', settings.displayScaleValue);
     $numScaleValRange.val(settings.numOfScaleVal);
     $displayMaxValCheck.prop('checked', settings.displayMax);
@@ -195,14 +195,28 @@ class Demo {
       .add($prefixInput)
       .add($postfixInput);
 
-    const $checkbox = $lockMaxValCheck;
+    const $checkbox = $lockMaxValCheck
+      .add($lockMinValCheck)
+      .add($lockStepCheck)
+      .add($lockValCheck)
+      .add($lockSecondValCheck)
+      .add($lockAllCheck)
+      .add($rangeCheck)
+      .add($dragIntervalCheck)
+      .add($barCheck)
+      .add($runnerCheck)
+      .add($scaleCheck)
+      .add($displayValCheck)
+      .add($displayScaleValCheck)
+      .add($displayMaxValCheck)
+      .add($displayMinValCheck);
 
     function unfocusInput(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
       const handler = (e: JQuery.BlurEvent): void => {
         const elem = e.target;
         const newVal = $(elem).val();
-        const config = elem.name;
-        switch (config) {
+        const { name } = elem;
+        switch (name) {
           case 'max-value':
             slider.update({ maxValue: +newVal });
             break;
@@ -234,7 +248,49 @@ class Demo {
       return handler;
     }
 
+    function changeCheckbox(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+      const handler = (e: JQuery.ChangeEvent): void => {
+        const elem = e.target;
+        const val = $(elem).prop('checked');
+        const { name } = elem;
+        switch (name) {
+          case 'range':
+            slider.update({ range: val });
+            break;
+          case 'drag_interval':
+            slider.update({ dragInterval: val });
+            break;
+          case 'runner':
+            slider.update({ runner: val });
+            break;
+          case 'bar':
+            slider.update({ bar: val });
+            break;
+          case 'scale':
+            slider.update({ scale: val });
+            break;
+          case 'display_value':
+            slider.update({ displayValue: val });
+            break;
+          case 'scale_value':
+            slider.update({ displayScaleValue: val });
+            break;
+          case 'display_min':
+            slider.update({ displayMin: val });
+            break;
+          case 'display_max':
+            slider.update({ displayMax: val });
+            break;
+          default:
+            break;
+        }
+      };
+
+      return handler;
+    }
+
     $inputs.on('blur', unfocusInput());
+    $checkbox.on('change', changeCheckbox());
   }
 
   private onChangeSlider(): void {
