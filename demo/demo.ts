@@ -48,6 +48,7 @@ class Demo {
     this.$maxValInput = this.$configPanel.find('.input_max_val');
 
     this.setConfig(this.settings);
+    this.attachEventHandlers();
   }
 
   private setConfig(settings: App.Option): void {
@@ -57,7 +58,26 @@ class Demo {
   }
 
   private attachEventHandlers(): void {
-    const { $configPanel, slider } = this;
+    const {
+      $configPanel,
+      $maxValInput,
+      slider,
+    } = this;
+
+    function unfocusInput(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+      const handler = (e: JQuery.BlurEvent): void => {
+        const elem = e.target;
+        const newVal = $(elem).val();
+        const config = elem.name;
+        if (config === 'max-value') {
+          slider.update({ maxValue: +newVal });
+        }
+      };
+
+      return handler;
+    }
+
+    $maxValInput.on('blur', unfocusInput());
   }
 }
 
