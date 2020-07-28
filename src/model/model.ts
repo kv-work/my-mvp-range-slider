@@ -191,10 +191,12 @@ class SliderModel implements Model {
   }
 
   updateState(state: Model.Options): void {
-    const newState = {
-      ...this.getState(),
-      ...state,
-    };
+    const {
+      maxValue: oldMax,
+      minValue: oldMin,
+    } = this.getState();
+
+    const newState = $.extend(this.getState(), state);
 
     this.isReadyNotify = false;
     if (newState.maxValue > newState.minValue) {
@@ -207,6 +209,11 @@ class SliderModel implements Model {
     this.secondValue = newState.secondValue;
 
     this.isReadyNotify = true;
+
+    if (oldMax !== this.maxValue || oldMin !== this.minValue) {
+      this.isUpdated = false;
+    }
+
     if (!this.isUpdated) this.notify();
   }
 
