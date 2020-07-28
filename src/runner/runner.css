@@ -6,6 +6,7 @@
   background-color: #53B6A8;
   cursor: grab;
   left: -0.5rem;
+  z-index: 2;
 }
 
 .slider__runner_horizontal {

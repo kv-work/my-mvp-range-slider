@@ -174,7 +174,7 @@ class SliderModel implements Model {
     this.observers.delete(observer);
   }
 
-  public getState(): Model.Options {
+  getState(): Model.Options {
     const state: Model.Options = {
       maxValue: this._maxValue,
       minValue: this._minValue,

@@ -208,6 +208,7 @@ class SliderBar implements Bar {
 
   private destroyRangeElement(): void {
     this.$range.remove();
+    this.$range = null;
   }
 
   static createBar(): JQuery {
