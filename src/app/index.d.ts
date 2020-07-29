@@ -16,6 +16,7 @@ declare namespace App {
     step?: number;
     value?: number;
     secondValue?: number;
+    lockedValues?: string[];
 
     // view
     isHorizontal?: boolean;

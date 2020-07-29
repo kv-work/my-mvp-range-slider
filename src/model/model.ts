@@ -27,10 +27,9 @@ class SliderModel implements Model {
       this.secondValue = options.secondValue;
     }
 
+    this.lockedValues = new Set();
     if (options.lockedValues !== undefined) {
-      this.lockedValues = new Set(options.lockedValues);
-    } else {
-      this.lockedValues = new Set();
+      this.lockState(options.lockedValues);
     }
 
     this.isReadyNotify = true;
@@ -212,6 +211,10 @@ class SliderModel implements Model {
 
     if (oldMax !== this.maxValue || oldMin !== this.minValue) {
       this.isUpdated = false;
+    }
+
+    if (newState.lockedValues.length !== 0) {
+      this.lockState(newState.lockedValues);
     }
 
     if (!this.isUpdated) this.notify();

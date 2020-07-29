@@ -132,6 +132,26 @@ class Demo {
       $secondValInput.val(settings.secondValue);
     }
 
+    if (settings.lockedValues && settings.lockedValues.length !== 0) {
+      const { lockedValues } = settings;
+
+      $lockMaxValCheck.prop('checked', lockedValues.includes('maxValue'));
+      $lockMinValCheck.prop('checked', lockedValues.includes('minValue'));
+      $lockStepCheck.prop('checked', lockedValues.includes('step'));
+      $lockValCheck.prop('checked', lockedValues.includes('value'));
+      $lockSecondValCheck.prop('checked', lockedValues.includes('secondValue'));
+
+      const isAllLocked = [
+        lockedValues.includes('maxValue'),
+        lockedValues.includes('minValue'),
+        lockedValues.includes('step'),
+        lockedValues.includes('value'),
+        lockedValues.includes('secondValue'),
+      ].reduce((p, c): boolean => (p && c), true);
+
+      $lockAllCheck.prop('checked', isAllLocked);
+    }
+
     if (settings.isHorizontal) {
       $orientationRadio.find('[value="0"]').prop('checked', true);
     } else {
