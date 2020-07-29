@@ -53,6 +53,10 @@ class SliderPresenter implements Presenter {
       modelOptions.secondValue = options.secondValue;
     }
 
+    if (Object.prototype.hasOwnProperty.call(options, 'lockedValues')) {
+      modelOptions.lockedValues = options.lockedValues;
+    }
+
     const viewOptions: View.Options = {
       isHorizontal: options.isHorizontal,
       range: options.range,

@@ -195,7 +195,7 @@ class SliderModel implements Model {
       minValue: oldMin,
     } = this.getState();
 
-    const newState = $.extend(this.getState(), state);
+    const newState = this.createNewState(state);
 
     this.isReadyNotify = false;
     if (newState.maxValue > newState.minValue) {
@@ -365,6 +365,26 @@ class SliderModel implements Model {
       default:
         return false;
     }
+  }
+
+  private createNewState(state: Model.Options): Model.Options {
+    const {
+      maxValue: oldMax,
+      minValue: oldMin,
+      step: oldStep,
+      value: oldval,
+      secondValue: oldSecondVal,
+    } = this.getState();
+
+    const newState: Model.Options = $.extend(this.getState(), state);
+
+    newState.maxValue = this._isLocked('maxValue') ? oldMax : newState.maxValue;
+    newState.minValue = this._isLocked('minValue') ? oldMin : newState.minValue;
+    newState.step = this._isLocked('step') ? oldStep : newState.step;
+    newState.value = this._isLocked('value') ? oldval : newState.value;
+    newState.secondValue = this._isLocked('maxValue') ? oldSecondVal : newState.secondValue;
+
+    return newState;
   }
 
   static _validate(value: number): boolean {

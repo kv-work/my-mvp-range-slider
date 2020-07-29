@@ -44,6 +44,14 @@ export default class SliderApp implements App {
     return this.presenter.getPresenterData();
   }
 
+  lockValues(values: string[] | 'all'): void {
+    this.model.lockState(values);
+  }
+
+  unlockValues(values: string[] | 'all'): void {
+    this.model.unlockState(values);
+  }
+
   reset(): void {
     this.options = this.initOptions;
     this.update(this.initOptions);

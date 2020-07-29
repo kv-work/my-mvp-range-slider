@@ -274,6 +274,48 @@ class Demo {
         const val = $(elem).prop('checked');
         const { name } = elem;
         switch (name) {
+          case 'lock_max':
+            if (val) {
+              slider.lockValues(['maxValue']);
+            } else {
+              slider.unlockValues(['maxValue']);
+            }
+            break;
+          case 'lock_min':
+            if (val) {
+              slider.lockValues(['minValue']);
+            } else {
+              slider.unlockValues(['minValue']);
+            }
+            break;
+          case 'lock_step':
+            if (val) {
+              slider.lockValues(['step']);
+            } else {
+              slider.unlockValues(['step']);
+            }
+            break;
+          case 'lock_val':
+            if (val) {
+              slider.lockValues(['value']);
+            } else {
+              slider.unlockValues(['value']);
+            }
+            break;
+          case 'lock_second_val':
+            if (val) {
+              slider.lockValues(['secondValue']);
+            } else {
+              slider.unlockValues(['secondValue']);
+            }
+            break;
+          case 'lock_all':
+            if (val) {
+              slider.lockValues('all');
+            } else {
+              slider.unlockValues('all');
+            }
+            break;
           case 'range':
             slider.update({ range: val });
             break;

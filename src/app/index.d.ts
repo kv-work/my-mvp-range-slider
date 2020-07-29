@@ -4,6 +4,8 @@ declare interface App {
   getModelData(): Model.Options;
   getViewData(): View.Options;
   getPresenterData(): Presenter.Data;
+  lockValues(values: string[] | 'all'): void;
+  unlockValues(values: string[] | 'all'): void;
   reset(): void;
   destroy(): void;
 }
