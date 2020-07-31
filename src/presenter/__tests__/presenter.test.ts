@@ -162,10 +162,8 @@ describe('Presenter', () => {
     test('should calls render method of view', () => {
       expect(mockRender).toBeCalledTimes(1);
       expect(mockRender).toBeCalledWith({
-        data: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50,
-          55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
-        percentageData: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50,
-          55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
+        data: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        percentageData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
         value: [25, 70],
         percentage: [25, 70],
       });
@@ -242,9 +240,7 @@ describe('Presenter', () => {
       const presenterDataValues = testPresenter.getPresenterData();
       expect(presenterDataValues).toEqual({
         dataValues: [],
-        renderData: [
-          0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100,
-        ],
+        renderData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
       });
     });
   });
@@ -272,9 +268,7 @@ describe('Presenter', () => {
         prefix: 'value',
         postfix: '$',
         dataValues: [],
-        renderData: [
-          0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100,
-        ],
+        renderData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
       });
     });
   });
