@@ -15,32 +15,32 @@ class SliderBar implements Bar {
   }
 
   update(opts: Bar.UpdateOptions): void {
-    const currentData = this.$bar.data('options');
+    const currentOptions = this.$bar.data('options');
     const { options, data } = opts;
     const defaultOptions: Bar.RenderOptions = {
       isHorizontal: true,
       range: true,
       dragInterval: false,
     };
-    const newData = {
+    const newOptions = {
       ...defaultOptions,
-      ...currentData,
+      ...currentOptions,
       ...options,
     };
 
-    this.$bar.data('options', newData);
+    this.$bar.data('options', newOptions);
     this.$bar.data('data', data);
 
-    if (!newData.isHorizontal && this.$bar.hasClass('slider__bar_horizontal')) {
+    if (!newOptions.isHorizontal && this.$bar.hasClass('slider__bar_horizontal')) {
       this.$bar.removeClass('slider__bar_horizontal');
-    } else if (newData.isHorizontal && !this.$bar.hasClass('slider__bar_horizontal')) {
+    } else if (newOptions.isHorizontal && !this.$bar.hasClass('slider__bar_horizontal')) {
       this.$bar.addClass('slider__bar_horizontal');
     }
 
-    if (newData.range) {
+    if (newOptions.range) {
       this.createRangeElement();
     }
-    if (!newData.range && this.$range) {
+    if (!newOptions.range && this.$range) {
       this.destroyRangeElement();
     }
 

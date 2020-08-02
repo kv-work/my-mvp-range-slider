@@ -45,7 +45,7 @@ class SliderRunner implements Runner {
 
     const runnerMetrics: DOMRect = this.$runner[0].getBoundingClientRect();
     const runnerWidth = runnerMetrics.width;
-    let value: number;
+    let value: App.Stringable;
     let percentage: string;
     if (Array.isArray(data.percentage) && Array.isArray(data.value)) {
       const [from, to] = data.value;

@@ -11,7 +11,7 @@ declare namespace View {
   interface RenderData {
     data?: App.Stringable[];
     percentageData?: number[];
-    value?: number | [number, number];
+    value?: App.Stringable | [App.Stringable, App.Stringable];
     percentage?: number | [number, number];
   }
 

@@ -27,16 +27,15 @@ export default class SliderValuesDisplay implements ValuesDisplay {
       ...options,
     };
 
-    // update valueDisplay elements
-    const { value, percentage } = data;
-    if (Array.isArray(value) && Array.isArray(percentage)) {
-      if (!this.$firstValDisplay) {
-        this.$firstValDisplay = $('<div>', { class: 'slider__display_value' });
-        this.$displayContainer.append(this.$firstValDisplay);
-      }
+    if (!this.$firstValDisplay) {
+      this.$firstValDisplay = SliderValuesDisplay.createValueDisplay();
+      this.$displayContainer.append(this.$firstValDisplay);
+    }
 
+    // update valueDisplay elements
+    if (Array.isArray(data.value)) {
       if (!this.$secondValDisplay) {
-        this.$secondValDisplay = $('<div>', { class: 'slider__display_value' });
+        this.$secondValDisplay = SliderValuesDisplay.createValueDisplay();
         this.$displayContainer.append(this.$secondValDisplay);
       }
 
@@ -46,18 +45,9 @@ export default class SliderValuesDisplay implements ValuesDisplay {
       if (!options.isHorizontal && this.$secondValDisplay.hasClass('slider__display_container_horizontal')) {
         this.$secondValDisplay.removeClass('slider__display_value_horizontal');
       }
-    }
-
-    if (!Array.isArray(value) && !Array.isArray(percentage)) {
-      if (!this.$firstValDisplay) {
-        this.$firstValDisplay = $('<div>', { class: 'slider__display_value' });
-        this.$displayContainer.append(this.$firstValDisplay);
-      }
-
-      if (this.$secondValDisplay) {
-        this.$secondValDisplay.remove();
-        this.$secondValDisplay = null;
-      }
+    } else if (this.$secondValDisplay) {
+      this.$secondValDisplay.remove();
+      this.$secondValDisplay = null;
     }
 
     this.$displayContainer.data({ options: newOpts, data: data.value });
@@ -94,46 +84,46 @@ export default class SliderValuesDisplay implements ValuesDisplay {
 
   private updateValueDisplay(updateData: ValuesDisplay.UpdateData): void {
     const { renderData, options } = updateData;
-    const {
-      data,
-      percentage,
-      percentageData,
-    } = renderData;
+    const { value, percentage } = renderData;
     const { isHorizontal } = options;
 
     let from: number;
     let to: number;
 
-    let secondIdx: number;
     let secondMetrics: DOMRect;
+    let firstData: App.Stringable;
+    let secondData: App.Stringable;
 
-    if (Array.isArray(percentage)) {
+    if (Array.isArray(percentage) && Array.isArray(value)) {
       [from, to] = percentage;
-      secondIdx = percentageData.indexOf(to);
-      const secondData = data[secondIdx].toString();
+      [firstData, secondData] = value;
 
       this.$secondValDisplay.data('data', secondData);
       this.$secondValDisplay.data('options', options);
 
       let secondHtml = options.prefix;
-      secondHtml += secondData;
+      secondHtml += secondData.toString();
       if (options.postfix !== '') {
         secondHtml += options.postfix;
       }
 
       this.$secondValDisplay.html(secondHtml);
       secondMetrics = this.$secondValDisplay[0].getBoundingClientRect();
-    } else {
-      from = percentage;
+
+      this.$firstValDisplay.data('data', firstData);
+      this.$firstValDisplay.data('options', options);
     }
 
-    const firstIdx = percentageData.indexOf(from);
-    const firstData = data[firstIdx].toString();
-    this.$firstValDisplay.data('data', firstData);
-    this.$firstValDisplay.data('options', options);
+    if (!Array.isArray(percentage) && !Array.isArray(value)) {
+      from = percentage;
+      firstData = value;
+      this.$firstValDisplay.data('data', firstData);
+      this.$firstValDisplay.data('options', options);
+    }
+
 
     let firstHtml = options.prefix;
-    firstHtml += firstData;
+    firstHtml += firstData.toString();
     if (options.postfix !== '') firstHtml += options.postfix;
     this.$firstValDisplay.html(firstHtml);
     const firstMetrics = this.$firstValDisplay[0].getBoundingClientRect();
@@ -222,5 +212,11 @@ export default class SliderValuesDisplay implements ValuesDisplay {
     });
 
     return $displayContainer;
+  }
+
+  static createValueDisplay(): JQuery {
+    const $valueDisplay = $('<div>', { class: 'slider__display_value' });
+
+    return $valueDisplay;
   }
 }

@@ -25,7 +25,7 @@ class SliderPresenter implements Presenter {
       this.dataValues = [];
     }
 
-    this.renderData = this.createDataValues();
+    this.renderData = this.dataValues.length > 0 ? this.dataValues : this.createDataValues();
 
     this.callbacks = {
       onStart: options.onStart,
@@ -111,7 +111,7 @@ class SliderPresenter implements Presenter {
   setUserData(data: App.Stringable[] | Model.Options): void {
     if (Array.isArray(data) && data.length > 0) {
       this.updateDataValues(data);
-      this.renderData = this.createDataValues();
+      this.renderData = this.dataValues.length > 0 ? this.dataValues : this.createDataValues();
     } else if (!Array.isArray(data) && SliderModel.validateInitOptions(data)) {
       this.dataValues = [];
       this.model.unlockState(['maxValue', 'minValue', 'step']);
@@ -124,11 +124,7 @@ class SliderPresenter implements Presenter {
     }
   }
 
-  private createDataValues(data?: Model.Options, options?: View.Options): App.Stringable[] {
-    if (this.dataValues.length > 0) {
-      return this.dataValues;
-    }
-
+  private createDataValues(data?: Model.Options, options?: View.Options): number[] {
     const {
       minValue: min,
       maxValue: max,
@@ -151,12 +147,12 @@ class SliderPresenter implements Presenter {
     const num = (max - min) / step;
 
     if (num % 1 === 0) {
-      total = num + 1;
+      total = num - 1;
     } else {
-      total = num + 2;
+      total = Math.floor(num);
     }
 
-    let resultNum: number = numOfScaleVal < (total - 2) ? numOfScaleVal : (total - 2);
+    let resultNum: number = numOfScaleVal < total ? numOfScaleVal : total;
 
     if (resultNum < 0) {
       resultNum = 0;
@@ -165,8 +161,6 @@ class SliderPresenter implements Presenter {
     if (resultNum > 10) {
       resultNum = 10;
     }
-
-    resultNum = Math.floor(resultNum);
 
     const scaleStep = Math.floor(num / resultNum);
 
@@ -183,11 +177,34 @@ class SliderPresenter implements Presenter {
     return values;
   }
 
+  private createPercentageData(): number[] {
+    const {
+      minValue: min,
+      maxValue: max,
+      step,
+    } = this.model.getState();
+
+    const values = this.createDataValues();
+    const baseValue = step / (max - min);
+
+    const percentageData = values.map((val): number => {
+      const percentage = ((val - min) / (max - min)) * 100;
+      return SliderModel.fixVal(percentage, baseValue);
+    });
+
+    return percentageData;
+  }
+
   private subscribeToModel(): void {
     this.modelObserver = {
       update: (): void => {
         const updatedModelState = this.getModelData();
-        this.renderData = this.createDataValues(updatedModelState);
+        if (this.dataValues.length > 0) {
+          this.renderData = this.dataValues;
+        } else {
+          this.renderData = this.createDataValues(updatedModelState);
+        }
+
         if (this.isChanging) {
           this.callbacks.onChange(updatedModelState);
         }
@@ -220,7 +237,7 @@ class SliderPresenter implements Presenter {
   }
 
   private renderView(): void {
-    let value: [number, number] | number;
+    let value: [App.Stringable, App.Stringable] | App.Stringable;
     let percentage: [number, number] | number;
     const {
       value: from,
@@ -228,15 +245,23 @@ class SliderPresenter implements Presenter {
     } = this.getModelData();
 
     if (to !== undefined) {
-      value = [from, to];
+      if (this.dataValues.length > 0) {
+        value = [this.dataValues[from], this.dataValues[to]];
+      } else {
+        value = [from, to];
+      }
       percentage = [this.convertValueToPercent(from), this.convertValueToPercent(to)];
     } else {
-      value = from;
+      if (this.dataValues.length > 0) {
+        value = this.dataValues[from];
+      } else {
+        value = from;
+      }
       percentage = this.convertValueToPercent(from);
     }
 
     const data = this.renderData;
-    const percentageData = data.map((val: number): number => this.convertValueToPercent(val));
+    const percentageData = this.createPercentageData();
     const viewRenderData: View.RenderData = {
       data,
       percentageData,
