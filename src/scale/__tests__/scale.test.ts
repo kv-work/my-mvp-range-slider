@@ -1,6 +1,7 @@
+/* eslint-disable fsd/no-function-declaration-in-event-listener */
 import SliderScale from '../scale';
 
-describe('scale', () => {
+describe.only('scale', () => {
   document.body.innerHTML = `
     <div id="view_container"></div>
     <div id="view_container_horizontal"></div>
@@ -88,7 +89,7 @@ describe('scale', () => {
       expect(verticalScale).toHaveProperty('$scale');
     });
 
-    test('should create and append scale elements (max 12 elements) to view container', () => {
+    test('should create and append scale elements to view container', () => {
       const $horizontalElements = $horizontalScale.find('.scale__element_horizontal');
       const $verticalElements = $verticalScale.find('.scale__element');
 
@@ -98,130 +99,15 @@ describe('scale', () => {
       expect($verticalElements.length).toBe(testRenderData.percentageData.length);
     });
 
-    test('should append no more then 12 elements', () => {
-      const newData = {
-        data: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-        percentageData: [
-          0, 6.25, 12.5, 18.75, 25,
-          31.25, 37.5, 43.75, 50,
-          56.25, 62.5, 68.75, 75,
-          81.25, 87.5, 93.75, 100,
-        ],
-      };
-
-      const newOpts: Scale.RenderOptions = {
-        isHorizontal: true,
-        displayScaleValue: true,
-        displayMin: true,
-        displayMax: true,
-        numOfScaleVal: 15,
-      };
-
-      testScale.update({
-        data: newData,
-        options: newOpts,
-      });
-      const $elements = $horizontalView.find('.scale__element');
-      expect($elements.length).toBe(12);
-    });
-
-    test('should not append scale elements to view container if options.numOfScaleVal <= 0', () => {
-      testScale.update({
-        data: testRenderData,
-        options: { numOfScaleVal: -5 },
-      });
-      let $elements = $horizontalView.find('.scale__element');
-      // should append only min and max values
-      expect($elements.length).toBe(2);
-
-      testScale.update({
-        data: testRenderData,
-        options: { numOfScaleVal: 0 },
-      });
-
-      $elements = $horizontalView.find('.scale__element');
-      // should append only min and max values
-      expect($elements.length).toBe(2);
-    });
-
-    test('should not append min value to scale container if options.displayMin is false', () => {
-      testScale.update({
-        data: testRenderData,
-        options: {
-          displayScaleValue: false,
-          displayMin: false,
-          displayMax: false,
-        },
-      });
-
-      let $elements = $horizontalView.find('.scale__element');
-      expect($elements.length).toBe(0);
-
-      testScale.update({
-        data: testRenderData,
-        options: { displayMin: true },
-      });
-      $elements = $horizontalView.find('.scale__element');
-      // should append min value
-      expect($elements.length).toBe(1);
-      expect($elements.html()).toBe('0');
-      expect($elements.eq(0).data('percentage')).toBe(0);
-
-      testScale.update({
-        data: testRenderData,
-        options: { displayMin: false },
-      });
-      $elements = $horizontalView.find('.scale__element');
-      // should not append min value
-      expect($elements.length).toBe(0);
-    });
-
-    test('should not append max value to scale container if options.displayMax is false', () => {
-      testScale.update({
-        data: testRenderData,
-        options: {
-          displayScaleValue: false,
-          displayMin: false,
-          displayMax: false,
-        },
-      });
-
-      let $elements = $horizontalView.find('.scale__element');
-      expect($elements.length).toBe(0);
-
-      testScale.update({
-        data: testRenderData,
-        options: { displayMax: true },
-      });
-      $elements = $horizontalView.find('.scale__element');
-      // should append max value
-      expect($elements.length).toBe(1);
-      expect($elements.html()).toBe('10');
-      expect($elements.eq(0).data('percentage')).toBe(100);
-
-      testScale.update({
-        data: testRenderData,
-        options: { displayMax: false },
-      });
-      $elements = $horizontalView.find('.scale__element');
-      // should not append max value
-      expect($elements.length).toBe(0);
-    });
-
-    test('should not append value elements (except min and max values) to scale container if options.displayScaleValue is false', () => {
+    test('should not create scale elements if options.displayScaleValues is false', () => {
       testScale.update({
         data: testRenderData,
         options: { displayScaleValue: false },
       });
 
-      const $elements = $horizontalView.find('.scale__element');
+      const $horizontalElements = $horizontalScale.find('.scale__element_horizontal');
 
-      expect($elements.length).toBe(2);
-      expect($elements.eq(0).html()).toBe('0');
-      expect($elements.eq(0).data('percentage')).toBe(0);
-
-      expect($elements.eq(1).html()).toBe('10');
-      expect($elements.eq(1).data('percentage')).toBe(100);
+      expect($horizontalElements.length).toBe(0);
     });
 
     test('should toggle "slider__scale_horizontal" class if options.isHorizontal changed', () => {
