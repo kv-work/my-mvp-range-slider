@@ -62,10 +62,6 @@ class SliderView implements View {
 
     this.viewOptions = state;
     this.$view.data('options', state);
-
-    if (this.renderData) {
-      this.render(this.renderData);
-    }
   }
 
   addObserver(observer: View.Observer): void {

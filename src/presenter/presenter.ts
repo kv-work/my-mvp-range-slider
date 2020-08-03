@@ -81,7 +81,10 @@ class SliderPresenter implements Presenter {
       this.model.updateState(modelOptions);
     }
 
+    this.renderData = this.dataValues.length > 0 ? this.dataValues : this.createDataValues();
+
     this.callbacks.onUpdate();
+    this.renderView();
   }
 
   getAllData(): App.Option {
@@ -162,12 +165,23 @@ class SliderPresenter implements Presenter {
       resultNum = 10;
     }
 
-    const scaleStep = Math.floor(num / resultNum);
-
-    for (let i = 1; i <= resultNum; i += 1) {
-      const val = step * i * scaleStep + min;
-      const fixed = SliderModel.fixVal(val, step);
-      values.push(fixed);
+    if (resultNum === total) {
+      for (let i = 1; i <= total; i += 1) {
+        const elem = min + step * i;
+        values.push(elem);
+      }
+    } else {
+      const s = (max - min) / (resultNum + 1);
+      for (let i = 1; i <= resultNum; i += 1) {
+        const elem = min + s * i;
+        let multipleElem: number;
+        if ((elem - min) % step > step / 2) {
+          multipleElem = elem - ((elem - min) % step) + step;
+        } else {
+          multipleElem = elem - ((elem - min) % step);
+        }
+        values.push(multipleElem);
+      }
     }
 
     if (displayMax) {
