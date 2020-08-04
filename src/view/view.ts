@@ -29,7 +29,7 @@ class SliderView implements View {
     this.isRendered = false;
   }
 
-  render(renderData: View.RenderData): void {
+  render(renderData: View.RenderData = this.renderData): void {
     this.renderData = renderData;
 
     if (this.viewOptions.isHorizontal && !this.$view.hasClass('slider__container_horizontal')) {
@@ -62,6 +62,10 @@ class SliderView implements View {
 
     this.viewOptions = state;
     this.$view.data('options', state);
+
+    if (this.renderData) {
+      this.render(this.renderData);
+    }
   }
 
   addObserver(observer: View.Observer): void {
