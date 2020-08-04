@@ -134,7 +134,7 @@ class Demo {
       $secondValInput.val('');
     }
 
-    if (settings.lockedValues && settings.lockedValues.length !== 0) {
+    if (settings.lockedValues) {
       const { lockedValues } = settings;
 
       $lockMaxValCheck.prop('checked', lockedValues.includes('maxValue'));
