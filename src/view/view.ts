@@ -180,15 +180,21 @@ class SliderView implements View {
           });
           this.secondRunner.update(renderData, this.viewOptions);
         }
-      } else if (this.runner) {
-        this.runner.update(renderData, this.viewOptions);
       } else {
-        this.runner = new SliderRunner({
-          $viewContainer: this.$view,
-          $barContainer: this.$barContainer,
-          isSecond: false,
-        });
-        this.runner.update(renderData, this.viewOptions);
+        if (this.runner) {
+          this.runner.update(renderData, this.viewOptions);
+        } else {
+          this.runner = new SliderRunner({
+            $viewContainer: this.$view,
+            $barContainer: this.$barContainer,
+            isSecond: false,
+          });
+          this.runner.update(renderData, this.viewOptions);
+        }
+
+        if (this.secondRunner) {
+          this.secondRunner.destroy();
+        }
       }
     } else {
       if (this.runner) {

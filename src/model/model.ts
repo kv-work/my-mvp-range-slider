@@ -213,10 +213,6 @@ class SliderModel implements Model {
       this.isUpdated = false;
     }
 
-    if (newState.lockedValues.length !== 0) {
-      this.lockState(newState.lockedValues);
-    }
-
     if (!this.isUpdated) this.notify();
   }
 
@@ -226,18 +222,23 @@ class SliderModel implements Model {
         switch (valueName) {
           case 'minValue':
             this.lockedValues.add('minValue');
+            this.isUpdated = false;
             break;
           case 'maxValue':
             this.lockedValues.add('maxValue');
+            this.isUpdated = false;
             break;
           case 'step':
             this.lockedValues.add('step');
+            this.isUpdated = false;
             break;
           case 'value':
             this.lockedValues.add('value');
+            this.isUpdated = false;
             break;
           case 'secondValue':
             this.lockedValues.add('secondValue');
+            this.isUpdated = false;
             break;
           default:
             break;
@@ -249,7 +250,10 @@ class SliderModel implements Model {
       this.lockedValues.add('step');
       this.lockedValues.add('value');
       this.lockedValues.add('secondValue');
+      this.isUpdated = false;
     }
+
+    if (!this.isUpdated) this.notify();
   }
 
   unlockState(props: string[] | 'all'): void {
@@ -258,18 +262,23 @@ class SliderModel implements Model {
         switch (valueName) {
           case 'minValue':
             this.lockedValues.delete('minValue');
+            this.isUpdated = false;
             break;
           case 'maxValue':
             this.lockedValues.delete('maxValue');
+            this.isUpdated = false;
             break;
           case 'step':
             this.lockedValues.delete('step');
+            this.isUpdated = false;
             break;
           case 'value':
             this.lockedValues.delete('value');
+            this.isUpdated = false;
             break;
           case 'secondValue':
             this.lockedValues.delete('secondValue');
+            this.isUpdated = false;
             break;
           default:
             break;
@@ -277,7 +286,10 @@ class SliderModel implements Model {
       });
     } else if (props === 'all') {
       this.lockedValues.clear();
+      this.isUpdated = false;
     }
+
+    if (!this.isUpdated) this.notify();
   }
 
   private notify(): void {
@@ -377,6 +389,10 @@ class SliderModel implements Model {
     } = this.getState();
 
     const newState: Model.Options = $.extend(this.getState(), state);
+
+    if (Object.prototype.hasOwnProperty.call(state, 'secondValue')) {
+      newState.secondValue = state.secondValue;
+    }
 
     newState.maxValue = this._isLocked('maxValue') ? oldMax : newState.maxValue;
     newState.minValue = this._isLocked('minValue') ? oldMin : newState.minValue;
