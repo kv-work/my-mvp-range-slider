@@ -29,6 +29,7 @@ declare namespace View {
     displayMax?: boolean;
     prefix?: string;
     postfix?: string;
+    renderData?: RenderData;
   }
 
   interface Observer {

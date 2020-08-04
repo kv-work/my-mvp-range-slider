@@ -53,10 +53,6 @@ class SliderPresenter implements Presenter {
       modelOptions.secondValue = options.secondValue;
     }
 
-    if (Object.prototype.hasOwnProperty.call(options, 'lockedValues')) {
-      modelOptions.lockedValues = options.lockedValues;
-    }
-
     const viewOptions: View.Options = {
       isHorizontal: options.isHorizontal,
       range: options.range,
@@ -73,18 +69,23 @@ class SliderPresenter implements Presenter {
       postfix: options.postfix,
     };
 
-    if (!SliderPresenter.isEmpty(viewOptions)) {
-      this.view.update(viewOptions);
-    }
-
     if (!SliderPresenter.isEmpty(modelOptions) || Object.prototype.hasOwnProperty.call(options, 'secondValue')) {
       this.model.updateState(modelOptions);
     }
 
-    this.renderData = this.dataValues.length > 0 ? this.dataValues : this.createDataValues();
+    if (Object.prototype.hasOwnProperty.call(options, 'lockedValues')) {
+      this.model.lockState(options.lockedValues);
+    }
+
+    if (Object.prototype.hasOwnProperty.call(options, 'unlockValues')) {
+      this.model.unlockState(options.unlockValues);
+    }
+
+    if (!SliderPresenter.isEmpty(viewOptions)) {
+      this.view.update(viewOptions);
+    }
 
     this.callbacks.onUpdate();
-    this.renderView();
   }
 
   getAllData(): App.Option {
@@ -246,11 +247,15 @@ class SliderPresenter implements Presenter {
       finish: (): void => {
         this.callbacks.onFinish(this.getModelData());
       },
+      update: (): void => {
+        this.renderData = this.dataValues.length > 0 ? this.dataValues : this.createDataValues();
+        this.renderView();
+      },
     };
     this.view.addObserver(this.viewObserver);
   }
 
-  private renderView(): void {
+  private createRenderData(): View.RenderData {
     let value: [App.Stringable, App.Stringable] | App.Stringable;
     let percentage: [number, number] | number;
     const {
@@ -282,6 +287,12 @@ class SliderPresenter implements Presenter {
       value,
       percentage,
     };
+
+    return viewRenderData;
+  }
+
+  private renderView(): void {
+    const viewRenderData = this.createRenderData();
     this.view.render(viewRenderData);
   }
 

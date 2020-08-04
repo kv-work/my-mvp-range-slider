@@ -130,6 +130,8 @@ class Demo {
     $valInput.val(settings.value);
     if (settings.secondValue !== undefined) {
       $secondValInput.val(settings.secondValue);
+    } else {
+      $secondValInput.val('');
     }
 
     if (settings.lockedValues && settings.lockedValues.length !== 0) {
@@ -250,7 +252,9 @@ class Demo {
             slider.update({ value: +newVal });
             break;
           case 'second-value':
-            if (newVal) {
+            if (!newVal) {
+              slider.update({ secondValue: undefined });
+            } else {
               slider.update({ secondValue: +newVal });
             }
             break;

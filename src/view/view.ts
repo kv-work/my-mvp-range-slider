@@ -63,9 +63,7 @@ class SliderView implements View {
     this.viewOptions = state;
     this.$view.data('options', state);
 
-    if (this.renderData) {
-      this.render(this.renderData);
-    }
+    this.notify({ event: 'update' });
   }
 
   addObserver(observer: View.Observer): void {
@@ -223,6 +221,11 @@ class SliderView implements View {
           observer.finish();
         });
         break;
+      case 'update':
+        this.observers.forEach((observer) => {
+          observer.update();
+        });
+        break;
       default:
         break;
     }
@@ -334,6 +337,8 @@ class SliderView implements View {
             return entry;
           }
           break;
+        case 'renderData':
+          return entry;
         default:
           return undefined;
       }
