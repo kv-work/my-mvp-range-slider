@@ -45,11 +45,11 @@ export default class SliderApp implements App {
   }
 
   lockValues(values: string[] | 'all'): void {
-    this.model.lockState(values);
+    this.presenter.update({ lockedValues: values });
   }
 
   unlockValues(values: string[] | 'all'): void {
-    this.model.unlockState(values);
+    this.presenter.update({ unlockValues: values });
   }
 
   reset(): void {
