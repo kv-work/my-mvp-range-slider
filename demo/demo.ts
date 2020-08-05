@@ -95,7 +95,7 @@ class Demo {
     this.$scaleCheck = $configPanel.find('.input_scale');
     this.$displayValCheck = $configPanel.find('.input_display_value');
     this.$displayScaleValCheck = $configPanel.find('.input_scale_value');
-    this.$numScaleValRange = $configPanel.find('.input_num_scale_val');
+    this.$numScaleValRange = $configPanel.find('input[name="num_scale_val"]');
     this.$displayMaxValCheck = $configPanel.find('.input_display_max');
     this.$displayMinValCheck = $configPanel.find('.input_display_min');
     this.$prefixInput = $configPanel.find('.input_prefix');

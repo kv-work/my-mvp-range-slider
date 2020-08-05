@@ -56,7 +56,9 @@
 }
 
 .label_num_scale_val {
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: auto 1fr 3rem;
+  column-gap: 0.5rem;
   justify-content: space-around;
   border-top: 1px solid lightblue;
   border-bottom: 1px solid lightblue;
