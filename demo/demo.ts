@@ -39,25 +39,18 @@ class Demo {
 
     const callbacks = {
       onStart: (): void => {
-        const $onStartIndicator = this.$callbackIndicators.find('.indicator__on-start');
-
-        $onStartIndicator.css({
-          'background-color': 'lime',
-        });
-
-        setTimeout(() => {
-          $onStartIndicator.css({
-            'background-color': '',
-          });
-        }, 500);
+        this.lightIndicator('onStart');
       },
       onChange: (): void => {
+        this.lightIndicator('onChange');
         this.onChangeSlider();
       },
       onFinish: (): void => {
+        this.lightIndicator('onFinish');
         this.onChangeSlider();
       },
       onUpdate: (): void => {
+        this.lightIndicator('onUpdate');
         this.onChangeSlider();
       },
     };
@@ -68,7 +61,7 @@ class Demo {
 
     this.settings = this.$container.find('.js-slider').data('init-options');
 
-    this.$configPanel = this.$container.find('.js-congig_panel');
+    this.$configPanel = this.$container.find('.js-config_panel');
     this.$callbackIndicators = this.$container.find('.callback_indicators');
 
 
@@ -401,6 +394,37 @@ class Demo {
     };
 
     return handler;
+  }
+
+  private lightIndicator(indicator: string): void {
+    let indicatorClass: string;
+    switch (indicator) {
+      case 'onStart':
+        indicatorClass = '.indicator__on-start';
+        break;
+      case 'onChange':
+        indicatorClass = '.indicator__on-change';
+        break;
+      case 'onFinish':
+        indicatorClass = '.indicator__on-finish';
+        break;
+      case 'onUpdate':
+        indicatorClass = '.indicator__on-update';
+        break;
+      default:
+        break;
+    }
+    const $indicator = this.$callbackIndicators.find(indicatorClass);
+
+    $indicator.css({
+      'background-color': 'lime',
+    });
+
+    setTimeout(() => {
+      $indicator.css({
+        'background-color': '',
+      });
+    }, 500);
   }
 
   private onChangeSlider(): void {
