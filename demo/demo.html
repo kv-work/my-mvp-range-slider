@@ -22,7 +22,7 @@
       <fieldset class="config config_first">
         <legend class="config__legend">Configuration panel</legend>
         <div class="config_container">
-          <div class="config_container config_container__model">
+          <div class="config_container__model">
             <fieldset class="config__model">
               <legend class="config__model_legend">Model configuration</legend>
 
@@ -48,12 +48,18 @@
 
             </fieldset>
           </div>
-          <div class="config_container config_container__presenter">
+          <div class="config_container__presenter">
             <fieldset class="config__presenter">
               <legend class="config__presenter_legend">Presenter configuration</legend>
 
+              <div class="config_presenter__presets presets">
+                <div class="presets__label">Presets:</div>
+                <button class="presets__week">Week</button>
+                <button class="presets__year">Year</button>
+              </div>
+
               <div class="config_presenter__lock">
-                <div class="config_presenter__lock lock_label">Lock model values</div>
+                <div class="config_presenter__lock lock_label">Lock model values:</div>
                 <label class="config__presenter_label label_lock_max">Maximum value
                   <input name="lock_max" type="checkbox" class="config__presenter_input input_lock_max">
                 </label>
@@ -78,11 +84,12 @@
 
             </fieldset>
           </div>
-          <div class="config_container config_container__view">
+          <div class="config_container__view">
             <fieldset class="config__view">
               <legend class="config__view_legend">View configuration</legend>
 
               <div class="config_orientation">
+                Orientation:
                 <label class="config__view_label label_orientation">Horizontal
                   <input name="orientation" type="radio" class="config__view_input input_orientation" value="0" checked>
                 </label>
@@ -115,13 +122,13 @@
                 <input name="display_value" type="checkbox" class="config__view_input input_display_value">
               </label>
 
-              <label class="config__view_label label_num_scale_val">Number of scale values
-                <input name="num_scale_val" type="range" min="0" max="10"
-                  class="config__view_input input_num_scale_val">
-              </label>
-
               <label class="config__view_label label_scale_value">Display scale values
                 <input name="scale_value" type="checkbox" class="config__view_input input_scale_value">
+              </label>
+
+              <label class="config__view_label label_num_scale_val">Number of scale values:
+                <input name="num_scale_val" type="range" min="0" max="10"
+                  class="config__view_input input_num_scale_val">
               </label>
 
               <label class="config__view_label label_display_min">Display minimum value
