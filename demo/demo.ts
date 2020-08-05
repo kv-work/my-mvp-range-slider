@@ -4,6 +4,7 @@ class Demo {
   private $container: JQuery;
   private slider: App;
   private $configPanel: JQuery;
+  private $callbackIndicators: JQuery;
   private settings: App.Option;
   // model config
   private $maxValInput: JQuery;
@@ -37,7 +38,19 @@ class Demo {
     this.$container = $container;
 
     const callbacks = {
-      onStart: (): void => {},
+      onStart: (): void => {
+        const $onStartIndicator = this.$callbackIndicators.find('.indicator__on-start');
+
+        $onStartIndicator.css({
+          'background-color': 'lime',
+        });
+
+        setTimeout(() => {
+          $onStartIndicator.css({
+            'background-color': '',
+          });
+        }, 500);
+      },
       onChange: (): void => {
         this.onChangeSlider();
       },
@@ -56,6 +69,7 @@ class Demo {
     this.settings = this.$container.find('.js-slider').data('init-options');
 
     this.$configPanel = this.$container.find('.js-congig_panel');
+    this.$callbackIndicators = this.$container.find('.callback_indicators');
 
 
     this.initInputs();
@@ -206,7 +220,6 @@ class Demo {
       $displayMinValCheck,
       $prefixInput,
       $postfixInput,
-      slider,
     } = this;
 
     const $inputs = $maxValInput
@@ -233,149 +246,161 @@ class Demo {
       .add($displayMaxValCheck)
       .add($displayMinValCheck);
 
-    function unfocusInput(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
-      const handler = (e: JQuery.BlurEvent): void => {
-        const elem = e.target;
-        const newVal = $(elem).val();
-        const { name } = elem;
-        switch (name) {
-          case 'max-value':
-            slider.update({ maxValue: +newVal });
-            break;
-          case 'min-value':
-            slider.update({ minValue: +newVal });
-            break;
-          case 'step':
-            slider.update({ step: +newVal });
-            break;
-          case 'value':
-            slider.update({ value: +newVal });
-            break;
-          case 'second-value':
-            if (!newVal) {
-              slider.update({ secondValue: undefined });
-            } else {
-              slider.update({ secondValue: +newVal });
-            }
-            break;
-          case 'prefix':
-            slider.update({ prefix: newVal.toString() });
-            break;
-          case 'postfix':
-            slider.update({ postfix: newVal.toString() });
-            break;
-          default:
-            break;
-        }
-      };
+    const unfocusInputHandler = this.createUnfocusHandler();
+    const changeCheckboxHandler = this.createChangeHandler();
+    const changeRangeHandler = this.createChangeRangeHandler();
+    const changeRadioHandler = this.createChangeRadioHandler();
 
-      return handler;
-    }
+    $inputs.on('blur', unfocusInputHandler);
+    $checkbox.on('change', changeCheckboxHandler);
+    $numScaleValRange.on('change', changeRangeHandler);
+    $orientationRadio.on('change', changeRadioHandler);
+  }
 
-    function changeCheckbox(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
-      const handler = (e: JQuery.ChangeEvent): void => {
-        const elem = e.target;
-        const val = $(elem).prop('checked');
-        const { name } = elem;
-        switch (name) {
-          case 'lock_max':
-            if (val) {
-              slider.lockValues(['maxValue']);
-            } else {
-              slider.unlockValues(['maxValue']);
-            }
-            break;
-          case 'lock_min':
-            if (val) {
-              slider.lockValues(['minValue']);
-            } else {
-              slider.unlockValues(['minValue']);
-            }
-            break;
-          case 'lock_step':
-            if (val) {
-              slider.lockValues(['step']);
-            } else {
-              slider.unlockValues(['step']);
-            }
-            break;
-          case 'lock_val':
-            if (val) {
-              slider.lockValues(['value']);
-            } else {
-              slider.unlockValues(['value']);
-            }
-            break;
-          case 'lock_second_val':
-            if (val) {
-              slider.lockValues(['secondValue']);
-            } else {
-              slider.unlockValues(['secondValue']);
-            }
-            break;
-          case 'lock_all':
-            if (val) {
-              slider.lockValues('all');
-            } else {
-              slider.unlockValues('all');
-            }
-            break;
-          case 'range':
-            slider.update({ range: val });
-            break;
-          case 'drag_interval':
-            slider.update({ dragInterval: val });
-            break;
-          case 'runner':
-            slider.update({ runner: val });
-            break;
-          case 'bar':
-            slider.update({ bar: val });
-            break;
-          case 'scale':
-            slider.update({ scale: val });
-            break;
-          case 'display_value':
-            slider.update({ displayValue: val });
-            break;
-          case 'scale_value':
-            slider.update({ displayScaleValue: val });
-            break;
-          case 'display_min':
-            slider.update({ displayMin: val });
-            break;
-          case 'display_max':
-            slider.update({ displayMax: val });
-            break;
-          default:
-            break;
-        }
-      };
+  private createUnfocusHandler(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+    const { slider } = this;
+    const handler = (e: JQuery.BlurEvent): void => {
+      const elem = e.target;
+      const newVal = $(elem).val();
+      const { name } = elem;
+      switch (name) {
+        case 'max-value':
+          slider.update({ maxValue: +newVal });
+          break;
+        case 'min-value':
+          slider.update({ minValue: +newVal });
+          break;
+        case 'step':
+          slider.update({ step: +newVal });
+          break;
+        case 'value':
+          slider.update({ value: +newVal });
+          break;
+        case 'second-value':
+          if (!newVal) {
+            slider.update({ secondValue: undefined });
+          } else {
+            slider.update({ secondValue: +newVal });
+          }
+          break;
+        case 'prefix':
+          slider.update({ prefix: newVal.toString() });
+          break;
+        case 'postfix':
+          slider.update({ postfix: newVal.toString() });
+          break;
+        default:
+          break;
+      }
+    };
 
-      return handler;
-    }
+    return handler;
+  }
 
-    function changeRange(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
-      const handler = (e: JQuery.ChangeEvent): void => {
-        const val = +$(e.target).val();
-        slider.update({ numOfScaleVal: val });
-      };
-      return handler;
-    }
+  private createChangeHandler(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+    const { slider } = this;
 
-    function changeRadio(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
-      const handler = (): void => {
-        const rotate = !slider.getViewData().isHorizontal;
-        slider.update({ isHorizontal: rotate });
-      };
+    const handler = (e: JQuery.ChangeEvent): void => {
+      const elem = e.target;
+      const val = $(elem).prop('checked');
+      const { name } = elem;
+      switch (name) {
+        case 'lock_max':
+          if (val) {
+            slider.lockValues(['maxValue']);
+          } else {
+            slider.unlockValues(['maxValue']);
+          }
+          break;
+        case 'lock_min':
+          if (val) {
+            slider.lockValues(['minValue']);
+          } else {
+            slider.unlockValues(['minValue']);
+          }
+          break;
+        case 'lock_step':
+          if (val) {
+            slider.lockValues(['step']);
+          } else {
+            slider.unlockValues(['step']);
+          }
+          break;
+        case 'lock_val':
+          if (val) {
+            slider.lockValues(['value']);
+          } else {
+            slider.unlockValues(['value']);
+          }
+          break;
+        case 'lock_second_val':
+          if (val) {
+            slider.lockValues(['secondValue']);
+          } else {
+            slider.unlockValues(['secondValue']);
+          }
+          break;
+        case 'lock_all':
+          if (val) {
+            slider.lockValues('all');
+          } else {
+            slider.unlockValues('all');
+          }
+          break;
+        case 'range':
+          slider.update({ range: val });
+          break;
+        case 'drag_interval':
+          slider.update({ dragInterval: val });
+          break;
+        case 'runner':
+          slider.update({ runner: val });
+          break;
+        case 'bar':
+          slider.update({ bar: val });
+          break;
+        case 'scale':
+          slider.update({ scale: val });
+          break;
+        case 'display_value':
+          slider.update({ displayValue: val });
+          break;
+        case 'scale_value':
+          slider.update({ displayScaleValue: val });
+          break;
+        case 'display_min':
+          slider.update({ displayMin: val });
+          break;
+        case 'display_max':
+          slider.update({ displayMax: val });
+          break;
+        default:
+          break;
+      }
+    };
 
-      return handler;
-    }
+    return handler;
+  }
 
-    $inputs.on('blur', unfocusInput());
-    $checkbox.on('change', changeCheckbox());
-    $numScaleValRange.on('change', changeRange());
-    $orientationRadio.on('change', changeRadio());
+  private createChangeRangeHandler(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+    const { slider } = this;
+
+    const handler = (e: JQuery.ChangeEvent): void => {
+      const val = +$(e.target).val();
+      slider.update({ numOfScaleVal: val });
+    };
+    return handler;
+  }
+
+  private createChangeRadioHandler(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+    const { slider } = this;
+
+    const handler = (): void => {
+      const rotate = !slider.getViewData().isHorizontal;
+      slider.update({ isHorizontal: rotate });
+    };
+
+    return handler;
   }
 
   private onChangeSlider(): void {
