@@ -42,11 +42,15 @@ class SliderPresenter implements Presenter {
   }
 
   update(options: App.Option): void {
+    const { dataValues } = options;
+
     const modelOptions: Model.Options = {
       maxValue: options.maxValue,
       minValue: options.minValue,
       step: options.step,
       value: options.value,
+      lockedValues: options.lockedValues,
+      unlockValues: options.unlockValues,
     };
 
     if (Object.prototype.hasOwnProperty.call(options, 'secondValue')) {
@@ -69,16 +73,17 @@ class SliderPresenter implements Presenter {
       postfix: options.postfix,
     };
 
+    if (dataValues) {
+      if (dataValues.length > 1) {
+        this.setUserData(dataValues);
+      } else {
+        this.dataValues = [];
+        this.model.unlockState(['maxValue', 'minValue', 'step']);
+      }
+    }
+
     if (!SliderPresenter.isEmpty(modelOptions) || Object.prototype.hasOwnProperty.call(options, 'secondValue')) {
       this.model.updateState(modelOptions);
-    }
-
-    if (Object.prototype.hasOwnProperty.call(options, 'lockedValues')) {
-      this.model.lockState(options.lockedValues);
-    }
-
-    if (Object.prototype.hasOwnProperty.call(options, 'unlockValues')) {
-      this.model.unlockState(options.unlockValues);
     }
 
     if (!SliderPresenter.isEmpty(viewOptions)) {
@@ -113,18 +118,18 @@ class SliderPresenter implements Presenter {
   }
 
   setUserData(data: App.Stringable[] | Model.Options): void {
-    if (Array.isArray(data) && data.length > 0) {
+    if (Array.isArray(data) && data.length > 1) {
       this.updateDataValues(data);
       this.renderData = this.dataValues.length > 0 ? this.dataValues : this.createDataValues();
     } else if (!Array.isArray(data) && SliderModel.validateInitOptions(data)) {
       this.dataValues = [];
-      this.model.unlockState(['maxValue', 'minValue', 'step']);
+      const newData = data;
 
-      if (Object.prototype.hasOwnProperty.call(data, 'lockedValues')) {
-        this.model.lockState(data.lockedValues);
+      if (Object.prototype.hasOwnProperty.call(newData, 'unlockValues') && Array.isArray(newData.unlockValues)) {
+        newData.unlockValues.push('maxValue', 'minValue', 'step');
       }
 
-      this.model.updateState(data);
+      this.model.updateState(newData);
     }
   }
 
@@ -304,7 +309,7 @@ class SliderPresenter implements Presenter {
       minValue: 0,
       step: 1,
       lockedValues: ['maxValue', 'minValue', 'step'],
-      numOfScaleVal: values.length,
+      numOfScaleVal: values.length - 2,
     });
   }
 
