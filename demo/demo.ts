@@ -6,6 +6,9 @@ class Demo {
   private $configPanel: JQuery;
   private $callbackIndicators: JQuery;
   private settings: App.Option;
+  private presets: App.Stringable[][];
+  private currentPreset?: number;
+  private $presetsRadio: JQuery;
   // model config
   private $maxValInput: JQuery;
   private $minValInput: JQuery;
@@ -64,6 +67,8 @@ class Demo {
     this.$configPanel = this.$container.find('.js-config_panel');
     this.$callbackIndicators = this.$container.find('.callback_indicators');
 
+    this.presets = Demo.createPresets();
+    this.currentPreset = 0;
 
     this.initInputs();
     this.setInputValues(this.settings);
@@ -101,6 +106,9 @@ class Demo {
     this.$prefixInput = $configPanel.find('.input_prefix');
 
     this.$postfixInput = $configPanel.find('.input_postfix');
+
+    // presets
+    this.$presetsRadio = $configPanel.find('[name="presets"]');
   }
 
   private setInputValues(settings: App.Option): void {
@@ -129,6 +137,7 @@ class Demo {
       $displayMinValCheck,
       $prefixInput,
       $postfixInput,
+      $presetsRadio,
     } = this;
 
     $maxValInput.val(settings.maxValue);
@@ -184,6 +193,14 @@ class Demo {
     if (settings.postfix !== '') {
       $postfixInput.val(settings.postfix);
     }
+
+    if (this.currentPreset) {
+      const selector = `input[value="${this.currentPreset}"]`;
+      const $preset = $presetsRadio.closest(selector);
+      $preset.prop('checked', true);
+    } else {
+      $presetsRadio.find('[value="0"]').prop('checked', true);
+    }
   }
 
   private attachEventHandlers(): void {
@@ -213,6 +230,7 @@ class Demo {
       $displayMinValCheck,
       $prefixInput,
       $postfixInput,
+      $presetsRadio,
     } = this;
 
     const $inputs = $maxValInput
@@ -248,6 +266,7 @@ class Demo {
     $checkbox.on('change', changeCheckboxHandler);
     $numScaleValRange.on('change', changeRangeHandler);
     $orientationRadio.on('change', changeRadioHandler);
+    $presetsRadio.on('change', changeRadioHandler);
   }
 
   private createUnfocusHandler(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
@@ -388,9 +407,20 @@ class Demo {
   private createChangeRadioHandler(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
     const { slider } = this;
 
-    const handler = (): void => {
-      const rotate = !slider.getViewData().isHorizontal;
-      slider.update({ isHorizontal: rotate });
+    const handler = (e: JQuery.ChangeEvent): void => {
+      const elem = e.target;
+      const { name, value } = elem;
+      switch (name) {
+        case 'presets':
+          this.currentPreset = +value;
+          this.setPreset();
+          break;
+        case 'orientation':
+          slider.update({ isHorizontal: !slider.getViewData().isHorizontal });
+          break;
+        default:
+          break;
+      }
     };
 
     return handler;
@@ -431,6 +461,23 @@ class Demo {
     this.settings = this.slider.getAllData();
 
     this.setInputValues(this.settings);
+  }
+
+  private setPreset(): void {
+    const preset = this.currentPreset;
+    this.slider.setUserData(this.presets[preset]);
+  }
+
+  static createPresets(): App.Stringable[][] {
+    const week = ['Mon', 'Tue', 'Wen', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const year = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    const presets: App.Stringable[][] = [[]];
+
+    presets.push(week);
+    presets.push(year);
+
+    return presets;
   }
 }
 
