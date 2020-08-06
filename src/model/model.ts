@@ -157,6 +157,7 @@ class SliderModel implements Model {
         }
       } else {
         this._secondValue = undefined;
+        this.isUpdated = oldValue === undefined;
       }
 
       if (oldValue !== this._secondValue) {
@@ -210,7 +211,10 @@ class SliderModel implements Model {
 
     this.step = newState.step;
     this.value = newState.value;
-    this.secondValue = newState.secondValue;
+
+    if (Object.prototype.hasOwnProperty.call(state, 'secondValue')) {
+      this.secondValue = newState.secondValue;
+    }
 
     if (Object.prototype.hasOwnProperty.call(newState, 'lockedValues')) {
       this.lockState(newState.lockedValues);
