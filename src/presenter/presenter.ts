@@ -298,12 +298,14 @@ class SliderPresenter implements Presenter {
 
   private updateDataValues(values: App.Stringable[]): void {
     this.dataValues = values;
-    this.model.updateState({
+    this.update({
+      unlockValues: 'all',
       maxValue: values.length - 1,
       minValue: 0,
       step: 1,
+      lockedValues: ['maxValue', 'minValue', 'step'],
+      numOfScaleVal: values.length,
     });
-    this.model.lockState(['maxValue', 'minValue', 'step']);
   }
 
   private convertPercentToValue(percentage: [number, number] | number): [number, number] | number {
