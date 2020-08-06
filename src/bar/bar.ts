@@ -117,6 +117,7 @@ class SliderBar implements Bar {
         });
       } else {
         this.$range.css({
+          left: 0,
           width: `${data}%`,
           'border-top-left-radius': '0.75rem',
           'border-bottom-left-radius': '0.75rem',
