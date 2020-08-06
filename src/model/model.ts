@@ -195,9 +195,14 @@ class SliderModel implements Model {
       minValue: oldMin,
     } = this.getState();
 
-    const newState = this.createNewState(state);
 
     this.isReadyNotify = false;
+    if (Object.prototype.hasOwnProperty.call(state, 'unlockValues')) {
+      this.unlockState(state.unlockValues);
+    }
+
+    const newState = this.createNewState(state);
+
     if (newState.maxValue > newState.minValue) {
       this._maxValue = newState.maxValue;
       this._minValue = newState.minValue;
@@ -206,6 +211,10 @@ class SliderModel implements Model {
     this.step = newState.step;
     this.value = newState.value;
     this.secondValue = newState.secondValue;
+
+    if (Object.prototype.hasOwnProperty.call(newState, 'lockedValues')) {
+      this.lockState(newState.lockedValues);
+    }
 
     this.isReadyNotify = true;
 
@@ -384,7 +393,7 @@ class SliderModel implements Model {
       maxValue: oldMax,
       minValue: oldMin,
       step: oldStep,
-      value: oldval,
+      value: oldVal,
       secondValue: oldSecondVal,
     } = this.getState();
 
@@ -397,7 +406,7 @@ class SliderModel implements Model {
     newState.maxValue = this._isLocked('maxValue') ? oldMax : newState.maxValue;
     newState.minValue = this._isLocked('minValue') ? oldMin : newState.minValue;
     newState.step = this._isLocked('step') ? oldStep : newState.step;
-    newState.value = this._isLocked('value') ? oldval : newState.value;
+    newState.value = this._isLocked('value') ? oldVal : newState.value;
     newState.secondValue = this._isLocked('maxValue') ? oldSecondVal : newState.secondValue;
 
     return newState;
