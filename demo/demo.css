@@ -23,6 +23,14 @@
   justify-content: space-between;
 }
 
+.label_second_val {
+  justify-content: end;
+}
+
+.input_second_val {
+  margin-left: auto;
+}
+
 .config__presenter_label {
   display: flex;
   flex-direction: row-reverse;
