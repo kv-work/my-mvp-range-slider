@@ -6,6 +6,7 @@ declare interface App {
   getPresenterData(): Presenter.Data;
   lockValues(values: string[] | 'all'): void;
   unlockValues(values: string[] | 'all'): void;
+  setUserData(data: App.Stringable[] | []): void;
   reset(): void;
   destroy(): void;
 }

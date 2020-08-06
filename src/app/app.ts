@@ -28,6 +28,14 @@ export default class SliderApp implements App {
     this.presenter.update(options);
   }
 
+  setUserData(data: App.Stringable[]): void {
+    if (data.length > 1) {
+      this.presenter.setUserData(data);
+    } else {
+      this.reset();
+    }
+  }
+
   getAllData(): App.Option {
     return this.presenter.getAllData();
   }
