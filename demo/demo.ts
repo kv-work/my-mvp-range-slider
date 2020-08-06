@@ -15,6 +15,7 @@ class Demo {
   private $stepInput: JQuery;
   private $valInput: JQuery;
   private $secondValInput: JQuery;
+  private $secondValCheck: JQuery;
   // presenter config
   private $lockMaxValCheck: JQuery;
   private $lockMinValCheck: JQuery;
@@ -71,7 +72,7 @@ class Demo {
     this.currentPreset = 0;
 
     this.initInputs();
-    this.setInputValues(this.settings);
+    this.setInputValues();
     this.attachEventHandlers();
   }
 
@@ -83,6 +84,7 @@ class Demo {
     this.$stepInput = $configPanel.find('.input_step');
     this.$valInput = $configPanel.find('.input_val');
     this.$secondValInput = $configPanel.find('.input_second_val');
+    this.$secondValCheck = $configPanel.find('.input_second_val_check');
 
     this.$lockMaxValCheck = $configPanel.find('.input_lock_max');
     this.$lockMinValCheck = $configPanel.find('.input_lock_min');
@@ -111,8 +113,9 @@ class Demo {
     this.$presetsRadio = $configPanel.find('[name="presets"]');
   }
 
-  private setInputValues(settings: App.Option): void {
+  private setInputValues(): void {
     const {
+      slider,
       $maxValInput,
       $minValInput,
       $stepInput,
@@ -140,19 +143,42 @@ class Demo {
       $presetsRadio,
     } = this;
 
-    $maxValInput.val(settings.maxValue);
-    $minValInput.val(settings.minValue);
-    $stepInput.val(settings.step);
-    $valInput.val(settings.value);
-    if (settings.secondValue !== undefined) {
-      $secondValInput.val(settings.secondValue);
+    const {
+      maxValue,
+      minValue,
+      step,
+      value,
+      secondValue,
+      lockedValues,
+    } = slider.getModelData();
+
+    const {
+      isHorizontal,
+      range,
+      dragInterval,
+      bar,
+      runner,
+      scale,
+      displayValue,
+      displayScaleValue,
+      numOfScaleVal,
+      displayMax,
+      displayMin,
+      prefix,
+      postfix,
+    } = slider.getViewData();
+
+    $maxValInput.val(maxValue);
+    $minValInput.val(minValue);
+    $stepInput.val(step);
+    $valInput.val(value);
+    if (secondValue !== undefined) {
+      $secondValInput.val(secondValue);
     } else {
       $secondValInput.val('');
     }
 
-    if (settings.lockedValues) {
-      const { lockedValues } = settings;
-
+    if (lockedValues) {
       $lockMaxValCheck.prop('checked', lockedValues.includes('maxValue'));
       $lockMinValCheck.prop('checked', lockedValues.includes('minValue'));
       $lockStepCheck.prop('checked', lockedValues.includes('step'));
@@ -170,28 +196,28 @@ class Demo {
       $lockAllCheck.prop('checked', isAllLocked);
     }
 
-    if (settings.isHorizontal) {
+    if (isHorizontal) {
       $orientationRadio.find('[value="0"]').prop('checked', true);
     } else {
       $orientationRadio.find('[value="1"]').prop('checked', true);
     }
-    $rangeCheck.prop('checked', settings.range);
-    $dragIntervalCheck.prop('checked', settings.dragInterval);
-    $barCheck.prop('checked', settings.bar);
-    $runnerCheck.prop('checked', settings.runner);
-    $scaleCheck.prop('checked', settings.scale);
-    $displayValCheck.prop('checked', settings.displayValue);
-    $displayScaleValCheck.prop('checked', settings.displayScaleValue);
-    $numScaleValRange.val(settings.numOfScaleVal);
-    $displayMaxValCheck.prop('checked', settings.displayMax);
-    $displayMinValCheck.prop('checked', settings.displayMin);
+    $rangeCheck.prop('checked', range);
+    $dragIntervalCheck.prop('checked', dragInterval);
+    $barCheck.prop('checked', bar);
+    $runnerCheck.prop('checked', runner);
+    $scaleCheck.prop('checked', scale);
+    $displayValCheck.prop('checked', displayValue);
+    $displayScaleValCheck.prop('checked', displayScaleValue);
+    $numScaleValRange.val(numOfScaleVal);
+    $displayMaxValCheck.prop('checked', displayMax);
+    $displayMinValCheck.prop('checked', displayMin);
 
-    if (settings.prefix !== '') {
-      $prefixInput.val(settings.prefix);
+    if (prefix !== '') {
+      $prefixInput.val(prefix);
     }
 
-    if (settings.postfix !== '') {
-      $postfixInput.val(settings.postfix);
+    if (postfix !== '') {
+      $postfixInput.val(postfix);
     }
 
     if (this.currentPreset) {
@@ -211,6 +237,7 @@ class Demo {
       $stepInput,
       $valInput,
       $secondValInput,
+      $secondValCheck,
       $lockMaxValCheck,
       $lockMinValCheck,
       $lockStepCheck,
@@ -242,6 +269,7 @@ class Demo {
       .add($postfixInput);
 
     const $checkbox = $lockMaxValCheck
+      .add($secondValCheck)
       .add($lockMinValCheck)
       .add($lockStepCheck)
       .add($lockValCheck)
@@ -317,6 +345,16 @@ class Demo {
       const val = $(elem).prop('checked');
       const { name } = elem;
       switch (name) {
+        case 'second-value':
+          if (val) {
+            this.$secondValInput.prop('disabled', false);
+            const { secondValue } = slider.getModelData();
+            slider.update({ secondValue });
+          } else {
+            this.$secondValInput.prop('disabled', true);
+            slider.update({ secondValue: undefined });
+          }
+          break;
         case 'lock_max':
           if (val) {
             slider.lockValues(['maxValue']);
@@ -460,7 +498,7 @@ class Demo {
   private onChangeSlider(): void {
     this.settings = this.slider.getAllData();
 
-    this.setInputValues(this.settings);
+    this.setInputValues();
   }
 
   private setPreset(): void {
