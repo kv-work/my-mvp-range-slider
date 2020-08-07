@@ -411,7 +411,7 @@ class SliderModel implements Model {
     newState.minValue = this._isLocked('minValue') ? oldMin : newState.minValue;
     newState.step = this._isLocked('step') ? oldStep : newState.step;
     newState.value = this._isLocked('value') ? oldVal : newState.value;
-    newState.secondValue = this._isLocked('maxValue') ? oldSecondVal : newState.secondValue;
+    newState.secondValue = this._isLocked('secondValue') ? oldSecondVal : newState.secondValue;
 
     return newState;
   }
