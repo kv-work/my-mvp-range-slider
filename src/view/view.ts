@@ -79,11 +79,26 @@ class SliderView implements View {
   }
 
   destroy(): void {
-    if (this.bar) this.bar.destroy();
-    if (this.scale) this.scale.destroy();
-    if (this.runner) this.runner.destroy();
-    if (this.secondRunner) this.secondRunner.destroy();
-    if (this.valueDisplay) this.valueDisplay.destroy();
+    if (this.bar) {
+      this.bar.destroy();
+      this.bar = null;
+    }
+    if (this.scale) {
+      this.scale.destroy();
+      this.scale = null;
+    }
+    if (this.runner) {
+      this.runner.destroy();
+      this.runner = null;
+    }
+    if (this.secondRunner) {
+      this.secondRunner.destroy();
+      this.secondRunner = null;
+    }
+    if (this.valueDisplay) {
+      this.valueDisplay.destroy();
+      this.valueDisplay = null;
+    }
 
     this.$view.remove();
     this.isRendered = false;
@@ -192,14 +207,17 @@ class SliderView implements View {
 
         if (this.secondRunner) {
           this.secondRunner.destroy();
+          this.secondRunner = null;
         }
       }
     } else {
       if (this.runner) {
         this.runner.destroy();
+        this.runner = null;
       }
       if (this.secondRunner) {
         this.secondRunner.destroy();
+        this.runner = null;
       }
     }
   }
