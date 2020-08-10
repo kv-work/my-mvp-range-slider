@@ -6,23 +6,22 @@ import SliderView from '../../view/view';
 const mockUpdateModelState = jest.fn();
 const mockLockModelState = jest.fn();
 const mockUnlockModelState = jest.fn();
+const mockGetModelData = jest.fn();
 jest.mock('../../model/model', jest.fn(() => jest.fn().mockImplementation(() => ({
   updateState: mockUpdateModelState,
   lockState: mockLockModelState,
   unlockState: mockUnlockModelState,
+  getState: mockGetModelData,
 }))));
 
 const mockUpdatePresenter = jest.fn();
 const mockGetAllData = jest.fn();
-const mockGetModelData = jest.fn();
-const mockGetViewData = jest.fn();
 const mockGetPresenterData = jest.fn();
 const mockSetUserData = jest.fn();
 jest.mock('../../presenter/presenter', jest.fn(() => jest.fn().mockImplementation(() => ({
   update: mockUpdatePresenter,
   getAllData: mockGetAllData,
   getModelData: mockGetModelData,
-  getViewData: mockGetViewData,
   getPresenterData: mockGetPresenterData,
   setUserData: mockSetUserData,
 }))));
@@ -30,10 +29,12 @@ jest.mock('../../presenter/presenter', jest.fn(() => jest.fn().mockImplementatio
 const mockRenderView = jest.fn();
 const mockUpdateView = jest.fn();
 const mockDestroyView = jest.fn();
+const mockGetViewData = jest.fn();
 jest.mock('../../view/view', jest.fn(() => jest.fn().mockImplementation(() => ({
   render: mockRenderView,
   update: mockUpdateView,
   destroy: mockDestroyView,
+  getData: mockGetViewData,
 }))));
 
 describe('app', () => {
@@ -143,13 +144,15 @@ describe('app', () => {
   });
 
   describe('getAllData', () => {
-    test('should call getAllData method of Presenter', () => {
+    test('should call getState method of Model, getPresenterData of Presenter and getData of View', () => {
       testApp.getAllData();
-      expect(mockGetAllData).toBeCalledTimes(1);
+      expect(mockGetModelData).toBeCalledTimes(1);
+      expect(mockGetPresenterData).toBeCalledTimes(1);
+      expect(mockGetViewData).toBeCalledTimes(1);
     });
   });
   describe('getModelData', () => {
-    test('should call getModelData method of Presenter', () => {
+    test('should call getState method of Model', () => {
       testApp.getModelData();
       expect(mockGetModelData).toBeCalledTimes(1);
     });

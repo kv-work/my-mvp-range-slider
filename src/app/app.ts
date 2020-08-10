@@ -37,15 +37,20 @@ export default class SliderApp implements App {
   }
 
   getAllData(): App.Option {
-    return this.presenter.getAllData();
+    const data = {
+      ...this.getModelData(),
+      ...this.getViewData(),
+      ...this.getPresenterData(),
+    };
+    return data;
   }
 
   getModelData(): Model.Options {
-    return this.presenter.getModelData();
+    return this.model.getState();
   }
 
   getViewData(): View.Options {
-    return this.presenter.getViewData();
+    return this.view.getData();
   }
 
   getPresenterData(): Presenter.Data {
