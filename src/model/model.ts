@@ -212,7 +212,7 @@ class SliderModel implements Model {
     this.step = newState.step;
     this.value = newState.value;
 
-    if (Object.prototype.hasOwnProperty.call(state, 'secondValue')) {
+    if (Object.prototype.hasOwnProperty.call(state, 'secondValue') || this.secondValue !== undefined) {
       this.secondValue = newState.secondValue;
     }
 
