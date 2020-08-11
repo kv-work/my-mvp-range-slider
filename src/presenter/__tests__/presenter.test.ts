@@ -146,7 +146,6 @@ describe('Presenter', () => {
       expect(testPresenter).toHaveProperty('viewObserver');
       expect(testPresenter).toHaveProperty('modelObserver');
       expect(testPresenter).toHaveProperty('dataValues');
-      expect(testPresenter).toHaveProperty('renderData');
       expect(testPresenter).toHaveProperty('callbacks');
     });
 
@@ -183,204 +182,19 @@ describe('Presenter', () => {
 
       expect(testPresenter).toHaveProperty('dataValues', ['one', 'two', 'three', 'four']);
     });
-  });
 
-  describe('getModelData', () => {
-    beforeEach(() => {
-      mockGetState.mockClear();
-      testPresenter.getModelData();
-    });
-
-    test('should calls model method getState', () => {
-      expect(mockGetState).toBeCalledTimes(1);
-    });
-
-    test('should returns model state', () => {
-      expect(mockGetState).toHaveReturnedWith({
-        maxValue: 100,
-        minValue: 0,
-        step: 5,
-        value: 25,
-        secondValue: 70,
-      });
-    });
-  });
-
-  describe('getViewData', () => {
-    beforeEach(() => {
-      mockGetViewData.mockClear();
-      testPresenter.getViewData();
-    });
-
-    test('should calls view method getData', () => {
-      expect(mockGetViewData).toBeCalledTimes(1);
-    });
-
-    test('should returns view data', () => {
-      expect(mockGetViewData).toHaveReturnedWith({
-        isHorizontal: true,
-        range: true,
-        dragInterval: true,
-        runner: true,
-        bar: true,
-        scale: true,
-        numOfScaleVal: 9,
-        displayScaleValue: true,
-        displayValue: true,
-        displayMin: true,
-        displayMax: true,
-        prefix: 'value',
-        postfix: '$',
-      });
+    test('should subscribe to Model and View', () => {
+      expect(mockViewAddObserver).toBeCalled();
+      expect(mockAddObserver).toBeCalled();
     });
   });
 
   describe('getPresenterData', () => {
-    test('should return presenter data: dataValues, renderData', () => {
+    test('should return presenter data: dataValues', () => {
       const presenterDataValues = testPresenter.getPresenterData();
       expect(presenterDataValues).toEqual({
         dataValues: [],
-        renderData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
       });
-    });
-  });
-
-  describe('getAllData', () => {
-    test('should returns model data, view data and presenter data', () => {
-      const data = testPresenter.getAllData();
-      expect(data).toEqual({
-        maxValue: 100,
-        minValue: 0,
-        step: 5,
-        value: 25,
-        secondValue: 70,
-        isHorizontal: true,
-        range: true,
-        dragInterval: true,
-        runner: true,
-        bar: true,
-        scale: true,
-        numOfScaleVal: 9,
-        displayScaleValue: true,
-        displayValue: true,
-        displayMin: true,
-        displayMax: true,
-        prefix: 'value',
-        postfix: '$',
-        dataValues: [],
-        renderData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-      });
-    });
-  });
-
-  describe('setUserData', () => {
-    beforeEach(() => {
-      mockUpdateState.mockClear();
-      mockLockState.mockClear();
-      mockRender.mockClear();
-    });
-
-    test('should changes and locks model values if data is Array', () => {
-      // ['one', 'two', 'three', 'four']
-      testPresenter.setUserData(testDataValues);
-
-      expect(mockUpdateState).toBeCalledWith({
-        maxValue: 3,
-        minValue: 0,
-        step: 1,
-      });
-
-      expect(mockLockState).toBeCalledWith(['maxValue', 'minValue', 'step']);
-
-      testPresenter.setUserData([14, 122, 78, 90, 50, 88]);
-
-      expect(mockUpdateState).toBeCalledWith({
-        maxValue: 5,
-        minValue: 0,
-        step: 1,
-      });
-    });
-
-    test('should not changes and locks model values, if data is Array and data.length <= 0', () => {
-      testPresenter.setUserData([]);
-
-      expect(mockLockState).not.toBeCalled();
-      expect(mockUpdateState).not.toBeCalled();
-    });
-
-    test('should update model state if type of data is Model.Options', () => {
-      testPresenter.setUserData({
-        maxValue: 100,
-        minValue: 0,
-        step: 10,
-      });
-
-      expect(mockUpdateState).toBeCalledWith({
-        maxValue: 100,
-        minValue: 0,
-        step: 10,
-      });
-
-      testPresenter.setUserData({
-        maxValue: -10,
-        minValue: -30,
-        step: 10,
-        lockedValues: ['value', 'minValue', 'maxValue'],
-      });
-
-      expect(mockUpdateState).toHaveBeenLastCalledWith({
-        maxValue: -10,
-        minValue: -30,
-        step: 10,
-        lockedValues: ['value', 'minValue', 'maxValue'],
-      });
-      expect(mockLockState).toBeCalledWith(['value', 'minValue', 'maxValue']);
-    });
-
-    test('should reset this.dataValues, unlock model values and create new renderData if type of data is Model.Options', () => {
-      testPresenter.setUserData(testDataValues);
-      expect(testPresenter).toHaveProperty('dataValues', ['one', 'two', 'three', 'four']);
-      expect(testPresenter).toHaveProperty('renderData', ['one', 'two', 'three', 'four']);
-
-      testPresenter.setUserData({
-        maxValue: 5,
-        minValue: 1,
-        step: 1,
-      });
-      expect(testPresenter).toHaveProperty('dataValues', []);
-      expect(testPresenter).toHaveProperty('renderData', [1, 2, 3, 4, 5]);
-      expect(mockUnlockState).toHaveBeenCalledWith(['maxValue', 'minValue', 'step']);
-    });
-
-    test('should not update model state if argument is wrong', () => {
-      testPresenter.setUserData({
-        maxValue: 0,
-        minValue: 4,
-        step: 1,
-      });
-
-      testPresenter.setUserData({
-        maxValue: 2,
-        minValue: 1,
-        step: 0,
-      });
-
-      expect(mockUpdateState).not.toBeCalled();
-    });
-
-    test('should render view, after updating dataValues', () => {
-      // ['one', 'two', 'three', 'four']
-      testPresenter.setUserData(testDataValues);
-
-      expect(mockRender).toBeCalledTimes(1);
-
-      testPresenter.setUserData({
-        maxValue: 5,
-        minValue: 1,
-        step: 1,
-      });
-
-      expect(mockRender).toBeCalledTimes(2);
     });
   });
 
@@ -397,25 +211,6 @@ describe('Presenter', () => {
       expect(mockGetState).toHaveBeenCalled();
     });
 
-    test('should update renderData', () => {
-      testPresenter.update({
-        maxValue: 50,
-        minValue: 25,
-        step: 5,
-      });
-
-      expect(mockModelNotify).toHaveBeenCalledTimes(1);
-      expect(testPresenter).toHaveProperty('renderData', [25, 30, 35, 40, 45, 50]);
-
-      testPresenter.update({
-        maxValue: 10,
-        minValue: 0,
-        step: 7,
-      });
-
-      expect(mockModelNotify).toHaveBeenCalledTimes(2);
-      expect(testPresenter).toHaveProperty('renderData', [0, 7, 10]);
-    });
 
     test('should convert units in the model to percent before calls render method of view', () => {
       testPresenter.update({
@@ -647,10 +442,6 @@ describe('Presenter', () => {
         step: 3,
         value: 18,
       });
-
-      expect(testPresenter.getViewData().range).toBeFalsy();
-
-      expect(testPresenter).toHaveProperty('renderData', [12, 15, 18, 21, 24, 25]);
 
       expect(mockRender).toBeCalledWith({
         data: [12, 15, 18, 21, 24, 25],

@@ -1,10 +1,7 @@
 declare interface Presenter {
   update(options: App.Option): void;
-  getAllData(): App.Option;
-  getModelData(): Model.Options;
-  getViewData(): View.Options;
   getPresenterData(): Presenter.Data;
-  setUserData(data: App.Stringable[] | Model.Options): void;
+  setUserData(data: App.Stringable[]): void;
 }
 
 declare namespace Presenter {
@@ -20,6 +17,5 @@ declare namespace Presenter {
 
   interface Data {
     dataValues: App.Stringable[];
-    renderData: App.Stringable[];
   }
 }
