@@ -504,6 +504,13 @@ class Demo {
   private setPreset(): void {
     const preset = this.currentPreset;
     this.slider.setUserData(this.presets[preset]);
+    let max: number;
+    if (this.presets[preset].length > 1 && this.presets[preset].length < 12) {
+      max = this.presets[preset].length - 2;
+    } else {
+      max = 10;
+    }
+    this.$numScaleValRange.attr('max', max);
   }
 
   static createPresets(): App.Stringable[][] {
