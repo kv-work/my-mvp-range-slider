@@ -513,7 +513,7 @@ describe('Presenter', () => {
       });
 
       jest.clearAllMocks();
-      mockRender.mockClear();
+
       testPresenter.update({
         dataValues: testDataValues,
         value: 1,
@@ -525,6 +525,21 @@ describe('Presenter', () => {
         percentageData: [0, 33.33333333333333, 66.66666666666666, 100],
         value: ['two', 'four'],
         percentage: [33.33333333333333, 100],
+      });
+
+      jest.clearAllMocks();
+
+      testPresenter.update({
+        dataValues: testDataValues,
+        value: 1,
+        secondValue: undefined,
+      });
+
+      expect(mockRender).toBeCalledWith({
+        data: ['one', 'two', 'three', 'four'],
+        percentageData: [0, 33.33333333333333, 66.66666666666666, 100],
+        value: 'two',
+        percentage: 33.33333333333333,
       });
     });
 
@@ -557,6 +572,35 @@ describe('Presenter', () => {
       });
 
       expect(mockOnUpdate).toBeCalledTimes(1);
+    });
+  });
+
+  describe('setUserData', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      testPresenter.setUserData(testDataValues);
+    });
+
+    test('should save user data to dataValues prop', () => {
+      expect(testPresenter).toHaveProperty('dataValues', testDataValues);
+    });
+
+    test('should update model state', () => {
+      expect(mockUpdateState).toBeCalledWith({
+        unlockValues: 'all',
+        maxValue: 3,
+        minValue: 0,
+        step: 1,
+        lockedValues: ['maxValue', 'minValue', 'step'],
+      });
+    });
+
+    test('should update numOfScaleVal option of view', () => {
+      expect(mockUpdate).toBeCalledWith({ numOfScaleVal: 2 });
+    });
+
+    test('should render view', () => {
+      expect(mockRender).toBeCalledTimes(1);
     });
   });
 });
