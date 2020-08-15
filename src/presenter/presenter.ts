@@ -7,6 +7,7 @@ class SliderPresenter implements Presenter {
   private modelObserver: Model.Observer;
   private dataValues: App.Stringable[];
   private isChanging: boolean;
+  private isReadyRender: boolean;
   private callbacks: {
     onStart: CallableFunction;
     onChange: CallableFunction;
@@ -31,13 +32,15 @@ class SliderPresenter implements Presenter {
 
     this.isChanging = false;
 
+    this.isReadyRender = true;
     this.renderView();
   }
 
   update(options: App.Option): void {
+    this.isReadyRender = false;
     const { dataValues } = options;
 
-    const modelOptions: Model.Options = {
+    let modelOptions: Model.Options = {
       maxValue: options.maxValue,
       minValue: options.minValue,
       step: options.step,
@@ -50,7 +53,7 @@ class SliderPresenter implements Presenter {
       modelOptions.secondValue = options.secondValue;
     }
 
-    const viewOptions: View.Options = {
+    let viewOptions: View.Options = {
       isHorizontal: options.isHorizontal,
       range: options.range,
       dragInterval: options.dragInterval,
@@ -68,7 +71,19 @@ class SliderPresenter implements Presenter {
 
     if (dataValues) {
       if (dataValues.length > 1) {
-        this.setUserData(dataValues);
+        this.dataValues = dataValues;
+        modelOptions = {
+          ...modelOptions,
+          unlockValues: 'all',
+          maxValue: dataValues.length - 1,
+          minValue: 0,
+          step: 1,
+          lockedValues: ['maxValue', 'minValue', 'step'],
+        };
+        viewOptions = {
+          ...viewOptions,
+          numOfScaleVal: dataValues.length - 2,
+        };
       } else {
         this.dataValues = [];
         this.model.unlockState(['maxValue', 'minValue', 'step']);
@@ -84,6 +99,8 @@ class SliderPresenter implements Presenter {
     }
 
     this.callbacks.onUpdate();
+    this.isReadyRender = true;
+    this.renderView();
   }
 
   getPresenterData(): Presenter.Data {
@@ -138,7 +155,7 @@ class SliderPresenter implements Presenter {
       resultNum = 0;
     }
 
-    if (resultNum > 10) {
+    if (resultNum >= 10) {
       resultNum = 10;
     }
 
@@ -270,8 +287,10 @@ class SliderPresenter implements Presenter {
   }
 
   private renderView(): void {
-    const viewRenderData = this.createRenderData();
-    this.view.render(viewRenderData);
+    if (this.isReadyRender) {
+      const viewRenderData = this.createRenderData();
+      this.view.render(viewRenderData);
+    }
   }
 
   private convertPercentToValue(percentage: [number, number] | number): [number, number] | number {
