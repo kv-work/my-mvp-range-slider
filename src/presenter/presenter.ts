@@ -151,7 +151,7 @@ class SliderPresenter implements Presenter {
 
     let resultNum: number = numOfScaleVal < total ? numOfScaleVal : total;
 
-    if (resultNum < 0) {
+    if (resultNum <= 0) {
       resultNum = 0;
     }
 

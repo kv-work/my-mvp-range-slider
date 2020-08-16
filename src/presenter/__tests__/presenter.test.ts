@@ -469,6 +469,7 @@ describe('Presenter', () => {
         percentage: 46.15384615384615,
       });
 
+      // numOfScale = 0
       jest.clearAllMocks();
 
       testPresenter.update({ numOfScaleVal: 0 });
@@ -482,6 +483,7 @@ describe('Presenter', () => {
         percentage: 46.15384615384615,
       });
 
+      // numOfScale = 10;
       jest.clearAllMocks();
 
       testPresenter.update({
@@ -512,6 +514,7 @@ describe('Presenter', () => {
         percentage: [0, 100],
       });
 
+      // with userData
       jest.clearAllMocks();
 
       testPresenter.update({
@@ -527,6 +530,7 @@ describe('Presenter', () => {
         percentage: [33.33333333333333, 100],
       });
 
+      // with userData and secondValue is undefined
       jest.clearAllMocks();
 
       testPresenter.update({
@@ -538,6 +542,24 @@ describe('Presenter', () => {
       expect(mockRender).toBeCalledWith({
         data: ['one', 'two', 'three', 'four'],
         percentageData: [0, 33.33333333333333, 66.66666666666666, 100],
+        value: 'two',
+        percentage: 33.33333333333333,
+      });
+
+      // displayMax and displayMin is false
+      jest.clearAllMocks();
+
+      testPresenter.update({
+        dataValues: testDataValues,
+        value: 1,
+        secondValue: undefined,
+        displayMin: false,
+        displayMax: false,
+      });
+
+      expect(mockRender).toBeCalledWith({
+        data: ['two', 'three'],
+        percentageData: [33.33333333333333, 66.66666666666666],
         value: 'two',
         percentage: 33.33333333333333,
       });
@@ -601,6 +623,15 @@ describe('Presenter', () => {
 
     test('should render view', () => {
       expect(mockRender).toBeCalledTimes(1);
+    });
+
+    test('should not update model and render view if data.length < 2', () => {
+      jest.clearAllMocks();
+      testPresenter.setUserData([1]);
+
+      expect(mockUpdateState).toBeCalledTimes(0);
+      expect(mockUpdate).toBeCalledTimes(0);
+      expect(mockRender).toBeCalledTimes(0);
     });
   });
 });
