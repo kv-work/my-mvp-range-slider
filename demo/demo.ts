@@ -231,7 +231,6 @@ class Demo {
 
   private attachEventHandlers(): void {
     const {
-      $configPanel,
       $maxValInput,
       $minValInput,
       $stepInput,
@@ -455,6 +454,7 @@ class Demo {
           break;
         case 'orientation':
           slider.update({ isHorizontal: !slider.getViewData().isHorizontal });
+          this.changeOrientation();
           break;
         default:
           break;
@@ -462,6 +462,11 @@ class Demo {
     };
 
     return handler;
+  }
+
+  private changeOrientation(): void {
+    this.$container.toggleClass('demo_slider_vertical');
+    this.$configPanel.toggleClass('config_form_vertical');
   }
 
   private lightIndicator(indicator: string): void {

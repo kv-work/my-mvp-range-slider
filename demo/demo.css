@@ -1,6 +1,14 @@
 .demo_slider {
   display: grid;
-  /* grid-template-columns: 1fr 1fr; */
+}
+
+.demo_slider_vertical {
+  grid-template-columns: 320px 1fr;
+}
+
+.config_form_vertical {
+  grid-column: 2;
+  grid-row: 1;
 }
 
 .config_container {
