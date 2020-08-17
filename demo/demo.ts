@@ -201,6 +201,8 @@ class Demo {
     } else {
       $orientationRadio.find('[value="1"]').prop('checked', true);
     }
+    this.changeOrientation(isHorizontal);
+
     $rangeCheck.prop('checked', range);
     $dragIntervalCheck.prop('checked', dragInterval);
     $barCheck.prop('checked', bar);
@@ -454,7 +456,7 @@ class Demo {
           break;
         case 'orientation':
           slider.update({ isHorizontal: !slider.getViewData().isHorizontal });
-          this.changeOrientation();
+          this.changeOrientation(value === '0');
           break;
         default:
           break;
@@ -464,9 +466,16 @@ class Demo {
     return handler;
   }
 
-  private changeOrientation(): void {
-    this.$container.toggleClass('demo_slider_vertical');
-    this.$configPanel.toggleClass('config_form_vertical');
+  private changeOrientation(isHorizontal: boolean): void {
+    if (isHorizontal && this.$container.hasClass('demo_slider_vertical')) {
+      this.$container.removeClass('demo_slider_vertical');
+      this.$configPanel.removeClass('config_form_vertical');
+    }
+
+    if (!isHorizontal && !this.$container.hasClass('demo_slider_vertical')) {
+      this.$container.addClass('demo_slider_vertical');
+      this.$configPanel.addClass('config_form_vertical');
+    }
   }
 
   private lightIndicator(indicator: string): void {
