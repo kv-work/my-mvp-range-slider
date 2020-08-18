@@ -105,8 +105,7 @@ class SliderBar implements Bar {
     }
 
     if (options.isHorizontal) {
-      this.$range.css('top', '');
-      this.$range.css('height', '');
+      this.$range.css({ top: '', height: '' });
       if (Array.isArray(data)) {
         const [value, secondValue] = data;
 
@@ -124,17 +123,18 @@ class SliderBar implements Bar {
         });
       }
     } else if (Array.isArray(data)) {
-      this.$range.css('left', '');
-      this.$range.css('width', '');
       const [value, secondValue] = data;
       this.$range.css({
+        left: '',
+        width: '',
         top: `${value}%`,
         height: `${secondValue - value}%`,
         'border-radius': '0.75rem',
       });
     } else {
-      this.$range.css('width', '');
       this.$range.css({
+        width: '',
+        top: '',
         height: `${data}%`,
         'border-top-left-radius': '0.75rem',
         'border-top-right-radius': '0.75rem',
