@@ -1,5 +1,5 @@
 declare interface Runner {
-  update(data: View.RenderData, options: Runner.RenderOptions): void;
+  update(options: Runner.UpdateOptions): void;
   destroy(): void;
 }
 
@@ -12,5 +12,10 @@ declare namespace Runner {
 
   interface RenderOptions {
     isHorizontal?: boolean;
+  }
+
+  interface UpdateOptions {
+    data: View.RenderData;
+    options: Runner.RenderOptions;
   }
 }

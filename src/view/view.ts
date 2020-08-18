@@ -171,38 +171,43 @@ class SliderView implements View {
   }
 
   private updateRunners(renderData: View.RenderData): void {
+    const updData: Runner.UpdateOptions = {
+      data: renderData,
+      options: this.viewOptions,
+    };
+
     if (this.viewOptions.runner) {
       if (Array.isArray(renderData.value)) {
         if (this.runner) {
-          this.runner.update(renderData, this.viewOptions);
+          this.runner.update(updData);
         } else {
           this.runner = new SliderRunner({
             $viewContainer: this.$view,
             $barContainer: this.$barContainer,
             isSecond: false,
           });
-          this.runner.update(renderData, this.viewOptions);
+          this.runner.update(updData);
         }
         if (this.secondRunner) {
-          this.secondRunner.update(renderData, this.viewOptions);
+          this.secondRunner.update(updData);
         } else {
           this.secondRunner = new SliderRunner({
             $viewContainer: this.$view,
             $barContainer: this.$barContainer,
             isSecond: true,
           });
-          this.secondRunner.update(renderData, this.viewOptions);
+          this.secondRunner.update(updData);
         }
       } else {
         if (this.runner) {
-          this.runner.update(renderData, this.viewOptions);
+          this.runner.update(updData);
         } else {
           this.runner = new SliderRunner({
             $viewContainer: this.$view,
             $barContainer: this.$barContainer,
             isSecond: false,
           });
-          this.runner.update(renderData, this.viewOptions);
+          this.runner.update(updData);
         }
 
         if (this.secondRunner) {

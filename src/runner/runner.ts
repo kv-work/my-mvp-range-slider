@@ -15,7 +15,8 @@ class SliderRunner implements Runner {
     this.isSecond = (options.isSecond === true);
   }
 
-  update(data: View.RenderData, options: Runner.RenderOptions): void {
+  update(opts: Runner.UpdateOptions): void {
+    const { data, options } = opts;
     const currentData = this.$runner.data('options');
     const defaultOptions: Runner.RenderOptions = { isHorizontal: true };
     const runnerOptions = {

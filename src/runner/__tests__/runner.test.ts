@@ -95,8 +95,12 @@ describe('SliderRunner', () => {
 
   describe('update', () => {
     beforeEach(() => {
-      testRunner.update(renderData, horizontalOptions);
-      vertRunner.update(renderData, verticalOptions);
+      testRunner.update({
+        data: renderData, options: horizontalOptions,
+      });
+      vertRunner.update({
+        data: renderData, options: verticalOptions,
+      });
       jest.clearAllMocks();
     });
 
@@ -138,7 +142,7 @@ describe('SliderRunner', () => {
       const newData: View.RenderData = { value: [10, 40], percentage: [10, 40] };
       const newOpts: Runner.RenderOptions = { isHorizontal: true };
 
-      newRunner.update(newData, newOpts);
+      newRunner.update({ data: newData, options: newOpts });
 
       const $newRunner = $horizontalView.find('.runner_second');
       const newRunnerData = $newRunner.data();
@@ -150,7 +154,7 @@ describe('SliderRunner', () => {
         value: 40,
       });
 
-      testRunner.update(newData, newOpts);
+      testRunner.update({ data: newData, options: newOpts });
       expect(horizontalData).toEqual({
         options: { isHorizontal: true },
         value: 10,
@@ -163,7 +167,7 @@ describe('SliderRunner', () => {
         percentage: 20,
       };
 
-      testRunner.update(newData, horizontalOptions);
+      testRunner.update({ data: newData, options: horizontalOptions });
 
       expect($horizontalView.find('.js-slider__runner').length).toBe(1);
 
@@ -174,7 +178,10 @@ describe('SliderRunner', () => {
       });
 
       expect($horizontalView.find('.slider__runner_horizontal').length).toBe(1);
-      testRunner.update(newData, { isHorizontal: false });
+      testRunner.update({
+        data: newData,
+        options: { isHorizontal: false },
+      });
       expect($horizontalView.find('.slider__runner_horizontal').length).toBe(0);
       expect($horizontalView.find('.slider__runner').length).toBe(1);
 
@@ -184,8 +191,8 @@ describe('SliderRunner', () => {
         isSecond: true,
       });
 
-      testRunner.update(newData, horizontalOptions);
-      newRunner.update(newData, horizontalOptions);
+      testRunner.update({ data: newData, options: horizontalOptions });
+      newRunner.update({ data: newData, options: horizontalOptions });
       const $newRunner = $horizontalView.find('.runner_second');
       let testRunnerVal = $horizontalView.find('.runner_first').data('value');
       const newRunnerData = $newRunner.data();
@@ -193,13 +200,13 @@ describe('SliderRunner', () => {
       expect(newRunnerData.value).toBe(100);
 
       newData = { value: 0, percentage: 0 };
-      testRunner.update(newData, horizontalOptions);
+      testRunner.update({ data: newData, options: horizontalOptions });
       testRunnerVal = $horizontalView.find('.runner_first').data('value');
       expect($horizontalView.find('.runner_first').length).toBe(1);
       expect(testRunnerVal).toBe(0);
 
       newData = { value: 100, percentage: 100 };
-      testRunner.update(newData, horizontalOptions);
+      testRunner.update({ data: newData, options: horizontalOptions });
       testRunnerVal = $horizontalView.find('.runner_first').data('value');
       expect(testRunnerVal).toBe(100);
     });
@@ -264,8 +271,8 @@ describe('SliderRunner', () => {
 
   describe('destroy', () => {
     beforeEach(() => {
-      testRunner.update(renderData, horizontalOptions);
-      vertRunner.update(renderData, verticalOptions);
+      testRunner.update({ data: renderData, options: horizontalOptions });
+      vertRunner.update({ data: renderData, options: verticalOptions });
       jest.clearAllMocks();
     });
 
@@ -274,7 +281,7 @@ describe('SliderRunner', () => {
       vertRunner.destroy();
       expect($horizontalView.find('.js-slider__runner').length).toBe(0);
       expect($verticalView.find('.js-slider__runner').length).toBe(0);
-      testRunner.update(renderData, horizontalOptions);
+      testRunner.update({ data: renderData, options: horizontalOptions });
       expect($horizontalView.find('.js-slider__runner').length).toBe(1);
       testRunner.destroy();
     });
