@@ -12,12 +12,12 @@ describe('SliderValuesDisplay', () => {
   let testValDisplay: SliderValuesDisplay;
   let vertValDisplay: SliderValuesDisplay;
 
-  const updOpts: ValuesDisplay.UpdateOptions = {
+  const updOpts: ValuesDisplay.RenderOptions = {
     isHorizontal: true,
     prefix: '+',
     postfix: '$',
   };
-  const vertUpdOpts: ValuesDisplay.UpdateOptions = {
+  const vertUpdOpts: ValuesDisplay.RenderOptions = {
     ...updOpts,
     isHorizontal: false,
   };
@@ -59,8 +59,8 @@ describe('SliderValuesDisplay', () => {
 
   describe('update', () => {
     beforeEach(() => {
-      testValDisplay.update(renderData, updOpts);
-      vertValDisplay.update(renderData, vertUpdOpts);
+      testValDisplay.update({ data: renderData, options: updOpts });
+      vertValDisplay.update({ data: renderData, options: vertUpdOpts });
     });
 
     afterEach(() => {
@@ -74,9 +74,9 @@ describe('SliderValuesDisplay', () => {
       expect($verticalView.find('.slider__display_container').length).toBe(1);
       expect($verticalView.find('.slider__display_container_horizontal').length).toBe(0);
 
-      vertValDisplay.update(renderData, updOpts);
+      vertValDisplay.update({ data: renderData, options: updOpts });
       expect($verticalView.find('.slider__display_container_horizontal').length).toBe(1);
-      vertValDisplay.update(renderData, vertUpdOpts);
+      vertValDisplay.update({ data: renderData, options: vertUpdOpts });
       expect($verticalView.find('.slider__display_container_horizontal').length).toBe(0);
     });
 
@@ -87,13 +87,13 @@ describe('SliderValuesDisplay', () => {
       expect($horizontalDisplay.find('.slider__display_value').length).toBe(1);
       expect($verticalDisplay.find('.slider__display_value').length).toBe(1);
 
-      testValDisplay.update(rangeRenderData, updOpts);
-      vertValDisplay.update(rangeRenderData, vertUpdOpts);
+      testValDisplay.update({ data: rangeRenderData, options: updOpts });
+      vertValDisplay.update({ data: rangeRenderData, options: vertUpdOpts });
       expect($horizontalDisplay.find('.slider__display_value').length).toBe(2);
       expect($verticalDisplay.find('.slider__display_value').length).toBe(2);
 
-      testValDisplay.update(renderData, updOpts);
-      vertValDisplay.update(renderData, vertUpdOpts);
+      testValDisplay.update({ data: renderData, options: updOpts });
+      vertValDisplay.update({ data: renderData, options: vertUpdOpts });
 
       expect($horizontalDisplay.find('.slider__display_value').length).toBe(1);
       expect($verticalDisplay.find('.slider__display_value').length).toBe(1);
@@ -104,8 +104,8 @@ describe('SliderValuesDisplay', () => {
       expect($horizontalDisplay.find('.slider__display_value').length).toBe(0);
       expect($verticalDisplay.find('.slider__display_value').length).toBe(0);
 
-      testValDisplay.update(rangeRenderData, updOpts);
-      vertValDisplay.update(rangeRenderData, vertUpdOpts);
+      testValDisplay.update({ data: rangeRenderData, options: updOpts });
+      vertValDisplay.update({ data: rangeRenderData, options: vertUpdOpts });
 
       expect($horizontalDisplay.find('.slider__display_value').length).toBe(2);
       expect($verticalDisplay.find('.slider__display_value').length).toBe(2);
@@ -131,8 +131,8 @@ describe('SliderValuesDisplay', () => {
       expect($horizontalDisplay.find('.slider__display_value').html()).toBe('+10$');
       expect($verticalDisplay.find('.slider__display_value').html()).toBe('+10$');
 
-      testValDisplay.update(rangeRenderData, updOpts);
-      vertValDisplay.update(rangeRenderData, vertUpdOpts);
+      testValDisplay.update({ data: rangeRenderData, options: updOpts });
+      vertValDisplay.update({ data: rangeRenderData, options: vertUpdOpts });
 
       expect($horizontalDisplay.find('.slider__display_value').eq(0).html()).toBe('+10$');
       expect($horizontalDisplay.find('.slider__display_value').eq(1).html()).toBe('+50$');
@@ -145,11 +145,11 @@ describe('SliderValuesDisplay', () => {
         postfix: '',
       };
 
-      testValDisplay.update(rangeRenderData, newUpdOpts);
+      testValDisplay.update({ data: rangeRenderData, options: newUpdOpts });
       expect($horizontalDisplay.find('.slider__display_value').eq(0).html()).toBe('10');
       expect($horizontalDisplay.find('.slider__display_value').eq(1).html()).toBe('50');
 
-      testValDisplay.update(renderData, newUpdOpts);
+      testValDisplay.update({ data: renderData, options: newUpdOpts });
       expect($horizontalDisplay.find('.slider__display_value').eq(0).html()).toBe('10');
     });
 
@@ -164,8 +164,8 @@ describe('SliderValuesDisplay', () => {
 
   describe('destroy', () => {
     beforeEach(() => {
-      testValDisplay.update(renderData, updOpts);
-      vertValDisplay.update(renderData, vertUpdOpts);
+      testValDisplay.update({ data: renderData, options: updOpts });
+      vertValDisplay.update({ data: renderData, options: vertUpdOpts });
     });
 
     test('should detach $displayContainer', () => {

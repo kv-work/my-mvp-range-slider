@@ -13,19 +13,22 @@ export default class SliderValuesDisplay implements ValuesDisplay {
     this.isRendered = false;
   }
 
-  update(data: View.RenderData, options: ValuesDisplay.UpdateOptions): void {
-    const currentOpts: ValuesDisplay.UpdateOptions = this.$displayContainer.data('options');
-    const defaultOpts: ValuesDisplay.UpdateOptions = {
+  update(opts: ValuesDisplay.UpdateOptions): void {
+    const { data, options } = opts;
+    const currentOpts: ValuesDisplay.RenderOptions = this.$displayContainer.data('options');
+    const defaultOpts: ValuesDisplay.RenderOptions = {
       isHorizontal: true,
       prefix: '',
       postfix: '',
     };
 
-    const newOpts: ValuesDisplay.UpdateOptions = {
+    const newOpts: ValuesDisplay.RenderOptions = {
       ...defaultOpts,
       ...currentOpts,
       ...options,
     };
+
+    this.$displayContainer.data({ options: newOpts, data: data.value });
 
     if (!this.$firstValDisplay) {
       this.$firstValDisplay = SliderValuesDisplay.createValueDisplay();
@@ -39,18 +42,16 @@ export default class SliderValuesDisplay implements ValuesDisplay {
         this.$displayContainer.append(this.$secondValDisplay);
       }
 
-      if (options.isHorizontal && !this.$secondValDisplay.hasClass('slider__display_container_horizontal')) {
+      if (options.isHorizontal && !this.$secondValDisplay.hasClass('slider__display_value_horizontal')) {
         this.$secondValDisplay.addClass('slider__display_value_horizontal');
       }
-      if (!options.isHorizontal && this.$secondValDisplay.hasClass('slider__display_container_horizontal')) {
+      if (!options.isHorizontal && this.$secondValDisplay.hasClass('slider__display_value_horizontal')) {
         this.$secondValDisplay.removeClass('slider__display_value_horizontal');
       }
     } else if (this.$secondValDisplay) {
       this.$secondValDisplay.remove();
       this.$secondValDisplay = null;
     }
-
-    this.$displayContainer.data({ options: newOpts, data: data.value });
 
     if (options.isHorizontal && !this.$displayContainer.hasClass('slider__display_container_horizontal')) {
       this.$displayContainer.addClass('slider__display_container_horizontal');
@@ -66,7 +67,7 @@ export default class SliderValuesDisplay implements ValuesDisplay {
       this.isRendered = true;
     }
 
-    this.updateValueDisplay({ renderData: data, options: newOpts });
+    this.updateValueDisplay({ data, options: newOpts });
   }
 
   destroy(): void {
@@ -82,8 +83,8 @@ export default class SliderValuesDisplay implements ValuesDisplay {
     this.isRendered = false;
   }
 
-  private updateValueDisplay(updateData: ValuesDisplay.UpdateData): void {
-    const { renderData, options } = updateData;
+  private updateValueDisplay(updateData: ValuesDisplay.UpdateOptions): void {
+    const { data: renderData, options } = updateData;
     const { value, percentage } = renderData;
     const { isHorizontal } = options;
 

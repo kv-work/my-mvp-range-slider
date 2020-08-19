@@ -1,5 +1,5 @@
 declare interface ValuesDisplay {
-  update(data: View.RenderData, options: ValuesDisplay.UpdateOptions): void;
+  update(options: ValuesDisplay.UpdateOptions): void;
   destroy(): void;
 }
 
@@ -8,14 +8,14 @@ declare namespace ValuesDisplay {
     $viewContainer: JQuery;
   }
 
-  interface UpdateOptions {
+  interface RenderOptions {
     isHorizontal?: boolean;
     prefix?: string;
     postfix?: string;
   }
 
-  interface UpdateData {
-    renderData: View.RenderData;
-    options: ValuesDisplay.UpdateOptions;
+  interface UpdateOptions {
+    data: View.RenderData;
+    options?: ValuesDisplay.RenderOptions;
   }
 }

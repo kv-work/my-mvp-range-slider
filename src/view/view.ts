@@ -157,12 +157,16 @@ class SliderView implements View {
   }
 
   private updateValuesDisplay(renderData: View.RenderData): void {
+    const updData: ValuesDisplay.UpdateOptions = {
+      data: renderData,
+      options: this.viewOptions,
+    };
     if (this.viewOptions.displayValue && this.valueDisplay) {
-      this.valueDisplay.update(renderData, this.viewOptions);
+      this.valueDisplay.update(updData);
     }
     if (this.viewOptions.displayValue && !this.valueDisplay) {
       this.valueDisplay = new SliderValuesDisplay({ $viewContainer: this.$view });
-      this.valueDisplay.update(renderData, this.viewOptions);
+      this.valueDisplay.update(updData);
     }
     if (!this.viewOptions.displayValue && this.valueDisplay) {
       this.valueDisplay.destroy();
