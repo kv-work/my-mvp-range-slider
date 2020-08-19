@@ -80,6 +80,13 @@ describe('SliderValuesDisplay', () => {
       expect($verticalView.find('.slider__display_container_horizontal').length).toBe(0);
     });
 
+    test('should add "slider__display_value_horizontal" class to $secondValDisplay if options.isHorizontal is true', () => {
+      vertValDisplay.update({ data: rangeRenderData, options: updOpts });
+      expect($verticalView.find('.slider__display_value_horizontal').length).toBe(2);
+      vertValDisplay.update({ data: rangeRenderData, options: vertUpdOpts });
+      expect($verticalView.find('.slider__display_value_horizontal').length).toBe(0);
+    });
+
     test('should create and append $valueDisplay and $secondValueDisplay (if data.value is array) to $displayContainer', () => {
       const $horizontalDisplay = $horizontalView.find('.slider__display_container');
       const $verticalDisplay = $verticalView.find('.slider__display_container');
