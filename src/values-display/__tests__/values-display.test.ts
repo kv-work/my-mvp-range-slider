@@ -6,6 +6,20 @@ describe('SliderValuesDisplay', () => {
     <div id="view_container_horizontal"></div>
   `;
 
+  HTMLElement.prototype.getBoundingClientRect = function getMetrics(): DOMRect {
+    return {
+      x: $(this).data('data') !== undefined ? $(this).data('data') - 5 : 0,
+      y: $(this).data('data') !== undefined ? $(this).data('data') - 5 : 0,
+      height: $(this).data('data') !== undefined ? 10 : 100,
+      width: $(this).data('data') !== undefined ? 10 : 100,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      top: 0,
+      toJSON: (): void => {},
+    };
+  };
+
   const $horizontalView = $('#view_container_horizontal');
   const $verticalView = $('#view_container');
 
@@ -84,6 +98,16 @@ describe('SliderValuesDisplay', () => {
       vertValDisplay.update({ data: rangeRenderData, options: updOpts });
       expect($verticalView.find('.slider__display_value_horizontal').length).toBe(2);
       vertValDisplay.update({ data: rangeRenderData, options: vertUpdOpts });
+      expect($verticalView.find('.slider__display_value_horizontal').length).toBe(0);
+
+      const newData = {
+        data: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        percentageData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        value: 0,
+        percentage: 0,
+      };
+
+      vertValDisplay.update({ data: newData, options: vertUpdOpts });
       expect($verticalView.find('.slider__display_value_horizontal').length).toBe(0);
     });
 
