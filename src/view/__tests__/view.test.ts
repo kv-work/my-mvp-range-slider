@@ -157,6 +157,20 @@ describe('SliderView', () => {
       expect($container.find('.js-slider__container').length).toBe(1);
     });
 
+    test('should add "slider__container_horizontal" class to $view element if options.isHorizontal is true, and remove if false', () => {
+      testView.render(testRenderData);
+      expect($container.find('.slider__container_horizontal').length).toBe(1);
+      testView.update({ isHorizontal: false });
+      testView.render(testRenderData);
+      expect($container.find('.slider__container_horizontal').length).toBe(0);
+      expect($container.find('.js-slider__container').length).toBe(1);
+
+      testView.update({ isHorizontal: true });
+      testView.render(testRenderData);
+      expect($container.find('.slider__container_horizontal').length).toBe(1);
+      expect($container.find('.js-slider__container').length).toBe(1);
+    });
+
     test('should set isRendered flag to true', () => {
       expect(testView).toHaveProperty('isRendered', false);
       testView.render(testRenderData);
@@ -274,7 +288,6 @@ describe('SliderView', () => {
       expect(mockRunnerUpdate).toBeCalledTimes(1);
     });
 
-    // need fix
     test('should update bar, scale, valueDisplay, runner and secondRunner', () => {
       testView.update({ isHorizontal: false });
       testView.render(testRenderData);
