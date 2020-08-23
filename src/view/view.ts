@@ -43,8 +43,8 @@ class SliderView implements View {
     }
 
     if (!this.isRendered) {
-      this.attachEventHandlers();
       this.$container.append(this.$view);
+      this.attachEventHandlers();
       this.isRendered = true;
     }
 
@@ -364,8 +364,6 @@ class SliderView implements View {
             return entry;
           }
           break;
-        case 'renderData':
-          return entry;
         default:
           return undefined;
       }
