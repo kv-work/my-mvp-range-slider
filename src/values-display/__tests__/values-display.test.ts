@@ -100,7 +100,7 @@ describe('SliderValuesDisplay', () => {
       vertValDisplay.update({ data: rangeRenderData, options: vertUpdOpts });
       expect($verticalView.find('.slider__display_value_horizontal').length).toBe(0);
 
-      const newData = {
+      const newData: View.RenderData = {
         data: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
         percentageData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
         value: 0,
@@ -109,6 +109,27 @@ describe('SliderValuesDisplay', () => {
 
       vertValDisplay.update({ data: newData, options: vertUpdOpts });
       expect($verticalView.find('.slider__display_value_horizontal').length).toBe(0);
+
+      newData.value = 100;
+      newData.percentage = 100;
+
+      vertValDisplay.update({ data: newData, options: vertUpdOpts });
+      expect($verticalView.find('.slider__display_value_horizontal').length).toBe(0);
+
+      newData.value = [0, 100];
+      newData.percentage = [0, 100];
+
+      vertValDisplay.update({ data: newData, options: vertUpdOpts });
+      expect($verticalView.find('.slider__display_value_horizontal').length).toBe(0);
+
+      vertValDisplay.update({ data: newData, options: updOpts });
+      expect($verticalView.find('.slider__display_value_horizontal').length).toBe(2);
+
+      newData.value = 100;
+      newData.percentage = 100;
+
+      vertValDisplay.update({ data: newData, options: updOpts });
+      expect($verticalView.find('.slider__display_value_horizontal').length).toBe(1);
     });
 
     test('should create and append $valueDisplay and $secondValueDisplay (if data.value is array) to $displayContainer', () => {
