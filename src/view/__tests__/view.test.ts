@@ -278,6 +278,7 @@ describe('SliderView', () => {
         range: false,
         displayValue: false,
       });
+      testView.addObserver(testObserver);
       testView.render(testRenderData);
       jest.clearAllMocks();
     });
@@ -369,121 +370,9 @@ describe('SliderView', () => {
       expect(testView.getData().postfix).toBe('!');
     });
 
-    test('should update bar, scale, valueDisplay, runner and secondRunner', () => {
+    test('should notify observers about updating', () => {
       testView.update({ isHorizontal: false });
-
-      expect(mockBarUpdate).toBeCalledTimes(1);
-      expect(mockScaleUpdate).toBeCalledTimes(1);
-      expect(mockValueDisplayUpdate).toBeCalledTimes(1);
-      expect(mockRunnerUpdate).toBeCalledTimes(2);
-    });
-
-    test('should destroy bar,if options.bar is false', () => {
-      testView.update({ bar: false });
-
-      expect(mockBarDestroy).toBeCalled();
-    });
-
-    test('should create SliderBar instance if (options.bar && !this.bar) is true', () => {
-      newView.render({
-        data: [0, 1, 2, 3, 4],
-        percentageData: [0, 25, 50, 75, 100],
-        value: [1, 3],
-        percentage: [25, 75],
-      });
-
-      newView.update({ bar: true });
-      expect(SliderBar).toBeCalledTimes(1);
-
-      newView.destroy();
-    });
-
-    test('should destroy scale,if options.scale is false', () => {
-      testView.update({ scale: false });
-
-      expect(mockScaleDestroy).toBeCalled();
-    });
-
-    test('should create SliderScale instance if (options.scale && !this.scale) is true', () => {
-      newView.render({
-        data: [0, 1, 2, 3, 4],
-        percentageData: [0, 25, 50, 75, 100],
-        value: [1, 3],
-        percentage: [25, 75],
-      });
-
-      newView.update({ scale: true });
-      expect(SliderScale).toBeCalledTimes(1);
-
-      newView.destroy();
-    });
-
-    test('should destroy valuesDisplay, if options.displayValues is false', () => {
-      testView.update({ displayValue: false });
-
-      expect(mockValueDisplayDestroy).toBeCalled();
-    });
-
-    test('should create SliderValueDisplay instance if (options.displayValues && !this.valuesDisplay) is true', () => {
-      newView.render({
-        data: [0, 1, 2, 3, 4],
-        percentageData: [0, 25, 50, 75, 100],
-        value: [1, 3],
-        percentage: [25, 75],
-      });
-
-      newView.update({ displayValue: true });
-      expect(SliderValuesDisplay).toBeCalledTimes(1);
-
-      newView.destroy();
-    });
-
-    test('should destroy runner and secondRunner,if options.runner is false', () => {
-      testView.update({ runner: false });
-
-      expect(mockRunnerDestroy).toBeCalledTimes(2);
-    });
-
-    test('should create SliderRunner instance if (options.runner && !this.runner) is true', () => {
-      newView.render({
-        data: [0, 1, 2, 3, 4],
-        percentageData: [0, 25, 50, 75, 100],
-        value: 1,
-        percentage: 25,
-      });
-
-      newView.update({ runner: true });
-      expect(SliderRunner).toBeCalledTimes(1);
-
-      newView.destroy();
-    });
-
-    test('should create runner and secondRunner instances if (options.runner && !this.runner && !this.secondRunner && Array.isArray(renderData.value)) is true', () => {
-      newView.render({
-        data: [0, 1, 2, 3, 4],
-        percentageData: [0, 25, 50, 75, 100],
-        value: [1, 3],
-        percentage: [25, 75],
-      });
-
-      newView.update({
-        runner: true,
-        range: true,
-      });
-      expect(SliderRunner).toBeCalledTimes(2);
-
-      newView.destroy();
-    });
-
-    test('should re-render view with current renderData', () => {
-      const $container = $('#container');
-      expect(testView.getData().isHorizontal).toBe(true);
-      expect($container.find('.slider__container_horizontal').length).toBe(1);
-
-      testView.update({ isHorizontal: false });
-      expect(testView.getData().isHorizontal).toBe(false);
-      expect($container.find('.slider__container_horizontal').length).toBe(0);
-      expect($container.find('.slider__container').length).toBe(1);
+      expect(mockUpdate).toBeCalled();
     });
   });
 
