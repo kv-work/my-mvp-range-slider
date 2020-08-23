@@ -128,9 +128,18 @@ describe('SliderView', () => {
   });
 
   describe('render', () => {
+    let newView: SliderView;
     const $container = $('#container');
 
     beforeEach(() => {
+      newView = new SliderView(testNode, {
+        isHorizontal: false,
+        bar: false,
+        scale: false,
+        runner: false,
+        range: false,
+        displayValue: false,
+      });
       testView.addObserver(testObserver);
       jest.clearAllMocks();
     });
@@ -214,7 +223,7 @@ describe('SliderView', () => {
       jest.clearAllMocks();
       const $newNode = $('<div>', { class: 'new_node' });
       $('body').append($newNode);
-      const newView: SliderView = new SliderView($newNode[0], {
+      newView = new SliderView($newNode[0], {
         range: false,
         runner: true,
       });
@@ -264,20 +273,120 @@ describe('SliderView', () => {
       });
       expect(mockRunnerUpdate).toBeCalledTimes(1);
     });
+
+    // need fix
+    test('should update bar, scale, valueDisplay, runner and secondRunner', () => {
+      testView.update({ isHorizontal: false });
+      testView.render(testRenderData);
+
+      expect(mockBarUpdate).toBeCalledTimes(1);
+      expect(mockScaleUpdate).toBeCalledTimes(1);
+      expect(mockValueDisplayUpdate).toBeCalledTimes(1);
+      expect(mockRunnerUpdate).toBeCalledTimes(2);
+    });
+
+    test('should destroy bar,if options.bar is false', () => {
+      testView.render(testRenderData);
+      testView.update({ bar: false });
+      testView.render(testRenderData);
+
+      expect(mockBarDestroy).toBeCalled();
+    });
+
+    test('should create SliderBar instance if (options.bar && !this.bar) is true', () => {
+      newView.update({ bar: true });
+      newView.render({
+        data: [0, 1, 2, 3, 4],
+        percentageData: [0, 25, 50, 75, 100],
+        value: [1, 3],
+        percentage: [25, 75],
+      });
+      expect(SliderBar).toBeCalledTimes(1);
+
+      newView.destroy();
+    });
+
+    test('should destroy scale,if options.scale is false', () => {
+      testView.render(testRenderData);
+      testView.update({ scale: false });
+      testView.render(testRenderData);
+
+      expect(mockScaleDestroy).toBeCalled();
+    });
+
+    test('should create SliderScale instance if (options.scale && !this.scale) is true', () => {
+      newView.update({ scale: true });
+      newView.render({
+        data: [0, 1, 2, 3, 4],
+        percentageData: [0, 25, 50, 75, 100],
+        value: [1, 3],
+        percentage: [25, 75],
+      });
+      expect(SliderScale).toBeCalledTimes(1);
+
+      newView.destroy();
+    });
+
+    test('should destroy valuesDisplay, if options.displayValues is false', () => {
+      testView.render(testRenderData);
+      testView.update({ displayValue: false });
+      testView.render(testRenderData);
+
+      expect(mockValueDisplayDestroy).toBeCalled();
+    });
+
+    test('should create SliderValueDisplay instance if (options.displayValues && !this.valuesDisplay) is true', () => {
+      newView.update({ displayValue: true });
+      newView.render({
+        data: [0, 1, 2, 3, 4],
+        percentageData: [0, 25, 50, 75, 100],
+        value: [1, 3],
+        percentage: [25, 75],
+      });
+      expect(SliderValuesDisplay).toBeCalledTimes(1);
+
+      newView.destroy();
+    });
+
+    test('should destroy runner and secondRunner,if options.runner is false', () => {
+      testView.render(testRenderData);
+      testView.update({ runner: false });
+      testView.render(testRenderData);
+
+      expect(mockRunnerDestroy).toBeCalledTimes(2);
+    });
+
+    test('should create SliderRunner instance if (options.runner && !this.runner) is true', () => {
+      newView.update({ runner: true });
+      newView.render({
+        data: [0, 1, 2, 3, 4],
+        percentageData: [0, 25, 50, 75, 100],
+        value: 1,
+        percentage: 25,
+      });
+      expect(SliderRunner).toBeCalledTimes(1);
+      newView.destroy();
+    });
+
+    test('should create runner and secondRunner instances if (options.runner && !this.runner && !this.secondRunner && Array.isArray(renderData.value)) is true', () => {
+      newView.update({
+        runner: true,
+        range: true,
+      });
+      newView.render({
+        data: [0, 1, 2, 3, 4],
+        percentageData: [0, 25, 50, 75, 100],
+        value: [1, 3],
+        percentage: [25, 75],
+      });
+      expect(SliderRunner).toBeCalledTimes(2);
+
+      newView.destroy();
+    });
   });
 
   describe('update', () => {
-    let newView: SliderView;
-
     beforeEach(() => {
-      newView = new SliderView(testNode, {
-        isHorizontal: false,
-        bar: false,
-        scale: false,
-        runner: false,
-        range: false,
-        displayValue: false,
-      });
       testView.addObserver(testObserver);
       testView.render(testRenderData);
       jest.clearAllMocks();
