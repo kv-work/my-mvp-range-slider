@@ -67,7 +67,7 @@ export default class SliderApp implements App {
 
   reset(): void {
     this.options = this.initOptions;
-    this.update(this.initOptions);
+    this.presenter.update(this.initOptions);
   }
 
   destroy(): void {
