@@ -143,6 +143,40 @@ describe('app', () => {
     });
   });
 
+  describe('setUserDAta', () => {
+    let testData: App.Stringable[];
+
+    test('should call setUserData method of presenter if data.length > 1', () => {
+      testData = [1, 2, 3, 4, 5];
+      testApp.setUserData(testData);
+
+      expect(mockSetUserData).toBeCalledWith(testData);
+    });
+
+    test('should call update method of presenter with initOptions if data.length < 1', () => {
+      testData = [2];
+      testApp.setUserData(testData);
+
+      expect(mockUpdatePresenter).toBeCalledWith(testOptions);
+    });
+  });
+
+  describe('lockValues', () => {
+    test('should call update method of presenter with lockedValues option as argument', () => {
+      testApp.lockValues(['minValue']);
+
+      expect(mockUpdatePresenter).toBeCalledWith({ lockedValues: ['minValue'] });
+    });
+  });
+
+  describe('unlockValues', () => {
+    test('should call update method of presenter with unlockedValues option as argument', () => {
+      testApp.unlockValues(['minValue']);
+
+      expect(mockUpdatePresenter).toBeCalledWith({ unlockValues: ['minValue'] });
+    });
+  });
+
   describe('getAllData', () => {
     test('should call getState method of Model, getPresenterData of Presenter and getData of View', () => {
       testApp.getAllData();
