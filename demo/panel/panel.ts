@@ -36,43 +36,22 @@ export default class Panel {
   private $prefixInput: JQuery;
   private $postfixInput: JQuery;
 
-  constructor($container: JQuery, options?: App.Option) {
+  constructor($container: JQuery) {
     this.$container = $container;
-
-    const callbacks = {
-      onStart: (): void => {
-        this.lightIndicator('onStart');
-      },
-      onChange: (): void => {
-        this.lightIndicator('onChange');
-        this.onChangeSlider();
-      },
-      onFinish: (): void => {
-        this.lightIndicator('onFinish');
-        this.onChangeSlider();
-      },
-      onUpdate: (): void => {
-        this.lightIndicator('onUpdate');
-        this.onChangeSlider();
-      },
-    };
-
-    const newOptions = $.extend(options, callbacks);
 
     this.slider = this.$container.find('.js-slider').data('myMVPSlider');
 
-    this.slider.update(newOptions);
-
-    this.settings = this.$container.find('.js-slider').data('init-options');
-
     this.$configPanel = this.$container.find('.js-config_panel');
     this.$callbackIndicators = this.$container.find('.callback_indicators');
+
+    this.settings = this.$container.find('.js-slider').data('init-options');
 
     this.presets = Panel.createPresets();
     this.currentPreset = 0;
 
     this.initInputs();
     this.setInputValues();
+    this.addCallbacks();
     this.attachEventHandlers();
   }
 
@@ -229,6 +208,27 @@ export default class Panel {
     } else {
       $presetsRadio.find('[value="0"]').prop('checked', true);
     }
+  }
+
+  private addCallbacks(): void {
+    const callbacks = {
+      onStart: (): void => {
+        this.lightIndicator('onStart');
+      },
+      onChange: (): void => {
+        this.lightIndicator('onChange');
+        this.onChangeSlider();
+      },
+      onFinish: (): void => {
+        this.lightIndicator('onFinish');
+        this.onChangeSlider();
+      },
+      onUpdate: (): void => {
+        this.lightIndicator('onUpdate');
+        this.onChangeSlider();
+      },
+    };
+    this.slider.update(callbacks);
   }
 
   private attachEventHandlers(): void {

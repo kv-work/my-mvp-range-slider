@@ -98,7 +98,21 @@ class SliderPresenter implements Presenter {
       this.view.update(viewOptions);
     }
 
+    if (options.onStart && typeof options.onStart === 'function') {
+      this.callbacks.onStart = options.onStart;
+    }
+    if (options.onChange && typeof options.onChange === 'function') {
+      this.callbacks.onChange = options.onChange;
+    }
+    if (options.onFinish && typeof options.onFinish === 'function') {
+      this.callbacks.onFinish = options.onFinish;
+    }
+    if (options.onUpdate && typeof options.onUpdate === 'function') {
+      this.callbacks.onUpdate = options.onUpdate;
+    }
+
     this.callbacks.onUpdate();
+
     this.isReadyRender = true;
     this.renderView();
   }
