@@ -49,16 +49,9 @@ describe('myMVPSlider', () => {
     onUpdate: mockOnUpdate,
   };
 
-  // let testSlider: App;
-
   beforeAll(() => {
     $(testNodes[0]).myMVPSlider();
-    // testSlider = $(testNodes[0]).data('myMVPSlider');
   });
-
-  // afterEach(() => {
-  //   testSlider.destroy();
-  // });
 
   test('should render slider with default options', () => {
     expect($('.js-slider__bar').length).toBe(1);
@@ -108,13 +101,13 @@ describe('myMVPSlider', () => {
       postfix: undefined,
 
       // presenter
-      dataValues: [],
+      dataValues: null,
 
       // callbacks
-      onStart: () => {},
-      onChange: () => {},
-      onFinish: () => {},
-      onUpdate: () => {},
+      onStart: null,
+      onChange: null,
+      onFinish: null,
+      onUpdate: null,
     };
 
     $testWithOptions.myMVPSlider(wrongOpts);

@@ -99,9 +99,9 @@ import SliderApp from '../app/app';
               if (typeof entry[1] === 'function') {
                 return entry;
               }
-              return undefined;
+              break;
             default:
-              return undefined;
+              return entry;
           }
           return [key, settings[key]];
         });
