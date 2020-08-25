@@ -587,6 +587,27 @@ describe('Presenter', () => {
       expect(mockUpdate).not.toBeCalled();
     });
 
+    test('should update callbacks', () => {
+      const mockNewOnStart = jest.fn();
+      const mockNewOnChange = jest.fn();
+      const mockNewOnFinish = jest.fn();
+      const mockNewOnUpdate = jest.fn();
+
+      testPresenter.update({
+        onStart: mockNewOnStart,
+        onChange: mockNewOnChange,
+        onFinish: mockNewOnFinish,
+        onUpdate: mockNewOnUpdate,
+      });
+
+      expect(testPresenter).toHaveProperty('callbacks', {
+        onStart: mockNewOnStart,
+        onChange: mockNewOnChange,
+        onFinish: mockNewOnFinish,
+        onUpdate: mockNewOnUpdate,
+      });
+    });
+
     test('should calls onUpdate callback', () => {
       testPresenter.update({
         value: 50,
