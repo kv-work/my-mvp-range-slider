@@ -175,6 +175,7 @@ export default class Panel {
       $lockAllCheck.prop('checked', isAllLocked);
     }
 
+    console.log(isHorizontal)
     if (isHorizontal) {
       $orientationRadio.find('[value="0"]').prop('checked', true);
     } else {
@@ -453,6 +454,7 @@ export default class Panel {
         case 'presets':
           this.currentPreset = +value;
           this.setPreset();
+          this.addCallbacks();
           break;
         case 'orientation':
           slider.update({ isHorizontal: !slider.getViewData().isHorizontal });
