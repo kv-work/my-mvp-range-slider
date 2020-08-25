@@ -175,7 +175,6 @@ export default class Panel {
       $lockAllCheck.prop('checked', isAllLocked);
     }
 
-    console.log(isHorizontal)
     if (isHorizontal) {
       $orientationRadio.find('[value="0"]').prop('checked', true);
     } else {

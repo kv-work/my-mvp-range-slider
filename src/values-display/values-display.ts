@@ -147,7 +147,7 @@ export default class SliderValuesDisplay implements ValuesDisplay {
       if (firstX < containerX) {
         this.$firstValDisplay.css({ left: 'calc(0% - 0.75rem)' });
       }
-      if ((firstX + firstWidth) > containerWidth) {
+      if ((firstX + firstWidth) > (containerX + containerWidth)) {
         this.$firstValDisplay.css({
           left: `calc(${containerWidth - firstWidth}px - 0.75rem)`,
         });
@@ -162,7 +162,7 @@ export default class SliderValuesDisplay implements ValuesDisplay {
 
         const { x, width } = this.$secondValDisplay[0].getBoundingClientRect();
 
-        if ((x + width) > containerWidth) {
+        if ((x + width) > (containerX + containerWidth)) {
           this.$secondValDisplay.css({
             left: `calc(${containerWidth - width}px - 0.75rem)`,
           });
@@ -182,7 +182,7 @@ export default class SliderValuesDisplay implements ValuesDisplay {
       if (firstY < containerY) {
         this.$firstValDisplay.css({ top: 'calc(0% - 0.75rem)' });
       }
-      if ((firstY + firstHeight) > containerHeight) {
+      if ((firstY + firstHeight) > (containerY + containerHeight)) {
         this.$firstValDisplay.css({
           top: `calc(${containerHeight - firstHeight}px - 0.75rem)`,
         });
@@ -198,7 +198,7 @@ export default class SliderValuesDisplay implements ValuesDisplay {
 
         const { y, height } = this.$secondValDisplay[0].getBoundingClientRect();
 
-        if ((y + height) > containerHeight) {
+        if ((y + height) > (containerY + containerHeight)) {
           this.$secondValDisplay.css({
             top: `calc(${containerHeight - height}px - 0.75rem)`,
           });
