@@ -97,7 +97,7 @@ class SliderRunner implements Runner {
     const mouseMoveHandler = this.makeHandler(renderOptions);
     this.$view.on('mousemove.runner', mouseMoveHandler);
     document.onmouseup = (): void => {
-      this.$view.off('mousemove.runner', mouseMoveHandler);
+      this.$view.off('.runner');
       this.$runner.css('cursor', 'grab');
 
       const $finishEvent = $.Event('finish.myMVPSlider');

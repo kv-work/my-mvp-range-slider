@@ -262,6 +262,8 @@ class SliderView implements View {
     this.$view.bind('startChanging.myMVPSlider', this.startChangingHandler.bind(this));
     this.$view.bind('changeValue.myMVPSlider', this.changeValueHandler.bind(this));
     this.$view.bind('finish.myMVPSlider', this.finishEventHandler.bind(this));
+
+    this.$barContainer.on('dragstart', false);
   }
 
   private startChangingHandler(event: JQuery.Event, isDragStarted?: boolean): void {
