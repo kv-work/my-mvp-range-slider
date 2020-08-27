@@ -188,7 +188,7 @@ class SliderPresenter implements Presenter {
         } else {
           multipleElem = elem - ((elem - min) % step);
         }
-        values.push(multipleElem);
+        values.push(SliderModel.fixVal(multipleElem, step));
       }
     }
 
