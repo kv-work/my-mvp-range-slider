@@ -118,7 +118,6 @@ describe('myMVPSlider', () => {
       minValue: 0,
       step: 1,
       value: 0,
-      secondValue: undefined,
       isHorizontal: true,
       range: true,
       dragInterval: false,

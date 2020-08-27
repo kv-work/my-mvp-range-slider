@@ -4,7 +4,7 @@ import SliderApp from '../app/app';
 
 (function ($: JQueryStatic): void {
   $.fn.myMVPSlider = function (options: App.Option): JQuery {
-    let settings: App.Option = {
+    const defaultSettings: App.Option = {
       maxValue: 100,
       minValue: 0,
       step: 1,
@@ -30,11 +30,13 @@ import SliderApp from '../app/app';
       dataValues: [],
 
       // callbacks
-      onStart: () => {},
-      onChange: () => {},
-      onFinish: () => {},
-      onUpdate: () => {},
+      onStart: () => { },
+      onChange: () => { },
+      onFinish: () => { },
+      onUpdate: () => { },
     };
+
+    let validOptions: App.Option;
 
     if (options === 'destroy') {
       this.each(function destroy(): void {
@@ -50,7 +52,7 @@ import SliderApp from '../app/app';
     } else {
       if (options) {
         const optionsEntries = Object.entries(options);
-        const validOpts = optionsEntries.map((entry): [string, unknown] => {
+        const opts = optionsEntries.map((entry): [string, unknown] => {
           const key: string = entry[0];
           switch (key) {
             case 'maxValue':
@@ -103,24 +105,23 @@ import SliderApp from '../app/app';
             default:
               return entry;
           }
-          return [key, settings[key]];
+          return [key, defaultSettings[key]];
         });
 
-        const resultData = validOpts.reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
-
-        settings = $.extend(settings, resultData);
+        validOptions = opts.reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
       }
 
 
       this.each(function addPlugin(): void {
         const $this = $(this);
-        const app = new SliderApp(settings, this);
+        const dataOptions = $this.data();
+        const sliderSettings = $.extend({}, defaultSettings, validOptions, dataOptions);
+        const app = new SliderApp(sliderSettings, this);
 
         $this.data('myMVPSlider', app);
-        $this.data('init-options', settings);
+        $this.data('init-options', sliderSettings);
       });
     }
-
     return this;
   };
 }(jQuery));
