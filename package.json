@@ -2,7 +2,7 @@
   "name": "my-mvp-range-slider",
   "version": "1.0.0",
   "description": "slider plugin",
-  "main": "lib/my-mvp-range-slider.min.js",
+  "main": "src/plugin/plugin.ts",
   "scripts": {
     "silent-test": "jest --silent --watch",
     "test": "jest --coverage",
