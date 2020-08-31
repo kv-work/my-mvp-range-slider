@@ -435,6 +435,12 @@ class SliderModel implements Model {
     if (!(baseVal % 1)) {
       return +value.toFixed(0);
     }
+
+    if (baseVal.toString().includes('e')) {
+      const base = +`${baseVal}`.split('e-')[1];
+      const fixedVal = +value.toFixed(base);
+      return fixedVal;
+    }
     const base = `${baseVal}`.split('.')[1].length;
     const fixedVal = +value.toFixed(base);
     return fixedVal;
