@@ -1,0 +1,118 @@
+.slider__container {
+  padding: 0.75rem;
+  position: relative;
+  height: 100%;
+  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+.slider__container_horizontal {
+  height: auto;
+  flex-direction: column;
+}
+
+.slider__bar_container {
+  position: relative;
+  height: 100%;
+  z-index: 2;
+}
+
+.slider__bar_container_horizontal {
+  height: auto;
+  width: 100%;
+}
+
+.slider__scale {
+  height: 100%;
+  position: relative;
+}
+
+.slider__scale_horizontal {
+  padding-top: 0.5rem;
+  width: 100%;
+  position: relative;
+}
+
+.scale__element {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  color: #e5e5e5;
+}
+.slider__bar {
+  background-color: #E5E5E5;
+  border-radius: 0.75rem;
+  width: 0.5rem;
+  height: 100%;
+  cursor: pointer;
+  position: relative;
+}
+
+.slider__bar_horizontal {
+  height: 0.5rem;
+  width: 100%;
+}
+
+.slider__range {
+  height: 100%;
+  background-color: #53B6A8;
+  position: absolute;
+  width: 100%;
+}
+.slider__runner {
+  width: 1.5rem;
+  height: 1.5rem;
+  position: absolute;
+  border-radius: 50%;
+  background-color: #53B6A8;
+  cursor: grab;
+  left: -0.5rem;
+  z-index: 2;
+}
+
+.slider__runner_horizontal {
+  top: -0.5rem;
+  left: 0;
+}
+.slider__display_container {
+  display: flex;
+  justify-content: flex-end;
+  height: 100%;
+  position: relative;
+}
+
+.slider__display_container_horizontal {
+  height: 2rem;
+  width: 100%;
+}
+
+.slider__display_value {
+  display: inline-block;
+  position: absolute;
+  color: white;
+  background-color: #53B6A8;
+  padding: 0.1rem 0.5rem 0.3rem;
+  border-radius: 0.4rem;
+  cursor: default;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  right: 0.8rem;
+}
+
+.slider__display_value_horizontal {
+  bottom: 0.7rem;
+  right: auto;
+}
