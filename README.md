@@ -15,6 +15,7 @@
     * ***[Публичные методы](#methods)***
     * ***[Callbacks](#callbacks)***
 5. ***[Тесты](#test)***
+6. ***[Использованные инструменты при разработке](#instruments)***
 
 Краткое описание:
 Range Slider Plugin on jQuery.
@@ -209,12 +210,24 @@ $ npm start
 * **development mode**:
 
 ```sh
-$ npm build:dev
+$ npm run build:dev
 ```
 
 * **production mode**:
 
 ```sh
-$ npm build:prod
+$ npm run build:prod
 ```
 
+## <a name="instruments">Использованные инструменты при разработке</a>
+
+1.  [webpack](https://webpack.js.org/)
+  *  [css-loader](https://webpack.js.org/loaders/css-loader/)
+  *  [html-webpack-plugin](https://webpack.js.org/plugins/html-webpack-plugin/)
+  *  [mini-css-extract-plugin](https://webpack.js.org/plugins/mini-css-extract-plugin/)
+  *  [style-loader](https://webpack.js.org/loaders/style-loader/)
+  *  [webpack-dev-server](https://github.com/webpack/webpack-dev-server)
+2.  [typescript](https://www.typescriptlang.org/)
+3.  [jquery](https://jquery.com/)
+4.  [jest](https://jestjs.io/)
+5. [gh-pages](https://github.com/tschaub/gh-pages)
