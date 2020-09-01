@@ -12,6 +12,7 @@
     * ***[Программный код](#usage_js)***
     * ***[Options](#options)***
     * ***[Работа с плагином](#work)***
+    * ***[Публичные методы](#methods)***
 5. ***[Тесты](#test)***
 
 Краткое описание:
@@ -45,7 +46,7 @@ Range Slider Plugin on jQuery.
 
 ## <a name="dependencies">Зависимости:</a>
 
-- jquery: ^3.0.0
+- [jquery: ^3.0.0](http://jquery.com/)
 
 ## <a name="installation">Установка</a>
 Возможны два варианта установки плагина:
@@ -74,7 +75,7 @@ Range Slider Plugin on jQuery.
 $ npm install https://github.com/kv-work/the_4th_task.git
 ```
 
-Then import/require it:
+Затем необходимо импортировать файлы:
 
 ```javascript
 import 'my-mvp-range-slider/dist/lib/my-mvp-range-slider.min';
@@ -131,6 +132,50 @@ const slider = $('.js-slider').data('myMVPSlider');
 
 **Важно!** *Указанным выше способом в константу **slider** сохранится экземпляр первого найденного по селектору ***'.js-slider'*** элемента. Поэтому, если на странице подключенно более одного экземпляра плагина **my-mvp-range-slider**, для работы с каждым, необходимо сохранять экземпляры в отдельные переменные.*
 
+### <a name="methods">Методы</a>
+
+1. Обновление [свойств](#options) плагина.
+
+```javascript
+slider.update({ [options] })
+```
+
+2. Запрос свойств плагина. Возвращает объект со всеми свойствами плагина.
+
+```javascript
+// Возвращает объект со свойствами model
+slider.getModelData()
+// Возвращает объект со свойствами view
+slider.getViewData()
+// Возвращает объект со свойствами presenter
+slider.getPresenterData()
+// Возвращает объект со всеми свойствами
+slider.getAllData()
+```
+
+3. Блокирование/разблокирование свойств модели. В качестве аргумента передается массив строк названий значений свойств **model** (`maxValue`, `minValue`, `step`, `value`, `secondValue`) или строка `all` (в этом случае блокируются/разблокируются все свойства **model**)
+
+```javascript
+// Блокирование свойств model
+slider.lockValues([ [values] ])
+// Разблокирование свойств model
+slider.unlockValues([ [values] ])
+```
+
+4. Сброс состояния плагина. Слайдер возвращается к изначальному состоянию (полученному при инициализации).
+
+```javascript
+slider.reset()
+```
+
+5. Удаление плагина
+
+```javascript
+slider.destroy()
+
+// Альтернативный способ удаления
+$('.js-slider').myMVPSlider('destroy')
+```
 
 ## <a name="test">Тесты</a>
 
@@ -148,4 +193,17 @@ $ npm test
 $ npm start
 ```
 
+Для запуска сборки используются команды:
+
+* **development mode**:
+
+```sh
+$ npm build:dev
+```
+
+* **production mode**:
+
+```sh
+$ npm build:prod
+```
 
