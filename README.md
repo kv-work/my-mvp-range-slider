@@ -1,15 +1,25 @@
 ### Обучающее задание на фронтенд разработчика №4
 ***
 
+## Содержание:
+1. ***[Краткое описание архитектуры](#architecture)***
+2. ***[Зависимости](#dependencies)***
+3. ***[Установка](#installation)***
+4. ***[Использование:](#usage)***
+    * ***[Разметка](#usage_html)***
+    * ***[Программный код](#usage_js)***
+    * ***[Options](#options)***
+
 ## my-mvp-range-slider
 
 Краткое описание:
 Range Slider Plugin on jQuery.
 
-**Demo:**
-***[kv-work.github.io](https://kv-work.github.io/the_4th_task/)***
+**Demo**
 
-## Краткое описание архитектуры:
+***[Github-page](https://kv-work.github.io/the_4th_task/)***
+
+##  <a name="architecture"></a>Краткое описание архитектуры:
 
 Приложение разделено на 3 слоя (MVP архитектура):
 1. Model;
@@ -31,11 +41,11 @@ Range Slider Plugin on jQuery.
 *Presenter* предназначен для реализации взаимодействия *model* и *view*.
 Ни *model* ни *view* не знают ни о друг друге, ни о *presenter*. Однако *model* и *view* уведомляют о событиях (изменение состояния слайдера, взаимодействие с пользователем и т.д.) своих наблюдателей. Таким образом подписавшись на уведомления *presenter* узнает об изменениях *model* и о событиях взаимодействия *view* с пользователем. На основе полученной информации *presenter* воздействует на *view* и *model*.
 
-## Зависимости:
+## <a name="dependencies"></a>Зависимости:
 
 - jquery: ^3.0.0
 
-## Установка
+## <a name="installation"></a>Установка
 Возможны два варианта установки плагина:
 
 ### 1. Скачать файлы плагина
@@ -69,15 +79,15 @@ import 'my-mvp-range-slider/dist/lib/my-mvp-range-slider.min';
 import 'my-mvp-range-slider/dist/lib/my-mvp-range-slider.min.css';
 ```
 
-## Использование
+## <a name="usage">Использование</a>
 
-### Разметка
+### <a name="usage_html">Разметка</a>
 
 ```html
 <div class="js-slider"></div>
 ```
 
-### Программный код
+### <a name="usage_js">Программный код</a>
 
 ```javascript
 $(document).ready(() => {
@@ -85,7 +95,7 @@ $(document).ready(() => {
 })
 ```
 
-## Options
+### <a name="options">Options</a>
 
 | Option | Тип   | По умолчанию | Data-атрибут | Описание | Примечание |
 | :----: | :---: | :----------: | :----------: | :------- | :--------- |
