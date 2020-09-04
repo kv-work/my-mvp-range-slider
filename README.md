@@ -15,8 +15,9 @@
     * ***[Публичные методы](#methods)***
     * ***[Callbacks](#callbacks)***
     * ***[Работа с массивом данных](#work_with_data_values)***
-5. ***[Тесты](#test)***
-6. ***[Использованные инструменты при разработке](#instruments)***
+5. ***[UML-диаграмма приложения](#uml)***
+6. ***[Тесты](#test)***
+7. ***[Использованные инструменты при разработке](#instruments)***
 
 Краткое описание:
 Range Slider Plugin on jQuery.
@@ -56,8 +57,8 @@ Range Slider Plugin on jQuery.
 
 ### 1. Скачать файлы плагина
 
-- Скачать [скрипт](https://github.com/kv-work/the_4th_task/blob/master/dist/lib/my-mvp-range-slider.min.js)
-- Скачать [стили](https://github.com/kv-work/the_4th_task/blob/master/dist/lib/my-mvp-range-slider.min.css)
+- Скачать [скрипт](https://github.com/kv-work/my-mvp-range-slider/blob/master/dist/lib/my-mvp-range-slider.min.js)
+- Скачать [стили](https://github.com/kv-work/my-mvp-range-slider/blob/master/dist/lib/my-mvp-range-slider.min.css)
 
 ```html
 <html>
@@ -75,7 +76,7 @@ Range Slider Plugin on jQuery.
 ### 2. Установить с помощью NPM
 
 ```sh
-$ npm install https://github.com/kv-work/the_4th_task.git
+$ npm install https://github.com/kv-work/my-mvp-range-slider.git
 ```
 
 Затем необходимо импортировать файлы:
@@ -108,7 +109,7 @@ $(document).ready(() => {
 | **maxValue** | *number* | **100** | `data-max-value` | Максимальное значение | --- |
 | **minValue** | *number* | **0** | `data-min-value` | Минимальное значение | --- |
 | **step** | *number* | **1** | `data-step` | Велечина шага | Должен быть строго больше **0** |
-| **value** | *number* | **0* | `data-value` | Первое значение | --- |
+| **value** | *number* | **0** | `data-value` | Первое значение | --- |
 | **secondValue** | *number* | **undefined** | `data-second-value` | Второе значение | --- |
 | --- | --- | --- | --- | --- | --- |
 | **isHorizontal** | *boolean* | **true** | `data-is-horizontal` | Ориентация слайдера | Горизонтальное, если значение **true** |
@@ -203,6 +204,10 @@ $('.js-slider').myMVPSlider('destroy')
 
 Пример работы с массивом объектов можно рассмотреть на **[demo-странице][1]** (пресеты *Week* и *Year* )
 
+## <a name="uml">UML-диаграмма приложения</a>
+
+![UML-диаграмма приложения](https://github.com/kv-work/my-mvp-range-slider/raw/readme/UML.jpg)
+
 ## <a name="test">Тесты</a>
 
 Для тестов использовался фраймфорк ***[Jest](https://jestjs.io/)***
@@ -213,7 +218,7 @@ $('.js-slider').myMVPSlider('destroy')
 $ npm test
 ```
 
-Для запуска демо-***[страницы](https://kv-work.github.io/the_4th_task/)*** в режиме dev-server'а используется команда:
+Для запуска демо-***[страницы][1]*** в режиме dev-server'а используется команда:
 
 ```sh
 $ npm start
@@ -246,4 +251,4 @@ $ npm run build:prod
 4.  [jest](https://jestjs.io/)
 5. [gh-pages](https://github.com/tschaub/gh-pages)
 
-[1]: https://kv-work.github.io/the_4th_task/
+[1]: https://kv-work.github.io/my-mvp-range-slider/
