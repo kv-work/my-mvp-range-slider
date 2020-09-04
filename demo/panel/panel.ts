@@ -176,9 +176,9 @@ export default class Panel {
     }
 
     if (isHorizontal) {
-      $orientationRadio.find('[value="0"]').prop('checked', true);
+      $orientationRadio.eq(0).prop('checked', true);
     } else {
-      $orientationRadio.find('[value="1"]').prop('checked', true);
+      $orientationRadio.eq(1).prop('checked', true);
     }
     this.changeOrientation(isHorizontal);
 
