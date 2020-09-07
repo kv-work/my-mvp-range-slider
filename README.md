@@ -206,7 +206,7 @@ $('.js-slider').myMVPSlider('destroy')
 
 ## <a name="uml">UML-диаграмма приложения</a>
 
-![UML-диаграмма приложения](https://github.com/kv-work/my-mvp-range-slider/raw/readme/UML.jpg)
+![UML-диаграмма приложения](https://github.com/kv-work/my-mvp-range-slider/raw/master/UML.jpg)
 
 ## <a name="test">Тесты</a>
 
