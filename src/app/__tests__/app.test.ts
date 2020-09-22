@@ -64,11 +64,15 @@ describe('app', () => {
   let testApp: App;
 
   beforeEach(() => {
-    testApp = new App(testOptions, testNode);
+    if (testNode) {
+      testApp = new App(testOptions, testNode);
+    }
   });
 
   afterEach(() => {
-    $(testNode).html('');
+    if (testNode) {
+      $(testNode).html('');
+    }
     jest.clearAllMocks();
   });
 
