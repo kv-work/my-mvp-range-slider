@@ -1,15 +1,15 @@
 class SliderModel implements Model {
-  private _maxValue: number;
-  private _minValue: number;
-  private _step: number;
-  private _value: number;
-  private _secondValue?: number;
+  private maxValue: number;
+  private minValue: number;
+  private step: number;
+  private value: number;
+  private secondValue?: number;
   private observers: Set<Model.Observer>;
   private isUpdated: boolean;
   private isReadyNotify: boolean;
   public readonly lockedValues: Set<string>;
 
-  constructor(options: Model.Options) {
+  constructor(options: Model.InitOptions) {
     if (SliderModel.validateInitOptions(options)) {
       this.maxValue = options.maxValue;
       this.minValue = options.minValue;
@@ -36,135 +36,115 @@ class SliderModel implements Model {
     this.isUpdated = true;
   }
 
-  get value(): number {
-    return this._value;
-  }
+  // set value(newValue: number) {
+  //   if (this._ableToChange('value', newValue)) {
+  //     const { _value: oldValue } = this;
 
-  set value(newValue: number) {
-    if (this._ableToChange('value', newValue)) {
-      const { _value: oldValue } = this;
+  //     if (this._value === undefined) {
+  //       this._value = this._minValue;
+  //     }
 
-      if (this._value === undefined) {
-        this._value = this._minValue;
-      }
+  //     const fixedValue = this._getMultipleStep(newValue);
 
-      const fixedValue = this._getMultipleStep(newValue);
+  //     if (this._secondValue !== undefined && fixedValue >= this._secondValue) {
+  //       this._value = this._secondValue;
+  //       this.isUpdated = false;
+  //     } else if (oldValue !== fixedValue) {
+  //       this._value = fixedValue;
+  //       this.isUpdated = false;
+  //     }
 
-      if (this._secondValue !== undefined && fixedValue >= this._secondValue) {
-        this._value = this._secondValue;
-        this.isUpdated = false;
-      } else if (oldValue !== fixedValue) {
-        this._value = fixedValue;
-        this.isUpdated = false;
-      }
+  //     if (oldValue !== this._value) {
+  //       this.notify();
+  //     }
+  //   }
+  // }
 
-      if (oldValue !== this._value) {
-        this.notify();
-      }
-    }
-  }
+  // set maxValue(newValue: number) {
+  //   if (this._ableToChange('maxValue', newValue)) {
+  //     this._maxValue = newValue;
 
-  get maxValue(): number {
-    return this._maxValue;
-  }
+  //     this.isUpdated = false;
 
-  set maxValue(newValue: number) {
-    if (this._ableToChange('maxValue', newValue)) {
-      this._maxValue = newValue;
+  //     if (this._value !== undefined) {
+  //       this.value = this._value;
+  //     }
+  //     if (this._secondValue !== undefined) {
+  //       this.secondValue = this._secondValue;
+  //     }
 
-      this.isUpdated = false;
+  //     if (!this.isUpdated) {
+  //       this.notify();
+  //     }
+  //   }
+  // }
 
-      if (this._value !== undefined) {
-        this.value = this._value;
-      }
-      if (this._secondValue !== undefined) {
-        this.secondValue = this._secondValue;
-      }
+  // set minValue(newValue: number) {
+  //   if (this._ableToChange('minValue', newValue)) {
+  //     this._minValue = newValue;
 
-      if (!this.isUpdated) {
-        this.notify();
-      }
-    }
-  }
+  //     this.isUpdated = false;
 
-  get minValue(): number {
-    return this._minValue;
-  }
+  //     if (this._secondValue !== undefined) {
+  //       this.secondValue = this._secondValue;
+  //     }
 
-  set minValue(newValue: number) {
-    if (this._ableToChange('minValue', newValue)) {
-      this._minValue = newValue;
+  //     if (this._value !== undefined) {
+  //       this.value = this._value;
+  //     }
 
-      this.isUpdated = false;
+  //     if (!this.isUpdated) {
+  //       this.notify();
+  //     }
+  //   }
+  // }
 
-      if (this._secondValue !== undefined) {
-        this.secondValue = this._secondValue;
-      }
+  // set step(newValue: number) {
+  //   if (this._ableToChange('step', newValue)) {
+  //     this._step = +newValue.toFixed(17);
 
-      if (this._value !== undefined) {
-        this.value = this._value;
-      }
+  //     this.isUpdated = false;
 
-      if (!this.isUpdated) {
-        this.notify();
-      }
-    }
-  }
+  //     if (this._value !== undefined) {
+  //       this.value = this._value;
+  //     }
+  //     if (this._secondValue !== undefined) {
+  //       this.secondValue = this._secondValue;
+  //     }
 
-  get step(): number {
-    return this._step;
-  }
+  //     if (!this.isUpdated) {
+  //       this.notify();
+  //     }
+  //   }
+  // }
 
-  set step(newValue: number) {
-    if (this._ableToChange('step', newValue)) {
-      this._step = +newValue.toFixed(17);
+  // set secondValue(newValue: number | undefined) {
+  //   if (this._ableToChange('secondValue', newValue)) {
+  //     const {
+  //       _value,
+  //       _secondValue: oldValue,
+  //     } = this;
 
-      this.isUpdated = false;
+  //     if (newValue !== undefined) {
+  //       const fixedValue = this._getMultipleStep(newValue);
 
-      if (this._value !== undefined) {
-        this.value = this._value;
-      }
-      if (this._secondValue !== undefined) {
-        this.secondValue = this._secondValue;
-      }
+  //       if (fixedValue <= _value) {
+  //         this._secondValue = _value;
+  //         this.isUpdated = oldValue === _value;
+  //       } else if (oldValue !== fixedValue) {
+  //         this._secondValue = fixedValue;
+  //         this.isUpdated = false;
+  //       }
+  //     } else {
+  //       this._secondValue = undefined;
+  //       this.isUpdated = oldValue === undefined;
+  //     }
 
-      if (!this.isUpdated) {
-        this.notify();
-      }
-    }
-  }
-
-  get secondValue(): number {
-    return this._secondValue;
-  }
-
-  set secondValue(newValue: number | undefined) {
-    if (this._ableToChange('secondValue', newValue)) {
-      const {
-        _value,
-        _secondValue: oldValue,
-      } = this;
-
-      if (newValue !== undefined) {
-        const fixedValue = this._getMultipleStep(newValue);
-
-        if (fixedValue <= _value) {
-          this._secondValue = _value;
-          this.isUpdated = oldValue === _value;
-        } else if (oldValue !== fixedValue) {
-          this._secondValue = fixedValue;
-          this.isUpdated = false;
-        }
-      } else {
-        this._secondValue = undefined;
-        this.isUpdated = oldValue === undefined;
-      }
-
-      if (oldValue !== this._secondValue) {
-        this.notify();
-      }
-    }
-  }
+  //     if (oldValue !== this._secondValue) {
+  //       this.notify();
+  //     }
+  //   }
+  // }
 
   addObserver(observer: Model.Observer): void {
     this.observers.add(observer);
@@ -176,15 +156,15 @@ class SliderModel implements Model {
 
   getState(): Model.Options {
     const state: Model.Options = {
-      maxValue: this._maxValue,
-      minValue: this._minValue,
-      value: this._value,
-      step: this._step,
+      maxValue: this.maxValue,
+      minValue: this.minValue,
+      value: this.value,
+      step: this.step,
       lockedValues: Array.from(this.lockedValues),
     };
 
-    if (this._secondValue !== undefined) {
-      state.secondValue = this._secondValue;
+    if (this.secondValue !== undefined) {
+      state.secondValue = this.secondValue;
     }
 
     return state;

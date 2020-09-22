@@ -26,8 +26,8 @@ declare namespace Model {
     maxValue: number;
     minValue: number;
     step: number;
-    value?: number;
+    value: number;
     secondValue?: number;
-    lockedValues?: string[];
+    lockedValues: string[];
   }
 }
