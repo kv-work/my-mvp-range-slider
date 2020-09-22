@@ -12,11 +12,42 @@ export default class SliderApp implements App {
 
   constructor(options: App.Option, node: HTMLElement) {
     this.initOptions = options;
+    this.options = options;
     this.node = node;
 
-    this.createModel();
-    this.createView();
-    this.createPresenter();
+    const {
+      maxValue,
+      minValue,
+      step,
+      value,
+      secondValue,
+      dataValues,
+      onStart = (): void => {},
+      onChange = (): void => {},
+      onFinish = (): void => {},
+      onUpdate = (): void => {},
+    } = options;
+
+    this.model = new SliderModel({
+      maxValue,
+      minValue,
+      step,
+      value,
+      secondValue,
+    });
+
+
+    this.view = new SliderView(this.node, options);
+
+    this.presenter = new SliderPresenter({
+      model: this.model,
+      view: this.view,
+      dataValues,
+      onStart,
+      onChange,
+      onFinish,
+      onUpdate,
+    });
   }
 
   update(options: App.Option): void {
@@ -72,77 +103,5 @@ export default class SliderApp implements App {
 
   destroy(): void {
     this.view.destroy();
-  }
-
-  private createModel(): void {
-    const {
-      maxValue,
-      minValue,
-      step,
-      value,
-      secondValue,
-    } = this.initOptions;
-
-    this.model = new SliderModel({
-      maxValue,
-      minValue,
-      step,
-      value,
-      secondValue,
-    });
-  }
-
-  private createPresenter(): void {
-    const {
-      dataValues,
-      onStart,
-      onChange,
-      onFinish,
-      onUpdate,
-    } = this.initOptions;
-
-    this.presenter = new SliderPresenter({
-      model: this.model,
-      view: this.view,
-      dataValues,
-      onStart,
-      onChange,
-      onFinish,
-      onUpdate,
-    });
-  }
-
-  private createView(): void {
-    const {
-      isHorizontal,
-      range,
-      dragInterval,
-      runner,
-      bar,
-      scale,
-      displayScaleValue,
-      displayValue,
-      numOfScaleVal,
-      displayMin,
-      displayMax,
-      prefix,
-      postfix,
-    } = this.initOptions;
-
-    this.view = new SliderView(this.node, {
-      isHorizontal,
-      range,
-      dragInterval,
-      runner,
-      bar,
-      scale,
-      displayScaleValue,
-      displayValue,
-      numOfScaleVal,
-      displayMin,
-      displayMax,
-      prefix,
-      postfix,
-    });
   }
 }
