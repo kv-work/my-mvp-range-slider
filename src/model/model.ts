@@ -1,49 +1,27 @@
 class SliderModel implements Model {
-  // private maxValue: number;
-  // private minValue: number;
-  // private step: number;
-  // private value: number;
-  // private secondValue?: number;
   private state: Model.State;
   private observers: Set<Model.Observer>;
   private isUpdated: boolean;
-  public readonly lockedValues: Set<string>;
+  private lockedValues: Set<string>;
 
   constructor(options?: Model.Options) {
-    let maxValue = 10;
-    let minValue = 0;
-    let step = 1;
-    let value = 0;
-    let secondValue: number | undefined;
-
-    if (options !== undefined && SliderModel.validateInitOptions(options)) {
-      maxValue = options.maxValue!;
-      minValue = options.minValue!;
-      step = options.step!;
-    }
+    const defaultState = {
+      maxValue: 10,
+      minValue: 0,
+      step: 1,
+      value: 0,
+      secondValue: undefined,
+      lockedValues: [],
+    };
 
     this.observers = new Set();
-    if (options?.value) {
-      value = options.value;
-    }
-
-    if (options?.secondValue !== undefined) {
-      secondValue = options.secondValue;
-    }
-
     this.lockedValues = new Set();
-    if (options?.lockedValues !== undefined) {
-      this.lockState(options.lockedValues);
-    }
 
-    this.state = {
-      maxValue,
-      minValue,
-      step,
-      value,
-      secondValue,
-      lockedValues: Array.from(this.lockedValues),
-    };
+    if (options !== undefined) {
+      this.state = this.createState(defaultState, options);
+    } else {
+      this.state = defaultState;
+    }
 
     this.isUpdated = true;
   }
@@ -189,12 +167,12 @@ class SliderModel implements Model {
     }
   }
 
-  private _getMultipleStep(value: number): number {
+  private _getMultipleStep(value: number, state?: Model.State): number {
     const {
       step,
       maxValue: max,
       minValue: min,
-    } = this.state;
+    } = state || this.state;
     let result: number;
     let tempResult: number;
 
@@ -287,27 +265,57 @@ class SliderModel implements Model {
     return newState;
   }
 
-  static _validate(value: number): boolean {
-    return !(value === null || Number.isNaN(value) || !Number.isFinite(value));
+  private createState(state: Model.State, newState: Model.Options): Model.State {
+    const resultState: Model.State = $.extend({}, state, newState);
+
+    const {
+      maxValue,
+      minValue,
+      step,
+      value,
+      secondValue,
+    } = resultState;
+
+    if (maxValue < minValue) {
+      if (maxValue < state.minValue) {
+        resultState.maxValue = state.maxValue;
+
+        if (minValue > state.maxValue) {
+          resultState.minValue = state.minValue;
+        }
+      }
+    }
+
+    if (step <= 0) {
+      resultState.step = state.step;
+    }
+
+    if (secondValue === undefined) {
+      resultState.value = this._getMultipleStep(value, resultState);
+    } else {
+      const resultVal = this._getMultipleStep(value, resultState);
+      const resultSecondVal = this._getMultipleStep(secondValue, resultState);
+
+      if (resultVal > resultSecondVal) {
+        resultState.value = resultVal;
+        resultState.secondValue = resultVal;
+      } else {
+        resultState.value = resultVal;
+        resultState.secondValue = resultSecondVal;
+      }
+    }
+
+    if (newState.lockedValues !== undefined) {
+      this.lockState(newState.lockedValues);
+    }
+
+    resultState.lockedValues = Array.from(this.lockedValues);
+
+    return resultState;
   }
 
-  static validateInitOptions(options: Model.Options): boolean {
-    const { maxValue, minValue, step } = options;
-    const hasMaxVal = Object.prototype.hasOwnProperty.call(options, 'maxValue');
-    const hasMinVal = Object.prototype.hasOwnProperty.call(options, 'minValue');
-    const hasStep = Object.prototype.hasOwnProperty.call(options, 'step');
-
-    let isMaxGreaterMin = false;
-    if (maxValue !== undefined && minValue !== undefined) {
-      isMaxGreaterMin = maxValue > minValue;
-    }
-
-    let isStepPositive = false;
-    if (step !== undefined) {
-      isStepPositive = step > 0;
-    }
-
-    return hasMaxVal && hasMinVal && hasStep && isMaxGreaterMin && isStepPositive;
+  static _validate(value: number): boolean {
+    return !(value === null || Number.isNaN(value) || !Number.isFinite(value));
   }
 
   static fixVal(value: number, baseVal: number): number {

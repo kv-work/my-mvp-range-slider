@@ -1,6 +1,7 @@
+/* eslint-disable fsd/no-function-declaration-in-event-listener */
 import SliderModel from '../model';
 
-describe('model', () => {
+describe.only('model', () => {
   const initOptions: Model.Options = {
     maxValue: 10,
     minValue: 0,
@@ -40,25 +41,18 @@ describe('model', () => {
     testModel.addObserver(anotherObserver);
     modelWithSecondValue.addObserver(observer);
     modelWithSecondValue.addObserver(anotherObserver);
-    testModel.lockedValues.clear();
   });
 
-  describe('constructor', () => {
+  describe.only('constructor', () => {
     test('should set instance properties', () => {
       expect(testModel).toBeInstanceOf(SliderModel);
-      expect(testModel).toHaveProperty('maxValue', 10);
-      expect(testModel).toHaveProperty('minValue', 0);
-      expect(testModel).toHaveProperty('step', 1);
-      expect(testModel).toHaveProperty('value', 3);
-
-      // With second value
-      expect(modelWithSecondValue).toBeInstanceOf(SliderModel);
-      expect(testModel).toHaveProperty('secondValue', 8);
+      expect(testModel).toHaveProperty('state');
+      expect(testModel).toHaveProperty('observers');
+      expect(testModel).toHaveProperty('isUpdated', true);
     });
 
     test('should create lockedValues', () => {
       expect(testModel).toHaveProperty('lockedValues');
-      expect(testModel.lockedValues.size).toBe(0);
 
       const options: Model.Options = {
         ...initOptions,
@@ -66,31 +60,55 @@ describe('model', () => {
       };
 
       const model = new SliderModel(options);
+      const { lockedValues } = model.getState();
 
-      expect(model.lockedValues.has('maxValue')).toBeTruthy();
-      expect(model.lockedValues.has('minValue')).toBeTruthy();
-      expect(model.lockedValues.has('step')).toBeTruthy();
+      expect(lockedValues.includes('maxValue')).toBeTruthy();
+      expect(lockedValues.includes('minValue')).toBeTruthy();
+      expect(lockedValues.includes('step')).toBeTruthy();
     });
 
     test('should create instance with default values if constructor get wrong options', () => {
       let newModel = new SliderModel();
 
       expect(newModel).toBeInstanceOf(SliderModel);
-      expect(newModel).toHaveProperty('maxValue', 10);
-      expect(newModel).toHaveProperty('minValue', 0);
-      expect(newModel).toHaveProperty('step', 1);
-      expect(newModel).toHaveProperty('value', 0);
+
+      let state = newModel.getState();
+      expect(state).toHaveProperty('maxValue', 10);
+      expect(state).toHaveProperty('minValue', 0);
+      expect(state).toHaveProperty('step', 1);
+      expect(state).toHaveProperty('value', 0);
 
       newModel = new SliderModel({
-        maxValue: 0,
+        maxValue: -10,
         step: 0,
       });
 
+      state = newModel.getState();
+
       expect(newModel).toBeInstanceOf(SliderModel);
-      expect(newModel).toHaveProperty('maxValue', 10);
-      expect(newModel).toHaveProperty('minValue', 0);
-      expect(newModel).toHaveProperty('step', 1);
-      expect(newModel).toHaveProperty('value', 0);
+      expect(state).toHaveProperty('maxValue', 10);
+      expect(state).toHaveProperty('minValue', 0);
+      expect(state).toHaveProperty('step', 1);
+      expect(state).toHaveProperty('value', 0);
+    });
+
+    test('should create instance with valid options', () => {
+      const newModel = new SliderModel({
+        maxValue: -10,
+        minValue: 5,
+        step: 2,
+        secondValue: -30,
+        lockedValues: ['foo'],
+      });
+
+      expect(newModel).toHaveProperty('state', {
+        maxValue: 10,
+        minValue: 5,
+        step: 2,
+        value: 5,
+        secondValue: 5,
+        lockedValues: [],
+      });
     });
   });
 
@@ -101,7 +119,7 @@ describe('model', () => {
       const state = testModel.getState();
       expect(state).toHaveProperty('maxValue', 10);
       expect(state).toHaveProperty('minValue', 0);
-      expect(state).toHaveProperty('step', 2);
+      expect(state).toHaveProperty('step', 1);
       expect(state.secondValue).toBeUndefined();
 
       // With second value
@@ -162,34 +180,35 @@ describe('model', () => {
       };
 
       testModel.updateState(newModelState);
-      expect(testModel).toHaveProperty('maxValue', 100);
-      expect(testModel).toHaveProperty('minValue', 50);
-      expect(testModel).toHaveProperty('step', 5);
+      const newState = testModel.getState();
+      expect(newState).toHaveProperty('maxValue', 100);
+      expect(newState).toHaveProperty('minValue', 50);
+      expect(newState).toHaveProperty('step', 5);
       // value should be equal minValue
-      expect(testModel).toHaveProperty('value', 50);
+      expect(newState).toHaveProperty('value', 50);
 
       testModel.updateState(newMaxValue);
-      expect(testModel).toHaveProperty('maxValue', 200);
+      expect(testModel.getState()).toHaveProperty('maxValue', 200);
 
       testModel.updateState({ value: 199 });
-      expect(testModel).toHaveProperty('value', 200);
+      expect(testModel.getState()).toHaveProperty('value', 200);
 
       testModel.updateState({ minValue: 0 });
-      expect(testModel).toHaveProperty('minValue', 0);
+      expect(testModel.getState()).toHaveProperty('minValue', 0);
 
       // set wrong step
       testModel.updateState({ step: 0, value: -5, minValue: -10 });
-      expect(testModel).toHaveProperty('value', -5);
-      expect(testModel).toHaveProperty('step', 5);
-      expect(testModel).toHaveProperty('minValue', -10);
+      expect(testModel.getState()).toHaveProperty('value', -5);
+      expect(testModel.getState()).toHaveProperty('step', 5);
+      expect(testModel.getState()).toHaveProperty('minValue', -10);
 
       // add second value
 
-      expect(testModel).toHaveProperty('secondValue', undefined);
+      expect(testModel.getState()).toHaveProperty('secondValue', undefined);
       testModel.updateState({
         secondValue: 50,
       });
-      expect(testModel).toHaveProperty('secondValue', 50);
+      expect(testModel.getState()).toHaveProperty('secondValue', 50);
 
       testModel.updateState({
         maxValue: -10,
@@ -265,87 +284,106 @@ describe('model', () => {
     test('should adds selected values into lockValues', () => {
       testModel.lockState(['minValue', 'maxValue']);
 
-      expect(testModel.lockedValues.has('minValue')).toBeTruthy();
-      expect(testModel.lockedValues.has('maxValue')).toBeTruthy();
-      expect(testModel.lockedValues.has('step')).toBeFalsy();
+      const { lockedValues } = testModel.getState();
+
+      expect(lockedValues.includes('minValue')).toBeTruthy();
+      expect(lockedValues.includes('maxValue')).toBeTruthy();
+      expect(lockedValues.includes('step')).toBeFalsy();
     });
 
     test('should adds all values into lockValues, if lockState argument is "all"', () => {
       testModel.lockState('all');
 
-      expect(testModel.lockedValues.has('maxValue')).toBeTruthy();
-      expect(testModel.lockedValues.has('minValue')).toBeTruthy();
-      expect(testModel.lockedValues.has('value')).toBeTruthy();
-      expect(testModel.lockedValues.has('step')).toBeTruthy();
-      expect(testModel.lockedValues.has('secondValue')).toBeTruthy();
+      const { lockedValues } = testModel.getState();
+
+      expect(lockedValues.includes('maxValue')).toBeTruthy();
+      expect(lockedValues.includes('minValue')).toBeTruthy();
+      expect(lockedValues.includes('value')).toBeTruthy();
+      expect(lockedValues.includes('step')).toBeTruthy();
+      expect(lockedValues.includes('secondValue')).toBeTruthy();
     });
 
     test('should not lock values if argument is unknown', () => {
       testModel.lockState(['test']);
 
-      expect(testModel.lockedValues.has('maxValue')).toBeFalsy();
-      expect(testModel.lockedValues.has('minValue')).toBeFalsy();
-      expect(testModel.lockedValues.has('value')).toBeFalsy();
-      expect(testModel.lockedValues.has('step')).toBeFalsy();
-      expect(testModel.lockedValues.has('secondValue')).toBeFalsy();
+      const { lockedValues } = testModel.getState();
+
+      expect(lockedValues.includes('maxValue')).toBeFalsy();
+      expect(lockedValues.includes('minValue')).toBeFalsy();
+      expect(lockedValues.includes('value')).toBeFalsy();
+      expect(lockedValues.includes('step')).toBeFalsy();
+      expect(lockedValues.includes('secondValue')).toBeFalsy();
     });
   });
 
   describe('unlockState', () => {
     test('should removes selected values in lockValues', () => {
       testModel.lockState('all');
-      expect(testModel.lockedValues.has('minValue')).toBeTruthy();
-      expect(testModel.lockedValues.has('maxValue')).toBeTruthy();
-      expect(testModel.lockedValues.has('step')).toBeTruthy();
+
+      let { lockedValues } = testModel.getState();
+
+      expect(lockedValues.includes('minValue')).toBeTruthy();
+      expect(lockedValues.includes('maxValue')).toBeTruthy();
+      expect(lockedValues.includes('step')).toBeTruthy();
 
       testModel.unlockState(['maxValue', 'step', 'value']);
 
-      expect(testModel.lockedValues.has('minValue')).toBeTruthy();
-      expect(testModel.lockedValues.has('maxValue')).toBeFalsy();
-      expect(testModel.lockedValues.has('step')).toBeFalsy();
-      expect(testModel.lockedValues.has('value')).toBeFalsy();
+      lockedValues = testModel.getState().lockedValues;
+
+      expect(lockedValues.includes('minValue')).toBeTruthy();
+      expect(lockedValues.includes('maxValue')).toBeFalsy();
+      expect(lockedValues.includes('step')).toBeFalsy();
+      expect(lockedValues.includes('value')).toBeFalsy();
 
       testModel.unlockState(['minValue', 'secondValue']);
 
-      expect(testModel.lockedValues.has('minValue')).toBeFalsy();
-      expect(testModel.lockedValues.has('secondValue')).toBeFalsy();
+      lockedValues = testModel.getState().lockedValues;
+
+      expect(lockedValues.includes('minValue')).toBeFalsy();
+      expect(lockedValues.includes('secondValue')).toBeFalsy();
     });
 
     test('should removes all values in lockValues, if lockState argument is "all"', () => {
       testModel.lockState('all');
       testModel.unlockState('all');
 
-      expect(testModel.lockedValues.has('maxValue')).toBeFalsy();
-      expect(testModel.lockedValues.has('minValue')).toBeFalsy();
-      expect(testModel.lockedValues.has('value')).toBeFalsy();
-      expect(testModel.lockedValues.has('step')).toBeFalsy();
-      expect(testModel.lockedValues.has('secondValue')).toBeFalsy();
+      const { lockedValues } = testModel.getState();
+
+      expect(lockedValues.includes('maxValue')).toBeFalsy();
+      expect(lockedValues.includes('minValue')).toBeFalsy();
+      expect(lockedValues.includes('value')).toBeFalsy();
+      expect(lockedValues.includes('step')).toBeFalsy();
+      expect(lockedValues.includes('secondValue')).toBeFalsy();
     });
 
     test('should not unlock values if argument is unknown', () => {
       testModel.unlockState(['test']);
 
-      expect(testModel.lockedValues.has('maxValue')).toBeFalsy();
-      expect(testModel.lockedValues.has('minValue')).toBeFalsy();
-      expect(testModel.lockedValues.has('value')).toBeFalsy();
-      expect(testModel.lockedValues.has('step')).toBeFalsy();
-      expect(testModel.lockedValues.has('secondValue')).toBeFalsy();
+      let { lockedValues } = testModel.getState();
+
+      expect(lockedValues.includes('maxValue')).toBeFalsy();
+      expect(lockedValues.includes('minValue')).toBeFalsy();
+      expect(lockedValues.includes('value')).toBeFalsy();
+      expect(lockedValues.includes('step')).toBeFalsy();
+      expect(lockedValues.includes('secondValue')).toBeFalsy();
 
       testModel.lockState('all');
 
-      expect(testModel.lockedValues.has('maxValue')).toBeTruthy();
-      expect(testModel.lockedValues.has('minValue')).toBeTruthy();
-      expect(testModel.lockedValues.has('value')).toBeTruthy();
-      expect(testModel.lockedValues.has('step')).toBeTruthy();
-      expect(testModel.lockedValues.has('secondValue')).toBeTruthy();
+      lockedValues = testModel.getState().lockedValues;
+
+      expect(lockedValues.includes('maxValue')).toBeTruthy();
+      expect(lockedValues.includes('minValue')).toBeTruthy();
+      expect(lockedValues.includes('value')).toBeTruthy();
+      expect(lockedValues.includes('step')).toBeTruthy();
+      expect(lockedValues.includes('secondValue')).toBeTruthy();
 
       testModel.unlockState(['test']);
 
-      expect(testModel.lockedValues.has('maxValue')).toBeTruthy();
-      expect(testModel.lockedValues.has('minValue')).toBeTruthy();
-      expect(testModel.lockedValues.has('value')).toBeTruthy();
-      expect(testModel.lockedValues.has('step')).toBeTruthy();
-      expect(testModel.lockedValues.has('secondValue')).toBeTruthy();
+      expect(lockedValues.includes('maxValue')).toBeTruthy();
+      expect(lockedValues.includes('minValue')).toBeTruthy();
+      expect(lockedValues.includes('value')).toBeTruthy();
+      expect(lockedValues.includes('step')).toBeTruthy();
+      expect(lockedValues.includes('secondValue')).toBeTruthy();
     });
   });
 });
