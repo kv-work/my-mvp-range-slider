@@ -1,7 +1,7 @@
 import SliderModel from '../model';
 
 describe('model', () => {
-  const initOptions: Model.InitOptions = {
+  const initOptions: Model.Options = {
     maxValue: 10,
     minValue: 0,
     step: 1,
@@ -9,7 +9,7 @@ describe('model', () => {
     lockedValues: [],
   };
 
-  const optionsWithSecondValue: Model.InitOptions = {
+  const optionsWithSecondValue: Model.Options = {
     secondValue: 8,
     ...initOptions,
   };
@@ -46,21 +46,21 @@ describe('model', () => {
   describe('constructor', () => {
     test('should set instance properties', () => {
       expect(testModel).toBeInstanceOf(SliderModel);
-      // expect(testModel.maxValue).toBe(10);
-      // expect(testModel.minValue).toBe(0);
-      // expect(testModel.step).toBe(2);
-      // expect(testModel.secondValue).toBeUndefined();
+      expect(testModel).toHaveProperty('maxValue', 10);
+      expect(testModel).toHaveProperty('minValue', 0);
+      expect(testModel).toHaveProperty('step', 1);
+      expect(testModel).toHaveProperty('value', 3);
 
       // With second value
       expect(modelWithSecondValue).toBeInstanceOf(SliderModel);
-      // expect(modelWithSecondValue.secondValue).toBe(8);
+      expect(testModel).toHaveProperty('secondValue', 8);
     });
 
     test('should create lockedValues', () => {
       expect(testModel).toHaveProperty('lockedValues');
       expect(testModel.lockedValues.size).toBe(0);
 
-      const options: Model.InitOptions = {
+      const options: Model.Options = {
         ...initOptions,
         lockedValues: ['maxValue', 'minValue', 'step'],
       };
@@ -73,24 +73,24 @@ describe('model', () => {
     });
 
     test('should create instance with default values if constructor get wrong options', () => {
-      // let newModel = new SliderModel({});
+      let newModel = new SliderModel();
 
-      // expect(newModel).toBeInstanceOf(SliderModel);
-      // expect(newModel.maxValue).toBe(10);
-      // expect(newModel.minValue).toBe(0);
-      // expect(newModel.step).toBe(1);
-      // expect(newModel.secondValue).toBeUndefined();
+      expect(newModel).toBeInstanceOf(SliderModel);
+      expect(newModel).toHaveProperty('maxValue', 10);
+      expect(newModel).toHaveProperty('minValue', 0);
+      expect(newModel).toHaveProperty('step', 1);
+      expect(newModel).toHaveProperty('value', 0);
 
-      // newModel = new SliderModel({
-      //   maxValue: 0,
-      //   step: 0,
-      // });
+      newModel = new SliderModel({
+        maxValue: 0,
+        step: 0,
+      });
 
-      // expect(newModel).toBeInstanceOf(SliderModel);
-      // expect(newModel.maxValue).toBe(10);
-      // expect(newModel.minValue).toBe(0);
-      // expect(newModel.step).toBe(1);
-      // expect(newModel.secondValue).toBeUndefined();
+      expect(newModel).toBeInstanceOf(SliderModel);
+      expect(newModel).toHaveProperty('maxValue', 10);
+      expect(newModel).toHaveProperty('minValue', 0);
+      expect(newModel).toHaveProperty('step', 1);
+      expect(newModel).toHaveProperty('value', 0);
     });
   });
 
@@ -108,7 +108,7 @@ describe('model', () => {
       const stateWithSecondValue = modelWithSecondValue.getState();
       expect(stateWithSecondValue).toHaveProperty('secondValue', 8);
 
-      const options: Model.InitOptions = {
+      const options: Model.Options = {
         ...initOptions,
         lockedValues: ['maxValue', 'minValue', 'step'],
       };

@@ -19,15 +19,15 @@ declare namespace Model {
   }
 
   interface Observer {
-    update?(): void;
+    update(): void;
   }
 
-  interface InitOptions {
+  interface State {
     maxValue: number;
     minValue: number;
     step: number;
     value: number;
-    secondValue?: number;
+    secondValue: number | undefined;
     lockedValues: string[];
   }
 }
