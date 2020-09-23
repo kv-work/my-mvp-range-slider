@@ -5,36 +5,8 @@ export default class Panel {
   private $callbackIndicators: JQuery;
   private settings: App.Option;
   private presets: App.Stringable[][];
-  private currentPreset?: number;
-  private $presetsRadio: JQuery;
-  // model config
-  private $maxValInput: JQuery;
-  private $minValInput: JQuery;
-  private $stepInput: JQuery;
-  private $valInput: JQuery;
-  private $secondValInput: JQuery;
-  private $secondValCheck: JQuery;
-  // presenter config
-  private $lockMaxValCheck: JQuery;
-  private $lockMinValCheck: JQuery;
-  private $lockStepCheck: JQuery;
-  private $lockValCheck: JQuery;
-  private $lockSecondValCheck: JQuery;
-  private $lockAllCheck: JQuery;
-  // view config
-  private $orientationRadio: JQuery;
-  private $rangeCheck: JQuery;
-  private $dragIntervalCheck: JQuery;
-  private $barCheck: JQuery;
-  private $runnerCheck: JQuery;
-  private $scaleCheck: JQuery;
-  private $displayValCheck: JQuery;
-  private $displayScaleValCheck: JQuery;
-  private $numScaleValRange: JQuery;
-  private $displayMaxValCheck: JQuery;
-  private $displayMinValCheck: JQuery;
-  private $prefixInput: JQuery;
-  private $postfixInput: JQuery;
+  private currentPreset: number;
+  private inputs: PanelInputs;
 
   constructor($container: JQuery) {
     this.$container = $container;
@@ -49,52 +21,83 @@ export default class Panel {
     this.presets = Panel.createPresets();
     this.currentPreset = 0;
 
-    this.initInputs();
+    this.inputs = this.initInputs();
     this.setInputValues();
     this.addCallbacks();
     this.attachEventHandlers();
   }
 
-  private initInputs(): void {
+  private initInputs(): PanelInputs {
     const { $configPanel } = this;
 
-    this.$maxValInput = $configPanel.find('.input_max_val');
-    this.$minValInput = $configPanel.find('.input_min_val');
-    this.$stepInput = $configPanel.find('.input_step');
-    this.$valInput = $configPanel.find('.input_val');
-    this.$secondValInput = $configPanel.find('.input_second_val');
-    this.$secondValCheck = $configPanel.find('.input_second_val_check');
+    const $maxValInput = $configPanel.find('.input_max_val');
+    const $minValInput = $configPanel.find('.input_min_val');
+    const $stepInput = $configPanel.find('.input_step');
+    const $valInput = $configPanel.find('.input_val');
+    const $secondValInput = $configPanel.find('.input_second_val');
+    const $secondValCheck = $configPanel.find('.input_second_val_check');
 
-    this.$lockMaxValCheck = $configPanel.find('.input_lock_max');
-    this.$lockMinValCheck = $configPanel.find('.input_lock_min');
-    this.$lockStepCheck = $configPanel.find('.input_lock_step');
-    this.$lockValCheck = $configPanel.find('.input_lock_val');
-    this.$lockSecondValCheck = $configPanel.find('.input_lock_second_val');
-    this.$lockAllCheck = $configPanel.find('.input_lock_all');
+    const $lockMaxValCheck = $configPanel.find('.input_lock_max');
+    const $lockMinValCheck = $configPanel.find('.input_lock_min');
+    const $lockStepCheck = $configPanel.find('.input_lock_step');
+    const $lockValCheck = $configPanel.find('.input_lock_val');
+    const $lockSecondValCheck = $configPanel.find('.input_lock_second_val');
+    const $lockAllCheck = $configPanel.find('.input_lock_all');
 
-    this.$orientationRadio = $configPanel.find('.input_orientation');
+    const $orientationRadio = $configPanel.find('.input_orientation');
 
-    this.$rangeCheck = $configPanel.find('.input_range');
-    this.$dragIntervalCheck = $configPanel.find('.input_drag_interval');
-    this.$barCheck = $configPanel.find('.input_bar');
-    this.$runnerCheck = $configPanel.find('.input_runner');
-    this.$scaleCheck = $configPanel.find('.input_scale');
-    this.$displayValCheck = $configPanel.find('.input_display_value');
-    this.$displayScaleValCheck = $configPanel.find('.input_scale_value');
-    this.$numScaleValRange = $configPanel.find('input[name="num_scale_val"]');
-    this.$displayMaxValCheck = $configPanel.find('.input_display_max');
-    this.$displayMinValCheck = $configPanel.find('.input_display_min');
-    this.$prefixInput = $configPanel.find('.input_prefix');
+    const $rangeCheck = $configPanel.find('.input_range');
+    const $dragIntervalCheck = $configPanel.find('.input_drag_interval');
+    const $barCheck = $configPanel.find('.input_bar');
+    const $runnerCheck = $configPanel.find('.input_runner');
+    const $scaleCheck = $configPanel.find('.input_scale');
+    const $displayValCheck = $configPanel.find('.input_display_value');
+    const $displayScaleValCheck = $configPanel.find('.input_scale_value');
+    const $numScaleValRange = $configPanel.find('input[name="num_scale_val"]');
+    const $displayMaxValCheck = $configPanel.find('.input_display_max');
+    const $displayMinValCheck = $configPanel.find('.input_display_min');
+    const $prefixInput = $configPanel.find('.input_prefix');
 
-    this.$postfixInput = $configPanel.find('.input_postfix');
+    const $postfixInput = $configPanel.find('.input_postfix');
 
     // presets
-    this.$presetsRadio = $configPanel.find('[name="presets"]');
+    const $presetsRadio = $configPanel.find('[name="presets"]');
+
+    const inputs: PanelInputs = {
+      $maxValInput,
+      $minValInput,
+      $stepInput,
+      $valInput,
+      $secondValInput,
+      $secondValCheck,
+      $lockMaxValCheck,
+      $lockMinValCheck,
+      $lockStepCheck,
+      $lockValCheck,
+      $lockSecondValCheck,
+      $lockAllCheck,
+      $orientationRadio,
+      $rangeCheck,
+      $dragIntervalCheck,
+      $barCheck,
+      $runnerCheck,
+      $scaleCheck,
+      $displayValCheck,
+      $displayScaleValCheck,
+      $numScaleValRange,
+      $displayMaxValCheck,
+      $displayMinValCheck,
+      $prefixInput,
+      $postfixInput,
+      $presetsRadio,
+    };
+
+    return inputs;
   }
 
   private setInputValues(): void {
+    const { slider } = this;
     const {
-      slider,
       $maxValInput,
       $minValInput,
       $stepInput,
@@ -120,7 +123,7 @@ export default class Panel {
       $prefixInput,
       $postfixInput,
       $presetsRadio,
-    } = this;
+    } = this.inputs;
 
     const {
       maxValue,
@@ -132,7 +135,7 @@ export default class Panel {
     } = slider.getModelData();
 
     const {
-      isHorizontal,
+      isHorizontal = true,
       range,
       dragInterval,
       bar,
@@ -147,10 +150,22 @@ export default class Panel {
       postfix,
     } = slider.getViewData();
 
-    $maxValInput.val(maxValue);
-    $minValInput.val(minValue);
-    $stepInput.val(step);
-    $valInput.val(value);
+    if (maxValue) {
+      $maxValInput.val(maxValue);
+    }
+
+    if (minValue) {
+      $minValInput.val(minValue);
+    }
+
+    if (step) {
+      $stepInput.val(step);
+    }
+
+    if (value) {
+      $valInput.val(value);
+    }
+
     if (secondValue !== undefined) {
       $secondValInput.val(secondValue);
     } else {
@@ -189,15 +204,19 @@ export default class Panel {
     $scaleCheck.prop('checked', scale);
     $displayValCheck.prop('checked', displayValue);
     $displayScaleValCheck.prop('checked', displayScaleValue);
-    $numScaleValRange.val(numOfScaleVal);
+
+    if (numOfScaleVal) {
+      $numScaleValRange.val(numOfScaleVal);
+    }
+
     $displayMaxValCheck.prop('checked', displayMax);
     $displayMinValCheck.prop('checked', displayMin);
 
-    if (prefix !== '') {
+    if (prefix !== '' && prefix !== undefined) {
       $prefixInput.val(prefix);
     }
 
-    if (postfix !== '') {
+    if (postfix !== '' && postfix !== undefined) {
       $postfixInput.val(postfix);
     }
 
@@ -259,7 +278,7 @@ export default class Panel {
       $prefixInput,
       $postfixInput,
       $presetsRadio,
-    } = this;
+    } = this.inputs;
 
     const $inputs = $maxValInput
       .add($minValInput)
@@ -286,24 +305,23 @@ export default class Panel {
       .add($displayMaxValCheck)
       .add($displayMinValCheck);
 
-    const unfocusInputHandler = this.createUnfocusHandler();
     const changeCheckboxHandler = this.createChangeHandler();
     const changeRangeHandler = this.createChangeRangeHandler();
     const changeRadioHandler = this.createChangeRadioHandler();
 
-    $inputs.on('blur', unfocusInputHandler);
+    $inputs.on('blur', this.unfocusHandler.bind(this));
     $checkbox.on('change', changeCheckboxHandler);
     $numScaleValRange.on('change', changeRangeHandler);
     $orientationRadio.on('change', changeRadioHandler);
     $presetsRadio.on('change', changeRadioHandler);
   }
 
-  private createUnfocusHandler(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+  private unfocusHandler(e: JQuery.BlurEvent): void {
     const { slider } = this;
-    const handler = (e: JQuery.BlurEvent): void => {
-      const elem = e.target;
-      const newVal = $(elem).val();
-      const { name } = elem;
+    const elem = e.target;
+    const newVal = $(elem).val();
+    const { name } = elem;
+    if (newVal) {
       switch (name) {
         case 'max-value':
           slider.update({ maxValue: +newVal });
@@ -333,13 +351,12 @@ export default class Panel {
         default:
           break;
       }
-    };
-
-    return handler;
+    }
   }
 
-  private createChangeHandler(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+  private createChangeHandler(): (event: JQuery.ChangeEvent) => void {
     const { slider } = this;
+    const { $secondValInput } = this.inputs;
 
     const handler = (e: JQuery.ChangeEvent): void => {
       const elem = e.target;
@@ -348,11 +365,11 @@ export default class Panel {
       switch (name) {
         case 'second-value':
           if (val) {
-            this.$secondValInput.prop('disabled', false);
+            $secondValInput.prop('disabled', false);
             const { secondValue } = slider.getModelData();
             slider.update({ secondValue });
           } else {
-            this.$secondValInput.prop('disabled', true);
+            $secondValInput.prop('disabled', true);
             slider.update({ secondValue: undefined });
           }
           break;
@@ -433,17 +450,20 @@ export default class Panel {
     return handler;
   }
 
-  private createChangeRangeHandler(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+  private createChangeRangeHandler(): (event: JQuery.ChangeEvent) => void {
     const { slider } = this;
 
     const handler = (e: JQuery.ChangeEvent): void => {
-      const val = +$(e.target).val();
-      slider.update({ numOfScaleVal: val });
+      const targetVal = $(e.target).val();
+      if (targetVal) {
+        const val = +targetVal;
+        slider.update({ numOfScaleVal: val });
+      }
     };
     return handler;
   }
 
-  private createChangeRadioHandler(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+  private createChangeRadioHandler(): (event: JQuery.ChangeEvent) => void {
     const { slider } = this;
 
     const handler = (e: JQuery.ChangeEvent): void => {
@@ -481,27 +501,31 @@ export default class Panel {
 
   private lightIndicator(indicator: string): void {
     let indicatorClass: string;
+    let $indicator: JQuery;
     switch (indicator) {
       case 'onStart':
         indicatorClass = '.indicator__on-start';
+        $indicator = this.$callbackIndicators.find(indicatorClass)
+          .css({ 'background-color': 'lime' });
         break;
       case 'onChange':
         indicatorClass = '.indicator__on-change';
+        $indicator = this.$callbackIndicators.find(indicatorClass)
+          .css({ 'background-color': 'lime' });
         break;
       case 'onFinish':
         indicatorClass = '.indicator__on-finish';
+        $indicator = this.$callbackIndicators.find(indicatorClass)
+          .css({ 'background-color': 'lime' });
         break;
       case 'onUpdate':
         indicatorClass = '.indicator__on-update';
+        $indicator = this.$callbackIndicators.find(indicatorClass)
+          .css({ 'background-color': 'lime' });
         break;
       default:
         break;
     }
-    const $indicator = this.$callbackIndicators.find(indicatorClass);
-
-    $indicator.css({
-      'background-color': 'lime',
-    });
 
     setTimeout(() => {
       $indicator.css({
@@ -525,7 +549,7 @@ export default class Panel {
     } else {
       max = 10;
     }
-    this.$numScaleValRange.attr('max', max);
+    this.inputs.$numScaleValRange.attr('max', max);
   }
 
   static createPresets(): App.Stringable[][] {
