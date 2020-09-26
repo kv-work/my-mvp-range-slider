@@ -40,42 +40,17 @@ class SliderModel implements Model {
 
   // NEED FIX
   updateState(state: Model.Options): void {
-    const {
-      maxValue: oldMax,
-      minValue: oldMin,
-      secondValue,
-    } = this.getState();
+    const oldState = this.getState();
 
     if (state.unlockValues !== undefined) {
       this.unlockState(state.unlockValues);
     }
 
-    const newState = this.createNewState(state);
+    const newState = this.createState(oldState, state);
 
-    if (newState.maxValue > newState.minValue) {
-      this.state.maxValue = newState.maxValue;
-      this.state.minValue = newState.minValue;
-    }
-
-    if (this._ableToChange('step', newState.step)) {
-      this.state.step = newState.step;
-    }
-    if (this._ableToChange('value', newState.value)) {
-      this.state.value = newState.value;
-    }
-
-    if (Object.prototype.hasOwnProperty.call(state, 'secondValue') || secondValue !== undefined) {
-      if (newState.secondValue && this._ableToChange('secondValue', newState.secondValue)) {
-        this.state.secondValue = newState.secondValue;
-      }
-    }
-
+    this.state = newState;
     if (Object.prototype.hasOwnProperty.call(newState, 'lockedValues')) {
       this.lockState(newState.lockedValues);
-    }
-
-    if (oldMax !== this.state.maxValue || oldMin !== this.state.minValue) {
-      this.isUpdated = false;
     }
 
     if (!this.isUpdated) this.notify();
@@ -208,91 +183,55 @@ class SliderModel implements Model {
     return (this.lockedValues !== undefined && this.lockedValues.has(value));
   }
 
-  private _ableToChange(value: string, newValue: number): boolean {
-    const { maxValue, minValue, step } = this.state;
-    const isValid: boolean = SliderModel._validate(newValue);
-    const isLocked: boolean = this._isLocked(value);
-    let isEqual: boolean;
-    let isUndefined: boolean;
-    let isGreaterThenMin: boolean;
-    let isLessThenMax: boolean;
-
-    switch (value) {
-      case 'value':
-        return (isValid && !isLocked);
-      case 'secondValue':
-        return (newValue === undefined) || (isValid && !isLocked);
-      case 'maxValue':
-        isEqual = (newValue === maxValue);
-        isUndefined = (maxValue === undefined);
-        isGreaterThenMin = (minValue === undefined || newValue > minValue);
-        return isUndefined || (isValid && !isLocked && !isEqual && isGreaterThenMin);
-      case 'minValue':
-        isEqual = (newValue === minValue);
-        isUndefined = (minValue === undefined);
-        isLessThenMax = (maxValue === undefined || newValue < maxValue);
-        return isUndefined || (isValid && !isLocked && !isEqual && isLessThenMax);
-      case 'step':
-        isEqual = (newValue === step);
-        isUndefined = (step === undefined);
-        return isUndefined || (isValid && !isLocked && !isEqual && (newValue > 0));
-      default:
-        return false;
-    }
-  }
-
-  private createNewState(state: Model.Options): Model.State {
+  private createState(state: Model.State, newState: Model.Options): Model.State {
     const {
       maxValue: oldMax,
       minValue: oldMin,
       step: oldStep,
       value: oldVal,
       secondValue: oldSecondVal,
-    } = this.getState();
+    } = state;
 
-    const newState: Model.State = $.extend(this.getState(), state);
-
-    if (Object.prototype.hasOwnProperty.call(state, 'secondValue')) {
-      newState.secondValue = state.secondValue;
-    }
-
-    newState.maxValue = this._isLocked('maxValue') ? oldMax : newState.maxValue;
-    newState.minValue = this._isLocked('minValue') ? oldMin : newState.minValue;
-    newState.step = this._isLocked('step') ? oldStep : newState.step;
-    newState.value = this._isLocked('value') ? oldVal : newState.value;
-    newState.secondValue = this._isLocked('secondValue') ? oldSecondVal : newState.secondValue;
-
-    return newState;
-  }
-
-  private createState(state: Model.State, newState: Model.Options): Model.State {
     const resultState: Model.State = $.extend({}, state, newState);
-
     const {
       maxValue,
       minValue,
       step,
       value,
-      secondValue,
     } = resultState;
 
-    if (maxValue < minValue) {
-      if (maxValue < state.minValue) {
-        resultState.maxValue = state.maxValue;
+    resultState.maxValue = this._isLocked('maxValue') ? oldMax : maxValue;
+    resultState.minValue = this._isLocked('minValue') ? oldMin : minValue;
+    resultState.step = this._isLocked('step') ? oldStep : step;
+    resultState.value = this._isLocked('value') ? oldVal : value;
 
-        if (minValue > state.maxValue) {
-          resultState.minValue = state.minValue;
-        }
-      }
+    if (Object.prototype.hasOwnProperty.call(newState, 'secondValue') && !this._isLocked('secondValue')) {
+      resultState.secondValue = newState.secondValue;
+    } else {
+      resultState.secondValue = oldSecondVal;
+    }
+
+    if (maxValue <= minValue) {
+      return state;
     }
 
     if (step <= 0) {
-      resultState.step = state.step;
+      return state;
     }
+
+    if (!SliderModel._validate(value)) {
+      return state;
+    }
+
+    const { secondValue } = resultState;
 
     if (secondValue === undefined) {
       resultState.value = this._getMultipleStep(value, resultState);
     } else {
+      if (!SliderModel._validate(secondValue)) {
+        return state;
+      }
+
       const resultVal = this._getMultipleStep(value, resultState);
       const resultSecondVal = this._getMultipleStep(secondValue, resultState);
 
@@ -310,8 +249,17 @@ class SliderModel implements Model {
     }
 
     resultState.lockedValues = Array.from(this.lockedValues);
+    this.isUpdated = SliderModel.isEqualStates(state, resultState);
 
     return resultState;
+  }
+
+  static isEqualStates(first: Model.State, second: Model.State): boolean {
+    return (first.maxValue === second.maxValue)
+    && (first.minValue === second.minValue)
+    && (first.step === second.step)
+    && (first.value === second.value)
+    && (first.secondValue === second.secondValue);
   }
 
   static _validate(value: number): boolean {

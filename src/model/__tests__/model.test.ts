@@ -43,11 +43,12 @@ describe.only('model', () => {
     modelWithSecondValue.addObserver(anotherObserver);
   });
 
-  describe.only('constructor', () => {
+  describe('constructor', () => {
     test('should set instance properties', () => {
       expect(testModel).toBeInstanceOf(SliderModel);
       expect(testModel).toHaveProperty('state');
       expect(testModel).toHaveProperty('observers');
+      expect(testModel).toHaveProperty('lockedValues');
       expect(testModel).toHaveProperty('isUpdated', true);
     });
 
@@ -90,10 +91,8 @@ describe.only('model', () => {
       expect(state).toHaveProperty('minValue', 0);
       expect(state).toHaveProperty('step', 1);
       expect(state).toHaveProperty('value', 0);
-    });
 
-    test('should create instance with valid options', () => {
-      const newModel = new SliderModel({
+      newModel = new SliderModel({
         maxValue: -10,
         minValue: 5,
         step: 2,
@@ -103,10 +102,10 @@ describe.only('model', () => {
 
       expect(newModel).toHaveProperty('state', {
         maxValue: 10,
-        minValue: 5,
-        step: 2,
-        value: 5,
-        secondValue: 5,
+        minValue: 0,
+        step: 1,
+        value: 0,
+        secondValue: undefined,
         lockedValues: [],
       });
     });
@@ -175,9 +174,6 @@ describe.only('model', () => {
         step: 5,
         value: 0,
       };
-      const newMaxValue: Model.Options = {
-        maxValue: 200,
-      };
 
       testModel.updateState(newModelState);
       const newState = testModel.getState();
@@ -187,6 +183,7 @@ describe.only('model', () => {
       // value should be equal minValue
       expect(newState).toHaveProperty('value', 50);
 
+      const newMaxValue: Model.Options = { maxValue: 200 };
       testModel.updateState(newMaxValue);
       expect(testModel.getState()).toHaveProperty('maxValue', 200);
 
@@ -196,18 +193,13 @@ describe.only('model', () => {
       testModel.updateState({ minValue: 0 });
       expect(testModel.getState()).toHaveProperty('minValue', 0);
 
-      // set wrong step
-      testModel.updateState({ step: 0, value: -5, minValue: -10 });
-      expect(testModel.getState()).toHaveProperty('value', -5);
-      expect(testModel.getState()).toHaveProperty('step', 5);
-      expect(testModel.getState()).toHaveProperty('minValue', -10);
-
       // add second value
-
       expect(testModel.getState()).toHaveProperty('secondValue', undefined);
       testModel.updateState({
+        value: 25,
         secondValue: 50,
       });
+      expect(testModel.getState()).toHaveProperty('value', 25);
       expect(testModel.getState()).toHaveProperty('secondValue', 50);
 
       testModel.updateState({
@@ -224,6 +216,81 @@ describe.only('model', () => {
         step: 2,
         value: -18,
         secondValue: -14,
+        lockedValues: [],
+      });
+
+      // remove secondValue
+      testModel.updateState({ secondValue: undefined });
+
+      expect(testModel.getState()).toEqual({
+        maxValue: -10,
+        minValue: -20,
+        step: 2,
+        value: -18,
+        secondValue: undefined,
+        lockedValues: [],
+      });
+    });
+
+    test('should not update state if new maxValue <= new minValue', () => {
+      expect(testModel.getState()).toEqual({
+        maxValue: 10,
+        minValue: 0,
+        step: 1,
+        value: 3,
+        lockedValues: [],
+      });
+
+      testModel.updateState({
+        maxValue: 0,
+        minValue: 10,
+      });
+
+      expect(testModel.getState()).toEqual({
+        maxValue: 10,
+        minValue: 0,
+        step: 1,
+        value: 3,
+        lockedValues: [],
+      });
+    });
+
+    test('should not update state if new step <= 0', () => {
+      expect(testModel.getState()).toEqual({
+        maxValue: 10,
+        minValue: 0,
+        step: 1,
+        value: 3,
+        lockedValues: [],
+      });
+
+      testModel.updateState({ step: 0 });
+
+      expect(testModel.getState()).toEqual({
+        maxValue: 10,
+        minValue: 0,
+        step: 1,
+        value: 3,
+        lockedValues: [],
+      });
+    });
+
+    test('should not update state if new value is not valid', () => {
+      expect(testModel.getState()).toEqual({
+        maxValue: 10,
+        minValue: 0,
+        step: 1,
+        value: 3,
+        lockedValues: [],
+      });
+
+      testModel.updateState({ value: Infinity });
+
+      expect(testModel.getState()).toEqual({
+        maxValue: 10,
+        minValue: 0,
+        step: 1,
+        value: 3,
         lockedValues: [],
       });
     });
@@ -251,27 +318,26 @@ describe.only('model', () => {
     });
 
     test('should not notify, if state has not changed', () => {
-      testModel.addObserver(observer);
-      testModel.addObserver(anotherObserver);
       expect(testModel.getState()).toEqual({
         maxValue: 10,
         minValue: 0,
-        step: 2,
-        value: 2,
+        step: 1,
+        value: 3,
         lockedValues: [],
       });
+
       testModel.updateState({
         maxValue: 10,
         minValue: 0,
-        step: 2,
-        value: 2,
+        step: 1,
+        value: 3,
       });
 
       testModel.updateState({
         maxValue: -10,
         minValue: 0,
-        step: 2,
-        value: 2,
+        step: 1,
+        value: 3,
         lockedValues: [],
       });
 
