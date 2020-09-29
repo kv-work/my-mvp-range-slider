@@ -1,6 +1,7 @@
 class SliderModel implements Model {
   private state: Model.State;
   private observers: Set<Model.Observer>;
+  private isReadyNotify: boolean;
   private isUpdated: boolean;
   private lockedValues: Set<string>;
 
@@ -23,6 +24,7 @@ class SliderModel implements Model {
       this.state = defaultState;
     }
 
+    this.isReadyNotify = true;
     this.isUpdated = true;
   }
 
@@ -38,9 +40,10 @@ class SliderModel implements Model {
     return this.state;
   }
 
-  // NEED FIX
   updateState(state: Model.Options): void {
     const oldState = this.getState();
+
+    this.isReadyNotify = false;
 
     if (state.unlockValues !== undefined) {
       this.unlockState(state.unlockValues);
@@ -49,10 +52,8 @@ class SliderModel implements Model {
     const newState = this.createState(oldState, state);
 
     this.state = newState;
-    if (Object.prototype.hasOwnProperty.call(newState, 'lockedValues')) {
-      this.lockState(newState.lockedValues);
-    }
 
+    this.isReadyNotify = true;
     if (!this.isUpdated) this.notify();
   }
 
@@ -93,6 +94,10 @@ class SliderModel implements Model {
       this.isUpdated = false;
     }
 
+    if (this.isReadyNotify) {
+      this.state.lockedValues = Array.from(this.lockedValues);
+    }
+
     if (!this.isUpdated) this.notify();
   }
 
@@ -129,11 +134,15 @@ class SliderModel implements Model {
       this.isUpdated = false;
     }
 
+    if (this.isReadyNotify) {
+      this.state.lockedValues = Array.from(this.lockedValues);
+    }
+
     if (!this.isUpdated) this.notify();
   }
 
   private notify(): void {
-    if (this.observers !== undefined && this.observers.size !== 0) {
+    if (this.checkObservers && this.isReadyNotify) {
       this.observers.forEach((observer: Model.Observer): void => {
         observer.update();
       });
@@ -142,7 +151,12 @@ class SliderModel implements Model {
     }
   }
 
-  private _getMultipleStep(value: number, state?: Model.State): number {
+  private checkObservers(): boolean {
+    return (this.observers !== undefined && this.observers.size !== 0);
+  }
+
+
+  private getMultipleStep(value: number, state?: Model.State): number {
     const {
       step,
       maxValue: max,
@@ -179,7 +193,7 @@ class SliderModel implements Model {
     return SliderModel.fixVal(result, step);
   }
 
-  private _isLocked(value: string): boolean {
+  private isLocked(value: string): boolean {
     return (this.lockedValues !== undefined && this.lockedValues.has(value));
   }
 
@@ -192,7 +206,7 @@ class SliderModel implements Model {
       secondValue: oldSecondVal,
     } = state;
 
-    const resultState: Model.State = $.extend({}, state, newState);
+    const resultState: Model.State = $.extend(true, {}, state, newState);
     const {
       maxValue,
       minValue,
@@ -200,12 +214,12 @@ class SliderModel implements Model {
       value,
     } = resultState;
 
-    resultState.maxValue = this._isLocked('maxValue') ? oldMax : maxValue;
-    resultState.minValue = this._isLocked('minValue') ? oldMin : minValue;
-    resultState.step = this._isLocked('step') ? oldStep : step;
-    resultState.value = this._isLocked('value') ? oldVal : value;
+    resultState.maxValue = this.isLocked('maxValue') ? oldMax : maxValue;
+    resultState.minValue = this.isLocked('minValue') ? oldMin : minValue;
+    resultState.step = this.isLocked('step') ? oldStep : step;
+    resultState.value = this.isLocked('value') ? oldVal : value;
 
-    if (Object.prototype.hasOwnProperty.call(newState, 'secondValue') && !this._isLocked('secondValue')) {
+    if (Object.prototype.hasOwnProperty.call(newState, 'secondValue') && !this.isLocked('secondValue')) {
       resultState.secondValue = newState.secondValue;
     } else {
       resultState.secondValue = oldSecondVal;
@@ -219,21 +233,21 @@ class SliderModel implements Model {
       return state;
     }
 
-    if (!SliderModel._validate(value)) {
+    if (!SliderModel.isValid(value)) {
       return state;
     }
 
     const { secondValue } = resultState;
 
     if (secondValue === undefined) {
-      resultState.value = this._getMultipleStep(value, resultState);
+      resultState.value = this.getMultipleStep(value, resultState);
     } else {
-      if (!SliderModel._validate(secondValue)) {
+      if (!SliderModel.isValid(secondValue)) {
         return state;
       }
 
-      const resultVal = this._getMultipleStep(value, resultState);
-      const resultSecondVal = this._getMultipleStep(secondValue, resultState);
+      const resultVal = this.getMultipleStep(value, resultState);
+      const resultSecondVal = this.getMultipleStep(secondValue, resultState);
 
       if (resultVal > resultSecondVal) {
         resultState.value = resultVal;
@@ -248,21 +262,29 @@ class SliderModel implements Model {
       this.lockState(newState.lockedValues);
     }
 
-    resultState.lockedValues = Array.from(this.lockedValues);
-    this.isUpdated = SliderModel.isEqualStates(state, resultState);
+    if (!SliderModel.isEqualStates(state, resultState)) {
+      this.isUpdated = false;
+    }
 
-    return resultState;
+    return {
+      maxValue: resultState.maxValue,
+      minValue: resultState.minValue,
+      step: resultState.step,
+      value: resultState.value,
+      secondValue: resultState.secondValue,
+      lockedValues: Array.from(this.lockedValues),
+    };
   }
 
   static isEqualStates(first: Model.State, second: Model.State): boolean {
     return (first.maxValue === second.maxValue)
-    && (first.minValue === second.minValue)
-    && (first.step === second.step)
-    && (first.value === second.value)
-    && (first.secondValue === second.secondValue);
+      && (first.minValue === second.minValue)
+      && (first.step === second.step)
+      && (first.value === second.value)
+      && (first.secondValue === second.secondValue);
   }
 
-  static _validate(value: number): boolean {
+  static isValid(value: number): boolean {
     return !(value === null || Number.isNaN(value) || !Number.isFinite(value));
   }
 
