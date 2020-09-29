@@ -4,7 +4,7 @@ class SliderBar implements Bar {
   private $view: JQuery;
   private $barContainer: JQuery;
   private $bar: JQuery;
-  private $range: JQuery;
+  private $range?: JQuery;
   private isRendered: boolean;
 
   constructor(options: Bar.Options) {
@@ -41,7 +41,8 @@ class SliderBar implements Bar {
       this.createRangeElement();
     }
     if (!newOptions.range && this.$range) {
-      this.destroyRangeElement();
+      this.$range.remove();
+      this.$range = undefined;
     }
 
     if (!this.isRendered) {
@@ -146,27 +147,29 @@ class SliderBar implements Bar {
 
     if (isDragable && !haveHandler) {
       this.$range.css({ cursor: 'grab' });
-      this.$range.on('mousedown.bar', this.dragStartHandler.bind(this));
+      this.$range.on('mousedown', this.dragStartHandler.bind(this));
       this.$range.data('have-handler', true);
       this.$range[0].onclick = (e: Event): void => {
         e.stopPropagation();
       };
-      this.$range.on('dragstart.bar', false);
+      this.$range.on('dragstart', false);
     }
 
     if (!isDragable && haveHandler) {
       this.$range.css({ cursor: 'default' });
-      this.$range.off('mousedown.bar');
+      this.$range.off('mousedown');
       this.$range.data('have-handler', false);
       this.$range[0].onclick = null;
-      this.$range.off('dragstart.bar');
+      this.$range.off('dragstart');
     }
   }
 
   private dragStartHandler(event: JQuery.MouseDownEvent): void {
-    this.$range.css({ cursor: 'grabbing' });
+    const $range = $(event.currentTarget);
+    const { $view } = this;
+    $range.css({ cursor: 'grabbing' });
     let startCoord: number;
-    const viewMetrics: DOMRect = this.$view[0].getBoundingClientRect();
+    const viewMetrics: DOMRect = $view[0].getBoundingClientRect();
     if (this.$bar.data('options').isHorizontal) {
       startCoord = ((event.clientX - viewMetrics.x) / viewMetrics.width) * 100;
     } else {
@@ -176,10 +179,10 @@ class SliderBar implements Bar {
     const isDragStarted = true;
     this.$view.trigger($startEvent, [isDragStarted]);
     const dragHandler = this.makeDragHandler(startCoord);
-    this.$view.on('mousemove.bar', dragHandler);
+    $view.on('mousemove', dragHandler);
     document.onmouseup = (): void => {
-      this.$view.off('mousemove.bar', dragHandler);
-      this.$range.css({ cursor: 'grab' });
+      this.$view.off('mousemove', dragHandler);
+      $range.css({ cursor: 'grab' });
 
       const $dropEvent = $.Event('dropRange.myMVPSlider');
       this.$view.trigger($dropEvent);
@@ -188,7 +191,7 @@ class SliderBar implements Bar {
     };
   }
 
-  private makeDragHandler(start: number): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+  private makeDragHandler(start: number): (event: JQuery.MouseMoveEvent) => void {
     const dragHandler = (event: JQuery.MouseMoveEvent): void => {
       let newCoord: number;
       const viewMetrics: DOMRect = this.$view[0].getBoundingClientRect();
@@ -205,11 +208,6 @@ class SliderBar implements Bar {
     };
 
     return dragHandler;
-  }
-
-  private destroyRangeElement(): void {
-    this.$range.remove();
-    this.$range = null;
   }
 
   static createBar(): JQuery {
