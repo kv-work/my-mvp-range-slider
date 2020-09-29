@@ -76,7 +76,7 @@ export default class SliderApp implements App {
     return data;
   }
 
-  getModelData(): Model.Options {
+  getModelData(): Model.State {
     return this.model.getState();
   }
 

@@ -1,5 +1,5 @@
 declare interface Model {
-  getState(): Model.Options;
+  getState(): Model.State;
   updateState(state: Model.Options): void;
   addObserver(observer: Model.Observer): void;
   removeObserver(observer: Model.Observer): void;

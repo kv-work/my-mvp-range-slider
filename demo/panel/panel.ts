@@ -150,21 +150,10 @@ export default class Panel {
       postfix,
     } = slider.getViewData();
 
-    if (maxValue) {
-      $maxValInput.val(maxValue);
-    }
-
-    if (minValue) {
-      $minValInput.val(minValue);
-    }
-
-    if (step) {
-      $stepInput.val(step);
-    }
-
-    if (value) {
-      $valInput.val(value);
-    }
+    $maxValInput.val(maxValue);
+    $minValInput.val(minValue);
+    $stepInput.val(step);
+    $valInput.val(value);
 
     if (secondValue !== undefined) {
       $secondValInput.val(secondValue);
@@ -172,7 +161,7 @@ export default class Panel {
       $secondValInput.val('');
     }
 
-    if (lockedValues) {
+    if (lockedValues.length !== 0) {
       $lockMaxValCheck.prop('checked', lockedValues.includes('maxValue'));
       $lockMinValCheck.prop('checked', lockedValues.includes('minValue'));
       $lockStepCheck.prop('checked', lockedValues.includes('step'));

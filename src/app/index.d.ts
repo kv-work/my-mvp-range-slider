@@ -1,7 +1,7 @@
 declare interface App {
   update(options: App.Option): void;
   getAllData(): App.Option;
-  getModelData(): Model.Options;
+  getModelData(): Model.State;
   getViewData(): View.Options;
   getPresenterData(): Presenter.Data;
   lockValues(values: string[] | 'all'): void;
