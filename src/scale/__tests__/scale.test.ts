@@ -17,13 +17,13 @@ describe.only('scale', () => {
   const mockChange = jest.fn();
   const mockFinish = jest.fn();
 
-  $horizontalView.bind('startChanging.myMVPSlider', mockStart);
-  $horizontalView.bind('changeValue.myMVPSlider', mockChange);
-  $horizontalView.bind('finish.myMVPSlider', mockFinish);
+  $horizontalView.on('startChanging.myMVPSlider', mockStart);
+  $horizontalView.on('changeValue.myMVPSlider', mockChange);
+  $horizontalView.on('finish.myMVPSlider', mockFinish);
 
-  $verticalView.bind('startChanging.myMVPSlider', mockStart);
-  $verticalView.bind('changeValue.myMVPSlider', mockChange);
-  $verticalView.bind('finish.myMVPSlider', mockFinish);
+  $verticalView.on('startChanging.myMVPSlider', mockStart);
+  $verticalView.on('changeValue.myMVPSlider', mockChange);
+  $verticalView.on('finish.myMVPSlider', mockFinish);
 
   const renderOptions: Scale.RenderOptions = {
     isHorizontal: true,
@@ -37,6 +37,8 @@ describe.only('scale', () => {
     isHorizontal: false,
   };
   const testRenderData: View.RenderData = {
+    value: 1,
+    percentage: 10,
     data: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     percentageData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
   };
@@ -133,6 +135,8 @@ describe.only('scale', () => {
           { toString(): string { return 'second'; } },
           { toString(): string { return '3333'; } },
         ],
+        value: 1,
+        percentage: 50,
         percentageData: [0, 50, 100],
       };
 
@@ -148,7 +152,12 @@ describe.only('scale', () => {
     });
 
     test('should update scale if it is rendered', () => {
-      const newData = { data: [3, 4, 5, 6, 7, 8], percentageData: [0, 20, 40, 60, 80, 100] };
+      const newData = {
+        value: 3,
+        percentage: 0,
+        data: [3, 4, 5, 6, 7, 8],
+        percentageData: [0, 20, 40, 60, 80, 100],
+      };
 
       testScale.update({
         data: newData,

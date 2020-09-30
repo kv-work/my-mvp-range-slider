@@ -71,10 +71,10 @@ class SliderScale implements Scale {
     this.$scale.find('.scale__element').each(function compareWithMaxVal() {
       if (isHorizontal) {
         const h = this.getBoundingClientRect().height;
-        maxVal = (maxVal > h) ? maxVal : h;
+        maxVal = (maxVal >= h) ? maxVal : h;
       } else {
         const w = this.getBoundingClientRect().width;
-        maxVal = (maxVal > w) ? maxVal : w;
+        maxVal = (maxVal >= w) ? maxVal : w;
       }
     });
 
