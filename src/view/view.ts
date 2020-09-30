@@ -8,13 +8,13 @@ class SliderView implements View {
   private $container: JQuery;
   private viewOptions: View.Options;
   private renderData?: View.RenderData;
-  private $view?: JQuery;
+  private $view: JQuery;
   private $barContainer: JQuery;
   private runner?: Runner;
   private secondRunner?: Runner;
   private bar?: Bar;
   private scale?: Scale;
-  private valueDisplay: ValuesDisplay;
+  private valueDisplay?: ValuesDisplay;
   private observers: Set<View.Observer>;
   private isRendered: boolean;
 
@@ -29,7 +29,7 @@ class SliderView implements View {
     this.isRendered = false;
   }
 
-  render(renderData: View.RenderData = this.renderData): void {
+  render(renderData: View.RenderData): void {
     this.renderData = renderData;
 
     if (this.viewOptions.isHorizontal && !this.$view.hasClass('slider__container_horizontal')) {
@@ -81,23 +81,23 @@ class SliderView implements View {
   destroy(): void {
     if (this.bar) {
       this.bar.destroy();
-      this.bar = null;
+      this.bar = undefined;
     }
     if (this.scale) {
       this.scale.destroy();
-      this.scale = null;
+      this.scale = undefined;
     }
     if (this.runner) {
       this.runner.destroy();
-      this.runner = null;
+      this.runner = undefined;
     }
     if (this.secondRunner) {
       this.secondRunner.destroy();
-      this.secondRunner = null;
+      this.secondRunner = undefined;
     }
     if (this.valueDisplay) {
       this.valueDisplay.destroy();
-      this.valueDisplay = null;
+      this.valueDisplay = undefined;
     }
 
     this.$view.remove();
@@ -170,7 +170,7 @@ class SliderView implements View {
     }
     if (!this.viewOptions.displayValue && this.valueDisplay) {
       this.valueDisplay.destroy();
-      this.valueDisplay = null;
+      this.valueDisplay = undefined;
     }
   }
 
@@ -216,45 +216,49 @@ class SliderView implements View {
 
         if (this.secondRunner) {
           this.secondRunner.destroy();
-          this.secondRunner = null;
+          this.secondRunner = undefined;
         }
       }
     } else {
       if (this.runner) {
         this.runner.destroy();
-        this.runner = null;
+        this.runner = undefined;
       }
       if (this.secondRunner) {
         this.secondRunner.destroy();
-        this.runner = null;
+        this.runner = undefined;
       }
     }
   }
 
   private notify(action: {event: string; value?: [number, number] | number}): void {
-    switch (action.event) {
-      case 'start':
-        this.observers.forEach((observer) => {
-          observer.start();
-        });
-        break;
-      case 'change':
-        this.observers.forEach((observer) => {
-          observer.change(action.value);
-        });
-        break;
-      case 'finish':
-        this.observers.forEach((observer) => {
-          observer.finish();
-        });
-        break;
-      case 'update':
-        this.observers.forEach((observer) => {
-          observer.update();
-        });
-        break;
-      default:
-        break;
+    if (this.observers.size > 0) {
+      switch (action.event) {
+        case 'start':
+          this.observers.forEach((observer) => {
+            observer.start();
+          });
+          break;
+        case 'change':
+          this.observers.forEach((observer) => {
+            if (action.value !== undefined) {
+              observer.change(action.value);
+            }
+          });
+          break;
+        case 'finish':
+          this.observers.forEach((observer) => {
+            observer.finish();
+          });
+          break;
+        case 'update':
+          this.observers.forEach((observer) => {
+            observer.update();
+          });
+          break;
+        default:
+          break;
+      }
     }
   }
 
@@ -271,18 +275,20 @@ class SliderView implements View {
 
     this.notify(startAction);
 
-    const startValue = this.renderData.percentage;
+    if (this.renderData) {
+      const startValue = this.renderData.percentage;
 
-    if (isDragStarted && Array.isArray(startValue)) {
-      const dragHandler = this.makeDragHandler(startValue);
-      const dropHandler = this.makeDropHandler();
-      this.$view.bind('dragRange.myMVPSlider', dragHandler);
-      this.$view.bind('dropRange.myMVPSlider', dropHandler);
+      if (isDragStarted && Array.isArray(startValue)) {
+        const dragHandler = this.makeDragHandler(startValue);
+        const dropHandler = this.makeDropHandler();
+        this.$view.on('dragRange.myMVPSlider', dragHandler);
+        this.$view.on('dropRange.myMVPSlider', dropHandler);
+      }
     }
   }
 
-  private makeDragHandler(start: [number, number]): JQuery.EventHandler<HTMLElement, JQuery.Event> {
-    const dragHandler = (event: JQuery.Event, dragDistance: number): void => {
+  private makeDragHandler(start: [number, number]): (e: JQuery.Event, distance: number) => void {
+    const dragHandler = (_: JQuery.Event, dragDistance: number): void => {
       const valuesDiff = start[1] - start[0];
       let newVal = start[0] + dragDistance;
       let newSecondVal = start[1] + dragDistance;
@@ -304,30 +310,32 @@ class SliderView implements View {
     return dragHandler;
   }
 
-  private makeDropHandler(): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+  private makeDropHandler(): () => void {
     const dragHandler = (): void => {
       const finishAction: {event: string} = { event: 'finish' };
       this.notify(finishAction);
 
-      this.$view.unbind('dragRange.myMVPSlider', false);
-      this.$view.unbind('dropRange.myMVPSlider', false);
+      this.$view.off('dragRange.myMVPSlider', false);
+      this.$view.off('dropRange.myMVPSlider', false);
     };
 
     return dragHandler;
   }
 
   private changeValueHandler(event: JQuery.Event, value: number, isSecond: boolean): void {
-    const currentValue = this.renderData.percentage;
-    let changeAction: {event: string; value: [number, number] | number};
-    if (isSecond && Array.isArray(currentValue)) {
-      changeAction = { event: 'change', value: [currentValue[0], value] };
-    } else if (Array.isArray(currentValue)) {
-      changeAction = { event: 'change', value: [value, currentValue[1]] };
-    } else {
-      changeAction = { event: 'change', value };
-    }
+    if (this.renderData) {
+      const currentValue = this.renderData.percentage;
+      let changeAction: {event: string; value: [number, number] | number};
+      if (isSecond && Array.isArray(currentValue)) {
+        changeAction = { event: 'change', value: [currentValue[0], value] };
+      } else if (Array.isArray(currentValue)) {
+        changeAction = { event: 'change', value: [value, currentValue[1]] };
+      } else {
+        changeAction = { event: 'change', value };
+      }
 
-    this.notify(changeAction);
+      this.notify(changeAction);
+    }
   }
 
   private finishEventHandler(): void {
@@ -338,7 +346,7 @@ class SliderView implements View {
 
   private validateData(data: View.Options): View.Options {
     const dataEntries = Object.entries(data);
-    const validData = dataEntries.map((entry): [string, unknown] => {
+    const validDataEntries = dataEntries.map((entry): [string, unknown] => {
       const key: string = entry[0];
       switch (key) {
         case 'isHorizontal':
@@ -367,12 +375,14 @@ class SliderView implements View {
           }
           break;
         default:
-          return undefined;
+          break;
       }
-      return [key, this.viewOptions[key]];
+      return [key, undefined];
     });
 
-    const resultData: View.Options = validData.reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
+    const validDataObject = validDataEntries.reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
+
+    const resultData = $.extend({}, validDataObject, this.viewOptions);
     return resultData;
   }
 

@@ -32,9 +32,9 @@ declare namespace View {
   }
 
   interface Observer {
-    update?(): void;
-    start?(): void;
-    change?(values: [number, number] | number): void;
-    finish?(): void;
+    update(): void;
+    start(): void;
+    change(values: [number, number] | number): void;
+    finish(): void;
   }
 }

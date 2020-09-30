@@ -35,7 +35,7 @@ jest.mock('../../values-display/values-display', jest.fn(() => jest.fn().mockImp
 describe('SliderView', () => {
   document.body.innerHTML = '<div id="container"></div>';
 
-  const testNode = document.getElementById('container');
+  const testNode = $('#container')[0];
   const testOptions: View.Options = {
     isHorizontal: true,
     range: true,
@@ -80,6 +80,7 @@ describe('SliderView', () => {
 
   beforeEach(() => {
     testView = new SliderView(testNode, testOptions);
+
     testObserver = {
       update: mockUpdate,
       start: mockStart,
@@ -141,6 +142,7 @@ describe('SliderView', () => {
         displayValue: false,
       });
       testView.addObserver(testObserver);
+
       jest.clearAllMocks();
     });
 
@@ -446,21 +448,6 @@ describe('SliderView', () => {
         displayMax: undefined,
         prefix: undefined,
         postfix: undefined,
-      });
-
-      testView.update({
-        isHorizontal: null,
-        range: null,
-        dragInterval: null,
-        runner: null,
-        bar: null,
-        scale: null,
-        displayScaleValue: null,
-        displayValue: null,
-        displayMin: null,
-        displayMax: null,
-        prefix: null,
-        postfix: null,
       });
 
       testView.update({ numOfScaleVal: NaN });
