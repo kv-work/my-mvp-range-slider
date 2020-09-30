@@ -79,35 +79,35 @@ describe('myMVPSlider', () => {
 
   test('should validate init options', () => {
     const wrongOpts: App.Option = {
-      maxValue: null,
-      minValue: null,
-      step: null,
-      value: null,
-      secondValue: null,
+      maxValue: undefined,
+      minValue: undefined,
+      step: undefined,
+      value: undefined,
+      secondValue: undefined,
 
       // view
-      isHorizontal: null,
-      range: null,
-      dragInterval: null,
-      runner: null,
-      bar: null,
-      scale: null,
+      isHorizontal: undefined,
+      range: undefined,
+      dragInterval: undefined,
+      runner: undefined,
+      bar: undefined,
+      scale: undefined,
       numOfScaleVal: -10,
-      displayScaleValue: null,
-      displayValue: null,
-      displayMin: null,
-      displayMax: null,
+      displayScaleValue: undefined,
+      displayValue: undefined,
+      displayMin: undefined,
+      displayMax: undefined,
       prefix: undefined,
       postfix: undefined,
 
       // presenter
-      dataValues: null,
+      dataValues: undefined,
 
       // callbacks
-      onStart: null,
-      onChange: null,
-      onFinish: null,
-      onUpdate: null,
+      onStart: undefined,
+      onChange: undefined,
+      onFinish: undefined,
+      onUpdate: undefined,
     };
 
     $testWithOptions.myMVPSlider(wrongOpts);
