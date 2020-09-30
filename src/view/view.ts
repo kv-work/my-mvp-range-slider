@@ -55,10 +55,8 @@ class SliderView implements View {
   }
 
   update(viewData: View.Options): void {
-    const state = {
-      ...this.viewOptions,
-      ...this.validateData(viewData),
-    };
+    const validData = SliderView.validateData(viewData);
+    const state = $.extend({}, this.viewOptions, validData);
 
     this.viewOptions = state;
     this.$view.data('options', state);
@@ -263,9 +261,9 @@ class SliderView implements View {
   }
 
   private attachEventHandlers(): void {
-    this.$view.bind('startChanging.myMVPSlider', this.startChangingHandler.bind(this));
-    this.$view.bind('changeValue.myMVPSlider', this.changeValueHandler.bind(this));
-    this.$view.bind('finish.myMVPSlider', this.finishEventHandler.bind(this));
+    this.$view.on('startChanging.myMVPSlider', this.startChangingHandler.bind(this));
+    this.$view.on('changeValue.myMVPSlider', this.changeValueHandler.bind(this));
+    this.$view.on('finish.myMVPSlider', this.finishEventHandler.bind(this));
 
     this.$barContainer.on('dragstart', false);
   }
@@ -344,7 +342,7 @@ class SliderView implements View {
     this.notify(finishAction);
   }
 
-  private validateData(data: View.Options): View.Options {
+  static validateData(data: View.Options): View.Options {
     const dataEntries = Object.entries(data);
     const validDataEntries = dataEntries.map((entry): [string, unknown] => {
       const key: string = entry[0];
@@ -380,9 +378,8 @@ class SliderView implements View {
       return [key, undefined];
     });
 
-    const validDataObject = validDataEntries.reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
+    const resultData = validDataEntries.reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
 
-    const resultData = $.extend({}, validDataObject, this.viewOptions);
     return resultData;
   }
 
