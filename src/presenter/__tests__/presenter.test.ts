@@ -1,9 +1,10 @@
+/* eslint-disable fsd/no-function-declaration-in-event-listener */
 import SliderPresenter from '../presenter';
 
 describe('Presenter', () => {
   document.body.innerHTML = '<div id="container"></div>';
 
-  let testModelState: Model.Options;
+  let testModelState: Model.State;
 
   let testViewData: View.Options;
 
@@ -29,7 +30,11 @@ describe('Presenter', () => {
         viewObservers.forEach((observer: View.Observer) => observer.start());
         break;
       case 'change':
-        viewObservers.forEach((observer: View.Observer) => observer.change(event.values));
+        viewObservers.forEach((observer: View.Observer) => {
+          if (event.values) {
+            observer.change(event.values);
+          }
+        });
         break;
       case 'finish':
         viewObservers.forEach((observer: View.Observer) => observer.finish());
@@ -50,13 +55,15 @@ describe('Presenter', () => {
     modelObservers.delete(observer);
   });
   const mockUpdateState = jest.fn((options: Model.Options) => {
-    testModelState = {
-      ...testModelState,
-      ...options,
-    };
+    $.extend(testModelState, options);
+
+    if (Object.prototype.hasOwnProperty.call(options, 'secondValue') && options.secondValue === undefined) {
+      testModelState.secondValue = options.secondValue;
+    }
+
     mockModelNotify();
   });
-  const mockGetState = jest.fn((): Model.Options => testModelState);
+  const mockGetState = jest.fn((): Model.State => testModelState);
   const mockLockState = jest.fn();
   const mockUnlockState = jest.fn();
 
@@ -109,6 +116,7 @@ describe('Presenter', () => {
       step: 5,
       value: 25,
       secondValue: 70,
+      lockedValues: [],
     };
     testViewData = {
       isHorizontal: true,

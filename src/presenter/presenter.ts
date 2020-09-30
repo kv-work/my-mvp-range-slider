@@ -25,6 +25,9 @@ class SliderPresenter implements Presenter {
       onUpdate: options.onUpdate,
     };
 
+    this.modelObserver = this.createModelObserver();
+    this.viewObserver = this.createViewObserever();
+
     this.subscribeToModel();
     this.subscribeToView();
 
@@ -135,7 +138,7 @@ class SliderPresenter implements Presenter {
     }
   }
 
-  private createDataValues(data?: Model.Options, options?: View.Options): number[] {
+  private createDataValues(data?: Model.State, options?: View.Options): number[] {
     const {
       minValue: min,
       maxValue: max,
@@ -262,41 +265,10 @@ class SliderPresenter implements Presenter {
   }
 
   private subscribeToModel(): void {
-    this.modelObserver = {
-      update: (): void => {
-        const updatedModelState = this.model.getState();
-
-        if (this.isChanging) {
-          this.callbacks.onChange(updatedModelState);
-        }
-        this.renderView();
-      },
-    };
     this.model.addObserver(this.modelObserver);
   }
 
   private subscribeToView(): void {
-    this.viewObserver = {
-      start: (): void => {
-        this.callbacks.onStart(this.model.getState());
-      },
-      change: (values: [number, number] | number): void => {
-        this.isChanging = true;
-        const convertedValues = this.convertPercentToValue(values);
-        if (Array.isArray(convertedValues)) {
-          const [newValue, newSecondValue] = convertedValues;
-          this.model.updateState({ value: newValue, secondValue: newSecondValue });
-        } else {
-          this.model.updateState({ value: convertedValues });
-        }
-      },
-      finish: (): void => {
-        this.callbacks.onFinish(this.model.getState());
-      },
-      update: (): void => {
-        this.renderView();
-      },
-    };
     this.view.addObserver(this.viewObserver);
   }
 
@@ -330,6 +302,47 @@ class SliderPresenter implements Presenter {
     const baseValue = step / (maxValue - minValue);
     const percentage = ((values - minValue) / (maxValue - minValue)) * 100;
     return SliderModel.fixVal(percentage, baseValue);
+  }
+
+  private createModelObserver(): Model.Observer {
+    const modelObserver = {
+      update: (): void => {
+        const updatedModelState = this.model.getState();
+
+        if (this.isChanging) {
+          this.callbacks.onChange(updatedModelState);
+        }
+        this.renderView();
+      },
+    };
+
+    return modelObserver;
+  }
+
+  private createViewObserever(): View.Observer {
+    const viewObserver = {
+      start: (): void => {
+        this.callbacks.onStart(this.model.getState());
+      },
+      change: (values: [number, number] | number): void => {
+        this.isChanging = true;
+        const convertedValues = this.convertPercentToValue(values);
+        if (Array.isArray(convertedValues)) {
+          const [newValue, newSecondValue] = convertedValues;
+          this.model.updateState({ value: newValue, secondValue: newSecondValue });
+        } else {
+          this.model.updateState({ value: convertedValues });
+        }
+      },
+      finish: (): void => {
+        this.callbacks.onFinish(this.model.getState());
+      },
+      update: (): void => {
+        this.renderView();
+      },
+    };
+
+    return viewObserver;
   }
 
   static isEmpty(object: {}): boolean {
