@@ -138,6 +138,13 @@ class SliderPresenter implements Presenter {
     }
   }
 
+  private renderView(): void {
+    if (this.isReadyRender) {
+      const viewRenderData = this.createRenderData();
+      this.view.render(viewRenderData);
+    }
+  }
+
   private createDataValues(data?: Model.State, options?: View.Options): number[] {
     const {
       minValue: min,
@@ -264,21 +271,6 @@ class SliderPresenter implements Presenter {
     return viewRenderData;
   }
 
-  private subscribeToModel(): void {
-    this.model.addObserver(this.modelObserver);
-  }
-
-  private subscribeToView(): void {
-    this.view.addObserver(this.viewObserver);
-  }
-
-  private renderView(): void {
-    if (this.isReadyRender) {
-      const viewRenderData = this.createRenderData();
-      this.view.render(viewRenderData);
-    }
-  }
-
   private convertPercentToValue(percentage: [number, number] | number): [number, number] | number {
     const { minValue, maxValue } = this.model.getState();
     let value: number;
@@ -343,6 +335,14 @@ class SliderPresenter implements Presenter {
     };
 
     return viewObserver;
+  }
+
+  private subscribeToModel(): void {
+    this.model.addObserver(this.modelObserver);
+  }
+
+  private subscribeToView(): void {
+    this.view.addObserver(this.viewObserver);
   }
 
   static isEmpty(object: {}): boolean {

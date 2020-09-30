@@ -342,6 +342,112 @@ class SliderView implements View {
     this.notify(finishAction);
   }
 
+  private createDataValues(data: Model.State): number[] {
+    const {
+      minValue: min,
+      maxValue: max,
+      step,
+    } = data;
+
+    const {
+      displayMax = true,
+      displayMin = true,
+      numOfScaleVal = 10,
+    } = this.viewOptions;
+
+    const values: number[] = [];
+
+    if (displayMin) {
+      values.push(min);
+    }
+
+    let total: number;
+    const num = (max - min) / step;
+
+    if (num % 1 === 0) {
+      total = num - 1;
+    } else {
+      total = Math.floor(num);
+    }
+
+    let resultNum: number = numOfScaleVal < total ? numOfScaleVal : total;
+
+    if (resultNum <= 0) {
+      resultNum = 0;
+    }
+
+    if (resultNum >= 10) {
+      resultNum = 10;
+    }
+
+    if (resultNum === total) {
+      for (let i = 1; i <= total; i += 1) {
+        const elem = min + step * i;
+        values.push(elem);
+      }
+    } else {
+      const s = (max - min) / (resultNum + 1);
+      for (let i = 1; i <= resultNum; i += 1) {
+        const elem = min + s * i;
+        let multipleElem: number;
+        if ((elem - min) % step > step / 2) {
+          multipleElem = elem - ((elem - min) % step) + step;
+        } else {
+          multipleElem = elem - ((elem - min) % step);
+        }
+        values.push(SliderView.fixVal(multipleElem, step));
+      }
+    }
+
+    if (displayMax) {
+      values.push(max);
+    }
+
+    return values;
+  }
+
+  static convertPercentToValue(percentage: [number, number] | number, modelState: Model.State): [number, number] | number {
+    const { minValue, maxValue } = modelState;
+    let value: number;
+    let secondValue: number;
+    let values: [number, number] | number;
+
+    if (Array.isArray(percentage)) {
+      const [firstPercent, secondPercent] = percentage;
+      value = ((maxValue - minValue) / 100) * firstPercent + minValue;
+      secondValue = ((maxValue - minValue) / 100) * secondPercent + minValue;
+      values = [value, secondValue];
+    } else {
+      values = ((maxValue - minValue) / 100) * percentage + minValue;
+    }
+
+    return values;
+  }
+
+  static createPercentageData(data: number[], modelState: Model.State): number[] {
+    const {
+      minValue: min,
+      maxValue: max,
+      step,
+    } = modelState;
+
+    const baseValue = step / (max - min);
+
+    const percentageData = data.map((val): number => {
+      const percentage = ((val - min) / (max - min)) * 100;
+      return SliderView.fixVal(percentage, baseValue);
+    });
+
+    return percentageData;
+  }
+
+  static convertValueToPercent(values: number, modelState: Model.State): number {
+    const { minValue, maxValue, step } = modelState;
+    const baseValue = step / (maxValue - minValue);
+    const percentage = ((values - minValue) / (maxValue - minValue)) * 100;
+    return SliderView.fixVal(percentage, baseValue);
+  }
+
   static validateData(data: View.Options): View.Options {
     const dataEntries = Object.entries(data);
     const validDataEntries = dataEntries.map((entry): [string, unknown] => {
@@ -388,6 +494,21 @@ class SliderView implements View {
       return Number.isFinite(value) && (value >= 0) && (value <= 10);
     }
     return false;
+  }
+
+  static fixVal(value: number, baseVal: number): number {
+    if (!(baseVal % 1)) {
+      return +value.toFixed(0);
+    }
+
+    if (baseVal.toString().includes('e')) {
+      const base = +`${baseVal}`.split('e-')[1];
+      const fixedVal = +value.toFixed(base);
+      return fixedVal;
+    }
+    const base = `${baseVal}`.split('.')[1].length;
+    const fixedVal = +value.toFixed(base);
+    return fixedVal;
   }
 }
 
