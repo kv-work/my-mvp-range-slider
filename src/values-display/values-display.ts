@@ -30,36 +30,11 @@ export default class SliderValuesDisplay implements ValuesDisplay {
 
     this.$displayContainer.data({ options: newOpts, data: data.value });
 
-    if (!this.$firstValDisplay) {
-      this.$firstValDisplay = SliderValuesDisplay.createValueDisplay();
-      this.$displayContainer.append(this.$firstValDisplay);
-    }
-
-    // update valueDisplay elements
-    if (Array.isArray(data.value)) {
-      if (!this.$secondValDisplay) {
-        this.$secondValDisplay = SliderValuesDisplay.createValueDisplay();
-        this.$displayContainer.append(this.$secondValDisplay);
-      }
-
-      if (options.isHorizontal && !this.$secondValDisplay.hasClass('slider__display_value_horizontal')) {
-        this.$secondValDisplay.addClass('slider__display_value_horizontal');
-      }
-      if (!options.isHorizontal && this.$secondValDisplay.hasClass('slider__display_value_horizontal')) {
-        this.$secondValDisplay.removeClass('slider__display_value_horizontal');
-      }
-    } else if (this.$secondValDisplay) {
-      this.$secondValDisplay.remove();
-      this.$secondValDisplay = null;
-    }
-
-    if (options.isHorizontal && !this.$displayContainer.hasClass('slider__display_container_horizontal')) {
+    if (newOpts.isHorizontal && !this.$displayContainer.hasClass('slider__display_container_horizontal')) {
       this.$displayContainer.addClass('slider__display_container_horizontal');
-      this.$firstValDisplay.addClass('slider__display_value_horizontal');
     }
-    if (!options.isHorizontal && this.$displayContainer.hasClass('slider__display_container_horizontal')) {
+    if (!newOpts.isHorizontal && this.$displayContainer.hasClass('slider__display_container_horizontal')) {
       this.$displayContainer.removeClass('slider__display_container_horizontal');
-      this.$firstValDisplay.removeClass('slider__display_value_horizontal');
     }
 
     if (!this.isRendered) {
@@ -74,59 +49,94 @@ export default class SliderValuesDisplay implements ValuesDisplay {
     this.$displayContainer.remove();
     if (this.$firstValDisplay) {
       this.$firstValDisplay.remove();
-      this.$firstValDisplay = null;
+      this.$firstValDisplay = undefined;
     }
     if (this.$secondValDisplay) {
       this.$secondValDisplay.remove();
-      this.$secondValDisplay = null;
+      this.$secondValDisplay = undefined;
     }
     this.isRendered = false;
   }
 
   private updateValueDisplay(updateData: ValuesDisplay.UpdateOptions): void {
-    const { data: renderData, options } = updateData;
+    const currentOpts: ValuesDisplay.RenderOptions = this.$displayContainer.data('options');
+    const { data: renderData, options = currentOpts } = updateData;
     const { value, percentage } = renderData;
     const { isHorizontal } = options;
 
     let from: number;
-    let to: number;
 
-    let secondMetrics: DOMRect;
     let firstData: App.Stringable;
     let secondData: App.Stringable;
 
-    if (Array.isArray(percentage) && Array.isArray(value)) {
-      [from, to] = percentage;
+    // creating firstValDisplay
+    if (!this.$firstValDisplay) {
+      this.$firstValDisplay = SliderValuesDisplay.createValueDisplay();
+      this.$displayContainer.append(this.$firstValDisplay);
+    }
+
+    // add/remove _horizontal modificator for firstValDisplay
+    if (isHorizontal && !this.$firstValDisplay.hasClass('slider__display_value_horizontal')) {
+      this.$firstValDisplay.addClass('slider__display_value_horizontal');
+    }
+    if (!options.isHorizontal && this.$firstValDisplay.hasClass('slider__display_value_horizontal')) {
+      this.$firstValDisplay.removeClass('slider__display_value_horizontal');
+    }
+
+    if (Array.isArray(value)) {
       [firstData, secondData] = value;
+
+      // create secondValDisplay
+      if (!this.$secondValDisplay) {
+        this.$secondValDisplay = SliderValuesDisplay.createValueDisplay();
+        this.$displayContainer.append(this.$secondValDisplay);
+      }
+
+      // add/remove _horizontal modificator for firstValDisplay
+      if (options.isHorizontal && !this.$secondValDisplay.hasClass('slider__display_value_horizontal')) {
+        this.$secondValDisplay.addClass('slider__display_value_horizontal');
+      }
+      if (!options.isHorizontal && this.$secondValDisplay.hasClass('slider__display_value_horizontal')) {
+        this.$secondValDisplay.removeClass('slider__display_value_horizontal');
+      }
 
       this.$secondValDisplay.data('data', secondData);
       this.$secondValDisplay.data('options', options);
 
-      let secondHtml = options.prefix;
+      // add html for secondValDisplay
+      let secondHtml = `${options.prefix}`;
       secondHtml += secondData.toString();
       if (options.postfix !== '') {
         secondHtml += options.postfix;
       }
-
       this.$secondValDisplay.html(secondHtml);
-      secondMetrics = this.$secondValDisplay[0].getBoundingClientRect();
 
       this.$firstValDisplay.data('data', firstData);
       this.$firstValDisplay.data('options', options);
-    }
-
-    if (!Array.isArray(percentage) && !Array.isArray(value)) {
-      from = percentage;
+    } else {
       firstData = value;
       this.$firstValDisplay.data('data', firstData);
       this.$firstValDisplay.data('options', options);
+
+      if (this.$secondValDisplay) {
+        this.$secondValDisplay.remove();
+        this.$secondValDisplay = undefined;
+      }
     }
 
+    if (Array.isArray(percentage)) {
+      [from] = percentage;
+    } else {
+      from = percentage;
+    }
 
-    let firstHtml = options.prefix;
+    let firstHtml = `${options.prefix}`;
     firstHtml += firstData.toString();
-    if (options.postfix !== '') firstHtml += options.postfix;
+    if (options.postfix !== '') {
+      firstHtml += options.postfix;
+    }
     this.$firstValDisplay.html(firstHtml);
+
     const firstMetrics = this.$firstValDisplay[0].getBoundingClientRect();
 
     let firstPos: string;
@@ -153,8 +163,9 @@ export default class SliderValuesDisplay implements ValuesDisplay {
         });
       }
 
-      if (this.$secondValDisplay) {
-        secondPos = `calc(${to}% - ${secondMetrics.width / 2}px)`;
+      if (this.$secondValDisplay && Array.isArray(percentage)) {
+        const secondMetrics = this.$secondValDisplay[0].getBoundingClientRect();
+        secondPos = `calc(${percentage[1]}% - ${secondMetrics.width / 2}px)`;
         this.$secondValDisplay.css({
           top: '',
           left: secondPos,
@@ -189,8 +200,9 @@ export default class SliderValuesDisplay implements ValuesDisplay {
       }
 
 
-      if (this.$secondValDisplay) {
-        secondPos = `calc(${to}% - ${secondMetrics.height / 2}px)`;
+      if (this.$secondValDisplay && Array.isArray(percentage)) {
+        const secondMetrics = this.$secondValDisplay[0].getBoundingClientRect();
+        secondPos = `calc(${percentage[1]}% - ${secondMetrics.height / 2}px)`;
         this.$secondValDisplay.css({
           left: '',
           top: secondPos,
