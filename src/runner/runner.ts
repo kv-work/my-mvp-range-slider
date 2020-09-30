@@ -48,19 +48,23 @@ class SliderRunner implements Runner {
     const runnerWidth = runnerMetrics.width;
     let value: App.Stringable;
     let percentage: string;
-    if (Array.isArray(data.percentage) && Array.isArray(data.value)) {
-      const [from, to] = data.value;
+
+    if (Array.isArray(data.percentage)) {
       const [fromPercentage, toPercentage] = data.percentage;
       const fromPosition = `calc(${fromPercentage}% - ${runnerWidth / 2}px)`;
       const toPosition = `calc(${toPercentage}% - ${runnerWidth / 2}px)`;
 
-      value = this.isSecond ? to : from;
       percentage = this.isSecond ? toPosition : fromPosition;
+    } else {
+      percentage = `calc(${data.percentage}% - ${runnerWidth / 2}px)`;
     }
 
-    if (!Array.isArray(data.percentage) && !Array.isArray(data.value)) {
+    if (Array.isArray(data.value)) {
+      const [from, to] = data.value;
+
+      value = this.isSecond ? to : from;
+    } else {
       value = data.value;
-      percentage = `calc(${data.percentage}% - ${runnerWidth / 2}px)`;
     }
 
     this.$runner.data('options', runnerOptions);
@@ -83,7 +87,7 @@ class SliderRunner implements Runner {
   }
 
   private attacheEventHandlers(): void {
-    this.$runner.on('mousedown.runner', this.dragStartHandler.bind(this));
+    this.$runner.on('mousedown', this.dragStartHandler.bind(this));
     this.$runner.on('dragstart', false);
   }
 
@@ -95,9 +99,9 @@ class SliderRunner implements Runner {
     this.$runner.css('cursor', 'grabbing');
 
     const mouseMoveHandler = this.makeHandler(renderOptions);
-    this.$view.on('mousemove.runner', mouseMoveHandler);
+    this.$view.on('mousemove', mouseMoveHandler);
     document.onmouseup = (): void => {
-      this.$view.off('.runner');
+      this.$view.off('mousemove');
       this.$runner.css('cursor', 'grab');
 
       const $finishEvent = $.Event('finish.myMVPSlider');
@@ -107,7 +111,7 @@ class SliderRunner implements Runner {
     };
   }
 
-  private makeHandler(opts: Runner.RenderOptions): JQuery.EventHandler<HTMLElement, JQuery.Event> {
+  private makeHandler(opts: Runner.RenderOptions): (e: JQuery.MouseMoveEvent) => void {
     let moveCoord: number;
     let selectedVal: number;
     const bar: HTMLElement = this.$barContainer[0];

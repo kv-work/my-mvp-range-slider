@@ -9,10 +9,10 @@ declare interface View {
 
 declare namespace View {
   interface RenderData {
-    data?: App.Stringable[];
-    percentageData?: number[];
-    value?: App.Stringable | [App.Stringable, App.Stringable];
-    percentage?: number | [number, number];
+    data: App.Stringable[];
+    percentageData: number[];
+    value: App.Stringable | [App.Stringable, App.Stringable];
+    percentage: number | [number, number];
   }
 
   interface Options {

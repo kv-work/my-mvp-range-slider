@@ -42,6 +42,8 @@ describe('SliderRunner', () => {
   const renderData: View.RenderData = {
     value: 10,
     percentage: 10,
+    data: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+    percentageData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
   };
 
   const horizontalOptions: Runner.RenderOptions = { isHorizontal: true };
@@ -139,7 +141,12 @@ describe('SliderRunner', () => {
         isSecond: true,
       });
 
-      const newData: View.RenderData = { value: [10, 40], percentage: [10, 40] };
+      const newData: View.RenderData = {
+        value: [10, 40],
+        percentage: [10, 40],
+        data: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        percentageData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+      };
       const newOpts: Runner.RenderOptions = { isHorizontal: true };
 
       newRunner.update({ data: newData, options: newOpts });
@@ -165,6 +172,8 @@ describe('SliderRunner', () => {
       let newData: View.RenderData = {
         value: 20,
         percentage: 20,
+        data: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        percentageData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
       };
 
       testRunner.update({ data: newData, options: horizontalOptions });
@@ -185,7 +194,12 @@ describe('SliderRunner', () => {
       expect($horizontalView.find('.slider__runner_horizontal').length).toBe(0);
       expect($horizontalView.find('.slider__runner').length).toBe(1);
 
-      newData = { value: [0, 100], percentage: [0, 100] };
+      newData = {
+        value: [0, 100],
+        percentage: [0, 100],
+        data: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        percentageData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+      };
       const newRunner = new SliderRunner({
         ...testOptions,
         isSecond: true,
@@ -199,13 +213,23 @@ describe('SliderRunner', () => {
       expect(testRunnerVal).toBe(0);
       expect(newRunnerData.value).toBe(100);
 
-      newData = { value: 0, percentage: 0 };
+      newData = {
+        value: 0,
+        percentage: 0,
+        data: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        percentageData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+      };
       testRunner.update({ data: newData, options: horizontalOptions });
       testRunnerVal = $horizontalView.find('.runner_first').data('value');
       expect($horizontalView.find('.runner_first').length).toBe(1);
       expect(testRunnerVal).toBe(0);
 
-      newData = { value: 100, percentage: 100 };
+      newData = {
+        value: 100,
+        percentage: 100,
+        data: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        percentageData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+      };
       testRunner.update({ data: newData, options: horizontalOptions });
       testRunnerVal = $horizontalView.find('.runner_first').data('value');
       expect(testRunnerVal).toBe(100);
