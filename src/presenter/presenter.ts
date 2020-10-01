@@ -140,8 +140,8 @@ class SliderPresenter implements Presenter {
 
   private renderView(): void {
     if (this.isReadyRender) {
-      const viewRenderData = this.createRenderData();
-      this.view.render(viewRenderData);
+      const modelState = this.model.getState();
+      this.view.render(modelState);
     }
   }
 
@@ -209,93 +209,6 @@ class SliderPresenter implements Presenter {
     return values;
   }
 
-  private createPercentageData(data: number[]): number[] {
-    const {
-      minValue: min,
-      maxValue: max,
-      step,
-    } = this.model.getState();
-
-    const baseValue = step / (max - min);
-
-    const percentageData = data.map((val): number => {
-      const percentage = ((val - min) / (max - min)) * 100;
-      return SliderModel.fixVal(percentage, baseValue);
-    });
-
-    return percentageData;
-  }
-
-  private createRenderData(): View.RenderData {
-    let value: [App.Stringable, App.Stringable] | App.Stringable;
-    let percentage: [number, number] | number;
-    const {
-      value: from,
-      secondValue: to,
-    } = this.model.getState();
-
-    if (to !== undefined) {
-      if (this.dataValues.length > 0) {
-        value = [this.dataValues[from], this.dataValues[to]];
-      } else {
-        value = [from, to];
-      }
-      percentage = [this.convertValueToPercent(from), this.convertValueToPercent(to)];
-    } else {
-      if (this.dataValues.length > 0) {
-        value = this.dataValues[from];
-      } else {
-        value = from;
-      }
-      percentage = this.convertValueToPercent(from);
-    }
-
-    const dataValues = this.createDataValues();
-    const percentageData = this.createPercentageData(dataValues);
-
-    let data: App.Stringable[];
-
-    if (this.dataValues.length) {
-      data = dataValues.map((val) => this.dataValues[val]);
-    } else {
-      data = dataValues;
-    }
-
-    const viewRenderData: View.RenderData = {
-      data,
-      percentageData,
-      value,
-      percentage,
-    };
-
-    return viewRenderData;
-  }
-
-  private convertPercentToValue(percentage: [number, number] | number): [number, number] | number {
-    const { minValue, maxValue } = this.model.getState();
-    let value: number;
-    let secondValue: number;
-    let values: [number, number] | number;
-
-    if (Array.isArray(percentage)) {
-      const [firstPercent, secondPercent] = percentage;
-      value = ((maxValue - minValue) / 100) * firstPercent + minValue;
-      secondValue = ((maxValue - minValue) / 100) * secondPercent + minValue;
-      values = [value, secondValue];
-    } else {
-      values = ((maxValue - minValue) / 100) * percentage + minValue;
-    }
-
-    return values;
-  }
-
-  private convertValueToPercent(values: number): number {
-    const { minValue, maxValue, step } = this.model.getState();
-    const baseValue = step / (maxValue - minValue);
-    const percentage = ((values - minValue) / (maxValue - minValue)) * 100;
-    return SliderModel.fixVal(percentage, baseValue);
-  }
-
   private createModelObserver(): Model.Observer {
     const modelObserver = {
       update: (): void => {
@@ -318,12 +231,11 @@ class SliderPresenter implements Presenter {
       },
       change: (values: [number, number] | number): void => {
         this.isChanging = true;
-        const convertedValues = this.convertPercentToValue(values);
-        if (Array.isArray(convertedValues)) {
-          const [newValue, newSecondValue] = convertedValues;
+        if (Array.isArray(values)) {
+          const [newValue, newSecondValue] = values;
           this.model.updateState({ value: newValue, secondValue: newSecondValue });
         } else {
-          this.model.updateState({ value: convertedValues });
+          this.model.updateState({ value: values });
         }
       },
       finish: (): void => {

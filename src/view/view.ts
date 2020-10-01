@@ -29,8 +29,8 @@ class SliderView implements View {
     this.isRendered = false;
   }
 
-  render(renderData: View.RenderData): void {
-    this.renderData = renderData;
+  render(state: Model.State): void {
+    this.renderData = this.createRenderData(state);
 
     if (this.viewOptions.isHorizontal && !this.$view.hasClass('slider__container_horizontal')) {
       this.$view.addClass('slider__container_horizontal');
@@ -48,10 +48,10 @@ class SliderView implements View {
       this.isRendered = true;
     }
 
-    this.updateValuesDisplay(renderData);
-    this.updateScale(renderData);
-    this.updateBar(renderData.percentage);
-    this.updateRunners(renderData);
+    this.updateValuesDisplay(this.renderData);
+    this.updateScale(this.renderData);
+    this.updateBar(this.renderData.percentage);
+    this.updateRunners(this.renderData);
   }
 
   update(viewData: View.Options): void {
