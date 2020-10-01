@@ -342,6 +342,51 @@ class SliderView implements View {
     this.notify(finishAction);
   }
 
+  private createRenderData(modelState: Model.State, userDataValues?: App.Stringable[]): View.RenderData {
+    let value: [App.Stringable, App.Stringable] | App.Stringable;
+    let percentage: [number, number] | number;
+    const {
+      value: from,
+      secondValue: to,
+    } = modelState;
+
+    if (to !== undefined) {
+      if (userDataValues && userDataValues.length > 0) {
+        value = [userDataValues[from], userDataValues[to]];
+      } else {
+        value = [from, to];
+      }
+      percentage = [SliderView.convertValueToPercent(from, modelState), SliderView.convertValueToPercent(to, modelState)];
+    } else {
+      if (userDataValues && userDataValues.length > 0) {
+        value = userDataValues[from];
+      } else {
+        value = from;
+      }
+      percentage = SliderView.convertValueToPercent(from, modelState);
+    }
+
+    const dataValues = this.createDataValues(modelState);
+    const percentageData = SliderView.createPercentageData(dataValues, modelState);
+
+    let data: App.Stringable[];
+
+    if (userDataValues && userDataValues.length) {
+      data = dataValues.map((val) => userDataValues[val]);
+    } else {
+      data = dataValues;
+    }
+
+    const viewRenderData: View.RenderData = {
+      data,
+      percentageData,
+      value,
+      percentage,
+    };
+
+    return viewRenderData;
+  }
+
   private createDataValues(data: Model.State): number[] {
     const {
       minValue: min,
@@ -383,7 +428,7 @@ class SliderView implements View {
     if (resultNum === total) {
       for (let i = 1; i <= total; i += 1) {
         const elem = min + step * i;
-        values.push(elem);
+        values.push(SliderView.fixVal(elem, step));
       }
     } else {
       const s = (max - min) / (resultNum + 1);
@@ -503,12 +548,11 @@ class SliderView implements View {
 
     if (baseVal.toString().includes('e')) {
       const base = +`${baseVal}`.split('e-')[1];
-      const fixedVal = +value.toFixed(base);
-      return fixedVal;
+      return +value.toFixed(base);
     }
+
     const base = `${baseVal}`.split('.')[1].length;
-    const fixedVal = +value.toFixed(base);
-    return fixedVal;
+    return +value.toFixed(base);
   }
 }
 
