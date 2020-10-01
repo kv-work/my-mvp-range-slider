@@ -1,5 +1,3 @@
-import SliderModel from '../model/model';
-
 class SliderPresenter implements Presenter {
   private view: View;
   private model: Model;
@@ -141,72 +139,12 @@ class SliderPresenter implements Presenter {
   private renderView(): void {
     if (this.isReadyRender) {
       const modelState = this.model.getState();
-      this.view.render(modelState);
-    }
-  }
-
-  private createDataValues(data?: Model.State, options?: View.Options): number[] {
-    const {
-      minValue: min,
-      maxValue: max,
-      step,
-    } = data || this.model.getState();
-
-    const {
-      displayMax = true,
-      displayMin = true,
-      numOfScaleVal = 10,
-    } = options || this.view.getData();
-
-    const values: number[] = [];
-
-    if (displayMin) {
-      values.push(min);
-    }
-
-    let total: number;
-    const num = (max - min) / step;
-
-    if (num % 1 === 0) {
-      total = num - 1;
-    } else {
-      total = Math.floor(num);
-    }
-
-    let resultNum: number = numOfScaleVal < total ? numOfScaleVal : total;
-
-    if (resultNum <= 0) {
-      resultNum = 0;
-    }
-
-    if (resultNum >= 10) {
-      resultNum = 10;
-    }
-
-    if (resultNum === total) {
-      for (let i = 1; i <= total; i += 1) {
-        const elem = min + step * i;
-        values.push(elem);
-      }
-    } else {
-      const s = (max - min) / (resultNum + 1);
-      for (let i = 1; i <= resultNum; i += 1) {
-        const elem = min + s * i;
-        let multipleElem: number;
-        if ((elem - min) % step > step / 2) {
-          multipleElem = elem - ((elem - min) % step) + step;
-        } else {
-          multipleElem = elem - ((elem - min) % step);
-        }
-        values.push(SliderModel.fixVal(multipleElem, step));
+      if (this.dataValues.length > 1) {
+        this.view.render(modelState, this.dataValues);
+      } else {
+        this.view.render(modelState);
       }
     }
-
-    if (displayMax) {
-      values.push(max);
-    }
-
-    return values;
   }
 
   private createModelObserver(): Model.Observer {

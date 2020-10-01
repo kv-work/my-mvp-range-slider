@@ -29,8 +29,8 @@ class SliderView implements View {
     this.isRendered = false;
   }
 
-  render(state: Model.State): void {
-    this.renderData = this.createRenderData(state);
+  render(state: Model.State, userDataValues?: App.Stringable[]): void {
+    this.renderData = this.createRenderData(state, userDataValues);
 
     if (this.viewOptions.isHorizontal && !this.$view.hasClass('slider__container_horizontal')) {
       this.$view.addClass('slider__container_horizontal');

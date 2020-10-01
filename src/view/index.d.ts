@@ -1,5 +1,5 @@
 declare interface View {
-  render(state: Model.State): void;
+  render(state: Model.State, userDataValues?: App.Stringable[]): void;
   update(viewData: View.Options): void;
   addObserver(observer: View.Observer): void;
   removeObserver(observer: View.Observer): void;
