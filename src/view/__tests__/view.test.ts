@@ -51,11 +51,17 @@ describe('SliderView', () => {
     prefix: 'value',
     postfix: '$',
   };
-  const testRenderData: View.RenderData = {
-    data: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50],
-    percentageData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-    value: [10, 30],
-    percentage: [20, 60],
+  const testRenderData: Model.State = {
+    // data: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50],
+    // percentageData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+    // value: [10, 30],
+    // percentage: [20, 60],
+    maxValue: 50,
+    minValue: 0,
+    step: 1,
+    value: 10,
+    secondValue: 30,
+    lockedValues: [],
   };
 
   HTMLElement.prototype.getBoundingClientRect = (): DOMRect => ({
@@ -146,10 +152,15 @@ describe('SliderView', () => {
       jest.clearAllMocks();
     });
 
-    test('should save render data to this.renderData', () => {
+    test('should create and save render data to this.renderData', () => {
       expect(testView).not.toHaveProperty('renderData');
       testView.render(testRenderData);
-      expect(testView).toHaveProperty('renderData', testRenderData);
+      expect(testView).toHaveProperty('renderData', {
+        data: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50],
+        percentageData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        value: [10, 30],
+        percentage: [20, 60],
+      });
     });
 
     test('should append $view to container if isRendered is false', () => {
@@ -248,10 +259,16 @@ describe('SliderView', () => {
 
       newView.addObserver(testObserver);
       newView.render({
-        data: [0, 10, 20],
-        percentageData: [0, 50, 100],
+        // data: [0, 10, 20],
+        // percentageData: [0, 50, 100],
+        // value: 10,
+        // percentage: 50,
+        minValue: 0,
+        maxValue: 20,
+        step: 10,
         value: 10,
-        percentage: 50,
+        secondValue: undefined,
+        lockedValues: [],
       });
       expect(newView).toHaveProperty('isRendered', true);
       const $newView = $newNode.find('.js-slider__container');
@@ -282,10 +299,16 @@ describe('SliderView', () => {
 
       jest.clearAllMocks();
       testView.render({
-        data: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50],
-        percentageData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        // data: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50],
+        // percentageData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        // value: 10,
+        // percentage: 20,
+        maxValue: 50,
+        minValue: 0,
+        step: 5,
         value: 10,
-        percentage: 20,
+        secondValue: undefined,
+        lockedValues: [],
       });
       expect(mockRunnerUpdate).toBeCalledTimes(1);
     });
@@ -311,10 +334,16 @@ describe('SliderView', () => {
     test('should create SliderBar instance if (options.bar && !this.bar) is true', () => {
       newView.update({ bar: true });
       newView.render({
-        data: [0, 1, 2, 3, 4],
-        percentageData: [0, 25, 50, 75, 100],
-        value: [1, 3],
-        percentage: [25, 75],
+        // data: [0, 1, 2, 3, 4],
+        // percentageData: [0, 25, 50, 75, 100],
+        // value: [1, 3],
+        // percentage: [25, 75],
+        maxValue: 4,
+        minValue: 0,
+        step: 1,
+        value: 1,
+        secondValue: 3,
+        lockedValues: [],
       });
       expect(SliderBar).toBeCalledTimes(1);
 
@@ -332,10 +361,16 @@ describe('SliderView', () => {
     test('should create SliderScale instance if (options.scale && !this.scale) is true', () => {
       newView.update({ scale: true });
       newView.render({
-        data: [0, 1, 2, 3, 4],
-        percentageData: [0, 25, 50, 75, 100],
-        value: [1, 3],
-        percentage: [25, 75],
+        // data: [0, 1, 2, 3, 4],
+        // percentageData: [0, 25, 50, 75, 100],
+        // value: [1, 3],
+        // percentage: [25, 75],
+        maxValue: 4,
+        minValue: 0,
+        step: 1,
+        value: 1,
+        secondValue: 3,
+        lockedValues: [],
       });
       expect(SliderScale).toBeCalledTimes(1);
 
@@ -353,10 +388,16 @@ describe('SliderView', () => {
     test('should create SliderValueDisplay instance if (options.displayValues && !this.valuesDisplay) is true', () => {
       newView.update({ displayValue: true });
       newView.render({
-        data: [0, 1, 2, 3, 4],
-        percentageData: [0, 25, 50, 75, 100],
-        value: [1, 3],
-        percentage: [25, 75],
+        // data: [0, 1, 2, 3, 4],
+        // percentageData: [0, 25, 50, 75, 100],
+        // value: [1, 3],
+        // percentage: [25, 75],
+        maxValue: 4,
+        minValue: 0,
+        step: 1,
+        value: 1,
+        secondValue: 3,
+        lockedValues: [],
       });
       expect(SliderValuesDisplay).toBeCalledTimes(1);
 
@@ -374,10 +415,16 @@ describe('SliderView', () => {
     test('should create SliderRunner instance if (options.runner && !this.runner) is true', () => {
       newView.update({ runner: true });
       newView.render({
-        data: [0, 1, 2, 3, 4],
-        percentageData: [0, 25, 50, 75, 100],
+        // data: [0, 1, 2, 3, 4],
+        // percentageData: [0, 25, 50, 75, 100],
+        // value: 1,
+        // percentage: 25,
+        maxValue: 4,
+        minValue: 0,
+        step: 1,
         value: 1,
-        percentage: 25,
+        secondValue: undefined,
+        lockedValues: [],
       });
       expect(SliderRunner).toBeCalledTimes(1);
       newView.destroy();
@@ -389,10 +436,16 @@ describe('SliderView', () => {
         range: true,
       });
       newView.render({
-        data: [0, 1, 2, 3, 4],
-        percentageData: [0, 25, 50, 75, 100],
-        value: [1, 3],
-        percentage: [25, 75],
+        // data: [0, 1, 2, 3, 4],
+        // percentageData: [0, 25, 50, 75, 100],
+        // value: [1, 3],
+        // percentage: [25, 75],
+        maxValue: 4,
+        minValue: 0,
+        step: 1,
+        value: 1,
+        secondValue: 3,
+        lockedValues: [],
       });
       expect(SliderRunner).toBeCalledTimes(2);
 

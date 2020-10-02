@@ -15,6 +15,7 @@ class SliderView implements View {
   private bar?: Bar;
   private scale?: Scale;
   private valueDisplay?: ValuesDisplay;
+  private currentState?: Model.State;
   private observers: Set<View.Observer>;
   private isRendered: boolean;
 
@@ -31,6 +32,7 @@ class SliderView implements View {
 
   render(state: Model.State, userDataValues?: App.Stringable[]): void {
     this.renderData = this.createRenderData(state, userDataValues);
+    this.currentState = state;
 
     if (this.viewOptions.isHorizontal && !this.$view.hasClass('slider__container_horizontal')) {
       this.$view.addClass('slider__container_horizontal');
@@ -342,13 +344,13 @@ class SliderView implements View {
     this.notify(finishAction);
   }
 
-  private createRenderData(modelState: Model.State, userDataValues?: App.Stringable[]): View.RenderData {
+  private createRenderData(state: Model.State, userDataValues?: App.Stringable[]): View.RenderData {
     let value: [App.Stringable, App.Stringable] | App.Stringable;
     let percentage: [number, number] | number;
     const {
       value: from,
       secondValue: to,
-    } = modelState;
+    } = state;
 
     if (to !== undefined) {
       if (userDataValues && userDataValues.length > 0) {
@@ -356,18 +358,20 @@ class SliderView implements View {
       } else {
         value = [from, to];
       }
-      percentage = [SliderView.convertValueToPercent(from, modelState), SliderView.convertValueToPercent(to, modelState)];
+      const fromPercentage = SliderView.convertValueToPercent(from, state);
+      const toPercentage = SliderView.convertValueToPercent(to, state);
+      percentage = [fromPercentage, toPercentage];
     } else {
       if (userDataValues && userDataValues.length > 0) {
         value = userDataValues[from];
       } else {
         value = from;
       }
-      percentage = SliderView.convertValueToPercent(from, modelState);
+      percentage = SliderView.convertValueToPercent(from, state);
     }
 
-    const dataValues = this.createDataValues(modelState);
-    const percentageData = SliderView.createPercentageData(dataValues, modelState);
+    const dataValues = this.createDataValues(state);
+    const percentageData = SliderView.createPercentageData(dataValues, state);
 
     let data: App.Stringable[];
 
@@ -446,24 +450,6 @@ class SliderView implements View {
 
     if (displayMax) {
       values.push(max);
-    }
-
-    return values;
-  }
-
-  static convertPercentToValue(percentage: [number, number] | number, modelState: Model.State): [number, number] | number {
-    const { minValue, maxValue } = modelState;
-    let value: number;
-    let secondValue: number;
-    let values: [number, number] | number;
-
-    if (Array.isArray(percentage)) {
-      const [firstPercent, secondPercent] = percentage;
-      value = ((maxValue - minValue) / 100) * firstPercent + minValue;
-      secondValue = ((maxValue - minValue) / 100) * secondPercent + minValue;
-      values = [value, secondValue];
-    } else {
-      values = ((maxValue - minValue) / 100) * percentage + minValue;
     }
 
     return values;
