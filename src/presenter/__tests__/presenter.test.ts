@@ -55,11 +55,18 @@ describe('Presenter', () => {
     modelObservers.delete(observer);
   });
   const mockUpdateState = jest.fn((options: Model.Options) => {
-    $.extend(testModelState, options);
+    const newState = $.extend({}, testModelState, options);
 
     if (Object.prototype.hasOwnProperty.call(options, 'secondValue') && options.secondValue === undefined) {
-      testModelState.secondValue = options.secondValue;
+      newState.secondValue = options.secondValue;
     }
+
+    testModelState.maxValue = newState.maxValue;
+    testModelState.minValue = newState.minValue;
+    testModelState.step = newState.step;
+    testModelState.value = newState.value;
+    testModelState.secondValue = newState.secondValue;
+    testModelState.lockedValues = newState.lockedValues;
 
     mockModelNotify();
   });
@@ -173,12 +180,7 @@ describe('Presenter', () => {
 
     test('should calls render method of view', () => {
       expect(mockRender).toBeCalledTimes(1);
-      expect(mockRender).toBeCalledWith({
-        data: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-        percentageData: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-        value: [25, 70],
-        percentage: [25, 70],
-      });
+      expect(mockRender).toBeCalledWith(testModelState);
       expect(viewObservers.size).toBe(1);
     });
 
@@ -226,39 +228,25 @@ describe('Presenter', () => {
       expect(mockGetState).toHaveBeenCalled();
     });
 
-
-    test('should convert units in the model to percent before calls render method of view', () => {
-      testPresenter.update({
-        maxValue: 10,
-        minValue: 0,
-        step: 2,
-        value: 2,
-        secondValue: 6,
-      });
-
-      expect(mockRender).toBeCalledWith({
-        data: [0, 2, 4, 6, 8, 10],
-        percentageData: [0, 20, 40, 60, 80, 100],
-        value: [2, 6],
-        percentage: [20, 60],
-      });
-    });
-
     test('should calls render with new render data', () => {
-      testPresenter.update({
+      const newState = {
         maxValue: 50,
         minValue: 25,
         step: 5,
         value: 35,
         secondValue: 40,
-      });
+      };
+      testPresenter.update(newState);
 
-      expect(mockRender).toBeCalledWith({
-        data: [25, 30, 35, 40, 45, 50],
-        percentageData: [0, 20, 40, 60, 80, 100],
-        value: [35, 40],
-        percentage: [40, 60],
+      expect(testModelState).toEqual({
+        maxValue: 50,
+        minValue: 25,
+        step: 5,
+        value: 35,
+        secondValue: 40,
+        lockedValues: [],
       });
+      expect(mockRender).toBeCalledWith(testModelState);
     });
   });
 
@@ -465,61 +453,12 @@ describe('Presenter', () => {
       });
 
       expect(mockRender).toBeCalledWith({
-        data: [12, 15, 18, 21, 24, 25],
-        percentageData: [
-          0,
-          23.076923076923077,
-          46.15384615384615, 69.23076923076923,
-          92.3076923076923,
-          100,
-        ],
+        maxValue: 25,
+        minValue: 12,
+        step: 3,
         value: 18,
-        percentage: 46.15384615384615,
-      });
-
-      // numOfScale = 0
-      jest.clearAllMocks();
-
-      testPresenter.update({ numOfScaleVal: 0 });
-      expect(mockRender).toBeCalledWith({
-        data: [12, 25],
-        percentageData: [
-          0,
-          100,
-        ],
-        value: 18,
-        percentage: 46.15384615384615,
-      });
-
-      // numOfScale = 10;
-      jest.clearAllMocks();
-
-      testPresenter.update({
-        maxValue: 11,
-        minValue: 0,
-        step: 1,
-        value: 0,
-        secondValue: 11,
-        numOfScaleVal: 10,
-      });
-      expect(mockRender).toBeCalledWith({
-        data: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-        percentageData: [
-          0,
-          9.090909090909092,
-          18.181818181818183,
-          27.27272727272727,
-          36.36363636363637,
-          45.45454545454545,
-          54.54545454545454,
-          63.63636363636363,
-          72.72727272727273,
-          81.81818181818183,
-          90.9090909090909,
-          100,
-        ],
-        value: [0, 11],
-        percentage: [0, 100],
+        secondValue: undefined,
+        lockedValues: [],
       });
 
       // with userData
@@ -532,45 +471,14 @@ describe('Presenter', () => {
       });
       expect(mockRender).toBeCalledTimes(1);
       expect(mockRender).toBeCalledWith({
-        data: ['one', 'two', 'three', 'four'],
-        percentageData: [0, 33.33333333333333, 66.66666666666666, 100],
-        value: ['two', 'four'],
-        percentage: [33.33333333333333, 100],
-      });
-
-      // with userData and secondValue is undefined
-      jest.clearAllMocks();
-
-      testPresenter.update({
-        dataValues: testDataValues,
+        maxValue: 3,
+        minValue: 0,
+        step: 1,
         value: 1,
-        secondValue: undefined,
-      });
-
-      expect(mockRender).toBeCalledWith({
-        data: ['one', 'two', 'three', 'four'],
-        percentageData: [0, 33.33333333333333, 66.66666666666666, 100],
-        value: 'two',
-        percentage: 33.33333333333333,
-      });
-
-      // displayMax and displayMin is false
-      jest.clearAllMocks();
-
-      testPresenter.update({
-        dataValues: testDataValues,
-        value: 1,
-        secondValue: undefined,
-        displayMin: false,
-        displayMax: false,
-      });
-
-      expect(mockRender).toBeCalledWith({
-        data: ['two', 'three'],
-        percentageData: [33.33333333333333, 66.66666666666666],
-        value: 'two',
-        percentage: 33.33333333333333,
-      });
+        secondValue: 3,
+        lockedValues: ['maxValue', 'minValue', 'step'],
+      },
+      ['one', 'two', 'three', 'four']);
     });
 
     test('should update dataValues, change model state and numOfScaleVal, if options.dataValues.length > 1', () => {
