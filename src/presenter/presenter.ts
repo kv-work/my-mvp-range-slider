@@ -169,11 +169,12 @@ class SliderPresenter implements Presenter {
       },
       change: (values: [number, number] | number): void => {
         this.isChanging = true;
-        if (Array.isArray(values)) {
-          const [newValue, newSecondValue] = values;
+        const convertedValues = this.convertPercentToValue(values);
+        if (Array.isArray(convertedValues)) {
+          const [newValue, newSecondValue] = convertedValues;
           this.model.updateState({ value: newValue, secondValue: newSecondValue });
         } else {
-          this.model.updateState({ value: values });
+          this.model.updateState({ value: convertedValues });
         }
       },
       finish: (): void => {
@@ -185,6 +186,24 @@ class SliderPresenter implements Presenter {
     };
 
     return viewObserver;
+  }
+
+  private convertPercentToValue(percentage: [number, number] | number): [number, number] | number {
+    const { minValue, maxValue } = this.model.getState();
+    let value: number;
+    let secondValue: number;
+    let values: [number, number] | number;
+
+    if (Array.isArray(percentage)) {
+      const [firstPercent, secondPercent] = percentage;
+      value = ((maxValue - minValue) / 100) * firstPercent + minValue;
+      secondValue = ((maxValue - minValue) / 100) * secondPercent + minValue;
+      values = [value, secondValue];
+    } else {
+      values = ((maxValue - minValue) / 100) * percentage + minValue;
+    }
+
+    return values;
   }
 
   private subscribeToModel(): void {
