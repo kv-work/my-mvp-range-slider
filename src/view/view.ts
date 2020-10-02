@@ -15,7 +15,6 @@ class SliderView implements View {
   private bar?: Bar;
   private scale?: Scale;
   private valueDisplay?: ValuesDisplay;
-  private currentState?: Model.State;
   private observers: Set<View.Observer>;
   private isRendered: boolean;
 
@@ -32,7 +31,6 @@ class SliderView implements View {
 
   render(state: Model.State, userDataValues?: App.Stringable[]): void {
     this.renderData = this.createRenderData(state, userDataValues);
-    this.currentState = state;
 
     if (this.viewOptions.isHorizontal && !this.$view.hasClass('slider__container_horizontal')) {
       this.$view.addClass('slider__container_horizontal');
