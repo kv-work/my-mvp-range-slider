@@ -419,15 +419,7 @@ class SliderView implements View {
       total = Math.floor(num);
     }
 
-    let resultNum: number = numOfScaleVal < total ? numOfScaleVal : total;
-
-    if (resultNum <= 0) {
-      resultNum = 0;
-    }
-
-    if (resultNum >= 10) {
-      resultNum = 10;
-    }
+    const resultNum = numOfScaleVal < total ? numOfScaleVal : total;
 
     if (resultNum === total) {
       for (let i = 1; i <= total; i += 1) {
