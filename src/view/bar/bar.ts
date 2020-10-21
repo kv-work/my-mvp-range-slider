@@ -68,8 +68,8 @@ class SliderBar implements Bar {
 
     let clickCoord: number;
     let selectedVal: number;
-    const elem: HTMLElement = event.currentTarget;
-    const elemMetrics: DOMRect = elem.getBoundingClientRect();
+    const elem = event.currentTarget;
+    const elemMetrics = elem.getBoundingClientRect();
     const options: Bar.RenderOptions = $(elem).data('options');
     if (options.isHorizontal) {
       clickCoord = event.clientX - elemMetrics.x;
@@ -169,7 +169,7 @@ class SliderBar implements Bar {
     const { $view } = this;
     $range.css({ cursor: 'grabbing' });
     let startCoord: number;
-    const viewMetrics: DOMRect = $view[0].getBoundingClientRect();
+    const viewMetrics = $view[0].getBoundingClientRect();
     if (this.$bar.data('options').isHorizontal) {
       startCoord = ((event.clientX - viewMetrics.x) / viewMetrics.width) * 100;
     } else {
@@ -194,7 +194,7 @@ class SliderBar implements Bar {
   private makeDragHandler(start: number): (event: JQuery.MouseMoveEvent) => void {
     const dragHandler = (event: JQuery.MouseMoveEvent): void => {
       let newCoord: number;
-      const viewMetrics: DOMRect = this.$view[0].getBoundingClientRect();
+      const viewMetrics = this.$view[0].getBoundingClientRect();
 
       if (this.$bar.data('options').isHorizontal) {
         newCoord = ((event.clientX - viewMetrics.x) / viewMetrics.width) * 100;

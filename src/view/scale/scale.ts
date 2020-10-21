@@ -102,7 +102,7 @@ class SliderScale implements Scale {
   }
 
   private clickEventListener(event: JQuery.ClickEvent): void {
-    const elem: HTMLElement = event.target;
+    const elem = event.target;
     let selectedVal: number;
     if (elem.classList.contains('scale__element')) {
       selectedVal = $(elem).data('percentage');
@@ -151,7 +151,7 @@ class SliderScale implements Scale {
 
   static positionElem($elem: JQuery, options: Scale.RenderOptions): void {
     const percentage = $elem.data('percentage');
-    const elemMetrics: DOMRect = $elem[0].getBoundingClientRect();
+    const elemMetrics = $elem[0].getBoundingClientRect();
 
     if (options.isHorizontal) {
       switch (percentage) {
