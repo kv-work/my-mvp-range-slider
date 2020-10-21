@@ -1,7 +1,6 @@
-/* eslint-disable fsd/no-function-declaration-in-event-listener */
 import SliderModel from '../model';
 
-describe.only('model', () => {
+describe('model', () => {
   const initOptions: Model.Options = {
     maxValue: 10,
     minValue: 0,

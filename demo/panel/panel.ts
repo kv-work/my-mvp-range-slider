@@ -3,7 +3,6 @@ export default class Panel {
   private slider: App;
   private $configPanel: JQuery;
   private $callbackIndicators: JQuery;
-  private settings: App.Option;
   private presets: App.Stringable[][];
   private currentPreset: number;
   private inputs: PanelInputs;
@@ -15,8 +14,6 @@ export default class Panel {
 
     this.$configPanel = this.$container.find('.js-config_panel');
     this.$callbackIndicators = this.$container.find('.callback_indicators');
-
-    this.settings = this.$container.find('.js-slider').data('init-options');
 
     this.presets = Panel.createPresets();
     this.currentPreset = 0;
@@ -524,8 +521,6 @@ export default class Panel {
   }
 
   private onChangeSlider(): void {
-    this.settings = this.slider.getAllData();
-
     this.setInputValues();
   }
 

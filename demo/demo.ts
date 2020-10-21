@@ -1,5 +1,5 @@
 import './demo.css';
-import Panel from './panel/panel';
+import Panel from './Panel/panel';
 
 $('.js-slider').each(function addPlugin(): void {
   const $elem = $(this);
