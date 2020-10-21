@@ -1,7 +1,7 @@
 import App from '../app';
-import SliderModel from '../../model/model';
-import SliderPresenter from '../../presenter/presenter';
-import SliderView from '../../view/view';
+import SliderModel from '../../Model/model';
+import SliderPresenter from '../../Presenter/presenter';
+import SliderView from '../../View/view';
 
 const mockUpdateModelState = jest.fn();
 const mockLockModelState = jest.fn();

@@ -1,5 +1,5 @@
 import '../plugin';
-import SliderApp from '../../app/app';
+import SliderApp from '../../App/app';
 
 describe('myMVPSlider', () => {
   document.body.innerHTML = `

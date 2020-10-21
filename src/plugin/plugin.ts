@@ -1,6 +1,6 @@
 /* eslint-disable func-names */
 /* eslint-disable no-param-reassign */
-import SliderApp from '../app/app';
+import SliderApp from '../App/app';
 
 (function ($: JQueryStatic): void {
   $.fn.myMVPSlider = function (options: App.Option): JQuery {

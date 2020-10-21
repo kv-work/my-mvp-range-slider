@@ -1,8 +1,8 @@
 import SliderView from '../view';
-import SliderBar from '../bar/bar';
-import SliderScale from '../scale/scale';
-import SliderRunner from '../runner/runner';
-import SliderValuesDisplay from '../values-display/values-display';
+import SliderBar from '../Bar/bar';
+import SliderScale from '../Scale/scale';
+import SliderRunner from '../Runner/runner';
+import SliderValuesDisplay from '../Values-display/values-display';
 
 const mockBarUpdate = jest.fn();
 const mockBarDestroy = jest.fn();

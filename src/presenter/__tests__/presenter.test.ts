@@ -1,4 +1,3 @@
-/* eslint-disable fsd/no-function-declaration-in-event-listener */
 import SliderPresenter from '../presenter';
 
 describe('Presenter', () => {

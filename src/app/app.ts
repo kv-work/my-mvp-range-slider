@@ -1,6 +1,6 @@
-import SliderModel from '../model/model';
-import SliderPresenter from '../presenter/presenter';
-import SliderView from '../view/view';
+import SliderModel from '../Model/model';
+import SliderPresenter from '../Presenter/presenter';
+import SliderView from '../View/view';
 
 export default class SliderApp implements App {
   private options: App.Option;
