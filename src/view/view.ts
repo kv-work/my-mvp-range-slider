@@ -1,8 +1,8 @@
 import './view.css';
-import SliderScale from '../scale/scale';
-import SliderBar from '../bar/bar';
-import SliderRunner from '../runner/runner';
-import SliderValuesDisplay from '../values-display/values-display';
+import SliderScale from './scale/scale';
+import SliderBar from './bar/bar';
+import SliderRunner from './runner/runner';
+import SliderValuesDisplay from './values-display/values-display';
 
 class SliderView implements View {
   private $container: JQuery;
