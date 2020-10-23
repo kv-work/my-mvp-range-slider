@@ -322,11 +322,7 @@ export default class Panel {
           slider.update({ value: +newVal });
           break;
         case 'second-value':
-          if (!newVal) {
-            slider.update({ secondValue: undefined });
-          } else {
-            slider.update({ secondValue: +newVal });
-          }
+          slider.update({ secondValue: +newVal });
           break;
         case 'prefix':
           slider.update({ prefix: newVal.toString() });
@@ -337,6 +333,8 @@ export default class Panel {
         default:
           break;
       }
+    } else {
+      this.setInputValues();
     }
   }
 
