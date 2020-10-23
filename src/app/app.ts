@@ -15,39 +15,9 @@ export default class SliderApp implements App {
     this.options = options;
     this.node = node;
 
-    const {
-      maxValue,
-      minValue,
-      step,
-      value,
-      secondValue,
-      dataValues,
-      onStart = (): void => {},
-      onChange = (): void => {},
-      onFinish = (): void => {},
-      onUpdate = (): void => {},
-    } = options;
-
-    this.model = new SliderModel({
-      maxValue,
-      minValue,
-      step,
-      value,
-      secondValue,
-    });
-
-
+    this.model = new SliderModel(options);
     this.view = new SliderView(this.node, options);
-
-    this.presenter = new SliderPresenter({
-      model: this.model,
-      view: this.view,
-      dataValues,
-      onStart,
-      onChange,
-      onFinish,
-      onUpdate,
-    });
+    this.presenter = SliderApp.initPresenter(this.model, this.view, options);
   }
 
   update(options: App.Option): void {
@@ -103,5 +73,27 @@ export default class SliderApp implements App {
 
   destroy(): void {
     this.view.destroy();
+  }
+
+  static initPresenter(model: Model, view: View, options: App.Option): Presenter {
+    const {
+      dataValues,
+      onStart = (): void => {},
+      onChange = (): void => {},
+      onFinish = (): void => {},
+      onUpdate = (): void => {},
+    } = options;
+
+    const presenter = new SliderPresenter({
+      model,
+      view,
+      dataValues,
+      onStart,
+      onChange,
+      onFinish,
+      onUpdate,
+    });
+
+    return presenter;
   }
 }
