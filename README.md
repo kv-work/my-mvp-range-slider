@@ -251,4 +251,4 @@ $ npm run build:prod
 4.  [jest](https://jestjs.io/)
 5. [gh-pages](https://github.com/tschaub/gh-pages)
 
-[1]: https://kv-work.github.io/my-mvp-range-slider/
+[1]: https://kv-work.github.io/my-mvp-range-slider/index.html
