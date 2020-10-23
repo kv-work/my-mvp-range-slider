@@ -6,23 +6,10 @@ class SliderModel implements Model {
   private lockedValues: Set<string>;
 
   constructor(options?: Model.Options) {
-    const defaultState = {
-      maxValue: 10,
-      minValue: 0,
-      step: 1,
-      value: 0,
-      secondValue: undefined,
-      lockedValues: [],
-    };
-
     this.observers = new Set();
     this.lockedValues = new Set();
 
-    if (options !== undefined) {
-      this.state = this.createState(defaultState, options);
-    } else {
-      this.state = defaultState;
-    }
+    this.state = this.initState(options);
 
     this.isReadyNotify = true;
     this.isUpdated = true;
@@ -143,6 +130,27 @@ class SliderModel implements Model {
     }
 
     if (!this.isUpdated) this.notify();
+  }
+
+  private initState(options?: Model.Options): Model.State {
+    const defaultState = {
+      maxValue: 10,
+      minValue: 0,
+      step: 1,
+      value: 0,
+      secondValue: undefined,
+      lockedValues: [],
+    };
+
+    let state: Model.State;
+
+    if (options !== undefined) {
+      state = this.createState(defaultState, options);
+    } else {
+      state = defaultState;
+    }
+
+    return state;
   }
 
   private notify(): void {
