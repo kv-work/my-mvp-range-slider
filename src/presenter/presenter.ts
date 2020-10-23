@@ -24,7 +24,7 @@ class SliderPresenter implements Presenter {
     };
 
     this.modelObserver = this.createModelObserver();
-    this.viewObserver = this.createViewObserever();
+    this.viewObserver = this.createViewObserver();
 
     this.subscribeToModel();
     this.subscribeToView();
@@ -162,7 +162,7 @@ class SliderPresenter implements Presenter {
     return modelObserver;
   }
 
-  private createViewObserever(): View.Observer {
+  private createViewObserver(): View.Observer {
     const viewObserver = {
       start: (): void => {
         this.callbacks.onStart(this.model.getState());
