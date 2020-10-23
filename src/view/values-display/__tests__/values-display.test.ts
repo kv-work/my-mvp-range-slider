@@ -8,10 +8,10 @@ describe('SliderValuesDisplay', () => {
 
   HTMLElement.prototype.getBoundingClientRect = function getMetrics(): DOMRect {
     return {
-      x: $(this).data('data') !== undefined ? $(this).data('data') - 5 : 0,
-      y: $(this).data('data') !== undefined ? $(this).data('data') - 5 : 0,
-      height: $(this).data('data') !== undefined ? 10 : 100,
-      width: $(this).data('data') !== undefined ? 10 : 100,
+      x: 0,
+      y: 0,
+      height: 100,
+      width: 100,
       bottom: 0,
       left: 0,
       right: 0,
@@ -20,8 +20,19 @@ describe('SliderValuesDisplay', () => {
     };
   };
 
+  const mockStart = jest.fn();
+  const mockChange = jest.fn();
+  const mockFinish = jest.fn();
+
   const $horizontalView = $('#view_container_horizontal');
+  $horizontalView.on('startChanging.myMVPSlider', mockStart);
+  $horizontalView.on('changeValue.myMVPSlider', mockChange);
+  $horizontalView.on('finish.myMVPSlider', mockFinish);
+
   const $verticalView = $('#view_container');
+  $verticalView.on('startChanging.myMVPSlider', mockStart);
+  $verticalView.on('changeValue.myMVPSlider', mockChange);
+  $verticalView.on('finish.myMVPSlider', mockFinish);
 
   let testValDisplay: SliderValuesDisplay;
   let vertValDisplay: SliderValuesDisplay;
@@ -211,6 +222,63 @@ describe('SliderValuesDisplay', () => {
         data: renderData.value,
         options: updOpts,
       });
+    });
+
+    test('should attach mouse events handlers to $firstValDisplay and $secondValDisplay', () => {
+      const $mouseDownEvent = $.Event('mousedown');
+      const $mouseMoveEvent = $.Event('mousemove', {
+        clientX: 70,
+        clientY: 50,
+      });
+      const $AnotherMouseMoveEvent = $.Event('mousemove', {
+        clientX: 90,
+        clientY: 20,
+      });
+      const mouseUpEvent = new Event('mouseup');
+
+      $horizontalView
+        .trigger($mouseMoveEvent)
+        .trigger($AnotherMouseMoveEvent);
+      expect(mockChange).toBeCalledTimes(0);
+
+      $verticalView
+        .trigger($mouseMoveEvent)
+        .trigger($AnotherMouseMoveEvent);
+      expect(mockChange).toBeCalledTimes(0);
+
+      const $horizontalFirstVal = $horizontalView.find('.slider__display_value_horizontal');
+
+      $horizontalFirstVal.trigger($mouseDownEvent);
+      expect(mockStart).toBeCalledTimes(1);
+
+      $horizontalView
+        .trigger($mouseMoveEvent)
+        .trigger($AnotherMouseMoveEvent);
+      expect(mockChange).toBeCalledTimes(2);
+      expect(mockChange.mock.calls[0][1]).toBe(70);
+      expect(mockChange.mock.calls[0][2]).toBe(false);
+      expect(mockChange.mock.calls[1][1]).toBe(90);
+      expect(mockChange.mock.calls[1][2]).toBe(false);
+
+      document.dispatchEvent(mouseUpEvent);
+      expect(mockFinish).toBeCalledTimes(1);
+
+      mockChange.mockClear();
+      mockFinish.mockClear();
+
+      const $verticalFirstVal = $verticalView.find('.slider__display_value');
+      $verticalFirstVal.trigger($mouseDownEvent);
+      $verticalView
+        .trigger($mouseMoveEvent)
+        .trigger($AnotherMouseMoveEvent);
+      expect(mockChange).toBeCalledTimes(2);
+      expect(mockChange.mock.calls[0][1]).toBe(50);
+      expect(mockChange.mock.calls[0][2]).toBe(false);
+      expect(mockChange.mock.calls[1][1]).toBe(20);
+      expect(mockChange.mock.calls[1][2]).toBe(false);
+
+      document.dispatchEvent(mouseUpEvent);
+      expect(mockFinish).toBeCalledTimes(1);
     });
   });
 

@@ -27,14 +27,14 @@ describe('SliderRunner', () => {
   const mockFinish = jest.fn();
 
   const $horizontalView = $('#view_container_horizontal');
-  $horizontalView.bind('startChanging.myMVPSlider', mockStart);
-  $horizontalView.bind('changeValue.myMVPSlider', mockChange);
-  $horizontalView.bind('finish.myMVPSlider', mockFinish);
+  $horizontalView.on('startChanging.myMVPSlider', mockStart);
+  $horizontalView.on('changeValue.myMVPSlider', mockChange);
+  $horizontalView.on('finish.myMVPSlider', mockFinish);
 
   const $verticalView = $('#view_container');
-  $verticalView.bind('startChanging.myMVPSlider', mockStart);
-  $verticalView.bind('changeValue.myMVPSlider', mockChange);
-  $verticalView.bind('finish.myMVPSlider', mockFinish);
+  $verticalView.on('startChanging.myMVPSlider', mockStart);
+  $verticalView.on('changeValue.myMVPSlider', mockChange);
+  $verticalView.on('finish.myMVPSlider', mockFinish);
 
   const $horizontalBarContainer = $horizontalView.find('.slider__bar_container');
   const $verticalBarContainer = $verticalView.find('.slider__bar_container');

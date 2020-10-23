@@ -43,6 +43,7 @@ export default class SliderValuesDisplay implements ValuesDisplay {
     }
 
     this.updateValueDisplay({ data, options: newOpts });
+    this.attachEventHandlers();
   }
 
   destroy(): void {
@@ -72,10 +73,11 @@ export default class SliderValuesDisplay implements ValuesDisplay {
     // creating firstValDisplay
     if (!this.$firstValDisplay) {
       this.$firstValDisplay = SliderValuesDisplay.createValueDisplay();
+      this.$firstValDisplay.data({ isSecond: false });
       this.$displayContainer.append(this.$firstValDisplay);
     }
 
-    // add/remove _horizontal modificator for firstValDisplay
+    // add/remove _horizontal modifier for firstValDisplay
     if (isHorizontal && !this.$firstValDisplay.hasClass('slider__display_value_horizontal')) {
       this.$firstValDisplay.addClass('slider__display_value_horizontal');
     }
@@ -89,10 +91,11 @@ export default class SliderValuesDisplay implements ValuesDisplay {
       // create secondValDisplay
       if (!this.$secondValDisplay) {
         this.$secondValDisplay = SliderValuesDisplay.createValueDisplay();
+        this.$secondValDisplay.data({ isSecond: true });
         this.$displayContainer.append(this.$secondValDisplay);
       }
 
-      // add/remove _horizontal modificator for firstValDisplay
+      // add/remove _horizontal modifier for secondValDisplay
       if (options.isHorizontal && !this.$secondValDisplay.hasClass('slider__display_value_horizontal')) {
         this.$secondValDisplay.addClass('slider__display_value_horizontal');
       }
@@ -217,6 +220,61 @@ export default class SliderValuesDisplay implements ValuesDisplay {
         }
       }
     }
+  }
+
+  private attachEventHandlers(): void {
+    if (this.$firstValDisplay) {
+      this.$firstValDisplay.on('mousedown', this.dragStartHandler.bind(this));
+      this.$firstValDisplay.on('dragstart', false);
+    }
+
+    if (this.$secondValDisplay) {
+      this.$secondValDisplay.on('mousedown', this.dragStartHandler.bind(this));
+      this.$secondValDisplay.on('dragstart', false);
+    }
+  }
+
+  private dragStartHandler(event: JQuery.MouseDownEvent): void {
+    const $startEvent = $.Event('startChanging.myMVPSlider');
+    this.$view.trigger($startEvent);
+    const $valDisplay = $(event.currentTarget);
+    const isSecond = $valDisplay.data('isSecond');
+    $valDisplay.css('cursor', 'grabbing');
+
+    const mouseMoveHandler = this.makeHandler(isSecond);
+    this.$view.on('mousemove', mouseMoveHandler);
+    document.onmouseup = (): void => {
+      this.$view.off('mousemove');
+      $valDisplay.css('cursor', 'grab');
+
+      const $finishEvent = $.Event('finish.myMVPSlider');
+      this.$view.trigger($finishEvent);
+
+      document.onmouseup = null;
+    };
+  }
+
+  private makeHandler(isSecond: boolean): (e: JQuery.MouseMoveEvent) => void {
+    let moveCoord: number;
+    let selectedVal: number;
+    const container = this.$displayContainer[0];
+    const elemMetrics = container.getBoundingClientRect();
+    const { isHorizontal } = this.$displayContainer.data('options');
+
+    const mouseMoveHandler = (e: JQuery.MouseMoveEvent): void => {
+      if (isHorizontal) {
+        moveCoord = e.clientX - elemMetrics.x;
+        selectedVal = (moveCoord / elemMetrics.width) * 100;
+      } else {
+        moveCoord = e.clientY - elemMetrics.y;
+        selectedVal = (moveCoord / elemMetrics.height) * 100;
+      }
+
+      const $changeEvent = $.Event('changeValue.myMVPSlider');
+      this.$view.trigger($changeEvent, [selectedVal, isSecond]);
+    };
+
+    return mouseMoveHandler;
   }
 
   static createValuesDisplayContainer(): JQuery {
