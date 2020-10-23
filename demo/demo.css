@@ -1,5 +1,8 @@
 .demo_slider {
   display: grid;
+  margin-bottom: 100px;
+  border-top: solid 1px gray;
+  border-bottom: solid 1px gray;
 }
 
 .demo_slider_vertical {
