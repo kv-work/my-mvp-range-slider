@@ -7,7 +7,7 @@ const mockUpdateModelState = jest.fn();
 const mockLockModelState = jest.fn();
 const mockUnlockModelState = jest.fn();
 const mockGetModelData = jest.fn();
-jest.mock('../../model/model', jest.fn(() => jest.fn().mockImplementation(() => ({
+jest.mock('../../Model/model', jest.fn(() => jest.fn().mockImplementation(() => ({
   updateState: mockUpdateModelState,
   lockState: mockLockModelState,
   unlockState: mockUnlockModelState,
@@ -18,7 +18,7 @@ const mockUpdatePresenter = jest.fn();
 const mockGetAllData = jest.fn();
 const mockGetPresenterData = jest.fn();
 const mockSetUserData = jest.fn();
-jest.mock('../../presenter/presenter', jest.fn(() => jest.fn().mockImplementation(() => ({
+jest.mock('../../Presenter/presenter', jest.fn(() => jest.fn().mockImplementation(() => ({
   update: mockUpdatePresenter,
   getAllData: mockGetAllData,
   getModelData: mockGetModelData,
@@ -30,7 +30,7 @@ const mockRenderView = jest.fn();
 const mockUpdateView = jest.fn();
 const mockDestroyView = jest.fn();
 const mockGetViewData = jest.fn();
-jest.mock('../../view/view', jest.fn(() => jest.fn().mockImplementation(() => ({
+jest.mock('../../View/view', jest.fn(() => jest.fn().mockImplementation(() => ({
   render: mockRenderView,
   update: mockUpdateView,
   destroy: mockDestroyView,

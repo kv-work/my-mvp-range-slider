@@ -6,28 +6,28 @@ import SliderValuesDisplay from '../Values-display/values-display';
 
 const mockBarUpdate = jest.fn();
 const mockBarDestroy = jest.fn();
-jest.mock('../bar/bar', jest.fn(() => jest.fn().mockImplementation(() => ({
+jest.mock('../Bar/bar', jest.fn(() => jest.fn().mockImplementation(() => ({
   update: mockBarUpdate,
   destroy: mockBarDestroy,
 }))));
 
 const mockScaleUpdate = jest.fn();
 const mockScaleDestroy = jest.fn();
-jest.mock('../scale/scale', jest.fn(() => jest.fn().mockImplementation(() => ({
+jest.mock('../Scale/scale', jest.fn(() => jest.fn().mockImplementation(() => ({
   update: mockScaleUpdate,
   destroy: mockScaleDestroy,
 }))));
 
 const mockRunnerUpdate = jest.fn();
 const mockRunnerDestroy = jest.fn();
-jest.mock('../runner/runner', jest.fn(() => jest.fn().mockImplementation(() => ({
+jest.mock('../Runner/runner', jest.fn(() => jest.fn().mockImplementation(() => ({
   update: mockRunnerUpdate,
   destroy: mockRunnerDestroy,
 }))));
 
 const mockValueDisplayUpdate = jest.fn();
 const mockValueDisplayDestroy = jest.fn();
-jest.mock('../values-display/values-display', jest.fn(() => jest.fn().mockImplementation(() => ({
+jest.mock('../Values-display/values-display', jest.fn(() => jest.fn().mockImplementation(() => ({
   update: mockValueDisplayUpdate,
   destroy: mockValueDisplayDestroy,
 }))));
