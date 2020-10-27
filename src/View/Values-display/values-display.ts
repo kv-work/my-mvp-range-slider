@@ -239,13 +239,11 @@ export default class SliderValuesDisplay implements ValuesDisplay {
     this.$view.trigger($startEvent);
     const $valDisplay = $(event.currentTarget);
     const isSecond = $valDisplay.data('isSecond');
-    $valDisplay.css('cursor', 'grabbing');
 
     const mouseMoveHandler = this.makeHandler(isSecond);
     this.$view.on('mousemove', mouseMoveHandler);
     document.onmouseup = (): void => {
       this.$view.off('mousemove');
-      $valDisplay.css('cursor', 'grab');
 
       const $finishEvent = $.Event('finish.myMVPSlider');
       this.$view.trigger($finishEvent);
