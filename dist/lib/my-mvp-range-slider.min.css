@@ -75,7 +75,7 @@
   position: absolute;
   border-radius: 50%;
   background-color: #53B6A8;
-  cursor: grab;
+  cursor: pointer;
   left: -0.5rem;
   z-index: 2;
 }
@@ -111,7 +111,7 @@
   -ms-user-select: none;
   user-select: none;
   right: 0.8rem;
-  cursor: grab;
+  cursor: pointer;
 }
 
 .slider__display_value_horizontal {
