@@ -1,8 +1,5 @@
 .demo_slider {
   display: grid;
-  margin-bottom: 100px;
-  border-top: solid 1px gray;
-  border-bottom: solid 1px gray;
 }
 
 .demo_slider_vertical {
@@ -55,14 +52,6 @@
   padding-bottom: 0.3rem;
 }
 
-.config_presenter__presets > label {
-  cursor: pointer;
-}
-
-.config_presenter__lock > label {
-  cursor: pointer;
-}
-
 .config__view {
   display: flex;
   flex-direction: column;
@@ -73,7 +62,6 @@
   flex-direction: row-reverse;
   justify-content: flex-end;
   align-items: flex-end;
-  cursor: pointer;
 }
 
 .config_orientation {
@@ -87,7 +75,6 @@
 .config_orientation > label{
   grid-row: 2;
   align-items: center;
-  cursor: pointer;
 }
 
 .label_num_scale_val {
@@ -99,7 +86,6 @@
   border-bottom: 1px solid lightblue;
   margin-top: 0.3rem;
   padding: 0.3rem 0;
-  cursor: pointer;
 }
 
 .label_postfix,
@@ -126,5 +112,4 @@
 
 input[type="checkbox"] {
   margin-right: 0.5rem;
-  cursor: pointer;
 }
