@@ -1,27 +1,32 @@
-.demo_slider {
+.demo-slider {
   display: grid;
   margin-bottom: 100px;
   border-top: solid 1px gray;
   border-bottom: solid 1px gray;
 }
 
-.demo_slider_vertical {
+.demo-slider_vertical {
   grid-template-columns: 320px 1fr;
 }
 
-.config_form_vertical {
+.callback-indicators {
+  display: flex;
+  justify-content: space-around;
+}
+
+.callback-indicators__indicator {
+  border: 1px solid;
+  padding: 0.3rem 0.5rem;
+}
+
+.config-form_vertical {
   grid-column: 2;
   grid-row: 1;
 }
 
-.config_container {
+.config__container {
   display: grid;
   grid-template-columns: auto auto;
-}
-
-.config_container__view {
-  grid-column: 2;
-  grid-row: 1 / 3;
 }
 
 .config__model {
@@ -29,17 +34,22 @@
   flex-direction: column;
 }
 
-.config__model_label {
+.config__model-label {
   display: flex;
   justify-content: space-between;
 }
 
-.label_second_val {
+.config__model-label_named-second-val {
   justify-content: end;
 }
 
-.input_second_val {
+.config__model-input_named-second-val {
   margin-left: auto;
+}
+
+.config__view-wrapper {
+  grid-column: 2;
+  grid-row: 1 / 3;
 }
 
 .config__presenter_label {
@@ -112,16 +122,6 @@
 .input_prefix,
 .input_postfix {
   width: 270px;
-}
-
-.callback_indicators {
-  display: flex;
-  justify-content: space-around;
-}
-
-.indicator {
-  border: 1px solid;
-  padding: 0.3rem 0.5rem;
 }
 
 input[type="checkbox"] {

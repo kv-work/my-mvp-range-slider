@@ -21,6 +21,6 @@ $('.js-slider').each(function addPlugin(): void {
   }
 });
 
-$('.js-demo_slider').each(function setDemo(): void {
+$('.js-demo-slider').each(function setDemo(): void {
   const demo = new Panel($(this));
 });

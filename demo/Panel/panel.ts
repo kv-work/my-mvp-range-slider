@@ -12,8 +12,8 @@ export default class Panel {
 
     this.slider = this.$container.find('.js-slider').data('myMVPSlider');
 
-    this.$configPanel = this.$container.find('.js-config_panel');
-    this.$callbackIndicators = this.$container.find('.callback_indicators');
+    this.$configPanel = this.$container.find('.js-config-form');
+    this.$callbackIndicators = this.$container.find('.js-callback-indicators');
 
     this.presets = Panel.createPresets();
     this.currentPreset = 0;
@@ -27,12 +27,12 @@ export default class Panel {
   private initInputs(): PanelInputs {
     const { $configPanel } = this;
 
-    const $maxValInput = $configPanel.find('.input_max_val');
-    const $minValInput = $configPanel.find('.input_min_val');
-    const $stepInput = $configPanel.find('.input_step');
-    const $valInput = $configPanel.find('.input_val');
-    const $secondValInput = $configPanel.find('.input_second_val');
-    const $secondValCheck = $configPanel.find('.input_second_val_check');
+    const $maxValInput = $configPanel.find('.js-config__model-input_named-max-val');
+    const $minValInput = $configPanel.find('.js-config__model-input_named-min-val');
+    const $stepInput = $configPanel.find('.js-config__model-input_named-step');
+    const $valInput = $configPanel.find('.js-config__model-input_named-val');
+    const $secondValInput = $configPanel.find('.config__model-input_named-second-val');
+    const $secondValCheck = $configPanel.find('.js-config__model-checkbox');
 
     const $lockMaxValCheck = $configPanel.find('.input_lock_max');
     const $lockMinValCheck = $configPanel.find('.input_lock_min');
@@ -484,27 +484,22 @@ export default class Panel {
   }
 
   private lightIndicator(indicator: string): void {
-    let indicatorClass: string;
     let $indicator: JQuery;
     switch (indicator) {
       case 'onStart':
-        indicatorClass = '.indicator__on-start';
-        $indicator = this.$callbackIndicators.find(indicatorClass)
+        $indicator = this.$callbackIndicators.find('.js-callback-indicators__indicator_on-start')
           .css({ 'background-color': 'lime' });
         break;
       case 'onChange':
-        indicatorClass = '.indicator__on-change';
-        $indicator = this.$callbackIndicators.find(indicatorClass)
+        $indicator = this.$callbackIndicators.find('.js-callback-indicators__indicator_on-change')
           .css({ 'background-color': 'lime' });
         break;
       case 'onFinish':
-        indicatorClass = '.indicator__on-finish';
-        $indicator = this.$callbackIndicators.find(indicatorClass)
+        $indicator = this.$callbackIndicators.find('.js-callback-indicators__indicator_on-finish')
           .css({ 'background-color': 'lime' });
         break;
       case 'onUpdate':
-        indicatorClass = '.indicator__on-update';
-        $indicator = this.$callbackIndicators.find(indicatorClass)
+        $indicator = this.$callbackIndicators.find('.js-callback-indicators__indicator_on-update')
           .css({ 'background-color': 'lime' });
         break;
       default:
