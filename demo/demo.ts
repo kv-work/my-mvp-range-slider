@@ -8,13 +8,13 @@ $('.js-slider').each(function addPlugin(): void {
     $elem.myMVPSlider();
   } else {
     const opts: App.Option = {
-      maxValue: +(Math.random() * 100000).toFixed(),
-      minValue: -1 * (+(Math.random() * 100000).toFixed()),
-      step: +(Math.random() * 100).toFixed(2),
+      maxValue: Number((Math.random() * 100000).toFixed()),
+      minValue: Number((Math.random() * 100000).toFixed()) * (-1),
+      step: Number((Math.random() * 100).toFixed(2)),
       value: Math.random() * 100000 - 123,
       isHorizontal: true,
       scale: true,
-      numOfScaleVal: +(Math.random() * 10).toFixed(),
+      numOfScaleVal: Number((Math.random() * 10).toFixed()),
     };
 
     $elem.myMVPSlider(opts);
