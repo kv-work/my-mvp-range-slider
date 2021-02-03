@@ -63,42 +63,82 @@
 
             </fieldset>
           </div>
-          <div class="config_container__presenter">
+          <div class="config__presenter-wrapper">
             <fieldset class="config__presenter">
-              <legend class="config__presenter_legend">Presenter configuration</legend>
+              <legend class="config__presenter-legend">Presenter configuration</legend>
 
-              <div class="config_presenter__presets presets">
-                <div class="presets__label">Presets:</div>
-                <label>Default
-                  <input name="presets" type="radio" class="presets__input presets__input_default" value="0" checked>|
+              <div class="config__presenter-presets">
+                <div class="config__presenter-presets-label">Presets:</div>
+                <label class="config__presets-label">Default
+                  <input
+                    name="presets"
+                    type="radio"
+                    class="config__presets-radio"
+                    value="0"
+                    checked
+                  >|
                 </label>
-                <label>Week
-                  <input name="presets" type="radio" class="presets__input presets__input_week" value="1">|
+                <label class="config__presets-label">Week
+                  <input
+                    name="presets"
+                    type="radio"
+                    class="config__presets-radio"
+                    value="1"
+                  >|
                 </label>
-                <label>Year
-                  <input name="presets" type="radio" class="presets__input presets__input_year" value="2">
+                <label class="config__presets-label">Year
+                  <input
+                    name="presets"
+                    type="radio"
+                    class="config__presets-radio"
+                    value="2"
+                  >
                 </label>
               </div>
 
-              <div class="config_presenter__lock">
-                <div class="config_presenter__lock lock_label">Lock model values:</div>
-                <label class="config__presenter_label label_lock_max">Maximum value
-                  <input name="lock_max" type="checkbox" class="config__presenter_input input_lock_max">
+              <div class="config__presenter-lock">
+                <div class="config__presenter-lock-label">Lock model values:</div>
+                <label class="config__lock-label">Maximum value
+                  <input
+                    name="lock_max"
+                    type="checkbox"
+                    class="config__lock-checkbox config__lock-checkbox_named-max-val js-config__lock-checkbox_named-max-val"
+                  >
                 </label>
-                <label class="config__presenter_label label_lock_min">Minimum value
-                  <input name="lock_min" type="checkbox" class="config__presenter_input input_lock_min">
+                <label class="config__lock-label">Minimum value
+                  <input
+                    name="lock_min"
+                    type="checkbox"
+                    class="config__lock-checkbox config__lock-checkbox_named-min-val js-config__lock-checkbox_named-min-val"
+                  >
                 </label>
-                <label class="config__presenter_label label_lock_step">Step
-                  <input name="lock_step" type="checkbox" class="config__presenter_input input_lock_step">
+                <label class="config__lock-label">Step
+                  <input
+                    name="lock_step"
+                    type="checkbox"
+                    class="config__lock-checkbox config__lock-checkbox_named-step js-config__lock-checkbox_named-step"
+                  >
                 </label>
-                <label class="config__presenter_label label_lock_val">Value
-                  <input name="lock_val" type="checkbox" class="config__presenter_input input_lock_val">
+                <label class="config__lock-label">Value
+                  <input
+                    name="lock_val"
+                    type="checkbox"
+                    class="config__lock-checkbox config__lock-checkbox_named-val js-config__lock-checkbox_named-val"
+                  >
                 </label>
-                <label class="config__presenter_label label_lock_second_val">Second value
-                  <input name="lock_second_val" type="checkbox" class="config__presenter_input input_lock_second_val">
+                <label class="config__lock-label">Second value
+                  <input
+                    name="lock_second_val"
+                    type="checkbox"
+                    class="config__lock-checkbox config__lock-checkbox_named-second-val js-config__lock-checkbox_named-second-val"
+                  >
                 </label>
-                <label class="config__presenter_label label_lock_all">All
-                  <input name="lock_all" type="checkbox" class="config__presenter_input input_lock_all">
+                <label class="config__lock-label">All
+                  <input
+                    name="lock_all"
+                    type="checkbox"
+                    class="config__lock-checkbox config__lock-checkbox_named-all js-config__lock-checkbox_named-all"
+                  >
                 </label>
               </div>
 

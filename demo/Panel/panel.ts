@@ -34,12 +34,12 @@ export default class Panel {
     const $secondValInput = $configPanel.find('.config__model-input_named-second-val');
     const $secondValCheck = $configPanel.find('.js-config__model-checkbox');
 
-    const $lockMaxValCheck = $configPanel.find('.input_lock_max');
-    const $lockMinValCheck = $configPanel.find('.input_lock_min');
-    const $lockStepCheck = $configPanel.find('.input_lock_step');
-    const $lockValCheck = $configPanel.find('.input_lock_val');
-    const $lockSecondValCheck = $configPanel.find('.input_lock_second_val');
-    const $lockAllCheck = $configPanel.find('.input_lock_all');
+    const $lockMaxValCheck = $configPanel.find('.js-config__lock-checkbox_named-max-val');
+    const $lockMinValCheck = $configPanel.find('.js-config__lock-checkbox_named-min-val');
+    const $lockStepCheck = $configPanel.find('.js-config__lock-checkbox_named-step');
+    const $lockValCheck = $configPanel.find('.js-config__lock-checkbox_named-val');
+    const $lockSecondValCheck = $configPanel.find('.js-config__lock-checkbox_named-second-val');
+    const $lockAllCheck = $configPanel.find('.js-config__lock-checkbox_named-all');
 
     const $orientationRadio = $configPanel.find('.input_orientation');
 
