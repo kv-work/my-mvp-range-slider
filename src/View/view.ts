@@ -261,14 +261,14 @@ class SliderView implements View {
   }
 
   private attachEventHandlers(): void {
-    this.$view.on('startChanging.myMVPSlider', this.startChangingHandler.bind(this));
-    this.$view.on('changeValue.myMVPSlider', this.changeValueHandler.bind(this));
-    this.$view.on('finish.myMVPSlider', this.finishEventHandler.bind(this));
+    this.$view.on('startChanging.myMVPSlider', this.handleViewStartChanging.bind(this));
+    this.$view.on('changeValue.myMVPSlider', this.handleViewChangeValue.bind(this));
+    this.$view.on('finish.myMVPSlider', this.handleViewFinish.bind(this));
 
     this.$barContainer.on('dragstart', false);
   }
 
-  private startChangingHandler(event: JQuery.Event, isDragStarted?: boolean): void {
+  private handleViewStartChanging(event: JQuery.Event, isDragStarted?: boolean): void {
     const startAction: {event: string; value?: [number, number] | number} = { event: 'start' };
 
     this.notify(startAction);
@@ -277,15 +277,16 @@ class SliderView implements View {
       const startValue = this.renderData.percentage;
 
       if (isDragStarted && Array.isArray(startValue)) {
-        const dragHandler = this.makeDragHandler(startValue);
-        const dropHandler = this.makeDropHandler();
-        this.$view.on('dragRange.myMVPSlider', dragHandler);
-        this.$view.on('dropRange.myMVPSlider', dropHandler);
+        const handleViewDragRange = this.makeRangeDragHandler(startValue);
+        const handleViewDropRange = this.makeRangeDropHandler();
+        this.$view.on('dragRange.myMVPSlider', handleViewDragRange);
+        this.$view.on('dropRange.myMVPSlider', handleViewDropRange);
       }
     }
   }
 
-  private makeDragHandler(start: [number, number]): (e: JQuery.Event, distance: number) => void {
+  private makeRangeDragHandler(start: [number, number]):
+  (e: JQuery.Event, distance: number) => void {
     const dragHandler = (_: JQuery.Event, dragDistance: number): void => {
       const valuesDiff = start[1] - start[0];
       let newVal = start[0] + dragDistance;
@@ -308,7 +309,7 @@ class SliderView implements View {
     return dragHandler;
   }
 
-  private makeDropHandler(): () => void {
+  private makeRangeDropHandler(): () => void {
     const dragHandler = (): void => {
       const finishAction: {event: string} = { event: 'finish' };
       this.notify(finishAction);
@@ -320,7 +321,7 @@ class SliderView implements View {
     return dragHandler;
   }
 
-  private changeValueHandler(event: JQuery.Event, value: number, isSecond: boolean): void {
+  private handleViewChangeValue(event: JQuery.Event, value: number, isSecond: boolean): void {
     if (this.renderData) {
       const currentValue = this.renderData.percentage;
       let changeAction: {event: string; value: [number, number] | number};
@@ -336,7 +337,7 @@ class SliderView implements View {
     }
   }
 
-  private finishEventHandler(): void {
+  private handleViewFinish(): void {
     const finishAction: {event: string; value?: [number, number] | number} = { event: 'finish' };
 
     this.notify(finishAction);

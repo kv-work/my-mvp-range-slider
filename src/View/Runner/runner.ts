@@ -80,25 +80,25 @@ class SliderRunner implements Runner {
   }
 
   destroy(): void {
-    this.$runner.off('mousedown.runner');
-    this.$view.off('mousemove.runner');
+    this.$runner.off('mousedown');
+    this.$view.off('mousemove');
     this.$runner.remove();
     this.isRendered = false;
   }
 
   private attacheEventHandlers(): void {
-    this.$runner.on('mousedown', this.dragStartHandler.bind(this));
+    this.$runner.on('mousedown', this.handleRunnerMouseDown.bind(this));
     this.$runner.on('dragstart', false);
   }
 
-  private dragStartHandler(event: JQuery.MouseDownEvent): void {
+  private handleRunnerMouseDown(event: JQuery.MouseDownEvent): void {
     const $startEvent = $.Event('startChanging.myMVPSlider');
     this.$view.trigger($startEvent);
     const runner = event.currentTarget;
     const renderOptions = $(runner).data('options');
 
-    const mouseMoveHandler = this.makeHandler(renderOptions);
-    this.$view.on('mousemove', mouseMoveHandler);
+    const handleViewMouseMove = this.makeViewMouseMoveHandler(renderOptions);
+    this.$view.on('mousemove', handleViewMouseMove);
     document.onmouseup = (): void => {
       this.$view.off('mousemove');
 
@@ -109,7 +109,7 @@ class SliderRunner implements Runner {
     };
   }
 
-  private makeHandler(opts: Runner.RenderOptions): (e: JQuery.MouseMoveEvent) => void {
+  private makeViewMouseMoveHandler(opts: Runner.RenderOptions): (e: JQuery.MouseMoveEvent) => void {
     let moveCoord: number;
     let selectedVal: number;
     const bar = this.$barContainer[0];

@@ -59,10 +59,10 @@ class SliderBar implements Bar {
   }
 
   private attachEventHandlers(): void {
-    this.$bar.on('click', this.clickHandler.bind(this));
+    this.$bar.on('click', this.handleBarClick.bind(this));
   }
 
-  private clickHandler(event: JQuery.ClickEvent): void {
+  private handleBarClick(event: JQuery.ClickEvent): void {
     const $startEvent = $.Event('startChanging.myMVPSlider');
     this.$view.trigger($startEvent);
 
@@ -147,7 +147,7 @@ class SliderBar implements Bar {
 
     if (isDragable && !haveHandler) {
       this.$range.css({ cursor: 'grab' });
-      this.$range.on('mousedown', this.dragStartHandler.bind(this));
+      this.$range.on('mousedown', this.handleRangeMouseDown.bind(this));
       this.$range.data('have-handler', true);
       this.$range[0].onclick = (e: Event): void => {
         e.stopPropagation();
@@ -164,7 +164,7 @@ class SliderBar implements Bar {
     }
   }
 
-  private dragStartHandler(event: JQuery.MouseDownEvent): void {
+  private handleRangeMouseDown(event: JQuery.MouseDownEvent): void {
     const $range = $(event.currentTarget);
     const { $view } = this;
     $range.css({ cursor: 'grabbing' });
@@ -178,10 +178,10 @@ class SliderBar implements Bar {
     const $startEvent = $.Event('startChanging.myMVPSlider');
     const isDragStarted = true;
     this.$view.trigger($startEvent, [isDragStarted]);
-    const dragHandler = this.makeDragHandler(startCoord);
-    $view.on('mousemove', dragHandler);
+    const handleViewMouseMove = this.makeViewDragHandler(startCoord);
+    $view.on('mousemove', handleViewMouseMove);
     document.onmouseup = (): void => {
-      this.$view.off('mousemove', dragHandler);
+      this.$view.off('mousemove', handleViewMouseMove);
       $range.css({ cursor: 'grab' });
 
       const $dropEvent = $.Event('dropRange.myMVPSlider');
@@ -191,7 +191,7 @@ class SliderBar implements Bar {
     };
   }
 
-  private makeDragHandler(start: number): (event: JQuery.MouseMoveEvent) => void {
+  private makeViewDragHandler(start: number): (event: JQuery.MouseMoveEvent) => void {
     const dragHandler = (event: JQuery.MouseMoveEvent): void => {
       let newCoord: number;
       const viewMetrics = this.$view[0].getBoundingClientRect();

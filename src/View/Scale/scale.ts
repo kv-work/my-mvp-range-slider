@@ -98,10 +98,10 @@ class SliderScale implements Scale {
   }
 
   private attachEventHandlers(): void {
-    this.$scale.on('click', this.clickEventListener.bind(this));
+    this.$scale.on('click', this.handleScaleClick.bind(this));
   }
 
-  private clickEventListener(event: JQuery.ClickEvent): void {
+  private handleScaleClick(event: JQuery.ClickEvent): void {
     const elem = event.target;
     let selectedVal: number;
     if (elem.classList.contains('scale__element')) {

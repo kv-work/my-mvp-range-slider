@@ -224,24 +224,24 @@ export default class SliderValuesDisplay implements ValuesDisplay {
 
   private attachEventHandlers(): void {
     if (this.$firstValDisplay) {
-      this.$firstValDisplay.on('mousedown', this.dragStartHandler.bind(this));
+      this.$firstValDisplay.on('mousedown', this.handleValueMouseDown.bind(this));
       this.$firstValDisplay.on('dragstart', false);
     }
 
     if (this.$secondValDisplay) {
-      this.$secondValDisplay.on('mousedown', this.dragStartHandler.bind(this));
+      this.$secondValDisplay.on('mousedown', this.handleValueMouseDown.bind(this));
       this.$secondValDisplay.on('dragstart', false);
     }
   }
 
-  private dragStartHandler(event: JQuery.MouseDownEvent): void {
+  private handleValueMouseDown(event: JQuery.MouseDownEvent): void {
     const $startEvent = $.Event('startChanging.myMVPSlider');
     this.$view.trigger($startEvent);
     const $valDisplay = $(event.currentTarget);
     const isSecond = $valDisplay.data('isSecond');
 
-    const mouseMoveHandler = this.makeHandler(isSecond);
-    this.$view.on('mousemove', mouseMoveHandler);
+    const handleViewMouseMove = this.makeViewMouseMoveHandler(isSecond);
+    this.$view.on('mousemove', handleViewMouseMove);
     document.onmouseup = (): void => {
       this.$view.off('mousemove');
 
@@ -252,7 +252,7 @@ export default class SliderValuesDisplay implements ValuesDisplay {
     };
   }
 
-  private makeHandler(isSecond: boolean): (e: JQuery.MouseMoveEvent) => void {
+  private makeViewMouseMoveHandler(isSecond: boolean): (e: JQuery.MouseMoveEvent) => void {
     let moveCoord: number;
     let selectedVal: number;
     const container = this.$displayContainer[0];
