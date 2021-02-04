@@ -291,18 +291,18 @@ export default class Panel {
       .add($displayMaxValCheck)
       .add($displayMinValCheck);
 
-    const changeCheckboxHandler = this.createChangeHandler();
-    const changeRangeHandler = this.createChangeRangeHandler();
-    const changeRadioHandler = this.createChangeRadioHandler();
+    const handleCheckboxChange = this.makeCheckboxChangeHandler();
+    const handleRangeChange = this.makeRangeChangeHandler();
+    const handleRadioChange = this.makeRadioChangeHandler();
 
-    $inputs.on('blur', this.unfocusHandler.bind(this));
-    $checkbox.on('change', changeCheckboxHandler);
-    $numScaleValRange.on('change', changeRangeHandler);
-    $orientationRadio.on('change', changeRadioHandler);
-    $presetsRadio.on('change', changeRadioHandler);
+    $inputs.on('blur', this.handleInputBlur.bind(this));
+    $checkbox.on('change', handleCheckboxChange);
+    $numScaleValRange.on('change', handleRangeChange);
+    $orientationRadio.on('change', handleRadioChange);
+    $presetsRadio.on('change', handleRadioChange);
   }
 
-  private unfocusHandler(e: JQuery.BlurEvent): void {
+  private handleInputBlur(e: JQuery.BlurEvent): void {
     const { slider } = this;
     const elem = e.target;
     const newVal = $(elem).val();
@@ -338,7 +338,7 @@ export default class Panel {
     }
   }
 
-  private createChangeHandler(): (event: JQuery.ChangeEvent) => void {
+  private makeCheckboxChangeHandler(): (event: JQuery.ChangeEvent) => void {
     const { slider } = this;
     const { $secondValInput } = this.inputs;
 
@@ -434,7 +434,7 @@ export default class Panel {
     return handler;
   }
 
-  private createChangeRangeHandler(): (event: JQuery.ChangeEvent) => void {
+  private makeRangeChangeHandler(): (event: JQuery.ChangeEvent) => void {
     const { slider } = this;
 
     const handler = (e: JQuery.ChangeEvent): void => {
@@ -447,7 +447,7 @@ export default class Panel {
     return handler;
   }
 
-  private createChangeRadioHandler(): (event: JQuery.ChangeEvent) => void {
+  private makeRadioChangeHandler(): (event: JQuery.ChangeEvent) => void {
     const { slider } = this;
 
     const handler = (e: JQuery.ChangeEvent): void => {
