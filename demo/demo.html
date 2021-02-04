@@ -73,7 +73,7 @@
                   <input
                     name="presets"
                     type="radio"
-                    class="config__presets-radio"
+                    class="config__presets-radio js-config__presets-radio"
                     value="0"
                     checked
                   >|
@@ -82,7 +82,7 @@
                   <input
                     name="presets"
                     type="radio"
-                    class="config__presets-radio"
+                    class="config__presets-radio js-config__presets-radio"
                     value="1"
                   >|
                 </label>
@@ -90,7 +90,7 @@
                   <input
                     name="presets"
                     type="radio"
-                    class="config__presets-radio"
+                    class="config__presets-radio js-config__presets-radio"
                     value="2"
                   >
                 </label>
@@ -144,69 +144,134 @@
 
             </fieldset>
           </div>
-          <div class="config_container__view">
+          <div class="config__view-wrapper">
             <fieldset class="config__view">
               <legend class="config__view_legend">View configuration</legend>
 
-              <div class="config_orientation">
+              <div class="config__view-orientation">
                 Orientation:
-                <label class="config__view_label label_orientation">Horizontal
-                  <input name="orientation" type="radio" class="config__view_input input_orientation" value="0" checked>
+                <label class="config__orientation-label">Horizontal
+                  <input
+                    name="orientation"
+                    type="radio"
+                    class="config__orientation-radio js-config__orientation-radio"
+                    value="0"
+                    checked
+                  >
                 </label>
-                <label class="config__view_label label_orientation">Vertical
-                  <input name="orientation" type="radio" class="config__view_input input_orientation" value="1">
+                <label class="config__orientation-label">Vertical
+                  <input
+                    name="orientation"
+                    type="radio"
+                    class="config__orientation-radio js-config__orientation-radio"
+                    value="1"
+                  >
                 </label>
               </div>
 
-              <label class="config__view_label label_range">Range
-                <input name="range" type="checkbox" class="config__view_input input_range">
+              <label class="config__view-label">Range
+                <input
+                  name="range"
+                  type="checkbox"
+                  class="config__view-checkbox config__view-checkbox_named-range js-config__view-checkbox_named-range"
+                >
               </label>
 
-              <label class="config__view_label label_drag_interval">Drag interval
-                <input name="drag_interval" type="checkbox" class="config__view_input input_drag_interval">
+              <label class="config__view-label">Drag interval
+                <input
+                  name="drag_interval"
+                  type="checkbox"
+                  class="config__view-checkbox config__view-checkbox_named-range js-config__view-checkbox_named-drag-interval"
+                >
               </label>
 
-              <label class="config__view_label label_runner">Runner
-                <input name="runner" type="checkbox" class="config__view_input input_runner">
+              <label class="config__view-label">Runner
+                <input
+                  name="runner"
+                  type="checkbox"
+                  class="config__view-checkbox config__view-checkbox_named-runner js-config__view-checkbox_named-runner"
+                >
               </label>
 
-              <label class="config__view_label label_bar">Bar
-                <input name="bar" type="checkbox" class="config__view_input input_bar">
+              <label class="config__view-label">Bar
+                <input
+                  name="bar"
+                  type="checkbox"
+                  class="config__view-checkbox config__view-checkbox_named-bar js-config__view-checkbox_named-bar"
+                >
               </label>
 
-              <label class="config__view_label label_scale">Scale
-                <input name="scale" type="checkbox" class="config__view_input input_scale">
+              <label class="config__view-label">Scale
+                <input
+                  name="scale"
+                  type="checkbox"
+                  class="config__view-checkbox config__view-checkbox_named-scale js-config__view-checkbox_named-scale"
+                >
               </label>
 
-              <label class="config__view_label label_display_value">Display value
-                <input name="display_value" type="checkbox" class="config__view_input input_display_value">
+              <label class="config__view-label">Display value
+                <input
+                  name="display_value"
+                  type="checkbox"
+                  class="config__view-checkbox config__view-checkbox_named-display-value js-config__view-checkbox_named-display-value"
+                >
               </label>
 
-              <label class="config__view_label label_scale_value">Display scale values
-                <input name="scale_value" type="checkbox" class="config__view_input input_scale_value">
+              <label class="config__view-label">Display scale values
+                <input
+                  name="scale_value"
+                  type="checkbox"
+                  class="config__view-checkbox config__view-checkbox_named-scale-value js-config__view-checkbox_named-scale-value"
+                >
               </label>
 
-              <label class="config__view_label label_num_scale_val">Number of scale values:
-                <input name="num_scale_val" type="range" min="0" max="10"
-                  class="config__view_input input_num_scale_val">
-                <input name="num_scale_val" type="number" min="0" max="10"
-                  class="config__view_input input_num_scale_val_display">
+              <label class="config__view-label config__view-label_named-num-scale-val">Number of scale values:
+                <input
+                  name="num_scale_val"
+                  type="range"
+                  min="0"
+                  max="10"
+                  class="config__view-input config__view-checkbox_named-num-scale-val js-config__view-checkbox_named-num-scale-val"
+                >
+                <input
+                  name="num_scale_val"
+                  type="number"
+                  min="0"
+                  max="10"
+                  class="config__view-input config__view-checkbox_named-num-scale-val js-config__view-checkbox_named-num-scale-val"
+                >
               </label>
 
-              <label class="config__view_label label_display_min">Display minimum value
-                <input name="display_min" type="checkbox" class="config__view_input input_display_min">
+              <label class="config__view-label">Display minimum value
+                <input
+                  name="display_min"
+                  type="checkbox"
+                  class="config__view-checkbox config__view-checkbox_named-display-min js-config__view-checkbox_named-display-min"
+                >
               </label>
 
-              <label class="config__view_label label_display_max">Display maximum value
-                <input name="display_max" type="checkbox" class="config__view_input input_display_max">
+              <label class="config__view-label">Display maximum value
+                <input
+                  name="display_max"
+                  type="checkbox"
+                  class="config__view-checkbox config__view-checkbox_named-display-max js-config__view-checkbox_named-display-max"
+                >
               </label>
 
-              <label class="config__view_label label_prefix">Prefix
-                <input name="prefix" type="text" class="config__view_input input_prefix">
+              <label class="config__view-label_named-prefix">Prefix
+                <input
+                  name="prefix"
+                  type="text"
+                  class="config__view-input config__view-input_named-prefix js-config__view-input_named-prefix"
+                >
               </label>
 
-              <label class="config__view_label label_postfix">Postfix
-                <input name="postfix" type="text" class="config__view_input input_postfix">
+              <label class="config__view-label_named-postfix">Postfix
+                <input
+                  name="postfix"
+                  type="text"
+                  class="config__view-input config__view-input_named-postfix js-config__view-input_named-postfix"
+                >
               </label>
             </fieldset>
           </div>

@@ -41,24 +41,24 @@ export default class Panel {
     const $lockSecondValCheck = $configPanel.find('.js-config__lock-checkbox_named-second-val');
     const $lockAllCheck = $configPanel.find('.js-config__lock-checkbox_named-all');
 
-    const $orientationRadio = $configPanel.find('.input_orientation');
+    const $orientationRadio = $configPanel.find('.js-config__orientation-radio');
 
-    const $rangeCheck = $configPanel.find('.input_range');
-    const $dragIntervalCheck = $configPanel.find('.input_drag_interval');
-    const $barCheck = $configPanel.find('.input_bar');
-    const $runnerCheck = $configPanel.find('.input_runner');
-    const $scaleCheck = $configPanel.find('.input_scale');
-    const $displayValCheck = $configPanel.find('.input_display_value');
-    const $displayScaleValCheck = $configPanel.find('.input_scale_value');
-    const $numScaleValRange = $configPanel.find('input[name="num_scale_val"]');
-    const $displayMaxValCheck = $configPanel.find('.input_display_max');
-    const $displayMinValCheck = $configPanel.find('.input_display_min');
-    const $prefixInput = $configPanel.find('.input_prefix');
+    const $rangeCheck = $configPanel.find('.js-config__view-checkbox_named-range');
+    const $dragIntervalCheck = $configPanel.find('.js-config__view-checkbox_named-drag-interval');
+    const $barCheck = $configPanel.find('.js-config__view-checkbox_named-bar');
+    const $runnerCheck = $configPanel.find('.js-config__view-checkbox_named-runner');
+    const $scaleCheck = $configPanel.find('.js-config__view-checkbox_named-scale');
+    const $displayValCheck = $configPanel.find('.js-config__view-checkbox_named-display-value');
+    const $displayScaleValCheck = $configPanel.find('.js-config__view-checkbox_named-scale-value');
+    const $numScaleValRange = $configPanel.find('.js-config__view-checkbox_named-num-scale-val');
 
-    const $postfixInput = $configPanel.find('.input_postfix');
+    const $displayMaxValCheck = $configPanel.find('.js-config__view-checkbox_named-display-max');
+    const $displayMinValCheck = $configPanel.find('.js-config__view-checkbox_named-display-min');
+    const $prefixInput = $configPanel.find('.js-config__view-input_named-prefix');
 
-    // presets
-    const $presetsRadio = $configPanel.find('[name="presets"]');
+    const $postfixInput = $configPanel.find('.js-config__view-input_named-postfix');
+
+    const $presetsRadio = $configPanel.find('.js-config__presets-radio');
 
     const inputs: PanelInputs = {
       $maxValInput,
@@ -472,14 +472,14 @@ export default class Panel {
   }
 
   private changeOrientation(isHorizontal: boolean): void {
-    if (isHorizontal && this.$container.hasClass('demo_slider_vertical')) {
-      this.$container.removeClass('demo_slider_vertical');
-      this.$configPanel.removeClass('config_form_vertical');
+    if (isHorizontal && this.$container.hasClass('demo-slider_vertical')) {
+      this.$container.removeClass('demo-slider_vertical');
+      this.$configPanel.removeClass('config-form_vertical');
     }
 
-    if (!isHorizontal && !this.$container.hasClass('demo_slider_vertical')) {
-      this.$container.addClass('demo_slider_vertical');
-      this.$configPanel.addClass('config_form_vertical');
+    if (!isHorizontal && !this.$container.hasClass('demo-slider_vertical')) {
+      this.$container.addClass('demo-slider_vertical');
+      this.$configPanel.addClass('config-form_vertical');
     }
   }
 

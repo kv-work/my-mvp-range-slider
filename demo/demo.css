@@ -75,15 +75,7 @@
   flex-direction: column;
 }
 
-.config__view_label {
-  display: flex;
-  flex-direction: row-reverse;
-  justify-content: flex-end;
-  align-items: flex-end;
-  cursor: pointer;
-}
-
-.config_orientation {
+.config__view-orientation {
   display: grid;
   grid-template-columns: 1fr 1fr;
   border-top: 1px solid lightblue;
@@ -91,13 +83,21 @@
   padding-bottom: 0.3rem;
 }
 
-.config_orientation > label{
+.config__orientation-label {
   grid-row: 2;
   align-items: center;
   cursor: pointer;
 }
 
-.label_num_scale_val {
+.config__view-label {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  align-items: flex-end;
+  cursor: pointer;
+}
+
+.config__view-label_named-num-scale-val {
   display: grid;
   grid-template-columns: auto 1fr 3rem;
   column-gap: 0.5rem;
@@ -109,19 +109,21 @@
   cursor: pointer;
 }
 
-.label_postfix,
-.label_prefix {
+.config__view-label_named-prefix,
+.config__view-label_named-postfix {
   display: grid;
   grid-template-columns: minmax(auto, 20%) 1fr;
   justify-content: space-between;
 }
 
-.input_prefix,
-.input_postfix {
+.config__view-input_named-postfix,
+.config__view-input_named-prefix {
   width: 270px;
 }
 
-input[type="checkbox"] {
+.config__model-checkbox,
+.config__lock-checkbox,
+.config__view-checkbox {
   margin-right: 0.5rem;
   cursor: pointer;
 }
