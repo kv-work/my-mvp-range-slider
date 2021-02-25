@@ -133,11 +133,11 @@ export default class Panel {
 
     const {
       isHorizontal = true,
-      range,
-      dragInterval,
-      bar,
-      runner,
-      scale,
+      isRange,
+      isDragInterval,
+      hasBar,
+      hasRunner,
+      hasScale,
       displayValue,
       displayScaleValue,
       numOfScaleVal,
@@ -183,11 +183,11 @@ export default class Panel {
     }
     this.changeOrientation(isHorizontal);
 
-    $rangeCheck.prop('checked', range);
-    $dragIntervalCheck.prop('checked', dragInterval);
-    $barCheck.prop('checked', bar);
-    $runnerCheck.prop('checked', runner);
-    $scaleCheck.prop('checked', scale);
+    $rangeCheck.prop('checked', isRange);
+    $dragIntervalCheck.prop('checked', isDragInterval);
+    $barCheck.prop('checked', hasBar);
+    $runnerCheck.prop('checked', hasRunner);
+    $scaleCheck.prop('checked', hasScale);
     $displayValCheck.prop('checked', displayValue);
     $displayScaleValCheck.prop('checked', displayScaleValue);
 
@@ -400,19 +400,19 @@ export default class Panel {
           }
           break;
         case 'range':
-          slider.update({ range: val });
+          slider.update({ isRange: val });
           break;
         case 'drag_interval':
-          slider.update({ dragInterval: val });
+          slider.update({ isDragInterval: val });
           break;
         case 'runner':
-          slider.update({ runner: val });
+          slider.update({ hasRunner: val });
           break;
         case 'bar':
-          slider.update({ bar: val });
+          slider.update({ hasBar: val });
           break;
         case 'scale':
-          slider.update({ scale: val });
+          slider.update({ hasScale: val });
           break;
         case 'display_value':
           slider.update({ displayValue: val });
