@@ -11,7 +11,7 @@ class SliderScale implements Scale {
     this.isRendered = false;
   }
 
-  public update(opts: Scale.UpdateOptions): void {
+  update(opts: Scale.UpdateOptions): void {
     const currentData = this.$scale.data('options');
     const { data: newData, options } = opts;
     const defaultOptions: Scale.RenderOptions = {
@@ -91,7 +91,7 @@ class SliderScale implements Scale {
     }
   }
 
-  public destroy(): void {
+  destroy(): void {
     this.$scale.off('click');
     this.$scale.remove();
     this.isRendered = false;
