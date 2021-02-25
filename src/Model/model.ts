@@ -28,7 +28,7 @@ class SliderModel implements Model {
   }
 
   updateState(state: Model.Options): void {
-    const oldState = this.getState();
+    const { state: oldState } = this;
 
     this.isReadyNotify = false;
 
