@@ -57,7 +57,7 @@ describe('myMVPSlider', () => {
     expect($('.js-slider__bar').length).toBe(1);
     expect($('.js-slider__runner').length).toBe(1);
     expect($('.js-slider__scale').length).toBe(1);
-    expect($('.js-slider__display_container').length).toBe(1);
+    expect($('.js-slider__display-container').length).toBe(1);
   });
 
   test('should support call chains', () => {
@@ -143,7 +143,7 @@ describe('myMVPSlider', () => {
     expect($(testNodes[0]).find('.js-slider__bar').length).toBe(0);
     expect($(testNodes[0]).find('.js-slider__runner').length).toBe(0);
     expect($(testNodes[0]).find('.js-slider__scale').length).toBe(0);
-    expect($(testNodes[0]).find('.js-slider__display_container').length).toBe(0);
+    expect($(testNodes[0]).find('.js-slider__display-container').length).toBe(0);
     const slider = $(testNodes[0]).data('myMVPSlider');
     expect(slider).toBeUndefined();
     const options = $(testNodes[0]).data('init-options');

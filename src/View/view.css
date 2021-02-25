@@ -13,13 +13,13 @@
   flex-direction: column;
 }
 
-.slider__bar_container {
+.slider__bar-container {
   position: relative;
   height: 100%;
   z-index: 2;
 }
 
-.slider__bar_container_horizontal {
+.slider__bar-container_horizontal {
   height: auto;
   width: 100%;
 }

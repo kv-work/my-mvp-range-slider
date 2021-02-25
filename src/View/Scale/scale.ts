@@ -68,7 +68,7 @@ class SliderScale implements Scale {
 
     let maxVal = 0;
 
-    this.$scale.find('.scale__element').each(function compareWithMaxVal() {
+    this.$scale.find('.js-slider__scale-element').each(function compareWithMaxVal() {
       if (isHorizontal) {
         const h = this.getBoundingClientRect().height;
         maxVal = (maxVal >= h) ? maxVal : h;
@@ -104,7 +104,7 @@ class SliderScale implements Scale {
   private handleScaleClick(event: JQuery.ClickEvent): void {
     const elem = event.target;
     let selectedVal: number;
-    if (elem.classList.contains('scale__element')) {
+    if (elem.classList.contains('js-slider__scale-element')) {
       selectedVal = $(elem).data('percentage');
 
       const $startEvent = $.Event('startChanging.myMVPSlider');
@@ -137,13 +137,13 @@ class SliderScale implements Scale {
   }
 
   static createElement(content: string, percentage: number, options: Scale.RenderOptions): JQuery {
-    const $elem = $('<span>', { class: 'scale__element' });
+    const $elem = $('<span>', { class: 'js-slider__scale-element slider__scale-element' });
     $elem.html(content);
 
     $elem.data('percentage', percentage);
 
     if (options.isHorizontal) {
-      $elem.addClass('scale__element_horizontal');
+      $elem.addClass('slider__scale-element_horizontal');
     }
 
     return $elem;

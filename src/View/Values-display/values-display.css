@@ -1,16 +1,16 @@
-.slider__display_container {
+.slider__display-container {
   display: flex;
   justify-content: flex-end;
   height: 100%;
   position: relative;
 }
 
-.slider__display_container_horizontal {
+.slider__display-container_horizontal {
   height: 2rem;
   width: 100%;
 }
 
-.slider__display_value {
+.slider__display-value {
   display: inline-block;
   position: absolute;
   color: white;
@@ -28,7 +28,7 @@
   cursor: pointer;
 }
 
-.slider__display_value_horizontal {
+.slider__display-value_horizontal {
   bottom: 0.7rem;
   right: auto;
 }

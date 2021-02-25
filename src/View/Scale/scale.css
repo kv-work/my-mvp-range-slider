@@ -9,7 +9,7 @@
   position: relative;
 }
 
-.scale__element {
+.slider__scale-element {
   position: absolute;
   display: flex;
   flex-direction: column;

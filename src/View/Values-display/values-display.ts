@@ -30,11 +30,11 @@ export default class SliderValuesDisplay implements ValuesDisplay {
 
     this.$displayContainer.data({ options: newOpts, data: data.value });
 
-    if (newOpts.isHorizontal && !this.$displayContainer.hasClass('slider__display_container_horizontal')) {
-      this.$displayContainer.addClass('slider__display_container_horizontal');
+    if (newOpts.isHorizontal && !this.$displayContainer.hasClass('slider__display-container_horizontal')) {
+      this.$displayContainer.addClass('slider__display-container_horizontal');
     }
-    if (!newOpts.isHorizontal && this.$displayContainer.hasClass('slider__display_container_horizontal')) {
-      this.$displayContainer.removeClass('slider__display_container_horizontal');
+    if (!newOpts.isHorizontal && this.$displayContainer.hasClass('slider__display-container_horizontal')) {
+      this.$displayContainer.removeClass('slider__display-container_horizontal');
     }
 
     if (!this.isRendered) {
@@ -78,11 +78,11 @@ export default class SliderValuesDisplay implements ValuesDisplay {
     }
 
     // add/remove _horizontal modifier for firstValDisplay
-    if (isHorizontal && !this.$firstValDisplay.hasClass('slider__display_value_horizontal')) {
-      this.$firstValDisplay.addClass('slider__display_value_horizontal');
+    if (isHorizontal && !this.$firstValDisplay.hasClass('slider__display-value_horizontal')) {
+      this.$firstValDisplay.addClass('slider__display-value_horizontal');
     }
-    if (!options.isHorizontal && this.$firstValDisplay.hasClass('slider__display_value_horizontal')) {
-      this.$firstValDisplay.removeClass('slider__display_value_horizontal');
+    if (!options.isHorizontal && this.$firstValDisplay.hasClass('slider__display-value_horizontal')) {
+      this.$firstValDisplay.removeClass('slider__display-value_horizontal');
     }
 
     if (Array.isArray(value)) {
@@ -96,11 +96,11 @@ export default class SliderValuesDisplay implements ValuesDisplay {
       }
 
       // add/remove _horizontal modifier for secondValDisplay
-      if (options.isHorizontal && !this.$secondValDisplay.hasClass('slider__display_value_horizontal')) {
-        this.$secondValDisplay.addClass('slider__display_value_horizontal');
+      if (options.isHorizontal && !this.$secondValDisplay.hasClass('slider__display-value_horizontal')) {
+        this.$secondValDisplay.addClass('slider__display-value_horizontal');
       }
-      if (!options.isHorizontal && this.$secondValDisplay.hasClass('slider__display_value_horizontal')) {
-        this.$secondValDisplay.removeClass('slider__display_value_horizontal');
+      if (!options.isHorizontal && this.$secondValDisplay.hasClass('slider__display-value_horizontal')) {
+        this.$secondValDisplay.removeClass('slider__display-value_horizontal');
       }
 
       this.$secondValDisplay.data('data', secondData);
@@ -277,14 +277,14 @@ export default class SliderValuesDisplay implements ValuesDisplay {
 
   static createValuesDisplayContainer(): JQuery {
     const $displayContainer = $('<div>', {
-      class: 'js-slider__display_container slider__display_container',
+      class: 'js-slider__display-container slider__display-container',
     });
 
     return $displayContainer;
   }
 
   static createValueDisplay(): JQuery {
-    const $valueDisplay = $('<div>', { class: 'slider__display_value' });
+    const $valueDisplay = $('<div>', { class: 'js-slider__display-value slider__display-value' });
 
     return $valueDisplay;
   }

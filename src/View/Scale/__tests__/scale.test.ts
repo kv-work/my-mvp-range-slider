@@ -92,8 +92,8 @@ describe('scale', () => {
     });
 
     test('should create and append scale elements to view container', () => {
-      const $horizontalElements = $horizontalScale.find('.scale__element_horizontal');
-      const $verticalElements = $verticalScale.find('.scale__element');
+      const $horizontalElements = $horizontalScale.find('.slider__scale-element_horizontal');
+      const $verticalElements = $verticalScale.find('.slider__scale-element');
 
       expect($horizontalScale.length).toBe(1);
       expect($verticalScale.length).toBe(1);
@@ -107,7 +107,7 @@ describe('scale', () => {
         options: { displayScaleValue: false },
       });
 
-      const $horizontalElements = $horizontalScale.find('.scale__element_horizontal');
+      const $horizontalElements = $horizontalScale.find('.slider__scale-element_horizontal');
 
       expect($horizontalElements.length).toBe(0);
     });
@@ -144,7 +144,7 @@ describe('scale', () => {
         data: newData,
         options: renderOptions,
       });
-      const $elements = $horizontalView.find('.scale__element');
+      const $elements = $horizontalView.find('.js-slider__scale-element');
       expect($elements.length).toBe(3);
       $elements.each(function test(idx: number) {
         expect($(this).html()).toBe(newData.data[idx].toString());
@@ -163,7 +163,7 @@ describe('scale', () => {
         data: newData,
         options: renderOptions,
       });
-      const $elements = $horizontalView.find('.scale__element');
+      const $elements = $horizontalView.find('.js-slider__scale-element');
       expect($elements.length).toBe(6);
       $elements.each(function test(idx: number) {
         expect($(this).html()).toBe(newData.data[idx].toString());
@@ -171,9 +171,9 @@ describe('scale', () => {
     });
 
     test('should attach event handlers to scale elements', () => {
-      const $scaleElement = $horizontalScale.find('.scale__element_horizontal').eq(5);
+      const $scaleElement = $horizontalScale.find('.slider__scale-element_horizontal').eq(5);
 
-      expect($horizontalScale.find('.scale__element_horizontal').length).toBe(11);
+      expect($horizontalScale.find('.slider__scale-element_horizontal').length).toBe(11);
       $scaleElement.click();
       expect(mockStart).toBeCalledTimes(1);
       expect(mockChange).toBeCalledTimes(1);
@@ -203,7 +203,7 @@ describe('scale', () => {
 
       expect($horizontalScale.data('data').percentage).toEqual([0, 100]);
 
-      const $newScaleElem = $horizontalScale.find('.scale__element_horizontal').eq(3);
+      const $newScaleElem = $horizontalScale.find('.slider__scale-element_horizontal').eq(3);
       expect($newScaleElem.data('percentage')).toBe(75);
 
       $newScaleElem.click();
@@ -216,7 +216,7 @@ describe('scale', () => {
       expect(mockFinish.mock.calls[0][2]).toBe(true); // isSecond
 
       jest.clearAllMocks();
-      const $anotherScaleElem = $horizontalScale.find('.scale__element_horizontal').eq(1);
+      const $anotherScaleElem = $horizontalScale.find('.slider__scale-element_horizontal').eq(1);
       expect($anotherScaleElem.data('percentage')).toBe(25);
       $anotherScaleElem.click();
       expect(mockStart).toBeCalledTimes(1);
@@ -241,18 +241,18 @@ describe('scale', () => {
 
     test('should detach scale container', () => {
       expect($scale.length).toBe(1);
-      expect($scale.find('.scale__element').length).not.toBe(0);
+      expect($scale.find('.js-slider__scale-element').length).not.toBe(0);
 
       testScale.destroy();
       expect($('.js-slider__scale').length).toBe(0);
-      expect($('#view_container').find('.scale__element').length).toBe(0);
+      expect($('#view_container').find('.js-slider__scale-element').length).toBe(0);
 
       testScale.update({
         data: testRenderData,
         options: renderOptions,
       });
       const $horizontalScale = $horizontalView.find('.slider__scale_horizontal');
-      const $horizontalElements = $horizontalScale.find('.scale__element_horizontal');
+      const $horizontalElements = $horizontalScale.find('.slider__scale-element_horizontal');
 
       expect($horizontalScale.length).toBe(1);
       expect($horizontalElements.length).toBe(testRenderData.percentageData.length);
@@ -265,7 +265,7 @@ describe('scale', () => {
 
     test('should remove scale elements event listeners', () => {
       const $clickEvent = $.Event('click');
-      const scaleElement = $scale.find('.scale__element')[5];
+      const scaleElement = $scale.find('.js-slider__scale-element')[5];
       testScale.destroy();
       $(scaleElement).trigger($clickEvent);
       expect(mockChange).not.toBeCalled();
