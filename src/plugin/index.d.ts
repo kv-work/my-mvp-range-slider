@@ -17,11 +17,11 @@ export interface MyMVPSliderOptions {
 
   // view
   isHorizontal?: boolean;
-  range?: boolean;
+  isRange?: boolean;
   dragInterval?: boolean;
-  runner?: boolean;
-  bar?: boolean;
-  scale?: boolean;
+  hasRunner?: boolean;
+  hasBar?: boolean;
+  hasScale?: boolean;
   scaleStep?: number;
   displayScaleValue?: boolean;
   displayValue?: boolean;

@@ -13,7 +13,7 @@ $('.js-slider').each(function addPlugin(): void {
       step: Number((Math.random() * 100).toFixed(2)),
       value: Math.random() * 100000 - 123,
       isHorizontal: true,
-      scale: true,
+      hasScale: true,
       numOfScaleVal: Number((Math.random() * 10).toFixed()),
     };
 

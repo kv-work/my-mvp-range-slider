@@ -126,11 +126,11 @@ describe('Presenter', () => {
     };
     testViewData = {
       isHorizontal: true,
-      range: true,
-      dragInterval: true,
-      runner: true,
-      bar: true,
-      scale: true,
+      isRange: true,
+      isDragInterval: true,
+      hasRunner: true,
+      hasBar: true,
+      hasScale: true,
       numOfScaleVal: 9,
       displayScaleValue: true,
       displayValue: true,
@@ -396,11 +396,11 @@ describe('Presenter', () => {
     test('should calls update method of view, if it is necessary to update the view props', () => {
       testPresenter.update({
         isHorizontal: false,
-        range: true,
-        dragInterval: false,
-        runner: false,
-        bar: true,
-        scale: true,
+        isRange: true,
+        isDragInterval: false,
+        hasRunner: false,
+        hasBar: true,
+        hasScale: true,
         numOfScaleVal: 9,
         displayScaleValue: true,
         displayValue: false,
@@ -412,11 +412,11 @@ describe('Presenter', () => {
 
       expect(mockUpdate).toBeCalledWith({
         isHorizontal: false,
-        range: true,
-        dragInterval: false,
-        runner: false,
-        bar: true,
-        scale: true,
+        isRange: true,
+        isDragInterval: false,
+        hasRunner: false,
+        hasBar: true,
+        hasScale: true,
         numOfScaleVal: 9,
         displayScaleValue: true,
         displayValue: false,
@@ -426,16 +426,16 @@ describe('Presenter', () => {
         postfix: ' p.',
       });
 
-      testPresenter.update({ runner: true });
+      testPresenter.update({ hasRunner: true });
 
-      expect(mockUpdate).toBeCalledWith({ runner: true });
+      expect(mockUpdate).toBeCalledWith({ hasRunner: true });
 
       expect(mockUpdateState).not.toBeCalled();
     });
 
     test('should calls update method of view and updateState method of model, then changed renderData and calls render method of view', () => {
       testPresenter.update({
-        range: false,
+        isRange: false,
         maxValue: 25,
         minValue: 12,
         step: 3,
@@ -443,7 +443,7 @@ describe('Presenter', () => {
         secondValue: undefined,
       });
 
-      expect(mockUpdate).toBeCalledWith({ range: false });
+      expect(mockUpdate).toBeCalledWith({ isRange: false });
       expect(mockUpdateState).toBeCalledWith({
         maxValue: 25,
         minValue: 12,

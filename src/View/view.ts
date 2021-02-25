@@ -114,13 +114,13 @@ class SliderView implements View {
   }
 
   private updateBar(percentage: number | [number, number]): void {
-    if (this.viewOptions.bar && this.bar) {
+    if (this.viewOptions.hasBar && this.bar) {
       this.bar.update({
         data: percentage,
         options: this.viewOptions,
       });
     }
-    if (this.viewOptions.bar && !this.bar) {
+    if (this.viewOptions.hasBar && !this.bar) {
       this.bar = new SliderBar({
         $viewContainer: this.$view,
         $barContainer: this.$barContainer,
@@ -130,26 +130,26 @@ class SliderView implements View {
         options: this.viewOptions,
       });
     }
-    if (!this.viewOptions.bar && this.bar) {
+    if (!this.viewOptions.hasBar && this.bar) {
       this.bar.destroy();
     }
   }
 
   private updateScale(renderData: View.RenderData): void {
-    if (this.viewOptions.scale && this.scale) {
+    if (this.viewOptions.hasScale && this.scale) {
       this.scale.update({
         data: renderData,
         options: this.viewOptions,
       });
     }
-    if (this.viewOptions.scale && !this.scale) {
+    if (this.viewOptions.hasScale && !this.scale) {
       this.scale = new SliderScale({ $viewContainer: this.$view });
       this.scale.update({
         data: renderData,
         options: this.viewOptions,
       });
     }
-    if (!this.viewOptions.scale && this.scale) {
+    if (!this.viewOptions.hasScale && this.scale) {
       this.scale.destroy();
     }
   }
@@ -178,7 +178,7 @@ class SliderView implements View {
       options: this.viewOptions,
     };
 
-    if (this.viewOptions.runner) {
+    if (this.viewOptions.hasRunner) {
       if (Array.isArray(renderData.value)) {
         if (this.runner) {
           this.runner.update(updData);
@@ -476,11 +476,11 @@ class SliderView implements View {
       const key: string = entry[0];
       switch (key) {
         case 'isHorizontal':
-        case 'range':
-        case 'dragInterval':
-        case 'runner':
-        case 'bar':
-        case 'scale':
+        case 'isRange':
+        case 'isDragInterval':
+        case 'hasRunner':
+        case 'hasBar':
+        case 'hasScale':
         case 'displayScaleValue':
         case 'displayValue':
         case 'displayMin':

@@ -56,11 +56,11 @@ class SliderPresenter implements Presenter {
 
     let viewOptions: View.Options = {
       isHorizontal: options.isHorizontal,
-      range: options.range,
-      dragInterval: options.dragInterval,
-      runner: options.runner,
-      bar: options.bar,
-      scale: options.scale,
+      isRange: options.isRange,
+      isDragInterval: options.isDragInterval,
+      hasRunner: options.hasRunner,
+      hasBar: options.hasBar,
+      hasScale: options.hasScale,
       numOfScaleVal: options.numOfScaleVal,
       displayScaleValue: options.displayScaleValue,
       displayValue: options.displayValue,

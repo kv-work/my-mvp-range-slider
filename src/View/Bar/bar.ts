@@ -19,10 +19,10 @@ class SliderBar implements Bar {
     const { options, data } = opts;
     const defaultOptions: Bar.RenderOptions = {
       isHorizontal: true,
-      range: true,
-      dragInterval: false,
+      isRange: true,
+      isDragInterval: false,
     };
-    const newOptions = {
+    const newOptions: Bar.RenderOptions = {
       ...defaultOptions,
       ...currentOptions,
       ...options,
@@ -37,10 +37,10 @@ class SliderBar implements Bar {
       this.$bar.addClass('slider__bar_horizontal');
     }
 
-    if (newOptions.range) {
+    if (newOptions.isRange) {
       this.createRangeElement();
     }
-    if (!newOptions.range && this.$range) {
+    if (!newOptions.isRange && this.$range) {
       this.$range.remove();
       this.$range = undefined;
     }
@@ -143,7 +143,7 @@ class SliderBar implements Bar {
     }
 
     const haveHandler = this.$range.data('have-handler');
-    const isDragable = options.dragInterval && Array.isArray(data);
+    const isDragable = options.isDragInterval && Array.isArray(data);
 
     if (isDragable && !haveHandler) {
       this.$range.css({ cursor: 'grab' });

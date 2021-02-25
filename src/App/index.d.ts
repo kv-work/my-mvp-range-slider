@@ -24,11 +24,11 @@ declare namespace App {
 
     // view
     isHorizontal?: boolean;
-    range?: boolean;
-    dragInterval?: boolean;
-    runner?: boolean;
-    bar?: boolean;
-    scale?: boolean;
+    isRange?: boolean;
+    isDragInterval?: boolean;
+    hasRunner?: boolean;
+    hasBar?: boolean;
+    hasScale?: boolean;
     displayScaleValue?: boolean;
     numOfScaleVal?: number;
     displayValue?: boolean;

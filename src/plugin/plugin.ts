@@ -13,11 +13,11 @@ import SliderApp from '../App/app';
 
       // view
       isHorizontal: true,
-      range: true,
-      dragInterval: false,
-      runner: true,
-      bar: true,
-      scale: true,
+      isRange: true,
+      isDragInterval: false,
+      hasRunner: true,
+      hasBar: true,
+      hasScale: true,
       numOfScaleVal: 3,
       displayScaleValue: true,
       displayValue: true,
@@ -65,11 +65,11 @@ import SliderApp from '../App/app';
               }
               return entry;
             case 'isHorizontal':
-            case 'range':
-            case 'dragInterval':
-            case 'runner':
-            case 'bar':
-            case 'scale':
+            case 'isRange':
+            case 'isDragInterval':
+            case 'hasRunner':
+            case 'hasBar':
+            case 'hasScale':
             case 'displayScaleValue':
             case 'displayValue':
             case 'displayMin':

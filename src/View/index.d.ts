@@ -17,11 +17,11 @@ declare namespace View {
 
   interface Options {
     isHorizontal?: boolean;
-    range?: boolean;
-    dragInterval?: boolean;
-    runner?: boolean;
-    bar?: boolean;
-    scale?: boolean;
+    isRange?: boolean;
+    isDragInterval?: boolean;
+    hasRunner?: boolean;
+    hasBar?: boolean;
+    hasScale?: boolean;
     displayScaleValue?: boolean;
     displayValue?: boolean;
     numOfScaleVal?: number;

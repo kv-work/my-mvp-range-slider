@@ -11,8 +11,8 @@ declare namespace Bar {
 
   interface RenderOptions {
     isHorizontal?: boolean;
-    range?: boolean;
-    dragInterval?: boolean;
+    isRange?: boolean;
+    isDragInterval?: boolean;
   }
 
   interface UpdateOptions {

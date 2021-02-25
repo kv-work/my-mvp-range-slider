@@ -1,3 +1,4 @@
+/* eslint-disable fsd/no-function-declaration-in-event-listener */
 import SliderView from '../view';
 import SliderBar from '../Bar/bar';
 import SliderScale from '../Scale/scale';
@@ -38,11 +39,11 @@ describe('SliderView', () => {
   const testNode = $('#container')[0];
   const testOptions: View.Options = {
     isHorizontal: true,
-    range: true,
-    dragInterval: true,
-    runner: true,
-    bar: true,
-    scale: true,
+    isRange: true,
+    isDragInterval: true,
+    hasRunner: true,
+    hasBar: true,
+    hasScale: true,
     displayScaleValue: true,
     numOfScaleVal: 9,
     displayValue: true,
@@ -137,10 +138,10 @@ describe('SliderView', () => {
     beforeEach(() => {
       newView = new SliderView(testNode, {
         isHorizontal: false,
-        bar: false,
-        scale: false,
-        runner: false,
-        range: false,
+        hasBar: false,
+        hasScale: false,
+        hasRunner: false,
+        isRange: false,
         displayValue: false,
       });
       testView.addObserver(testObserver);
@@ -305,8 +306,8 @@ describe('SliderView', () => {
       const $newNode = $('<div>', { class: 'new_node' });
       $('body').append($newNode);
       newView = new SliderView($newNode[0], {
-        range: false,
-        runner: true,
+        isRange: false,
+        hasRunner: true,
       });
 
       expect(newView).toHaveProperty('isRendered', false);
@@ -369,16 +370,16 @@ describe('SliderView', () => {
       expect(mockRunnerUpdate).toBeCalledTimes(2);
     });
 
-    test('should destroy bar,if options.bar is false', () => {
+    test('should destroy bar,if options.hasBar is false', () => {
       testView.render(testRenderData);
-      testView.update({ bar: false });
+      testView.update({ hasBar: false });
       testView.render(testRenderData);
 
       expect(mockBarDestroy).toBeCalled();
     });
 
-    test('should create SliderBar instance if (options.bar && !this.bar) is true', () => {
-      newView.update({ bar: true });
+    test('should create SliderBar instance if (options.hasBar && !this.bar) is true', () => {
+      newView.update({ hasBar: true });
       newView.render({
         maxValue: 4,
         minValue: 0,
@@ -394,14 +395,14 @@ describe('SliderView', () => {
 
     test('should destroy scale,if options.scale is false', () => {
       testView.render(testRenderData);
-      testView.update({ scale: false });
+      testView.update({ hasScale: false });
       testView.render(testRenderData);
 
       expect(mockScaleDestroy).toBeCalled();
     });
 
     test('should create SliderScale instance if (options.scale && !this.scale) is true', () => {
-      newView.update({ scale: true });
+      newView.update({ hasScale: true });
       newView.render({
         maxValue: 4,
         minValue: 0,
@@ -440,14 +441,14 @@ describe('SliderView', () => {
 
     test('should destroy runner and secondRunner,if options.runner is false', () => {
       testView.render(testRenderData);
-      testView.update({ runner: false });
+      testView.update({ hasRunner: false });
       testView.render(testRenderData);
 
       expect(mockRunnerDestroy).toBeCalledTimes(2);
     });
 
     test('should create SliderRunner instance if (options.runner && !this.runner) is true', () => {
-      newView.update({ runner: true });
+      newView.update({ hasRunner: true });
       newView.render({
         maxValue: 4,
         minValue: 0,
@@ -462,8 +463,8 @@ describe('SliderView', () => {
 
     test('should create runner and secondRunner instances if (options.runner && !this.runner && !this.secondRunner && Array.isArray(renderData.value)) is true', () => {
       newView.update({
-        runner: true,
-        range: true,
+        hasRunner: true,
+        isRange: true,
       });
       newView.render({
         maxValue: 4,
@@ -491,17 +492,17 @@ describe('SliderView', () => {
       expect(testView.getData().isHorizontal).toBe(false);
 
       testView.update({
-        bar: false,
-        scale: false,
+        hasBar: false,
+        hasScale: false,
       });
 
       expect(testView.getData()).toEqual({
         isHorizontal: false,
-        range: true,
-        dragInterval: true,
-        runner: true,
-        bar: false,
-        scale: false,
+        isRange: true,
+        isDragInterval: true,
+        hasRunner: true,
+        hasBar: false,
+        hasScale: false,
         numOfScaleVal: 9,
         displayScaleValue: true,
         displayValue: true,
@@ -515,11 +516,11 @@ describe('SliderView', () => {
     test('should validate data', () => {
       testView.update({
         isHorizontal: undefined,
-        range: undefined,
-        dragInterval: undefined,
-        runner: undefined,
-        bar: undefined,
-        scale: undefined,
+        isRange: undefined,
+        isDragInterval: undefined,
+        hasRunner: undefined,
+        hasBar: undefined,
+        hasScale: undefined,
         numOfScaleVal: -15,
         displayScaleValue: undefined,
         displayValue: undefined,
@@ -533,11 +534,11 @@ describe('SliderView', () => {
 
       expect(testView.getData()).toEqual({
         isHorizontal: true,
-        range: true,
-        dragInterval: true,
-        runner: true,
-        bar: true,
-        scale: true,
+        isRange: true,
+        isDragInterval: true,
+        hasRunner: true,
+        hasBar: true,
+        hasScale: true,
         numOfScaleVal: 9,
         displayScaleValue: true,
         displayValue: true,

@@ -91,16 +91,16 @@ describe('bar', () => {
       testBar.update({
         options: {
           isHorizontal: true,
-          range: true,
-          dragInterval: false,
+          isRange: true,
+          isDragInterval: false,
         },
         data: 20,
       });
       verticalBar.update({
         options: {
           isHorizontal: false,
-          range: true,
-          dragInterval: false,
+          isRange: true,
+          isDragInterval: false,
         },
         data: 20,
       });
@@ -119,8 +119,8 @@ describe('bar', () => {
     test('should save render options and data in data attr of $bar', () => {
       expect($bar.data('options')).toEqual({
         isHorizontal: true,
-        range: true,
-        dragInterval: false,
+        isRange: true,
+        isDragInterval: false,
       });
       expect($bar.data('data')).toEqual(20);
     });
@@ -152,7 +152,7 @@ describe('bar', () => {
       jest.clearAllMocks();
       testBar.update({
         options: {
-          range: true,
+          isRange: true,
         },
         data: [20, 60],
       });
@@ -188,7 +188,7 @@ describe('bar', () => {
 
     test('should attach drag and drop event handler to $range, if options.range && options.dragInterval && Array.isArray(data)', () => {
       testBar.update({
-        options: { dragInterval: true },
+        options: { isDragInterval: true },
         data: [20, 60],
       });
 
@@ -231,7 +231,7 @@ describe('bar', () => {
       // vertical
       jest.clearAllMocks();
       verticalBar.update({
-        options: { dragInterval: true },
+        options: { isDragInterval: true },
         data: [20, 50],
       });
 
@@ -281,20 +281,20 @@ describe('bar', () => {
     });
 
     test('should append bar range to $bar if options.range is true', () => {
-      expect($bar.data('options').range).toBeTruthy();
+      expect($bar.data('options').isRange).toBeTruthy();
       expect($bar.find('.slider__range').length).toBe(1);
     });
 
     test('should remove bar range if options.range is false', () => {
       expect($bar.find('.slider__range').length).toBe(1);
-      testBar.update({ options: { range: false }, data: 0 });
+      testBar.update({ options: { isRange: false }, data: 0 });
       expect($bar.find('.slider__range').length).toBe(0);
     });
 
     test('should detach bar range event listeners if options.dragInterval is false', () => {
-      testBar.update({ options: { dragInterval: true }, data: [20, 60] });
+      testBar.update({ options: { isDragInterval: true }, data: [20, 60] });
       testBar.update({
-        options: { dragInterval: false },
+        options: { isDragInterval: false },
         data: [20, 60],
       });
       const $mousedownEvent = $.Event('mousedown', {
@@ -302,7 +302,7 @@ describe('bar', () => {
         clientY: 30,
       });
       const $range = $horizontalView.find('.slider__range');
-      expect($bar.data('options').dragInterval).toBeFalsy();
+      expect($bar.data('options').isDragInterval).toBeFalsy();
 
       $range.trigger($mousedownEvent);
       // expect(mockStart).not.toBeCalled();
@@ -338,16 +338,16 @@ describe('bar', () => {
       testBar.update({
         options: {
           isHorizontal: true,
-          range: true,
-          dragInterval: false,
+          isRange: true,
+          isDragInterval: false,
         },
         data: 20,
       });
       verticalBar.update({
         options: {
           isHorizontal: false,
-          range: true,
-          dragInterval: false,
+          isRange: true,
+          isDragInterval: false,
         },
         data: 20,
       });
@@ -365,8 +365,8 @@ describe('bar', () => {
         data: [10, 90],
         options: {
           isHorizontal: true,
-          range: true,
-          dragInterval: false,
+          isRange: true,
+          isDragInterval: false,
         },
       });
       const $horizontalBar = $horizontalView.find('.slider__bar_horizontal');
