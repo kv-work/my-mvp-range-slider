@@ -81,7 +81,6 @@ class SliderRunner implements Runner {
 
   destroy(): void {
     this.$runner.off('mousedown');
-    this.$view.off('mousemove');
     this.$runner.remove();
     this.isRendered = false;
   }
@@ -100,7 +99,7 @@ class SliderRunner implements Runner {
     const handleViewMouseMove = this.makeViewMouseMoveHandler(renderOptions);
     this.$view.on('mousemove', handleViewMouseMove);
     document.onmouseup = (): void => {
-      this.$view.off('mousemove');
+      this.$view.off('mousemove', handleViewMouseMove);
 
       const $finishEvent = $.Event('finish.myMVPSlider');
       this.$view.trigger($finishEvent);
