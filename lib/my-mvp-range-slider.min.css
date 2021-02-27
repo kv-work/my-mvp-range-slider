@@ -13,13 +13,13 @@
   flex-direction: column;
 }
 
-.slider__bar-container {
+.slider__bar_container {
   position: relative;
   height: 100%;
   z-index: 2;
 }
 
-.slider__bar-container_horizontal {
+.slider__bar_container_horizontal {
   height: auto;
   width: 100%;
 }
@@ -35,7 +35,7 @@
   position: relative;
 }
 
-.slider__scale-element {
+.scale__element {
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -84,19 +84,19 @@
   top: -0.5rem;
   left: 0;
 }
-.slider__display-container {
+.slider__display_container {
   display: flex;
   justify-content: flex-end;
   height: 100%;
   position: relative;
 }
 
-.slider__display-container_horizontal {
+.slider__display_container_horizontal {
   height: 2rem;
   width: 100%;
 }
 
-.slider__display-value {
+.slider__display_value {
   display: inline-block;
   position: absolute;
   color: white;
@@ -114,7 +114,7 @@
   cursor: pointer;
 }
 
-.slider__display-value_horizontal {
+.slider__display_value_horizontal {
   bottom: 0.7rem;
   right: auto;
 }
