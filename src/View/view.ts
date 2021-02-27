@@ -120,31 +120,19 @@ class SliderView implements View {
         $barContainer: this.$barContainer,
       });
 
-      this.bar.update({
-        data: percentage,
-        options: this.viewOptions,
-      });
+      this.bar.update({ data: percentage, options: this.viewOptions });
     } else {
       this.bar?.destroy();
     }
   }
 
   private updateScale(renderData: View.RenderData): void {
-    if (this.viewOptions.hasScale && this.scale) {
-      this.scale.update({
-        data: renderData,
-        options: this.viewOptions,
-      });
-    }
-    if (this.viewOptions.hasScale && !this.scale) {
-      this.scale = new SliderScale({ $viewContainer: this.$view });
-      this.scale.update({
-        data: renderData,
-        options: this.viewOptions,
-      });
-    }
-    if (!this.viewOptions.hasScale && this.scale) {
-      this.scale.destroy();
+    if (this.viewOptions.hasScale) {
+      this.scale = this.scale || new SliderScale({ $viewContainer: this.$view });
+
+      this.scale.update({ data: renderData, options: this.viewOptions });
+    } else {
+      this.scale?.destroy();
     }
   }
 
