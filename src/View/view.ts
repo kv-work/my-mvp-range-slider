@@ -302,39 +302,35 @@ class SliderView implements View {
   }
 
   private createRenderData(state: Model.State, userDataValues?: App.Stringable[]): View.RenderData {
-    let value: [App.Stringable, App.Stringable] | App.Stringable;
     let percentage: [number, number] | number;
     const {
       value: from,
       secondValue: to,
     } = state;
 
-    if (to !== undefined) {
-      if (userDataValues && userDataValues.length > 0) {
-        value = [userDataValues[from], userDataValues[to]];
-      } else {
-        value = [from, to];
-      }
+    const hasSecondVal = to !== undefined;
+
+    if (hasSecondVal) {
       const fromPercentage = SliderView.convertValueToPercent(from, state);
-      const toPercentage = SliderView.convertValueToPercent(to, state);
+      const toPercentage = SliderView.convertValueToPercent(Number(to), state);
       percentage = [fromPercentage, toPercentage];
     } else {
-      if (userDataValues && userDataValues.length > 0) {
-        value = userDataValues[from];
-      } else {
-        value = from;
-      }
       percentage = SliderView.convertValueToPercent(from, state);
     }
 
     const dataValues = this.createDataValues(state);
     const percentageData = SliderView.createPercentageData(dataValues, state);
 
+    let value: [App.Stringable, App.Stringable] | App.Stringable;
     let data: App.Stringable[];
 
     if (userDataValues && userDataValues.length) {
+      value = hasSecondVal
+        ? [userDataValues[from], userDataValues[Number(to)]]
+        : userDataValues[from];
       data = dataValues.map((val) => userDataValues[val]);
     } else {
+      value = hasSecondVal ? [from, to] : from;
       data = dataValues;
     }
 
@@ -367,32 +363,22 @@ class SliderView implements View {
       values.push(min);
     }
 
-    let total: number;
     const num = (max - min) / step;
+    const total = (num % 1 === 0) ? num - 1 : Math.floor(num);
 
-    if (num % 1 === 0) {
-      total = num - 1;
-    } else {
-      total = Math.floor(num);
-    }
-
-    const resultNum = numOfScaleVal < total ? numOfScaleVal : total;
-
-    if (resultNum === total) {
+    if (numOfScaleVal >= total) {
       for (let i = 1; i <= total; i += 1) {
         const elem = min + step * i;
         values.push(SliderView.fixVal(elem, step));
       }
     } else {
-      const s = (max - min) / (resultNum + 1);
-      for (let i = 1; i <= resultNum; i += 1) {
+      const s = (max - min) / (numOfScaleVal + 1);
+      for (let i = 1; i <= numOfScaleVal; i += 1) {
         const elem = min + s * i;
-        let multipleElem: number;
-        if ((elem - min) % step > step / 2) {
-          multipleElem = elem - ((elem - min) % step) + step;
-        } else {
-          multipleElem = elem - ((elem - min) % step);
-        }
+        const multipleElem = ((elem - min) % step > step / 2)
+          ? elem - ((elem - min) % step) + step
+          : elem - ((elem - min) % step);
+
         values.push(SliderView.fixVal(multipleElem, step));
       }
     }
