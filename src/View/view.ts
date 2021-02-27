@@ -114,24 +114,18 @@ class SliderView implements View {
   }
 
   private updateBar(percentage: number | [number, number]): void {
-    if (this.viewOptions.hasBar && this.bar) {
-      this.bar.update({
-        data: percentage,
-        options: this.viewOptions,
-      });
-    }
-    if (this.viewOptions.hasBar && !this.bar) {
-      this.bar = new SliderBar({
+    if (this.viewOptions.hasBar) {
+      this.bar = this.bar || new SliderBar({
         $viewContainer: this.$view,
         $barContainer: this.$barContainer,
       });
+
       this.bar.update({
         data: percentage,
         options: this.viewOptions,
       });
-    }
-    if (!this.viewOptions.hasBar && this.bar) {
-      this.bar.destroy();
+    } else {
+      this.bar?.destroy();
     }
   }
 
