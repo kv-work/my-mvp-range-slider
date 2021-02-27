@@ -1,27 +1,32 @@
-.demo_slider {
+.demo-slider {
   display: grid;
   margin-bottom: 100px;
   border-top: solid 1px gray;
   border-bottom: solid 1px gray;
 }
 
-.demo_slider_vertical {
+.demo-slider_vertical {
   grid-template-columns: 320px 1fr;
 }
 
-.config_form_vertical {
+.callback-indicators {
+  display: flex;
+  justify-content: space-around;
+}
+
+.callback-indicators__indicator {
+  border: 1px solid;
+  padding: 0.3rem 0.5rem;
+}
+
+.config-form_vertical {
   grid-column: 2;
   grid-row: 1;
 }
 
-.config_container {
+.config__container {
   display: grid;
   grid-template-columns: auto auto;
-}
-
-.config_container__view {
-  grid-column: 2;
-  grid-row: 1 / 3;
 }
 
 .config__model {
@@ -29,38 +34,40 @@
   flex-direction: column;
 }
 
-.config__model_label {
+.config__model-label {
   display: flex;
   justify-content: space-between;
 }
 
-.label_second_val {
+.config__model-label_named-second-val {
   justify-content: end;
 }
 
-.input_second_val {
+.config__model-input_named-second-val {
   margin-left: auto;
 }
 
-.config__presenter_label {
+.config__presenter-presets {
+  border-top: 1px solid lightblue;
+  border-bottom: 1px solid lightblue;
+  padding-bottom: 0.3rem;
+}
+
+.config__presets-label,
+.config__lock-label {
+  cursor: pointer;
+}
+
+.config__lock-label {
   display: flex;
   flex-direction: row-reverse;
   justify-content: flex-end;
   align-items: flex-end;
 }
 
-.config_presenter__presets {  
-  border-top: 1px solid lightblue;
-  border-bottom: 1px solid lightblue;
-  padding-bottom: 0.3rem;
-}
-
-.config_presenter__presets > label {
-  cursor: pointer;
-}
-
-.config_presenter__lock > label {
-  cursor: pointer;
+.config__view-wrapper {
+  grid-column: 2;
+  grid-row: 1 / 3;
 }
 
 .config__view {
@@ -68,15 +75,7 @@
   flex-direction: column;
 }
 
-.config__view_label {
-  display: flex;
-  flex-direction: row-reverse;
-  justify-content: flex-end;
-  align-items: flex-end;
-  cursor: pointer;
-}
-
-.config_orientation {
+.config__view-orientation {
   display: grid;
   grid-template-columns: 1fr 1fr;
   border-top: 1px solid lightblue;
@@ -84,13 +83,21 @@
   padding-bottom: 0.3rem;
 }
 
-.config_orientation > label{
+.config__orientation-label {
   grid-row: 2;
   align-items: center;
   cursor: pointer;
 }
 
-.label_num_scale_val {
+.config__view-label {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  align-items: flex-end;
+  cursor: pointer;
+}
+
+.config__view-label_named-num-scale-val {
   display: grid;
   grid-template-columns: auto 1fr 3rem;
   column-gap: 0.5rem;
@@ -102,29 +109,22 @@
   cursor: pointer;
 }
 
-.label_postfix,
-.label_prefix {
+.config__view-label_named-prefix,
+.config__view-label_named-postfix {
   display: grid;
   grid-template-columns: minmax(auto, 20%) 1fr;
   justify-content: space-between;
 }
 
-.input_prefix,
-.input_postfix {
+.config__view-input_named-postfix,
+.config__view-input_named-prefix {
   width: 270px;
 }
 
-.callback_indicators {
-  display: flex;
-  justify-content: space-around;
-}
-
-.indicator {
-  border: 1px solid;
-  padding: 0.3rem 0.5rem;
-}
-
-input[type="checkbox"] {
+.config__model-checkbox,
+.config__lock-checkbox,
+.config__view-checkbox {
   margin-right: 0.5rem;
   cursor: pointer;
 }
+
