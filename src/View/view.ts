@@ -157,53 +157,27 @@ class SliderView implements View {
     };
 
     if (this.viewOptions.hasRunner) {
-      if (Array.isArray(renderData.value)) {
-        if (this.runner) {
-          this.runner.update(updData);
-        } else {
-          this.runner = new SliderRunner({
-            $viewContainer: this.$view,
-            $barContainer: this.$barContainer,
-            isSecond: false,
-          });
-          this.runner.update(updData);
-        }
-        if (this.secondRunner) {
-          this.secondRunner.update(updData);
-        } else {
-          this.secondRunner = new SliderRunner({
-            $viewContainer: this.$view,
-            $barContainer: this.$barContainer,
-            isSecond: true,
-          });
-          this.secondRunner.update(updData);
-        }
-      } else {
-        if (this.runner) {
-          this.runner.update(updData);
-        } else {
-          this.runner = new SliderRunner({
-            $viewContainer: this.$view,
-            $barContainer: this.$barContainer,
-            isSecond: false,
-          });
-          this.runner.update(updData);
-        }
+      this.runner = this.runner || new SliderRunner({
+        $viewContainer: this.$view,
+        $barContainer: this.$barContainer,
+        isSecond: false,
+      });
+      this.runner.update(updData);
 
-        if (this.secondRunner) {
-          this.secondRunner.destroy();
-          this.secondRunner = undefined;
-        }
+      if (Array.isArray(renderData.value)) {
+        this.secondRunner = this.secondRunner || new SliderRunner({
+          $viewContainer: this.$view,
+          $barContainer: this.$barContainer,
+          isSecond: true,
+        });
+
+        this.secondRunner.update(updData);
+      } else {
+        this.secondRunner?.destroy();
       }
     } else {
-      if (this.runner) {
-        this.runner.destroy();
-        this.runner = undefined;
-      }
-      if (this.secondRunner) {
-        this.secondRunner.destroy();
-        this.runner = undefined;
-      }
+      this.runner?.destroy();
+      this.secondRunner?.destroy();
     }
   }
 
@@ -482,7 +456,11 @@ class SliderView implements View {
       return [key, undefined];
     });
 
-    const resultData = validDataEntries.reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
+    const resultData = validDataEntries.reduce((result, [key, value]) => (
+      {
+        ...result,
+        [key]: value,
+      }), {});
 
     return resultData;
   }
