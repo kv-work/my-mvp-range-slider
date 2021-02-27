@@ -30,8 +30,6 @@ class SliderView implements View {
   }
 
   render(state: Model.State, userDataValues?: App.Stringable[]): void {
-    this.renderData = this.createRenderData(state, userDataValues);
-
     if (this.viewOptions.isHorizontal && !this.$view.hasClass('slider__container_horizontal')) {
       this.$view.addClass('slider__container_horizontal');
       this.$barContainer.addClass('slider__bar-container_horizontal');
@@ -47,6 +45,8 @@ class SliderView implements View {
       this.attachEventHandlers();
       this.isRendered = true;
     }
+
+    this.renderData = this.createRenderData(state, userDataValues);
 
     this.updateValuesDisplay(this.renderData);
     this.updateScale(this.renderData);
@@ -151,33 +151,41 @@ class SliderView implements View {
   }
 
   private updateRunners(renderData: View.RenderData): void {
+    if (!this.viewOptions.hasRunner) {
+      if (this.runner) {
+        this.runner.destroy();
+        this.runner = undefined;
+      }
+      if (this.secondRunner) {
+        this.secondRunner.destroy();
+        this.runner = undefined;
+      }
+
+      return;
+    }
+
     const updData: Runner.UpdateOptions = {
       data: renderData,
       options: this.viewOptions,
     };
 
-    if (this.viewOptions.hasRunner) {
-      this.runner = this.runner || new SliderRunner({
+    this.runner = this.runner || new SliderRunner({
+      $viewContainer: this.$view,
+      $barContainer: this.$barContainer,
+      isSecond: false,
+    });
+    this.runner.update(updData);
+
+    if (Array.isArray(renderData.value)) {
+      this.secondRunner = this.secondRunner || new SliderRunner({
         $viewContainer: this.$view,
         $barContainer: this.$barContainer,
-        isSecond: false,
+        isSecond: true,
       });
-      this.runner.update(updData);
-
-      if (Array.isArray(renderData.value)) {
-        this.secondRunner = this.secondRunner || new SliderRunner({
-          $viewContainer: this.$view,
-          $barContainer: this.$barContainer,
-          isSecond: true,
-        });
-
-        this.secondRunner.update(updData);
-      } else {
-        this.secondRunner?.destroy();
-      }
-    } else {
-      this.runner?.destroy();
-      this.secondRunner?.destroy();
+      this.secondRunner.update(updData);
+    } else if (this.secondRunner) {
+      this.secondRunner.destroy();
+      this.secondRunner = undefined;
     }
   }
 
