@@ -247,19 +247,17 @@ class SliderView implements View {
   }
 
   private handleViewStartChanging(event: JQuery.Event, isDragStarted?: boolean): void {
-    const startAction: {event: string; value?: [number, number] | number} = { event: 'start' };
+    const startAction = { event: 'start' };
 
     this.notify(startAction);
 
-    if (this.renderData) {
-      const startValue = this.renderData.percentage;
+    const startValue = this.renderData?.percentage;
 
-      if (isDragStarted && Array.isArray(startValue)) {
-        const handleViewDragRange = this.makeRangeDragHandler(startValue);
-        const handleViewDropRange = this.makeRangeDropHandler();
-        this.$view.on('dragRange.myMVPSlider', handleViewDragRange);
-        this.$view.on('dropRange.myMVPSlider', handleViewDropRange);
-      }
+    if (isDragStarted && Array.isArray(startValue)) {
+      const handleViewDragRange = this.makeRangeDragHandler(startValue);
+      const handleViewDropRange = this.makeRangeDropHandler();
+      this.$view.on('dragRange.myMVPSlider', handleViewDragRange);
+      this.$view.on('dropRange.myMVPSlider', handleViewDropRange);
     }
   }
 
@@ -289,7 +287,7 @@ class SliderView implements View {
 
   private makeRangeDropHandler(): () => void {
     const dragHandler = (): void => {
-      const finishAction: {event: string} = { event: 'finish' };
+      const finishAction = { event: 'finish' };
       this.notify(finishAction);
 
       this.$view.off('dragRange.myMVPSlider', false);
@@ -299,14 +297,14 @@ class SliderView implements View {
     return dragHandler;
   }
 
-  private handleViewChangeValue(event: JQuery.Event, value: number, isSecond: boolean): void {
+  private handleViewChangeValue(_: JQuery.Event, value: number, isSecond: boolean): void {
     if (this.renderData) {
-      const currentValue = this.renderData.percentage;
+      const currValue = this.renderData.percentage;
       let changeAction: {event: string; value: [number, number] | number};
-      if (isSecond && Array.isArray(currentValue)) {
-        changeAction = { event: 'change', value: [currentValue[0], value] };
-      } else if (Array.isArray(currentValue)) {
-        changeAction = { event: 'change', value: [value, currentValue[1]] };
+
+      if (Array.isArray(currValue)) {
+        const newVal: [number, number] = isSecond ? [currValue[0], value] : [value, currValue[1]];
+        changeAction = { event: 'change', value: newVal };
       } else {
         changeAction = { event: 'change', value };
       }
@@ -316,7 +314,7 @@ class SliderView implements View {
   }
 
   private handleViewFinish(): void {
-    const finishAction: {event: string; value?: [number, number] | number} = { event: 'finish' };
+    const finishAction = { event: 'finish' };
 
     this.notify(finishAction);
   }
