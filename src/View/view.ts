@@ -430,7 +430,7 @@ class SliderView implements View {
 
   static validateData(data: View.Options): View.Options {
     const dataEntries = Object.entries(data);
-    const validDataEntries = dataEntries.map((entry): [string, unknown] => {
+    const validDataEntries = dataEntries.filter((entry): boolean => {
       const key: string = entry[0];
       switch (key) {
         case 'isHorizontal':
@@ -443,25 +443,15 @@ class SliderView implements View {
         case 'displayValue':
         case 'displayMin':
         case 'displayMax':
-          if (typeof entry[1] === 'boolean') {
-            return entry;
-          }
-          break;
+          return (typeof entry[1] === 'boolean');
         case 'numOfScaleVal':
-          if (SliderView.isValidNumOfValue(entry[1])) {
-            return entry;
-          }
-          break;
+          return (SliderView.isValidNumOfValue(entry[1]));
         case 'prefix':
         case 'postfix':
-          if (typeof entry[1] === 'string') {
-            return entry;
-          }
-          break;
+          return (typeof entry[1] === 'string');
         default:
-          break;
+          return false;
       }
-      return [key, undefined];
     });
 
     const resultData = validDataEntries.reduce((result, [key, value]) => (
