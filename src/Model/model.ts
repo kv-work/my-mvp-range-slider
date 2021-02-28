@@ -317,12 +317,12 @@ class SliderModel implements Model {
 
     if (baseString.includes('e')) {
       const base = Number(baseString.split('e-')[1]);
-      const fixedVal = Number(value.toFixed(base));
-      return fixedVal;
+      const fixBase = base > 20 ? 20 : base;
+      return Number(value.toFixed(fixBase));
     }
     const base = baseString.split('.')[1].length;
-    const fixedVal = Number(value.toFixed(base));
-    return fixedVal;
+    const fixBase = base > 20 ? 20 : base;
+    return Number(value.toFixed(fixBase));
   }
 }
 
