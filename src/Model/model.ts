@@ -142,15 +142,7 @@ class SliderModel implements Model {
       lockedValues: [],
     };
 
-    let state: Model.State;
-
-    if (options !== undefined) {
-      state = this.createState(defaultState, options);
-    } else {
-      state = defaultState;
-    }
-
-    return state;
+    return options ? this.createState(defaultState, options) : defaultState;
   }
 
   private notify(): void {
@@ -176,24 +168,48 @@ class SliderModel implements Model {
       secondValue: oldSecondVal,
     } = state;
 
-    const resultState: Model.State = $.extend(true, {}, state, newState);
+    const canChangeMax = !this.isLocked('maxValue') && Object.prototype.hasOwnProperty.call(newState, 'maxValue');
+    const canChangeMin = !this.isLocked('minValue') && Object.prototype.hasOwnProperty.call(newState, 'minValue');
+    const canChangeStep = !this.isLocked('step') && Object.prototype.hasOwnProperty.call(newState, 'step');
+    const canChangeVal = !this.isLocked('value') && Object.prototype.hasOwnProperty.call(newState, 'value');
+    const canChangeSecondVal = !this.isLocked('secondValue') && Object.prototype.hasOwnProperty.call(newState, 'secondValue');
+
+    const tempState: Model.Options = {
+      maxValue: canChangeMax ? newState.maxValue : undefined,
+      minValue: canChangeMin ? newState.minValue : undefined,
+      step: canChangeStep ? newState.step : undefined,
+      value: canChangeVal ? newState.value : undefined,
+      secondValue: canChangeSecondVal ? newState.secondValue : undefined,
+    };
+
+    const resultState: Model.State = $.extend(true, {}, state, tempState);
     const {
-      maxValue,
-      minValue,
-      step,
-      value: newValue,
+      maxValue: tempMax,
+      minValue: tempMin,
+      step: tempStep,
+      value: tempVal,
+      secondValue: tempSecondVal,
     } = resultState;
+
+    const isWrongState = tempMax <= tempMin || tempStep <= 0;
+
+    if (isWrongState) return state;
+
+    // const resultState: Model.State = $.extend(true, {}, state, newState);
+    // const {
+    //   maxValue,
+    //   minValue,
+    //   step,
+    //   value: newValue,
+    // } = resultState;
 
     let firstValChanged = false;
     let secondValueChanged = false;
 
-    resultState.maxValue = this.isLocked('maxValue') ? oldMax : maxValue;
-    resultState.minValue = this.isLocked('minValue') ? oldMin : minValue;
-    resultState.step = this.isLocked('step') ? oldStep : step;
     if (this.isLocked('value')) {
       resultState.value = oldVal;
     } else {
-      resultState.value = newValue;
+      resultState.value = tempVal;
       firstValChanged = Object.prototype.hasOwnProperty.call(newState, 'value');
     }
 
@@ -202,10 +218,6 @@ class SliderModel implements Model {
       secondValueChanged = true;
     } else {
       resultState.secondValue = oldSecondVal;
-    }
-
-    if (maxValue <= minValue || step <= 0) {
-      return state;
     }
 
     const { value, secondValue } = resultState;
@@ -225,10 +237,10 @@ class SliderModel implements Model {
       const resultSecondVal = SliderModel.getMultipleStep(secondValue, resultState);
 
       if (resultVal > resultSecondVal) {
-        if (firstValChanged && secondValueChanged) {
+        if (canChangeVal && canChangeSecondVal) {
           resultState.value = resultSecondVal;
           resultState.secondValue = resultVal;
-        } else if (firstValChanged) {
+        } else if (canChangeVal) {
           resultState.value = resultSecondVal;
           resultState.secondValue = resultSecondVal;
         } else {
@@ -249,14 +261,7 @@ class SliderModel implements Model {
       this.isUpdated = false;
     }
 
-    return {
-      maxValue: resultState.maxValue,
-      minValue: resultState.minValue,
-      step: resultState.step,
-      value: resultState.value,
-      secondValue: resultState.secondValue,
-      lockedValues: Array.from(this.lockedValues),
-    };
+    return { ...resultState, lockedValues: Array.from(this.lockedValues) };
   }
 
   static getMultipleStep(value: number, state: Model.State): number {
