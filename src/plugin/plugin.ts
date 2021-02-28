@@ -1,4 +1,6 @@
 import SliderApp from '../App/app';
+import SliderModel from '../Model/model';
+import SliderView from '../View/view';
 
 $.fn.myMVPSlider = function createMVPSlider(options: App.Option): JQuery {
   const defaultSettings: App.Option = {
@@ -49,7 +51,7 @@ $.fn.myMVPSlider = function createMVPSlider(options: App.Option): JQuery {
   } else {
     if (options) {
       const optionsEntries = Object.entries(options);
-      const opts = optionsEntries.map((entry): [string, unknown] => {
+      const opts = optionsEntries.filter((entry): boolean => {
         const key: string = entry[0];
         switch (key) {
           case 'maxValue':
@@ -57,10 +59,7 @@ $.fn.myMVPSlider = function createMVPSlider(options: App.Option): JQuery {
           case 'step':
           case 'value':
           case 'secondValue':
-            if (entry[1] === null || Number.isNaN(entry[1])) {
-              break;
-            }
-            return entry;
+            return SliderModel.isValid(entry[1]);
           case 'isHorizontal':
           case 'isRange':
           case 'isDragInterval':
@@ -71,41 +70,30 @@ $.fn.myMVPSlider = function createMVPSlider(options: App.Option): JQuery {
           case 'displayValue':
           case 'displayMin':
           case 'displayMax':
-            if (typeof entry[1] === 'boolean') {
-              return entry;
-            }
-            break;
+            return (typeof entry[1] === 'boolean');
           case 'numOfScaleVal':
-            if (typeof entry[1] === 'number' && (entry[1] >= 0)) {
-              return entry;
-            }
-            break;
+            return (SliderView.isValidNumOfValue(entry[1]));
           case 'prefix':
           case 'postfix':
-            if (typeof entry[1] === 'string') {
-              return entry;
-            }
-            break;
+            return (typeof entry[1] === 'string');
           case 'dataValues':
-            if (Array.isArray(entry[1])) {
-              return entry;
-            }
-            break;
+            return (Array.isArray(entry[1]));
           case 'onStart':
           case 'onChange':
           case 'onFinish':
           case 'onUpdate':
-            if (typeof entry[1] === 'function') {
-              return entry;
-            }
-            break;
+            return (typeof entry[1] === 'function');
           default:
-            return entry;
+            return false;
         }
-        return [key, defaultSettings[key]];
       });
 
-      validOptions = opts.reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
+      const resultOptions = opts.reduce((result, [key, value]) => (
+        {
+          ...result,
+          [key]: value,
+        }), {});
+      validOptions = $.extend({}, defaultSettings, resultOptions);
     }
 
 
