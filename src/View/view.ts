@@ -458,16 +458,16 @@ class SliderView implements View {
 
   static fixVal(value: number, baseVal: number): number {
     if (!(baseVal % 1)) {
-      return +value.toFixed(0);
+      return Number(value.toFixed(0));
     }
 
     if (baseVal.toString().includes('e')) {
-      const base = +`${baseVal}`.split('e-')[1];
-      return +value.toFixed(base);
+      const base = Number(`${baseVal}`.split('e-')[1]);
+      return Number(value.toFixed(base));
     }
 
     const base = `${baseVal}`.split('.')[1].length;
-    return +value.toFixed(base);
+    return Number(value.toFixed(base));
   }
 }
 

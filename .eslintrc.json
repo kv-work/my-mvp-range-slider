@@ -18,7 +18,8 @@
     },
     "rules": {
       "no-underscore-dangle": "off",
-      "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }]
+      "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
+      "no-implicit-coercion": "error"
     },
     "overrides": [
       {

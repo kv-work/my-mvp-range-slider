@@ -310,16 +310,18 @@ class SliderModel implements Model {
 
   static fixVal(value: number, baseVal: number): number {
     if (!(baseVal % 1)) {
-      return +value.toFixed(0);
+      return Number(value.toFixed(0));
     }
 
-    if (baseVal.toString().includes('e')) {
-      const base = +`${baseVal}`.split('e-')[1];
-      const fixedVal = +value.toFixed(base);
+    const baseString = baseVal.toString();
+
+    if (baseString.includes('e')) {
+      const base = Number(baseString.split('e-')[1]);
+      const fixedVal = Number(value.toFixed(base));
       return fixedVal;
     }
-    const base = `${baseVal}`.split('.')[1].length;
-    const fixedVal = +value.toFixed(base);
+    const base = baseString.split('.')[1].length;
+    const fixedVal = Number(value.toFixed(base));
     return fixedVal;
   }
 }
