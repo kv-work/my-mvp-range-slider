@@ -116,32 +116,6 @@ describe('app', () => {
       testApp.update(newOptions);
     });
 
-    test('should save new options in this.newOptions', () => {
-      expect(testApp).toHaveProperty('options', { ...testOptions, ...newOptions });
-
-      testApp.update({ maxValue: 100, isDragInterval: false });
-      expect(testApp).toHaveProperty('options', {
-        maxValue: 100,
-        minValue: 0,
-        step: 1,
-        value: 5,
-        secondValue: 7,
-        isHorizontal: true,
-        isRange: true,
-        isDragInterval: false,
-        hasRunner: true,
-        hasBar: true,
-        hasScale: true,
-        numOfScaleVal: 9,
-        displayScaleValue: true,
-        displayValue: true,
-        displayMin: true,
-        displayMax: true,
-        prefix: '$',
-        postfix: 'USD',
-      });
-    });
-
     test('should call update method of Presenter', () => {
       expect(mockUpdatePresenter).toBeCalledWith(newOptions);
     });
@@ -222,28 +196,9 @@ describe('app', () => {
         hasBar: true,
         hasScale: false,
       });
-      expect(testApp).toHaveProperty('options', {
-        maxValue: 50,
-        minValue: 10,
-        step: 5,
-        value: 15,
-        secondValue: undefined,
-        isHorizontal: false,
-        isRange: false,
-        isDragInterval: false,
-        hasRunner: false,
-        hasBar: true,
-        hasScale: false,
-        numOfScaleVal: 9,
-        displayScaleValue: true,
-        displayValue: true,
-        displayMin: true,
-        displayMax: true,
-        prefix: '$',
-        postfix: 'USD',
-      });
+
       testApp.reset();
-      expect(testApp).toHaveProperty('options', testOptions);
+
       expect(mockUpdatePresenter).toBeCalledWith(testOptions);
     });
   });

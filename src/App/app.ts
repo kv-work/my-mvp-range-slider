@@ -3,7 +3,6 @@ import SliderPresenter from '../Presenter/presenter';
 import SliderView from '../View/view';
 
 export default class SliderApp implements App {
-  private options: App.Option;
   private initOptions: App.Option;
   private node: HTMLElement;
   private model: Model;
@@ -12,7 +11,6 @@ export default class SliderApp implements App {
 
   constructor(options: App.Option, node: HTMLElement) {
     this.initOptions = options;
-    this.options = options;
     this.node = node;
 
     this.model = new SliderModel(options);
@@ -21,11 +19,6 @@ export default class SliderApp implements App {
   }
 
   update(options: App.Option): void {
-    this.options = {
-      ...this.initOptions,
-      ...this.options,
-      ...options,
-    };
     this.presenter.update(options);
   }
 
@@ -67,7 +60,6 @@ export default class SliderApp implements App {
   }
 
   reset(): void {
-    this.options = this.initOptions;
     this.presenter.update(this.initOptions);
   }
 
