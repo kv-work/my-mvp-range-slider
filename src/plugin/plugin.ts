@@ -35,7 +35,53 @@ $.fn.myMVPSlider = function createMVPSlider(options: App.Option): JQuery {
     onUpdate: () => { },
   };
 
-  let validOptions: App.Option;
+  function validateOptions(data: App.Option): App.Option {
+    const optionsEntries = Object.entries(data);
+    const opts = optionsEntries.filter((entry): boolean => {
+      const key: string = entry[0];
+      switch (key) {
+        case 'maxValue':
+        case 'minValue':
+        case 'step':
+        case 'value':
+        case 'secondValue':
+          return SliderModel.isValid(entry[1]);
+        case 'isHorizontal':
+        case 'isRange':
+        case 'isDragInterval':
+        case 'hasRunner':
+        case 'hasBar':
+        case 'hasScale':
+        case 'displayScaleValue':
+        case 'displayValue':
+        case 'displayMin':
+        case 'displayMax':
+          return (typeof entry[1] === 'boolean');
+        case 'numOfScaleVal':
+          return (SliderView.isValidNumOfValue(entry[1]));
+        case 'prefix':
+        case 'postfix':
+          return (typeof entry[1] === 'string');
+        case 'dataValues':
+          return (Array.isArray(entry[1]));
+        case 'onStart':
+        case 'onChange':
+        case 'onFinish':
+        case 'onUpdate':
+          return (typeof entry[1] === 'function');
+        default:
+          return false;
+      }
+    });
+
+    const resultOptions = opts.reduce((result, [key, value]) => (
+      {
+        ...result,
+        [key]: value,
+      }), {});
+
+    return resultOptions;
+  }
 
   if (options === 'destroy') {
     this.each(function destroy(): void {
@@ -49,63 +95,18 @@ $.fn.myMVPSlider = function createMVPSlider(options: App.Option): JQuery {
       }
     });
   } else {
-    if (options) {
-      const optionsEntries = Object.entries(options);
-      const opts = optionsEntries.filter((entry): boolean => {
-        const key: string = entry[0];
-        switch (key) {
-          case 'maxValue':
-          case 'minValue':
-          case 'step':
-          case 'value':
-          case 'secondValue':
-            return SliderModel.isValid(entry[1]);
-          case 'isHorizontal':
-          case 'isRange':
-          case 'isDragInterval':
-          case 'hasRunner':
-          case 'hasBar':
-          case 'hasScale':
-          case 'displayScaleValue':
-          case 'displayValue':
-          case 'displayMin':
-          case 'displayMax':
-            return (typeof entry[1] === 'boolean');
-          case 'numOfScaleVal':
-            return (SliderView.isValidNumOfValue(entry[1]));
-          case 'prefix':
-          case 'postfix':
-            return (typeof entry[1] === 'string');
-          case 'dataValues':
-            return (Array.isArray(entry[1]));
-          case 'onStart':
-          case 'onChange':
-          case 'onFinish':
-          case 'onUpdate':
-            return (typeof entry[1] === 'function');
-          default:
-            return false;
-        }
-      });
-
-      const resultOptions = opts.reduce((result, [key, value]) => (
-        {
-          ...result,
-          [key]: value,
-        }), {});
-      validOptions = $.extend({}, defaultSettings, resultOptions);
-    }
-
-
     this.each(function addPlugin(): void {
       const $this = $(this);
       const dataOptions = $this.data();
-      const sliderSettings = $.extend({}, defaultSettings, validOptions, dataOptions);
+      const userSettings = $.extend({}, options, dataOptions);
+      const validUserSettings = validateOptions(userSettings);
+      const sliderSettings = $.extend({}, defaultSettings, validUserSettings);
       const app = new SliderApp(sliderSettings, this);
 
       $this.data('myMVPSlider', app);
       $this.data('init-options', sliderSettings);
     });
   }
+
   return this;
 };
