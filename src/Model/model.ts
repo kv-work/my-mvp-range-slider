@@ -139,7 +139,7 @@ class SliderModel implements Model {
       minValue: 0,
       step: 1,
       value: 0,
-      secondValue: undefined,
+      secondValue: null,
       lockedValues: [],
     };
 
@@ -168,26 +168,44 @@ class SliderModel implements Model {
       value,
       secondValue,
     } = newState;
+
     if (newState.unlockValues && newState.unlockValues.length > 0) {
       this.unlockState(newState.unlockValues);
     }
 
     const isValidMaxVal = maxValue !== undefined && !this.isLocked('maxValue') && SliderModel.isValid(maxValue);
+    const newMaxValue = isValidMaxVal ? Number(maxValue) : state.maxValue;
+
     const isValidMinVal = minValue !== undefined && !this.isLocked('minValue') && SliderModel.isValid(minValue);
+    const newMinValue = isValidMinVal ? Number(minValue) : state.minValue;
+
     const isValidStep = step !== undefined && !this.isLocked('step') && SliderModel.isValid(step);
-    const isValidvalue = value !== undefined && !this.isLocked('value') && SliderModel.isValid(value);
-    const isValidSecondVal = !this.isLocked('secondValue');
+    const newStep = isValidStep ? Number(step) : state.step;
+
+    const isValidState = newMaxValue > newMinValue && newStep > 0;
+    if (!isValidState) return state;
 
     const resultState = {
-      maxValue: isValidMaxVal ? newState.maxValue! : state.maxValue,
-      minValue: isValidMinVal ? newState.minValue! : state.minValue,
-      step: isValidStep ? newState.step! : state.step,
-      value: isValidvalue ? newState.value! : state.value,
-      secondValue: isValidSecondVal ? newState.secondValue : state.secondValue,
+      ...state,
+      maxValue: newMaxValue,
+      minValue: newMinValue,
+      step: newStep,
     };
+
+    const isValidValue = value !== undefined && !this.isLocked('value') && SliderModel.isValid(value);
+    const newValue = isValidValue
+      ? SliderModel.getMultipleStep(Number(value), resultState)
+      : SliderModel.getMultipleStep(state.value, resultState);
+
+    const isValidSecondVal = !this.isLocked('secondValue');
+
 
     if (newState.lockedValues && newState.lockedValues.length > 0) {
       this.lockState(newState.lockedValues);
+    }
+
+    if (!SliderModel.isEqualStates(state, resultState)) {
+      this.isUpdated = false;
     }
 
     return {
