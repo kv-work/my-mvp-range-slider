@@ -67,7 +67,7 @@ describe.only('model', () => {
       expect(lockedValues.includes('step')).toBeTruthy();
     });
 
-    test.only('should create instance with default values if constructor get wrong options', () => {
+    test('should create instance with default values if constructor get wrong options', () => {
       let newModel = new SliderModel();
 
       expect(newModel).toBeInstanceOf(SliderModel);
@@ -397,6 +397,7 @@ describe.only('model', () => {
         minValue: 0,
         step: 1,
         value: 3,
+        secondValue: null,
         lockedValues: [],
       });
 
@@ -410,6 +411,7 @@ describe.only('model', () => {
         minValue: 0,
         step: 1,
         value: 3,
+        secondValue: null,
         lockedValues: [],
       });
     });
@@ -420,6 +422,7 @@ describe.only('model', () => {
         minValue: 0,
         step: 1,
         value: 3,
+        secondValue: null,
         lockedValues: [],
       });
 
@@ -430,6 +433,7 @@ describe.only('model', () => {
         minValue: 0,
         step: 1,
         value: 3,
+        secondValue: null,
         lockedValues: [],
       });
     });
@@ -440,6 +444,7 @@ describe.only('model', () => {
         minValue: 0,
         step: 1,
         value: 3,
+        secondValue: null,
         lockedValues: [],
       });
 
@@ -450,6 +455,7 @@ describe.only('model', () => {
         minValue: 0,
         step: 1,
         value: 3,
+        secondValue: null,
         lockedValues: [],
       });
 
@@ -492,6 +498,7 @@ describe.only('model', () => {
         minValue: 0,
         step: 1,
         value: 3,
+        secondValue: null,
         lockedValues: [],
       });
 
@@ -507,6 +514,7 @@ describe.only('model', () => {
         minValue: 0,
         step: 1,
         value: 3,
+        secondValue: null,
         lockedValues: [],
       });
 

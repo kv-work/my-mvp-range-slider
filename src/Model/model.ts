@@ -161,48 +161,41 @@ class SliderModel implements Model {
   }
 
   private createState(state: Model.State, newState: Model.Options): Model.State {
-    const {
-      maxValue,
-      minValue,
-      step,
-      value,
-      secondValue,
-    } = newState;
+    const validOptions = this.validateOptions(newState);
+    const extendedState = $.extend({}, state, validOptions);
+    const resultState = { ...extendedState };
 
-    if (newState.unlockValues && newState.unlockValues.length > 0) {
-      this.unlockState(newState.unlockValues);
+    if (extendedState.maxValue < extendedState.minValue || extendedState.step < 0) {
+      return state;
     }
 
-    const isValidMaxVal = maxValue !== undefined && !this.isLocked('maxValue') && SliderModel.isValid(maxValue);
-    const newMaxValue = isValidMaxVal ? Number(maxValue) : state.maxValue;
+    if (validOptions.unlockValues) this.unlockState(validOptions.unlockValues);
 
-    const isValidMinVal = minValue !== undefined && !this.isLocked('minValue') && SliderModel.isValid(minValue);
-    const newMinValue = isValidMinVal ? Number(minValue) : state.minValue;
+    const value = SliderModel.getMultipleStep(extendedState.value, extendedState);
+    resultState.value = value;
 
-    const isValidStep = step !== undefined && !this.isLocked('step') && SliderModel.isValid(step);
-    const newStep = isValidStep ? Number(step) : state.step;
+    if (extendedState.secondValue !== null) {
+      const secondValue = SliderModel.getMultipleStep(extendedState.secondValue, extendedState);
 
-    const isValidState = newMaxValue > newMinValue && newStep > 0;
-    if (!isValidState) return state;
+      const isSecondValueChanged = secondValue !== state.secondValue;
+      const isValuesChanged = value !== state.value && isSecondValueChanged;
 
-    const resultState = {
-      ...state,
-      maxValue: newMaxValue,
-      minValue: newMinValue,
-      step: newStep,
-    };
-
-    const isValidValue = value !== undefined && !this.isLocked('value') && SliderModel.isValid(value);
-    const newValue = isValidValue
-      ? SliderModel.getMultipleStep(Number(value), resultState)
-      : SliderModel.getMultipleStep(state.value, resultState);
-
-    const isValidSecondVal = !this.isLocked('secondValue');
-
-
-    if (newState.lockedValues && newState.lockedValues.length > 0) {
-      this.lockState(newState.lockedValues);
+      switch (true) {
+        case isValuesChanged:
+          resultState.secondValue = secondValue > value ? secondValue : value;
+          resultState.value = secondValue > value ? value : secondValue;
+          break;
+        case isSecondValueChanged:
+          resultState.secondValue = secondValue > value ? secondValue : value;
+          break;
+        default:
+          resultState.secondValue = secondValue;
+          resultState.value = secondValue > value ? value : secondValue;
+          break;
+      }
     }
+
+    if (validOptions.lockedValues) this.lockState(validOptions.lockedValues);
 
     if (!SliderModel.isEqualStates(state, resultState)) {
       this.isUpdated = false;
@@ -212,6 +205,35 @@ class SliderModel implements Model {
       ...resultState,
       lockedValues: Array.from(this.lockedValues),
     };
+  }
+
+  private validateOptions(options: Model.Options): Model.Options {
+    const optionsEntries = Object.entries(options);
+    const validEntries = optionsEntries.filter((entry): boolean => {
+      const [key, value] = entry;
+      if (this.isLocked(key)) return false;
+      switch (key) {
+        case 'maxValue':
+        case 'minValue':
+        case 'value':
+          return SliderModel.isValid(value);
+        case 'step':
+          return SliderModel.isValid(value) && value > 0;
+        case 'secondValue':
+          return value === null || SliderModel.isValid(value);
+        case 'lockedValues':
+        case 'unlockValues':
+          return value === 'all' || Array.isArray(value);
+        default: return false;
+      }
+    })
+
+    const validOptions = validEntries.reduce((result, [key, value]) => ({
+      ...result,
+      [key]: value,
+    }), {});
+
+    return validOptions;
   }
 
   static getMultipleStep(value: number, state: Model.State): number {
