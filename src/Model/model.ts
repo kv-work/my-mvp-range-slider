@@ -226,7 +226,7 @@ class SliderModel implements Model {
           return value === 'all' || Array.isArray(value);
         default: return false;
       }
-    })
+    });
 
     const validOptions = validEntries.reduce((result, [key, value]) => ({
       ...result,
