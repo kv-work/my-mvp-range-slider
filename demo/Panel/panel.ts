@@ -310,19 +310,19 @@ export default class Panel {
     if (newVal) {
       switch (name) {
         case 'max-value':
-          slider.update({ maxValue: +newVal });
+          slider.update({ maxValue: Number(newVal) });
           break;
         case 'min-value':
-          slider.update({ minValue: +newVal });
+          slider.update({ minValue: Number(newVal) });
           break;
         case 'step':
-          slider.update({ step: +newVal });
+          slider.update({ step: Number(newVal) });
           break;
         case 'value':
-          slider.update({ value: +newVal });
+          slider.update({ value: Number(newVal) });
           break;
         case 'second-value':
-          slider.update({ secondValue: +newVal });
+          slider.update({ secondValue: Number(newVal) });
           break;
         case 'prefix':
           slider.update({ prefix: newVal.toString() });
@@ -440,7 +440,7 @@ export default class Panel {
     const handler = (e: JQuery.ChangeEvent): void => {
       const targetVal = $(e.target).val();
       if (targetVal) {
-        const val = +targetVal;
+        const val = Number(targetVal);
         slider.update({ numOfScaleVal: val });
       }
     };
@@ -455,7 +455,7 @@ export default class Panel {
       const { name, value } = elem;
       switch (name) {
         case 'presets':
-          this.currentPreset = +value;
+          this.currentPreset = Number(value);
           this.setPreset();
           this.addCallbacks();
           break;
