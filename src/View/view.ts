@@ -308,7 +308,7 @@ class SliderView implements View {
       secondValue: to,
     } = state;
 
-    const hasSecondVal = to !== undefined;
+    const hasSecondVal = to !== null;
 
     if (hasSecondVal) {
       const fromPercentage = SliderView.convertValueToPercent(from, state);

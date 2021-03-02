@@ -18,7 +18,7 @@ declare namespace App {
     minValue?: number;
     step?: number;
     value?: number;
-    secondValue?: number;
+    secondValue?: number | null;
     lockedValues?: string[] | 'all';
     unlockValues?: string[] | 'all';
 

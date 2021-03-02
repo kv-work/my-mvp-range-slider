@@ -57,7 +57,7 @@ describe('Presenter', () => {
     const newState = $.extend({}, testModelState, options);
 
     if (Object.prototype.hasOwnProperty.call(options, 'secondValue') && options.secondValue === undefined) {
-      newState.secondValue = options.secondValue;
+      newState.secondValue = null;
     }
 
     testModelState.maxValue = newState.maxValue;
@@ -456,7 +456,7 @@ describe('Presenter', () => {
         minValue: 12,
         step: 3,
         value: 18,
-        secondValue: undefined,
+        secondValue: null,
         lockedValues: [],
       });
 

@@ -13,7 +13,7 @@ declare namespace Model {
     minValue?: number;
     step?: number;
     value?: number;
-    secondValue?: number;
+    secondValue?: number | null;
     lockedValues?: string[] | 'all';
     unlockValues?: string[] | 'all';
   }
@@ -27,7 +27,7 @@ declare namespace Model {
     minValue: number;
     step: number;
     value: number;
-    secondValue: number | undefined;
+    secondValue: number | null;
     lockedValues: string[];
   }
 }

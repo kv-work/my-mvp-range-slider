@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 class SliderModel implements Model {
   private state: Model.State;
   private observers: Set<Model.Observer>;
@@ -138,19 +139,11 @@ class SliderModel implements Model {
       minValue: 0,
       step: 1,
       value: 0,
-      secondValue: undefined,
+      secondValue: null,
       lockedValues: [],
     };
 
-    let state: Model.State;
-
-    if (options !== undefined) {
-      state = this.createState(defaultState, options);
-    } else {
-      state = defaultState;
-    }
-
-    return state;
+    return options ? this.createState(defaultState, options) : defaultState;
   }
 
   private notify(): void {
@@ -168,95 +161,79 @@ class SliderModel implements Model {
   }
 
   private createState(state: Model.State, newState: Model.Options): Model.State {
-    const {
-      maxValue: oldMax,
-      minValue: oldMin,
-      step: oldStep,
-      value: oldVal,
-      secondValue: oldSecondVal,
-    } = state;
+    const validOptions = this.validateOptions(newState);
+    const extendedState = $.extend({}, state, validOptions);
+    const resultState = { ...extendedState };
 
-    const resultState: Model.State = $.extend(true, {}, state, newState);
-    const {
-      maxValue,
-      minValue,
-      step,
-      value: newValue,
-    } = resultState;
-
-    let firstValChanged = false;
-    let secondValueChanged = false;
-
-    resultState.maxValue = this.isLocked('maxValue') ? oldMax : maxValue;
-    resultState.minValue = this.isLocked('minValue') ? oldMin : minValue;
-    resultState.step = this.isLocked('step') ? oldStep : step;
-    if (this.isLocked('value')) {
-      resultState.value = oldVal;
-    } else {
-      resultState.value = newValue;
-      firstValChanged = Object.prototype.hasOwnProperty.call(newState, 'value');
-    }
-
-    if (Object.prototype.hasOwnProperty.call(newState, 'secondValue') && !this.isLocked('secondValue')) {
-      resultState.secondValue = newState.secondValue;
-      secondValueChanged = true;
-    } else {
-      resultState.secondValue = oldSecondVal;
-    }
-
-    if (maxValue <= minValue || step <= 0) {
+    if (extendedState.maxValue < extendedState.minValue || extendedState.step < 0) {
       return state;
     }
 
-    const { value, secondValue } = resultState;
+    if (validOptions.unlockValues) this.unlockState(validOptions.unlockValues);
 
-    if (!SliderModel.isValid(value)) {
-      return state;
-    }
+    const value = SliderModel.getMultipleStep(extendedState.value, extendedState);
+    resultState.value = value;
 
-    if (secondValue === undefined) {
-      resultState.value = SliderModel.getMultipleStep(value, resultState);
-    } else {
-      if (!SliderModel.isValid(secondValue)) {
-        return state;
-      }
+    if (extendedState.secondValue !== null) {
+      const secondValue = SliderModel.getMultipleStep(extendedState.secondValue, extendedState);
 
-      const resultVal = SliderModel.getMultipleStep(value, resultState);
-      const resultSecondVal = SliderModel.getMultipleStep(secondValue, resultState);
+      const isSecondValueChanged = secondValue !== state.secondValue;
+      const isValuesChanged = value !== state.value && isSecondValueChanged;
 
-      if (resultVal > resultSecondVal) {
-        if (firstValChanged && secondValueChanged) {
-          resultState.value = resultSecondVal;
-          resultState.secondValue = resultVal;
-        } else if (firstValChanged) {
-          resultState.value = resultSecondVal;
-          resultState.secondValue = resultSecondVal;
-        } else {
-          resultState.value = resultVal;
-          resultState.secondValue = resultVal;
-        }
-      } else {
-        resultState.value = resultVal;
-        resultState.secondValue = resultSecondVal;
+      switch (true) {
+        case isValuesChanged:
+          resultState.secondValue = secondValue > value ? secondValue : value;
+          resultState.value = secondValue > value ? value : secondValue;
+          break;
+        case isSecondValueChanged:
+          resultState.secondValue = secondValue > value ? secondValue : value;
+          break;
+        default:
+          resultState.secondValue = secondValue;
+          resultState.value = secondValue > value ? value : secondValue;
+          break;
       }
     }
 
-    if (newState.lockedValues !== undefined) {
-      this.lockState(newState.lockedValues);
-    }
+    if (validOptions.lockedValues) this.lockState(validOptions.lockedValues);
 
     if (!SliderModel.isEqualStates(state, resultState)) {
       this.isUpdated = false;
     }
 
     return {
-      maxValue: resultState.maxValue,
-      minValue: resultState.minValue,
-      step: resultState.step,
-      value: resultState.value,
-      secondValue: resultState.secondValue,
+      ...resultState,
       lockedValues: Array.from(this.lockedValues),
     };
+  }
+
+  private validateOptions(options: Model.Options): Model.Options {
+    const optionsEntries = Object.entries(options);
+    const validEntries = optionsEntries.filter((entry): boolean => {
+      const [key, value] = entry;
+      if (this.isLocked(key)) return false;
+      switch (key) {
+        case 'maxValue':
+        case 'minValue':
+        case 'value':
+          return SliderModel.isValid(value);
+        case 'step':
+          return SliderModel.isValid(value) && value > 0;
+        case 'secondValue':
+          return value === null || SliderModel.isValid(value);
+        case 'lockedValues':
+        case 'unlockValues':
+          return value === 'all' || Array.isArray(value);
+        default: return false;
+      }
+    })
+
+    const validOptions = validEntries.reduce((result, [key, value]) => ({
+      ...result,
+      [key]: value,
+    }), {});
+
+    return validOptions;
   }
 
   static getMultipleStep(value: number, state: Model.State): number {

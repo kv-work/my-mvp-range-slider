@@ -152,7 +152,7 @@ export default class Panel {
     $stepInput.val(step);
     $valInput.val(value);
 
-    if (secondValue !== undefined) {
+    if (secondValue !== undefined && secondValue !== null) {
       $secondValInput.val(secondValue);
     } else {
       $secondValInput.val('');

@@ -13,7 +13,7 @@ export interface MyMVPSliderOptions {
   minValue?: number;
   step?: number;
   value?: number;
-  secondValue?: number;
+  secondValue?: number | null;
 
   // view
   isHorizontal?: boolean;
