@@ -1,6 +1,6 @@
 import SliderPresenter from '../presenter';
 
-describe('Presenter', () => {
+describe.skip('Presenter', () => {
   document.body.innerHTML = '<div id="container"></div>';
 
   let testModelState: Model.State;
@@ -57,7 +57,7 @@ describe('Presenter', () => {
     const newState = $.extend({}, testModelState, options);
 
     if (Object.prototype.hasOwnProperty.call(options, 'secondValue') && options.secondValue === undefined) {
-      newState.secondValue = options.secondValue;
+      newState.secondValue = null;
     }
 
     testModelState.maxValue = newState.maxValue;

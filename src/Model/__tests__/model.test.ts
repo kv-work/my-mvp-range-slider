@@ -1,6 +1,6 @@
 import SliderModel from '../model';
 
-describe('model', () => {
+describe.only('model', () => {
   const initOptions: Model.Options = {
     maxValue: 10,
     minValue: 0,
@@ -67,7 +67,7 @@ describe('model', () => {
       expect(lockedValues.includes('step')).toBeTruthy();
     });
 
-    test('should create instance with default values if constructor get wrong options', () => {
+    test.only('should create instance with default values if constructor get wrong options', () => {
       let newModel = new SliderModel();
 
       expect(newModel).toBeInstanceOf(SliderModel);
@@ -77,6 +77,7 @@ describe('model', () => {
       expect(state).toHaveProperty('minValue', 0);
       expect(state).toHaveProperty('step', 1);
       expect(state).toHaveProperty('value', 0);
+      expect(state).toHaveProperty('secondValue', null);
 
       newModel = new SliderModel({
         maxValue: -10,
@@ -104,7 +105,7 @@ describe('model', () => {
         minValue: 0,
         step: 1,
         value: 0,
-        secondValue: undefined,
+        secondValue: null,
         lockedValues: [],
       });
     });
@@ -118,7 +119,7 @@ describe('model', () => {
       expect(state).toHaveProperty('maxValue', 10);
       expect(state).toHaveProperty('minValue', 0);
       expect(state).toHaveProperty('step', 1);
-      expect(state.secondValue).toBeUndefined();
+      expect(state.secondValue).toBeNull();
 
       // With second value
       const stateWithSecondValue = modelWithSecondValue.getState();
@@ -193,7 +194,7 @@ describe('model', () => {
       expect(testModel.getState()).toHaveProperty('minValue', 0);
 
       // add second value
-      expect(testModel.getState()).toHaveProperty('secondValue', undefined);
+      expect(testModel.getState()).toHaveProperty('secondValue', null);
       testModel.updateState({
         value: 25,
         secondValue: 50,
@@ -219,14 +220,14 @@ describe('model', () => {
       });
 
       // remove secondValue
-      testModel.updateState({ secondValue: undefined });
+      testModel.updateState({ secondValue: null });
 
       expect(testModel.getState()).toEqual({
         maxValue: -10,
         minValue: -20,
         step: 2,
         value: -18,
-        secondValue: undefined,
+        secondValue: null,
         lockedValues: [],
       });
     });
@@ -247,7 +248,7 @@ describe('model', () => {
         minValue: 0,
         step: 1,
         value: 3,
-        secondValue: undefined,
+        secondValue: null,
         lockedValues: ['maxValue', 'minValue', 'step', 'value', 'secondValue'],
       });
     });

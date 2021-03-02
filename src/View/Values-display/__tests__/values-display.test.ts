@@ -1,6 +1,6 @@
 import SliderValuesDisplay from '../values-display';
 
-describe('SliderValuesDisplay', () => {
+describe.skip('SliderValuesDisplay', () => {
   document.body.innerHTML = `
     <div id="view_container"></div>
     <div id="view_container_horizontal"></div>

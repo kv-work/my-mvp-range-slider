@@ -1,7 +1,7 @@
 import '../plugin';
 import SliderApp from '../../App/app';
 
-describe('myMVPSlider', () => {
+describe.skip('myMVPSlider', () => {
   document.body.innerHTML = `
     <div class="js-container"></div>
     <div class="js-container"></div>

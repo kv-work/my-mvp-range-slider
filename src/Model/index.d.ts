@@ -27,7 +27,7 @@ declare namespace Model {
     minValue: number;
     step: number;
     value: number;
-    secondValue: number | undefined | null;
+    secondValue: number | null;
     lockedValues: string[];
   }
 }

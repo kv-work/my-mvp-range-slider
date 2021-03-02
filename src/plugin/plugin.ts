@@ -8,7 +8,7 @@ $.fn.myMVPSlider = function createMVPSlider(options: App.Option): JQuery {
     minValue: 0,
     step: 1,
     value: 0,
-    secondValue: undefined,
+    secondValue: null,
 
     // view
     isHorizontal: true,

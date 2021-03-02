@@ -1,6 +1,6 @@
 import SliderRunner from '../runner';
 
-describe('SliderRunner', () => {
+describe.skip('SliderRunner', () => {
   document.body.innerHTML = `
   <div id="view_container" class="js-slider__container">
     <div class="slider__bar_container"></div>

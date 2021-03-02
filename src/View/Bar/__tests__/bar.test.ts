@@ -1,6 +1,6 @@
 import SliderBar from '../bar';
 
-describe('bar', () => {
+describe.skip('bar', () => {
   document.body.innerHTML = `
     <div id="view_container" class="js-slider__container">
       <div class="slider__bar_container"></div>
