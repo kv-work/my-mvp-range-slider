@@ -37,7 +37,7 @@ jest.mock('../../View/view', jest.fn(() => jest.fn().mockImplementation(() => ({
   getData: mockGetViewData,
 }))));
 
-describe.skip('app', () => {
+describe('app', () => {
   document.body.innerHTML = '<div id="container"></div>';
   const testNode = document.getElementById('container');
 

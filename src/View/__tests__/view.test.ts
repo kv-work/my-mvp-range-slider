@@ -33,7 +33,7 @@ jest.mock('../Values-display/values-display', jest.fn(() => jest.fn().mockImplem
   destroy: mockValueDisplayDestroy,
 }))));
 
-describe.skip('SliderView', () => {
+describe('SliderView', () => {
   document.body.innerHTML = '<div id="container"></div>';
 
   const testNode = $('#container')[0];

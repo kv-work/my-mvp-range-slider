@@ -1,7 +1,7 @@
 /* eslint-disable fsd/no-function-declaration-in-event-listener */
 import SliderScale from '../scale';
 
-describe.skip('scale', () => {
+describe('scale', () => {
   document.body.innerHTML = `
     <div id="view_container"></div>
     <div id="view_container_horizontal"></div>

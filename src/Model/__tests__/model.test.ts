@@ -1,6 +1,6 @@
 import SliderModel from '../model';
 
-describe.only('model', () => {
+describe('model', () => {
   const initOptions: Model.Options = {
     maxValue: 10,
     minValue: 0,

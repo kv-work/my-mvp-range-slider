@@ -1,6 +1,6 @@
 import SliderPresenter from '../presenter';
 
-describe.skip('Presenter', () => {
+describe('Presenter', () => {
   document.body.innerHTML = '<div id="container"></div>';
 
   let testModelState: Model.State;
@@ -456,7 +456,7 @@ describe.skip('Presenter', () => {
         minValue: 12,
         step: 3,
         value: 18,
-        secondValue: undefined,
+        secondValue: null,
         lockedValues: [],
       });
 
