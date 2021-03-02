@@ -46,13 +46,10 @@ class SliderPresenter implements Presenter {
       minValue: options.minValue,
       step: options.step,
       value: options.value,
+      secondValue: options.secondValue,
       lockedValues: options.lockedValues,
       unlockValues: options.unlockValues,
     };
-
-    if (Object.prototype.hasOwnProperty.call(options, 'secondValue')) {
-      modelOptions.secondValue = options.secondValue;
-    }
 
     let viewOptions: View.Options = {
       isHorizontal: options.isHorizontal,
@@ -91,7 +88,7 @@ class SliderPresenter implements Presenter {
       }
     }
 
-    if (!SliderPresenter.isEmpty(modelOptions) || Object.prototype.hasOwnProperty.call(options, 'secondValue')) {
+    if (!SliderPresenter.isEmpty(modelOptions)) {
       this.model.updateState(modelOptions);
     }
 

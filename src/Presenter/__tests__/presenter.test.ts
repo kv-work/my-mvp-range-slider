@@ -56,10 +56,6 @@ describe('Presenter', () => {
   const mockUpdateState = jest.fn((options: Model.Options) => {
     const newState = $.extend({}, testModelState, options);
 
-    if (Object.prototype.hasOwnProperty.call(options, 'secondValue') && options.secondValue === undefined) {
-      newState.secondValue = null;
-    }
-
     testModelState.maxValue = newState.maxValue;
     testModelState.minValue = newState.minValue;
     testModelState.step = newState.step;
@@ -388,9 +384,9 @@ describe('Presenter', () => {
       expect(mockUpdate).not.toHaveBeenCalled();
     });
 
-    test('should set secondValue to undefined if argument {secondValue: undefined}', () => {
-      testPresenter.update({ secondValue: undefined });
-      expect(mockUpdateState).toBeCalledWith({ secondValue: undefined });
+    test('should set secondValue to null if argument {secondValue: null}', () => {
+      testPresenter.update({ secondValue: null });
+      expect(mockUpdateState).toBeCalledWith({ secondValue: null });
     });
 
     test('should calls update method of view, if it is necessary to update the view props', () => {
@@ -440,7 +436,7 @@ describe('Presenter', () => {
         minValue: 12,
         step: 3,
         value: 18,
-        secondValue: undefined,
+        secondValue: null,
       });
 
       expect(mockUpdate).toBeCalledWith({ isRange: false });
@@ -449,6 +445,7 @@ describe('Presenter', () => {
         minValue: 12,
         step: 3,
         value: 18,
+        secondValue: null,
       });
 
       expect(mockRender).toBeCalledWith({
