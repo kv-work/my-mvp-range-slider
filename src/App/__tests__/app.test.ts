@@ -73,6 +73,7 @@ describe('app', () => {
     if (testNode) {
       $(testNode).html('');
     }
+
     jest.clearAllMocks();
   });
 
@@ -121,7 +122,7 @@ describe('app', () => {
     });
   });
 
-  describe('setUserDAta', () => {
+  describe('setUserData', () => {
     let testData: App.Stringable[];
 
     test('should call setUserData method of presenter if data.length > 1', () => {
@@ -158,6 +159,7 @@ describe('app', () => {
   describe('getAllData', () => {
     test('should call getState method of Model, getPresenterData of Presenter and getData of View', () => {
       testApp.getAllData();
+
       expect(mockGetModelData).toBeCalledTimes(1);
       expect(mockGetPresenterData).toBeCalledTimes(1);
       expect(mockGetViewData).toBeCalledTimes(1);
@@ -166,18 +168,21 @@ describe('app', () => {
   describe('getModelData', () => {
     test('should call getState method of Model', () => {
       testApp.getModelData();
+
       expect(mockGetModelData).toBeCalledTimes(1);
     });
   });
   describe('getPresenterData', () => {
     test('should call getPresenterData method of Presenter', () => {
       testApp.getPresenterData();
+
       expect(mockGetPresenterData).toBeCalledTimes(1);
     });
   });
   describe('getViewData', () => {
     test('should call getViewData method of Presenter', () => {
       testApp.getViewData();
+
       expect(mockGetViewData).toBeCalledTimes(1);
     });
   });
@@ -205,6 +210,7 @@ describe('app', () => {
   describe('destroy', () => {
     test('should call destroy method of view', () => {
       testApp.destroy();
+
       expect(mockDestroyView).toBeCalled();
     });
   });
