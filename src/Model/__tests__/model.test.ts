@@ -121,7 +121,6 @@ describe('model', () => {
       expect(state).toHaveProperty('step', 1);
       expect(state.secondValue).toBeNull();
 
-      // With second value
       const stateWithSecondValue = modelWithSecondValue.getState();
       expect(stateWithSecondValue).toHaveProperty('secondValue', 8);
 
@@ -180,6 +179,7 @@ describe('model', () => {
       expect(newState).toHaveProperty('maxValue', 100);
       expect(newState).toHaveProperty('minValue', 50);
       expect(newState).toHaveProperty('step', 5);
+
       // value should be equal minValue
       expect(newState).toHaveProperty('value', 50);
 
@@ -234,7 +234,6 @@ describe('model', () => {
 
     test('should not update locked values', () => {
       testModel.lockState('all');
-
       testModel.updateState({
         maxValue: 100,
         minValue: -100,
@@ -272,6 +271,7 @@ describe('model', () => {
       modelWithSecondValue.updateState({ secondValue: 7, value: 4 });
       expect(modelWithSecondValue.getState().secondValue).toBe(8);
       expect(modelWithSecondValue.getState().value).toBe(3);
+
       modelWithSecondValue.updateState({ step: 5 });
       expect(modelWithSecondValue.getState().secondValue).toBe(10);
       expect(modelWithSecondValue.getState().value).toBe(5);
@@ -427,7 +427,6 @@ describe('model', () => {
       });
 
       testModel.updateState({ step: 0 });
-
       expect(testModel.getState()).toEqual({
         maxValue: 10,
         minValue: 0,
@@ -449,7 +448,6 @@ describe('model', () => {
       });
 
       testModel.updateState({ value: Infinity });
-
       expect(testModel.getState()).toEqual({
         maxValue: 10,
         minValue: 0,
@@ -483,11 +481,7 @@ describe('model', () => {
       expect(updateFunc).toHaveBeenCalledTimes(1);
       expect(anotherUpdateFunc).toHaveBeenCalledTimes(1);
 
-      // with second value
-      testModel.updateState({
-        secondValue: 55,
-      });
-
+      testModel.updateState({ secondValue: 55 });
       expect(updateFunc).toHaveBeenCalledTimes(2);
       expect(anotherUpdateFunc).toHaveBeenCalledTimes(2);
     });
@@ -517,7 +511,6 @@ describe('model', () => {
         secondValue: null,
         lockedValues: [],
       });
-
       expect(updateFunc).not.toHaveBeenCalled();
       expect(anotherUpdateFunc).not.toHaveBeenCalled();
     });
@@ -550,7 +543,6 @@ describe('model', () => {
       testModel.lockState(['test']);
 
       const { lockedValues } = testModel.getState();
-
       expect(lockedValues.includes('maxValue')).toBeFalsy();
       expect(lockedValues.includes('minValue')).toBeFalsy();
       expect(lockedValues.includes('value')).toBeFalsy();
@@ -564,7 +556,6 @@ describe('model', () => {
       testModel.lockState('all');
 
       let { lockedValues } = testModel.getState();
-
       expect(lockedValues.includes('minValue')).toBeTruthy();
       expect(lockedValues.includes('maxValue')).toBeTruthy();
       expect(lockedValues.includes('step')).toBeTruthy();
@@ -572,7 +563,6 @@ describe('model', () => {
       testModel.unlockState(['maxValue', 'step', 'value']);
 
       lockedValues = testModel.getState().lockedValues;
-
       expect(lockedValues.includes('minValue')).toBeTruthy();
       expect(lockedValues.includes('maxValue')).toBeFalsy();
       expect(lockedValues.includes('step')).toBeFalsy();
@@ -581,7 +571,6 @@ describe('model', () => {
       testModel.unlockState(['minValue', 'secondValue']);
 
       lockedValues = testModel.getState().lockedValues;
-
       expect(lockedValues.includes('minValue')).toBeFalsy();
       expect(lockedValues.includes('secondValue')).toBeFalsy();
     });
@@ -591,7 +580,6 @@ describe('model', () => {
       testModel.unlockState('all');
 
       const { lockedValues } = testModel.getState();
-
       expect(lockedValues.includes('maxValue')).toBeFalsy();
       expect(lockedValues.includes('minValue')).toBeFalsy();
       expect(lockedValues.includes('value')).toBeFalsy();
@@ -603,7 +591,6 @@ describe('model', () => {
       testModel.unlockState(['test']);
 
       let { lockedValues } = testModel.getState();
-
       expect(lockedValues.includes('maxValue')).toBeFalsy();
       expect(lockedValues.includes('minValue')).toBeFalsy();
       expect(lockedValues.includes('value')).toBeFalsy();
@@ -613,7 +600,6 @@ describe('model', () => {
       testModel.lockState('all');
 
       lockedValues = testModel.getState().lockedValues;
-
       expect(lockedValues.includes('maxValue')).toBeTruthy();
       expect(lockedValues.includes('minValue')).toBeTruthy();
       expect(lockedValues.includes('value')).toBeTruthy();
@@ -622,6 +608,7 @@ describe('model', () => {
 
       testModel.unlockState(['test']);
 
+      lockedValues = testModel.getState().lockedValues;
       expect(lockedValues.includes('maxValue')).toBeTruthy();
       expect(lockedValues.includes('minValue')).toBeTruthy();
       expect(lockedValues.includes('value')).toBeTruthy();
