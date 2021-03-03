@@ -28,16 +28,14 @@ class SliderModel implements Model {
     return this.state;
   }
 
-  updateState(state: Model.Options): void {
-    const { state: oldState } = this;
-
+  updateState(options: Model.Options): void {
     this.isReadyNotify = false;
 
-    if (state.unlockValues !== undefined) {
-      this.unlockState(state.unlockValues);
+    if (options.unlockValues !== undefined) {
+      this.unlockState(options.unlockValues);
     }
 
-    const newState = this.createState(oldState, state);
+    const newState = this.createState(options);
 
     this.state = newState;
 
@@ -76,11 +74,12 @@ class SliderModel implements Model {
     }
 
     if (props === 'all') {
-      this.lockedValues.add('maxValue');
-      this.lockedValues.add('minValue');
-      this.lockedValues.add('step');
-      this.lockedValues.add('value');
-      this.lockedValues.add('secondValue');
+      this.lockedValues
+        .add('maxValue')
+        .add('minValue')
+        .add('step')
+        .add('value')
+        .add('secondValue');
       this.isUpdated = false;
     }
 
@@ -143,11 +142,13 @@ class SliderModel implements Model {
       lockedValues: [],
     };
 
-    return options ? this.createState(defaultState, options) : defaultState;
+    return options ? this.createState(options, defaultState) : defaultState;
   }
 
   private notify(): void {
-    if (this.observers.size !== 0 && this.isReadyNotify) {
+    const hasObserver = this.observers.size !== 0;
+
+    if (hasObserver && this.isReadyNotify) {
       this.observers.forEach((observer: Model.Observer): void => {
         observer.update();
       });
@@ -160,44 +161,45 @@ class SliderModel implements Model {
     return (this.lockedValues !== undefined && this.lockedValues.has(value));
   }
 
-  private createState(state: Model.State, newState: Model.Options): Model.State {
+  private createState(newState: Model.Options, state: Model.State = this.state): Model.State {
+    const { getMultipleStep, isEqualStates } = SliderModel;
+
     const validOptions = this.validateOptions(newState);
     const extendedState = $.extend({}, state, validOptions);
-    const resultState = { ...extendedState };
+    const { unlockValues, ...resultState } = extendedState;
 
-    if (extendedState.maxValue < extendedState.minValue || extendedState.step < 0) {
-      return state;
-    }
+    const isWrongState = extendedState.maxValue < extendedState.minValue || extendedState.step < 0;
 
-    if (validOptions.unlockValues) this.unlockState(validOptions.unlockValues);
+    if (isWrongState) return state;
 
-    const value = SliderModel.getMultipleStep(extendedState.value, extendedState);
+    const value = getMultipleStep(extendedState.value, extendedState);
     resultState.value = value;
 
     if (extendedState.secondValue !== null) {
-      const secondValue = SliderModel.getMultipleStep(extendedState.secondValue, extendedState);
+      const secondValue = getMultipleStep(extendedState.secondValue, extendedState);
 
       const isSecondValueChanged = secondValue !== state.secondValue;
-      const isValuesChanged = value !== state.value && isSecondValueChanged;
+      const isBothValuesChanged = value !== state.value && isSecondValueChanged;
+      const isValueLessThenSecondValue = secondValue > value;
 
       switch (true) {
-        case isValuesChanged:
-          resultState.secondValue = secondValue > value ? secondValue : value;
-          resultState.value = secondValue > value ? value : secondValue;
+        case isBothValuesChanged:
+          resultState.secondValue = isValueLessThenSecondValue ? secondValue : value;
+          resultState.value = isValueLessThenSecondValue ? value : secondValue;
           break;
         case isSecondValueChanged:
-          resultState.secondValue = secondValue > value ? secondValue : value;
+          resultState.secondValue = isValueLessThenSecondValue ? secondValue : value;
           break;
         default:
           resultState.secondValue = secondValue;
-          resultState.value = secondValue > value ? value : secondValue;
+          resultState.value = isValueLessThenSecondValue ? value : secondValue;
           break;
       }
     }
 
     if (validOptions.lockedValues) this.lockState(validOptions.lockedValues);
 
-    if (!SliderModel.isEqualStates(state, resultState)) {
+    if (!isEqualStates(state, resultState)) {
       this.isUpdated = false;
     }
 
@@ -208,19 +210,22 @@ class SliderModel implements Model {
   }
 
   private validateOptions(options: Model.Options): Model.Options {
+    const { isValid } = SliderModel;
+
     const optionsEntries = Object.entries(options);
     const validEntries = optionsEntries.filter((entry): boolean => {
       const [key, value] = entry;
+
       if (this.isLocked(key)) return false;
       switch (key) {
         case 'maxValue':
         case 'minValue':
         case 'value':
-          return SliderModel.isValid(value);
+          return isValid(value);
         case 'step':
-          return SliderModel.isValid(value) && value > 0;
+          return isValid(value) && value > 0;
         case 'secondValue':
-          return value === null || SliderModel.isValid(value);
+          return value === null || isValid(value);
         case 'lockedValues':
         case 'unlockValues':
           return value === 'all' || Array.isArray(value);
@@ -242,8 +247,8 @@ class SliderModel implements Model {
       maxValue: max,
       minValue: min,
     } = state;
+
     let result: number;
-    let tempResult: number;
 
     switch (true) {
       case (value >= max):
@@ -252,22 +257,24 @@ class SliderModel implements Model {
       case (value <= min):
         result = min;
         break;
-      case ((((value - min) % step) / step > 0.5)):
-        tempResult = (value - ((value - min) % step) + step);
+      case ((((value - min) % step) / step > 0.5)): {
+        const tempResult = (value - ((value - min) % step) + step);
         if (tempResult > max) {
           result = max;
         } else {
           result = tempResult;
         }
         break;
-      default:
-        tempResult = (value - ((value - min) % step));
+      }
+      default: {
+        const tempResult = (value - ((value - min) % step));
         if ((tempResult + step) >= max && ((max + tempResult) / 2) < value) {
           result = max;
         } else {
           result = (value - ((value - min) % step));
         }
         break;
+      }
     }
 
     return SliderModel.fixVal(result, step);
@@ -286,7 +293,7 @@ class SliderModel implements Model {
   }
 
   static fixVal(value: number, baseVal: number): number {
-    if (!(baseVal % 1)) {
+    if ((baseVal % 1) === 0) {
       return Number(value.toFixed(0));
     }
 
@@ -297,6 +304,7 @@ class SliderModel implements Model {
       const fixBase = base > 20 ? 20 : base;
       return Number(value.toFixed(fixBase));
     }
+
     const base = baseString.split('.')[1].length;
     const fixBase = base > 20 ? 20 : base;
     return Number(value.toFixed(fixBase));
